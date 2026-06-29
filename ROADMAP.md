@@ -68,8 +68,11 @@ Legend: ✅ done · 🟡 in progress · ⬜ pending
 - ✅ Workflow parity vs Vistaprint documented (`research/03-parity.md`)
 - ⬜ Later: pixel visual-diff vs VP golden screenshots; broaden coverage (upload, mobile)
 
-## Phase 9 — Deployment  ⬜  *(req 2)*
-- ⬜ DigitalOcean deploy (Docker), using DO token
+## Phase 9 — Deployment  ✅  *(req 2)*
+- ✅ DigitalOcean Droplet (Ubuntu 24.04, 2vCPU/4GB, Docker) provisioned via API + SSH deploy
+- ✅ **Live at http://174.138.35.202** — full funnel e2e-verified on prod (3/3 green)
+- ✅ Deploy script `deploy/droplet-deploy.sh` (clone → prod .env → build → migrate → seed → serve :80)
+- ⬜ Later: domain + HTTPS (runmyprint.com), managed DB, CI/CD redeploy
 
 ---
 

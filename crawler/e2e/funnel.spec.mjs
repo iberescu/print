@@ -20,7 +20,7 @@ test('full funnel: design → cart → checkout → paid', async ({ page }) => {
     await page.getByRole('button', { name: /add to cart/i }).click();
     await page.waitForURL('**/cart');
     await expect(page.getByText(/free shipping/i).first()).toBeVisible(); // req 7
-    await expect(page.getByRole('heading', { name: /put your design on more/i })).toBeVisible(); // req 11
+    await expect(page.getByRole('heading', { name: /put your brand on more/i })).toBeVisible(); // req 11
 
     await page.getByRole('link', { name: /proceed to checkout/i }).click();
     await page.waitForURL('**/checkout');
