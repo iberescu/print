@@ -36,9 +36,9 @@
         scroll-behavior: smooth;
     }
 
-    /* No rounded corners anywhere (design spec) */
+    /* Subtle, uniform small radius on all elements (design spec) */
     *, *::before, *::after {
-        border-radius: 0 !important;
+        border-radius: 3px !important;
     }
 
     body {
