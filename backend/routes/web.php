@@ -1,10 +1,10 @@
 <?php
 
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\DesignController;
 use App\Http\Controllers\StorefrontController;
 use Illuminate\Support\Facades\Route;
-use Inertia\Inertia;
 
 Route::get('/', [StorefrontController::class, 'home'])->name('home');
 Route::get('/category/{category}', [StorefrontController::class, 'category'])->name('category.show');
@@ -19,8 +19,8 @@ Route::get('/cart', [CartController::class, 'show'])->name('cart');
 Route::post('/cart/add/{product}', [CartController::class, 'add'])->name('cart.add');
 Route::post('/cart/remove/{lineId}', [CartController::class, 'remove'])->name('cart.remove');
 
-// Checkout (Stripe) — Phase 6 stub for now
-Route::get('/checkout', fn () => Inertia::render('ComingSoon', [
-    'title'   => 'Checkout',
-    'message' => 'Stripe checkout arrives in Phase 6. Your cart, shipping and totals are ready to wire up.',
-]))->name('checkout');
+// Checkout + Stripe (req 14)
+Route::get('/checkout', [CheckoutController::class, 'show'])->name('checkout');
+Route::post('/checkout', [CheckoutController::class, 'place'])->name('checkout.place');
+Route::get('/checkout/success', [CheckoutController::class, 'success'])->name('checkout.success');
+Route::post('/stripe/webhook', [CheckoutController::class, 'webhook'])->name('stripe.webhook');

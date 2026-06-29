@@ -51,8 +51,12 @@ Legend: ✅ done · 🟡 in progress · ⬜ pending
 - ✅ Header cart badge; funnel verified product→design→add→cart (Playwright)
 - ⬜ Later: true SVG/perspective mockups + Gemini logo-extraction from uploaded artwork (full req 11)
 
-## Phase 6 — Checkout & payments  ⬜  *(req 14)*
-- ⬜ Stripe checkout, order creation, free-shipping rule applied
+## Phase 6 — Checkout & payments  ✅ (core)  *(req 14)*
+- ✅ Checkout page (contact + shipping) + order summary
+- ✅ Orders table; order created with free-shipping rule applied
+- ✅ Stripe Checkout Session integration (`stripe/stripe-php`) + webhook to mark paid
+- ✅ Demo-mode fallback when no Stripe keys → order completes + success page
+- ⬜ Add Stripe TEST keys to `backend/.env` to enable live card payment
 
 ## Phase 7 — Marketing feeds  ⬜  *(req 20)*
 - ⬜ Product feed: Google Shopping (XML) + RTB House
