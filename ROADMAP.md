@@ -63,9 +63,10 @@ Legend: ✅ done · 🟡 in progress · ⬜ pending
 - ✅ RTB House feed: `/feed/rtbhouse.xml` (generic product XML)
 - ✅ Absolute URLs + images; well-formed XML verified
 
-## Phase 8 — Testing & parity  ⬜  *(req 13, 19)*
-- ⬜ Playwright e2e for the full purchase workflow
-- ⬜ Compare workflow + design quality vs Vistaprint screenshots; iterate
+## Phase 8 — Testing & parity  ✅ (core)  *(req 13, 19)*
+- ✅ Playwright e2e suite (`crawler/e2e/funnel.spec.mjs`): storefront, full funnel (design→cart→checkout→paid), feeds — all green
+- ✅ Workflow parity vs Vistaprint documented (`research/03-parity.md`)
+- ⬜ Later: pixel visual-diff vs VP golden screenshots; broaden coverage (upload, mobile)
 
 ## Phase 9 — Deployment  ⬜  *(req 2)*
 - ⬜ DigitalOcean deploy (Docker), using DO token

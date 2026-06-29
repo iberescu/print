@@ -6,9 +6,15 @@
   "description": "Competitive research crawler: screenshot tour + product/price extraction (Vistaprint)",
   "scripts": {
     "screenshots": "node src/screenshots.mjs",
-    "crawl": "node src/crawl.mjs"
+    "crawl": "node src/crawl.mjs",
+    "crawl:deep": "node src/crawl-deep.mjs",
+    "templates": "node src/gen-templates.mjs",
+    "test": "playwright test"
   },
   "dependencies": {
     "playwright": "^1.49.1"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.61.1"
   }
 }
