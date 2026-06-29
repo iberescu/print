@@ -37,6 +37,7 @@ class CartController extends Controller
             'optionValueIds.*' => ['integer'],
             'preview'          => ['nullable', 'string'],
             'mode'             => ['nullable', 'string'],
+            'brand'            => ['nullable', 'array'],
         ]);
 
         $quote = $pricing->quote($product, $data['quantityId'] ?? null, $data['optionValueIds'] ?? []);
@@ -53,6 +54,7 @@ class CartController extends Controller
             'design'     => ! empty($data['preview'])
                 ? ['preview' => $data['preview'], 'mode' => $data['mode'] ?? 'design']
                 : null,
+            'brand'      => $request->input('brand') ?: null,
         ]);
 
         return redirect()->route('cart')->with('success', "“{$product->name}” added to your cart.");
@@ -94,24 +96,25 @@ class CartController extends Controller
             ])->all();
     }
 
-    /** req 11 (first cut): the user's saved design mocked onto other products. */
+    /** req 11: the user's brand elements (logo, name, url, contact) laid into per-product SVG mockups. */
     private function designMockups(array $items): array
     {
-        $withDesign = collect($items)->reverse()->first(fn ($i) => ! empty($i['design']['preview']));
-        $preview = $withDesign['design']['preview'] ?? null;
-        if (! $preview) {
+        $withBrand = collect($items)->reverse()->first(fn ($i) => ! empty($i['brand']));
+        $brand = $withBrand['brand'] ?? null;
+        if (! $brand) {
             return [];
         }
 
-        $surfaces = Product::whereIn('slug', ['flyers', 'postcards', 'notepads', 'tote-bags'])->get();
+        $map = ['flyers' => 'flyer', 'posters' => 'poster', 'postcards' => 'postcard', 'notepads' => 'notepad', 'tote-bags' => 'tote'];
+        $surfaces = Product::whereIn('slug', array_keys($map))->orderBy('sort_order')->get();
 
         return [
-            'preview'  => $preview,
+            'brand'    => $brand,
             'products' => $surfaces->map(fn (Product $p) => [
                 'name'      => $p->name,
                 'slug'      => $p->slug,
-                'image'     => $this->img($p->image_path),
                 'fromPrice' => (float) $p->from_price,
+                'mockup'    => $map[$p->slug] ?? 'flyer',
             ])->all(),
         ];
     }

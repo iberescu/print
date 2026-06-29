@@ -2,6 +2,7 @@
 import { Head, Link, router } from '@inertiajs/vue3';
 import { computed } from 'vue';
 import StoreLayout from '../Layouts/StoreLayout.vue';
+import BrandMockup from '../Components/BrandMockup.vue';
 
 const props = defineProps({
     items: { type: Array, default: () => [] },
@@ -15,7 +16,7 @@ const progress = computed(() => {
     const t = props.summary.threshold || 50;
     return Math.min(100, Math.round(((props.summary.subtotal || 0) / t) * 100));
 });
-const hasMockups = computed(() => props.designMockups && props.designMockups.preview);
+const hasMockups = computed(() => props.designMockups && props.designMockups.brand);
 const remove = (id) => router.post(`/cart/remove/${id}`, {}, { preserveScroll: true });
 </script>
 
@@ -73,15 +74,14 @@ const remove = (id) => router.post(`/cart/remove/${id}`, {}, { preserveScroll: t
                 </aside>
             </div>
 
-            <!-- req 11: your design on more products -->
+            <!-- req 11: brand elements laid into per-product SVG mockups -->
             <section v-if="hasMockups" class="mt-16">
-                <h2 class="font-display text-2xl font-semibold tracking-tight">Put your design on more</h2>
-                <p class="mt-1 text-ink/55">Your design looks great on these too.</p>
+                <h2 class="font-display text-2xl font-semibold tracking-tight">Put your brand on more</h2>
+                <p class="mt-1 text-ink/55">We'll lay your logo, company name and details onto each product.</p>
                 <div class="mt-6 grid grid-cols-2 gap-5 md:grid-cols-4">
                     <Link v-for="p in designMockups.products" :key="p.slug" :href="`/product/${p.slug}`" class="group overflow-hidden rounded-2xl border border-paper-300 bg-white transition hover:-translate-y-1 hover:shadow-lg">
-                        <div class="relative aspect-square overflow-hidden bg-paper-200">
-                            <img v-if="p.image" :src="p.image" :alt="p.name" class="h-full w-full object-cover" />
-                            <img :src="designMockups.preview" alt="your design" class="absolute left-1/2 top-1/2 w-1/2 -translate-x-1/2 -translate-y-1/2 -rotate-3 rounded shadow-xl ring-1 ring-black/10" />
+                        <div class="aspect-square overflow-hidden bg-paper-200">
+                            <BrandMockup :brand="designMockups.brand" :variant="p.mockup" />
                         </div>
                         <div class="p-3">
                             <p class="font-display text-sm font-semibold text-ink">{{ p.name }}</p>

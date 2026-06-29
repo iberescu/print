@@ -57,11 +57,12 @@ function addText(text, opts = {}) {
 
 function seedTemplate() {
     canvas.backgroundColor = '#f8f6ef';
-    addText('Company Name', { left: 56, top: 64, fontSize: 34, fontWeight: 'bold', fontFamily: 'Playfair Display' });
-    addText('Your Name', { left: 56, top: 120, fontSize: 24, fontFamily: 'Work Sans' });
-    addText('Title / Role', { left: 56, top: 152, fontSize: 18, fill: '#0e9355', fontFamily: 'Work Sans' });
-    addText('hello@company.com', { left: 56, top: 300, fontSize: 18, fontFamily: 'Work Sans' });
-    addText('+1 (555) 123-4567', { left: 56, top: 328, fontSize: 18, fontFamily: 'Work Sans' });
+    addText('Company Name', { left: 56, top: 58, fontSize: 32, fontWeight: 'bold', fontFamily: 'Playfair Display', rmpRole: 'companyName' });
+    addText('Your Name', { left: 56, top: 110, fontSize: 22, fontFamily: 'Work Sans', rmpRole: 'name' });
+    addText('Title / Role', { left: 56, top: 140, fontSize: 17, fill: '#0e9355', fontFamily: 'Work Sans', rmpRole: 'title' });
+    addText('yourcompany.com', { left: 56, top: 250, fontSize: 17, fontFamily: 'Work Sans', rmpRole: 'url' });
+    addText('hello@company.com', { left: 56, top: 282, fontSize: 17, fontFamily: 'Work Sans', rmpRole: 'email' });
+    addText('+1 (555) 123-4567', { left: 56, top: 314, fontSize: 17, fontFamily: 'Work Sans', rmpRole: 'phone' });
     const logo = new fabric.Rect({
         left: 560, top: 60, width: 150, height: 150, rx: 14, ry: 14,
         fill: '#e3ddcc', stroke: '#0e9355', strokeDashArray: [6, 6], strokeWidth: 2,
@@ -136,7 +137,7 @@ async function onFile(e) {
     if (props.mode === 'upload' && !uploaded.value) {
         img.scaleToWidth(W); img.set({ left: 0, top: 0, selectable: true }); uploaded.value = true;
     } else {
-        img.scaleToWidth(160); img.set({ left: 560, top: 60 });
+        img.scaleToWidth(160); img.set({ left: 560, top: 60, rmpRole: 'logo' });
     }
     canvas.add(img); canvas.setActiveObject(img); canvas.requestRenderAll();
     e.target.value = '';
@@ -165,6 +166,24 @@ async function applyTemplate(ref) {
     applyingTpl.value = false;
 }
 
+function extractBrand() {
+    const b = { companyName: '', name: '', title: '', email: '', phone: '', url: '', logo: null };
+    const objs = canvas.getObjects();
+    objs.forEach((o) => {
+        if (o.rmpRole && Object.prototype.hasOwnProperty.call(b, o.rmpRole) && (o.type === 'i-text' || o.type === 'textbox')) {
+            b[o.rmpRole] = o.text;
+        }
+        if (o.rmpRole === 'logo' && o.type === 'image') {
+            try { b.logo = o.toDataURL({ format: 'png' }); } catch (e) { /* tainted/none */ }
+        }
+    });
+    if (!b.logo) {
+        const img = objs.find((o) => o.type === 'image');
+        if (img) { try { b.logo = img.toDataURL({ format: 'png' }); } catch (e) {} }
+    }
+    return b;
+}
+
 function addToCart() {
     saving.value = true;
     store[side.value] = canvas.toJSON();
@@ -173,6 +192,7 @@ function addToCart() {
         quantityId: props.selection?.quantityId ?? null,
         optionValueIds: props.selection?.optionValueIds ?? [],
         preview,
+        brand: extractBrand(),
         mode: props.mode,
     }, { onFinish: () => (saving.value = false) });
 }
