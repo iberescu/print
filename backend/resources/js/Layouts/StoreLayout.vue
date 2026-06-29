@@ -80,8 +80,7 @@ const year = new Date().getFullYear();
             <div class="mx-auto grid max-w-7xl gap-8 px-6 py-14 sm:grid-cols-2 lg:grid-cols-5">
                 <div>
                     <div class="flex items-center gap-2 text-paper">
-                        <img src="/storage/brand/logo.jpg" alt="RunMyPrint" class="h-8 w-8 object-cover" />
-                        <span class="font-display text-lg font-semibold">RunMyPrint</span>
+                        <img src="/storage/brand/logo.png" alt="runmyprint" class="h-10 w-auto" />
                     </div>
                     <p class="mt-4 text-sm leading-relaxed text-paper/55">Premium custom printing for growing businesses.</p>
                     <div class="mt-5 flex gap-2.5">
