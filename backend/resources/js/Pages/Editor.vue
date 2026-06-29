@@ -8,9 +8,9 @@ const props = defineProps({
     product: { type: Object, required: true },
     category: { type: Object, default: () => ({}) },
     mode: { type: String, default: 'design' },
+    templates: { type: Array, default: () => [] },
 });
 
-// Working resolution (3.5×2" card ratio); exported at higher multiplier for print.
 const W = 760;
 const H = 434;
 
@@ -21,15 +21,17 @@ const store = { front: null, back: null };
 const uploaded = ref(false);
 const saving = ref(false);
 const fileInput = ref(null);
+const showTemplates = ref(false);
+const applyingTpl = ref(false);
 
-// Google Fonts only (per project rule) — loaded via fonts.googleapis.com below.
-const fonts = ['Fraunces', 'Playfair Display', 'Poppins', 'Montserrat', 'Lora', 'Oswald', 'Roboto Slab', 'DM Sans', 'Bebas Neue', 'Space Mono'];
+// Google Fonts only — curated set (loaded from fonts.googleapis.com below).
+const fonts = ['Montserrat', 'Inter', 'Bebas Neue', 'Oswald', 'Poppins', 'Playfair Display', 'Cormorant Garamond', 'DM Serif Display', 'Anton', 'Archivo Black', 'Raleway', 'Rubik', 'Nunito', 'Lora', 'Abril Fatface', 'Barlow Condensed', 'League Spartan', 'Space Grotesk', 'Urbanist', 'Libre Baskerville', 'Merriweather', 'Figtree', 'Manrope', 'Sora', 'Outfit', 'Rajdhani', 'Work Sans', 'Plus Jakarta Sans', 'Great Vibes', 'Pinyon Script', 'Pacifico', 'Caveat', 'Fredericka the Great'];
 const sizes = [12, 14, 16, 18, 20, 24, 28, 32, 40, 48, 56, 64, 72];
 const palette = ['#0c1f17', '#0e9355', '#c7f23d', '#ffffff', '#111111', '#c0392b', '#1f2a44', '#b0703a'];
 const bgPalette = ['#ffffff', '#f8f6ef', '#0c1f17', '#0e9355', '#1f2a44', '#e7dcc4', '#c0392b'];
 
 const GOOGLE_FONTS_HREF =
-    'https://fonts.googleapis.com/css2?family=Fraunces:wght@400;600;900&family=Playfair+Display:wght@400;700&family=Poppins:wght@400;600&family=Montserrat:wght@400;600&family=Lora:wght@400;600&family=Oswald:wght@400;600&family=Roboto+Slab:wght@400;700&family=DM+Sans:wght@400;500;700&family=Bebas+Neue&family=Space+Mono&display=swap';
+    'https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Inter:wght@400;600;700&family=Bebas+Neue&family=Oswald:wght@400;600;700&family=Poppins:wght@400;600;700&family=Playfair+Display:wght@400;700;900&family=Cormorant+Garamond:wght@400;600;700&family=DM+Serif+Display&family=Anton&family=Archivo+Black&family=Raleway:wght@400;600;700&family=Rubik:wght@400;600;700&family=Nunito:wght@400;600;700&family=Lora:wght@400;600;700&family=Abril+Fatface&family=Barlow+Condensed:wght@400;600;700&family=League+Spartan:wght@400;700&family=Space+Grotesk:wght@400;600;700&family=Urbanist:wght@400;600;700&family=Libre+Baskerville:wght@400;700&family=Merriweather:wght@400;700&family=Figtree:wght@400;600;700&family=Manrope:wght@400;600;700&family=Sora:wght@400;600;700&family=Outfit:wght@400;600;700&family=Rajdhani:wght@400;600;700&family=Work+Sans:wght@400;600;700&family=Plus+Jakarta+Sans:wght@400;600;700&family=Great+Vibes&family=Pinyon+Script&family=Pacifico&family=Caveat:wght@400;700&family=Fredericka+the+Great&display=swap';
 
 function ensureFonts() {
     if (document.getElementById('rmp-google-fonts')) return;
@@ -42,11 +44,11 @@ function ensureFonts() {
 
 const hasSel = ref(false);
 const isText = ref(false);
-const sel = reactive({ fontFamily: 'Fraunces', fontSize: 40, fill: '#0c1f17', bold: false, italic: false, align: 'left' });
+const sel = reactive({ fontFamily: 'Playfair Display', fontSize: 40, fill: '#0c1f17', bold: false, italic: false, align: 'left' });
 
 function addText(text, opts = {}) {
     const t = new fabric.IText(text, {
-        left: 48, top: 60, originX: 'left', originY: 'top', fontFamily: 'DM Sans', fill: '#0c1f17', fontSize: 22, ...opts,
+        left: 56, top: 60, originX: 'left', originY: 'top', fontFamily: 'Work Sans', fill: '#0c1f17', fontSize: 22, ...opts,
     });
     canvas.add(t);
     return t;
@@ -54,18 +56,17 @@ function addText(text, opts = {}) {
 
 function seedTemplate() {
     canvas.backgroundColor = '#f8f6ef';
-    addText('Company Name', { left: 56, top: 64, fontSize: 34, fontWeight: 'bold', fontFamily: 'Fraunces' });
-    addText('Your Name', { left: 56, top: 120, fontSize: 24, fontFamily: 'DM Sans' });
-    addText('Title / Role', { left: 56, top: 152, fontSize: 18, fill: '#0e9355' });
-    addText('hello@company.com', { left: 56, top: 300, fontSize: 18 });
-    addText('+1 (555) 123-4567', { left: 56, top: 328, fontSize: 18 });
+    addText('Company Name', { left: 56, top: 64, fontSize: 34, fontWeight: 'bold', fontFamily: 'Playfair Display' });
+    addText('Your Name', { left: 56, top: 120, fontSize: 24, fontFamily: 'Work Sans' });
+    addText('Title / Role', { left: 56, top: 152, fontSize: 18, fill: '#0e9355', fontFamily: 'Work Sans' });
+    addText('hello@company.com', { left: 56, top: 300, fontSize: 18, fontFamily: 'Work Sans' });
+    addText('+1 (555) 123-4567', { left: 56, top: 328, fontSize: 18, fontFamily: 'Work Sans' });
     const logo = new fabric.Rect({
         left: 560, top: 60, width: 150, height: 150, rx: 14, ry: 14,
         fill: '#e3ddcc', stroke: '#0e9355', strokeDashArray: [6, 6], strokeWidth: 2,
     });
     canvas.add(logo);
-    const hint = new fabric.IText('LOGO', { left: 600, top: 125, originX: 'left', originY: 'top', fontSize: 18, fill: '#0e935580', fontFamily: 'DM Sans', selectable: false, evented: false });
-    canvas.add(hint);
+    canvas.add(new fabric.IText('LOGO', { left: 600, top: 125, originX: 'left', originY: 'top', fontSize: 18, fill: '#0e935580', fontFamily: 'Work Sans', selectable: false, evented: false }));
     canvas.renderAll();
 }
 
@@ -91,14 +92,9 @@ onMounted(() => {
     canvas.on('selection:updated', syncSelection);
     canvas.on('selection:cleared', () => { hasSel.value = false; isText.value = false; });
 
-    if (props.mode === 'design') {
-        seedTemplate();
-    } else {
-        canvas.backgroundColor = '#ffffff';
-        canvas.renderAll();
-    }
+    if (props.mode === 'design') seedTemplate();
+    else { canvas.backgroundColor = '#ffffff'; canvas.renderAll(); }
 
-    // Re-render once web fonts finish loading (fabric measures glyph widths at draw time)
     if (typeof document !== 'undefined' && document.fonts?.ready) {
         document.fonts.ready.then(() => canvas && canvas.requestRenderAll());
     }
@@ -106,7 +102,6 @@ onMounted(() => {
 
 onBeforeUnmount(() => canvas && canvas.dispose());
 
-// ---- toolbar actions ----
 function apply(prop, val) {
     const o = canvas.getActiveObject();
     if (!o) return;
@@ -138,16 +133,11 @@ async function onFile(e) {
     const url = await new Promise((res) => { const r = new FileReader(); r.onload = (ev) => res(ev.target.result); r.readAsDataURL(file); });
     const img = await fabric.FabricImage.fromURL(url, { crossOrigin: 'anonymous' });
     if (props.mode === 'upload' && !uploaded.value) {
-        img.scaleToWidth(W);
-        img.set({ left: 0, top: 0, selectable: true });
-        uploaded.value = true;
+        img.scaleToWidth(W); img.set({ left: 0, top: 0, selectable: true }); uploaded.value = true;
     } else {
-        img.scaleToWidth(160);
-        img.set({ left: 560, top: 60 });
+        img.scaleToWidth(160); img.set({ left: 560, top: 60 });
     }
-    canvas.add(img);
-    canvas.setActiveObject(img);
-    canvas.requestRenderAll();
+    canvas.add(img); canvas.setActiveObject(img); canvas.requestRenderAll();
     e.target.value = '';
 }
 
@@ -156,28 +146,35 @@ function flip(to) {
     store[side.value] = canvas.toJSON();
     side.value = to;
     canvas.clear();
-    if (store[to]) {
-        canvas.loadFromJSON(store[to]).then(() => canvas.renderAll());
-    } else {
-        canvas.backgroundColor = '#f8f6ef';
+    if (store[to]) canvas.loadFromJSON(store[to]).then(() => canvas.renderAll());
+    else { canvas.backgroundColor = '#f8f6ef'; canvas.renderAll(); }
+}
+
+async function applyTemplate(ref) {
+    applyingTpl.value = true;
+    try {
+        const res = await fetch(`/design/template/${ref}/data`, { headers: { Accept: 'application/json' } });
+        const { data } = await res.json();
+        await canvas.loadFromJSON(data);
+        if (document.fonts?.ready) await document.fonts.ready;
         canvas.renderAll();
-    }
+        store[side.value] = canvas.toJSON();
+        showTemplates.value = false;
+    } catch (e) { /* keep current canvas on failure */ }
+    applyingTpl.value = false;
 }
 
 function addToCart() {
     saving.value = true;
     store[side.value] = canvas.toJSON();
     const preview = canvas.toDataURL({ format: 'jpeg', quality: 0.72, multiplier: 0.55 });
-    router.post(`/design/${props.product.slug}`, { design: store, preview }, {
-        onFinish: () => (saving.value = false),
-    });
+    router.post(`/design/${props.product.slug}`, { design: store, preview }, { onFinish: () => (saving.value = false) });
 }
 </script>
 
 <template>
     <Head :title="`Design — ${product.name}`" />
     <div class="flex min-h-screen flex-col bg-paper-200">
-        <!-- Top bar -->
         <header class="flex items-center justify-between gap-4 border-b border-paper-300 bg-paper px-5 py-3">
             <div class="flex items-center gap-4">
                 <Link href="/"><AppLogo /></Link>
@@ -191,19 +188,15 @@ function addToCart() {
                 <span class="rounded-full bg-brand-50 px-3 py-1 text-brand-700">1 · Design</span>
                 <span class="text-ink/30">2 · Review</span>
             </div>
-            <button
-                :disabled="saving"
-                class="rounded-full bg-brand-600 px-6 py-2.5 text-sm font-semibold text-white transition hover:bg-brand-700 disabled:opacity-60"
-                @click="addToCart"
-            >
+            <button :disabled="saving" class="rounded-full bg-brand-600 px-6 py-2.5 text-sm font-semibold text-white transition hover:bg-brand-700 disabled:opacity-60" @click="addToCart">
                 {{ saving ? 'Saving…' : 'Add to cart →' }}
             </button>
         </header>
 
-        <!-- Toolbar -->
         <div class="flex flex-wrap items-center gap-2 bg-ink px-4 py-2 text-paper">
             <button class="rounded-md px-3 py-1.5 text-sm font-medium hover:bg-white/10" @click="newText">+ Text</button>
             <button class="rounded-md px-3 py-1.5 text-sm font-medium hover:bg-white/10" @click="fileInput.click()">↑ Upload image</button>
+            <button v-if="templates.length" class="rounded-md px-3 py-1.5 text-sm font-medium hover:bg-white/10" @click="showTemplates = true">▦ Templates</button>
             <button class="rounded-md px-3 py-1.5 text-sm font-medium hover:bg-white/10 disabled:opacity-30" :disabled="!hasSel" @click="removeSel">🗑 Delete</button>
             <input ref="fileInput" type="file" accept="image/*" class="hidden" @change="onFile" />
 
@@ -231,17 +224,14 @@ function addToCart() {
             <span v-else class="px-2 text-sm text-paper/45">Select an element to edit its text style</span>
         </div>
 
-        <!-- Stage -->
         <div class="relative flex flex-1 flex-col items-center justify-center gap-6 overflow-auto p-8">
             <p class="text-sm font-medium text-ink/50">
                 {{ side === 'front' ? 'Front' : 'Back' }} design · <span class="text-ink/40">all of your cards will look like this</span>
             </p>
-
             <div class="relative">
                 <div class="overflow-hidden rounded-2xl bg-white shadow-[0_30px_60px_-25px_rgba(12,31,23,0.5)] ring-1 ring-paper-300">
                     <canvas ref="canvasEl"></canvas>
                 </div>
-
                 <div v-if="mode === 'upload' && !uploaded" class="absolute inset-0 flex flex-col items-center justify-center gap-3 rounded-2xl bg-white/85 text-center backdrop-blur-sm">
                     <svg class="h-10 w-10 text-brand-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 16V4m0 0L8 8m4-4 4 4M5 20h14" stroke-linecap="round" stroke-linejoin="round" /></svg>
                     <p class="font-display text-lg font-semibold text-ink">Upload your artwork</p>
@@ -249,18 +239,34 @@ function addToCart() {
                     <button class="mt-1 rounded-full bg-brand-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-brand-700" @click="fileInput.click()">Choose file</button>
                 </div>
             </div>
-
             <div class="flex overflow-hidden rounded-full border border-paper-300 bg-paper text-sm font-medium">
                 <button class="px-5 py-2" :class="side === 'front' ? 'bg-brand-600 text-white' : 'text-ink/70'" @click="flip('front')">Front</button>
                 <button class="px-5 py-2" :class="side === 'back' ? 'bg-brand-600 text-white' : 'text-ink/70'" @click="flip('back')">Back</button>
             </div>
         </div>
 
-        <!-- Bottom bar -->
         <div class="flex items-center justify-center gap-3 border-t border-paper-300 bg-paper px-5 py-3">
             <span class="text-sm font-medium text-ink/60">Background</span>
             <div class="flex gap-1.5">
                 <button v-for="c in bgPalette" :key="c" class="h-7 w-7 rounded-full border border-paper-300 shadow-sm transition hover:scale-110" :style="{ backgroundColor: c }" @click="setBg(c)"></button>
+            </div>
+        </div>
+
+        <!-- Templates drawer -->
+        <div v-if="showTemplates" class="fixed inset-0 z-50 bg-ink/40" @click.self="showTemplates = false">
+            <div class="absolute right-0 top-0 flex h-full w-full max-w-md flex-col bg-paper shadow-2xl">
+                <div class="flex items-center justify-between border-b border-paper-300 px-5 py-4">
+                    <h3 class="font-display text-lg font-semibold text-ink">Choose a template</h3>
+                    <button class="text-xl text-ink/50 hover:text-ink" @click="showTemplates = false">✕</button>
+                </div>
+                <div class="grid flex-1 grid-cols-2 gap-3 overflow-auto p-4">
+                    <button v-for="t in templates" :key="t.ref" class="group overflow-hidden rounded-lg border border-paper-300 bg-white transition hover:ring-2 hover:ring-brand-600" @click="applyTemplate(t.ref)">
+                        <img v-if="t.preview" :src="t.preview" :alt="t.name" loading="lazy" class="aspect-[760/434] w-full object-cover" />
+                        <div v-else class="aspect-[760/434] w-full bg-paper-200"></div>
+                        <p class="truncate px-2 py-1.5 text-left text-xs text-ink/70">{{ t.name }}</p>
+                    </button>
+                </div>
+                <div v-if="applyingTpl" class="border-t border-paper-300 p-3 text-center text-sm text-ink/60">Loading template…</div>
             </div>
         </div>
     </div>

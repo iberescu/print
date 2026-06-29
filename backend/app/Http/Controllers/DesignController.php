@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
+use App\Models\Template;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -16,10 +18,16 @@ class DesignController extends Controller
         $product->load('category');
 
         return Inertia::render('Editor', [
-            'product'  => $product->only('id', 'name', 'slug'),
-            'category' => ['name' => $product->category->name, 'slug' => $product->category->slug],
-            'mode'     => $request->query('mode') === 'upload' ? 'upload' : 'design',
+            'product'   => $product->only('id', 'name', 'slug'),
+            'category'  => ['name' => $product->category->name, 'slug' => $product->category->slug],
+            'mode'      => $request->query('mode') === 'upload' ? 'upload' : 'design',
+            'templates' => $this->templatesFor($product),
         ]);
+    }
+
+    public function templateData(Template $template): JsonResponse
+    {
+        return response()->json(['data' => $template->data]);
     }
 
     public function store(Product $product, Request $request): RedirectResponse
@@ -36,5 +44,19 @@ class DesignController extends Controller
         ]);
 
         return redirect()->route('cart')->with('success', "“{$product->name}” design saved to your cart.");
+    }
+
+    /** Templates are business-card designs for now. */
+    private function templatesFor(Product $product): array
+    {
+        if ($product->category->slug !== 'business-cards') {
+            return [];
+        }
+
+        return Template::where('is_active', true)
+            ->orderByDesc('score')->orderBy('sort_order')
+            ->take(60)->get()
+            ->map(fn (Template $t) => ['ref' => $t->ref, 'name' => $t->name, 'preview' => $t->previewUrl()])
+            ->all();
     }
 }

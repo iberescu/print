@@ -1,106 +1,252 @@
 [
   {
     "url": "https://www.vistaprint.com/business-cards/matte",
-    "title": "Custom Matte Finish Business Cards | VistaPrint",
+    "title": "Matte Business Cards",
+    "isProduct": true,
+    "category": "Business Cards",
+    "price": 14.99,
     "options": [
       {
-        "name": "Filter by rating",
-        "values": [
-          {
-            "label": "All ratings",
-            "quantities": []
-          },
-          {
-            "label": "5 Stars",
-            "quantities": []
-          },
-          {
-            "label": "4 Stars",
-            "quantities": []
-          },
-          {
-            "label": "3 Stars",
-            "quantities": []
-          },
-          {
-            "label": "2 Stars",
-            "quantities": []
-          },
-          {
-            "label": "1 Star",
-            "quantities": []
-          }
-        ]
+        "name": "Shape",
+        "values": []
       },
       {
-        "name": "Most Recent",
-        "values": [
-          {
-            "label": "Highest Rated",
-            "quantities": []
-          },
-          {
-            "label": "Lowest Rated",
-            "quantities": []
-          },
-          {
-            "label": "Most Recent",
-            "quantities": []
-          }
-        ]
+        "name": "Corners",
+        "values": []
       }
-    ]
+    ],
+    "quantities": [
+      {
+        "quantity": 50,
+        "totalPrice": 10,
+        "perUnit": 0.2
+      },
+      {
+        "quantity": 100,
+        "totalPrice": 14.99,
+        "perUnit": 0.15
+      },
+      {
+        "quantity": 250,
+        "totalPrice": 19.99,
+        "perUnit": 0.08
+      },
+      {
+        "quantity": 500,
+        "totalPrice": 24.99,
+        "perUnit": 0.05
+      },
+      {
+        "quantity": 1000,
+        "totalPrice": 39.99,
+        "perUnit": 0.04
+      }
+    ],
+    "screenshot": "research\\data\\shots-deep\\01-matte.png"
   },
   {
     "url": "https://www.vistaprint.com/business-cards/glossy",
-    "title": "Custom Glossy Business Cards | VistaPrint",
+    "title": "Glossy Business Cards",
+    "isProduct": true,
+    "category": "Business Cards",
+    "price": 10,
     "options": [
       {
-        "name": "Filter by rating",
+        "name": "Shape",
         "values": [
           {
-            "label": "All ratings",
-            "quantities": []
-          },
-          {
-            "label": "5 Stars",
-            "quantities": []
-          },
-          {
-            "label": "4 Stars",
-            "quantities": []
-          },
-          {
-            "label": "3 Stars",
-            "quantities": []
-          },
-          {
-            "label": "2 Stars",
-            "quantities": []
-          },
-          {
-            "label": "1 Star",
-            "quantities": []
+            "label": "Select...",
+            "priceDelta": 0
           }
         ]
       },
       {
-        "name": "Most Recent",
+        "name": "Corners",
         "values": [
           {
-            "label": "Highest Rated",
-            "quantities": []
-          },
-          {
-            "label": "Lowest Rated",
-            "quantities": []
-          },
-          {
-            "label": "Most Recent",
-            "quantities": []
+            "label": "Select...",
+            "priceDelta": 0
           }
         ]
       }
-    ]
+    ],
+    "quantities": [
+      {
+        "quantity": 50,
+        "totalPrice": 10,
+        "perUnit": 0.2
+      },
+      {
+        "quantity": 100,
+        "totalPrice": 15.99,
+        "perUnit": 0.16
+      },
+      {
+        "quantity": 250,
+        "totalPrice": 21.99,
+        "perUnit": 0.09
+      },
+      {
+        "quantity": 500,
+        "totalPrice": 27.99,
+        "perUnit": 0.06
+      },
+      {
+        "quantity": 1000,
+        "totalPrice": 45.99,
+        "perUnit": 0.05
+      }
+    ],
+    "screenshot": "research\\data\\shots-deep\\02-glossy.png"
+  },
+  {
+    "url": "https://www.vistaprint.com/business-cards/uncoated",
+    "title": "Uncoated Business Cards",
+    "isProduct": true,
+    "category": "Business Cards",
+    "price": 15.99,
+    "options": [
+      {
+        "name": "Shape",
+        "values": [
+          {
+            "label": "Standard",
+            "priceDelta": 0
+          },
+          {
+            "label": "Square",
+            "priceDelta": 11
+          }
+        ]
+      },
+      {
+        "name": "Corners",
+        "values": [
+          {
+            "label": "Standard",
+            "priceDelta": 0
+          },
+          {
+            "label": "Rounded",
+            "priceDelta": 7
+          }
+        ]
+      }
+    ],
+    "quantities": [
+      {
+        "quantity": 100,
+        "totalPrice": 15.99,
+        "perUnit": 0.16
+      }
+    ],
+    "screenshot": "research\\data\\shots-deep\\03-uncoated.png"
+  },
+  {
+    "url": "https://www.vistaprint.com/business-cards/rounded-corner",
+    "title": "Rounded Corner Business Cards",
+    "isProduct": true,
+    "category": "Business Cards",
+    "price": 22.99,
+    "options": [
+      {
+        "name": "Shape",
+        "values": []
+      }
+    ],
+    "quantities": [
+      {
+        "quantity": 50,
+        "totalPrice": 16,
+        "perUnit": 0.32
+      },
+      {
+        "quantity": 100,
+        "totalPrice": 22.99,
+        "perUnit": 0.23
+      },
+      {
+        "quantity": 250,
+        "totalPrice": 31.99,
+        "perUnit": 0.13
+      },
+      {
+        "quantity": 500,
+        "totalPrice": 39.99,
+        "perUnit": 0.08
+      },
+      {
+        "quantity": 1000,
+        "totalPrice": 65.99,
+        "perUnit": 0.07
+      }
+    ],
+    "screenshot": "research\\data\\shots-deep\\04-rounded-corner.png"
+  },
+  {
+    "url": "https://www.vistaprint.com/business-cards/square",
+    "title": "Square Business Cards",
+    "isProduct": true,
+    "category": "Business Cards",
+    "price": 26.99,
+    "options": [],
+    "quantities": [
+      {
+        "quantity": 50,
+        "totalPrice": 18,
+        "perUnit": 0.36
+      },
+      {
+        "quantity": 100,
+        "totalPrice": 26.99,
+        "perUnit": 0.27
+      },
+      {
+        "quantity": 250,
+        "totalPrice": 35.99,
+        "perUnit": 0.15
+      },
+      {
+        "quantity": 500,
+        "totalPrice": 45.99,
+        "perUnit": 0.1
+      },
+      {
+        "quantity": 1000,
+        "totalPrice": 70.99,
+        "perUnit": 0.08
+      }
+    ],
+    "screenshot": "research\\data\\shots-deep\\05-square.png"
+  },
+  {
+    "url": "https://www.vistaprint.com/business-cards/circle",
+    "title": "Circle Business Cards",
+    "isProduct": true,
+    "category": "Business Cards",
+    "price": 39.99,
+    "options": [
+      {
+        "name": "Paper Stock",
+        "values": [
+          {
+            "label": "Glossy",
+            "priceDelta": 0
+          },
+          {
+            "label": "Uncoated",
+            "priceDelta": 0
+          }
+        ]
+      }
+    ],
+    "quantities": [
+      {
+        "quantity": 50,
+        "totalPrice": 39.99,
+        "perUnit": 0.8
+      }
+    ],
+    "screenshot": "research\\data\\shots-deep\\06-circle.png"
   }
 ]

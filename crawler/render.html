@@ -1,0 +1,70 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Inter:wght@400;600;700&family=Bebas+Neue&family=Oswald:wght@400;600;700&family=Poppins:wght@400;600;700&family=Playfair+Display:wght@400;700;900&family=Cormorant+Garamond:wght@400;600;700&family=DM+Serif+Display&family=Anton&family=Archivo+Black&family=Raleway:wght@400;600;700&family=Rubik:wght@400;600;700&family=Nunito:wght@400;600;700&family=Lora:wght@400;600;700&family=Abril+Fatface&family=Barlow+Condensed:wght@400;600;700&family=League+Spartan:wght@400;700&family=Space+Grotesk:wght@400;600;700&family=Urbanist:wght@400;600;700&family=Libre+Baskerville:wght@400;700&family=Merriweather:wght@400;700&family=Figtree:wght@400;600;700&family=Manrope:wght@400;600;700&family=Sora:wght@400;600;700&family=Outfit:wght@400;600;700&family=Rajdhani:wght@400;600;700&family=Work+Sans:wght@400;600;700&family=Plus+Jakarta+Sans:wght@400;600;700&family=Great+Vibes&family=Pinyon+Script&family=Pacifico&family=Caveat:wght@400;700&family=Fredericka+the+Great&display=swap" />
+    <style>html, body { margin: 0; background: #fff; }</style>
+</head>
+<body>
+    <canvas id="c" width="760" height="434"></canvas>
+    <script type="module">
+        import * as fabric from 'https://cdn.jsdelivr.net/npm/fabric@6/+esm';
+        window.fabric = fabric;
+
+        const ALLOWED = ['Montserrat', 'Inter', 'Bebas Neue', 'Oswald', 'Poppins', 'Playfair Display', 'Cormorant Garamond', 'DM Serif Display', 'Anton', 'Archivo Black', 'Raleway', 'Rubik', 'Nunito', 'Lora', 'Abril Fatface', 'Barlow Condensed', 'League Spartan', 'Space Grotesk', 'Urbanist', 'Libre Baskerville', 'Merriweather', 'Figtree', 'Manrope', 'Sora', 'Outfit', 'Rajdhani', 'Work Sans', 'Plus Jakarta Sans', 'Great Vibes', 'Pinyon Script', 'Pacifico', 'Caveat', 'Fredericka the Great'];
+        const font = (f) => (ALLOWED.includes(f) ? f : 'Poppins');
+        const contrast = (hex) => {
+            try {
+                const c = String(hex).replace('#', '');
+                const r = parseInt(c.slice(0, 2), 16), g = parseInt(c.slice(2, 4), 16), b = parseInt(c.slice(4, 6), 16);
+                return 0.299 * r + 0.587 * g + 0.114 * b > 140 ? '#111111' : '#ffffff';
+            } catch { return '#ffffff'; }
+        };
+
+        let canvas;
+        window.buildAndRender = async (spec) => {
+            if (!canvas) canvas = new fabric.StaticCanvas(document.getElementById('c'), { width: 760, height: 434 });
+            canvas.clear();
+            canvas.backgroundColor = spec.background || '#ffffff';
+
+            (spec.shapes || []).forEach((s) => {
+                if (s.type === 'line') {
+                    canvas.add(new fabric.Line([s.x1 || 0, s.y1 || 0, s.x2 || 0, s.y2 || 0], { stroke: s.fill || s.stroke || spec.accent || '#0e9355', strokeWidth: s.strokeWidth || 2 }));
+                } else {
+                    canvas.add(new fabric.Rect({ left: s.left || 0, top: s.top || 0, width: s.width || 10, height: s.height || 10, fill: s.fill || spec.accent || '#0e9355', rx: s.rx || 0, ry: s.rx || 0, opacity: s.opacity ?? 1 }));
+                }
+            });
+
+            const mk = (e, fb) => new fabric.IText(String(e.text ?? fb), {
+                left: e.left ?? 56, top: e.top ?? 60, originX: 'left', originY: 'top',
+                fontSize: e.fontSize ?? 20, fill: e.fill ?? '#111111',
+                fontFamily: font(e.fontFamily || spec.fontBody), fontWeight: e.weight || 'normal', textAlign: e.align || 'left',
+            });
+            const el = spec.elements || {};
+            if (el.companyName) canvas.add(mk(el.companyName, 'Company Name'));
+            if (el.personName) canvas.add(mk(el.personName, 'Your Name'));
+            if (el.title) canvas.add(mk(el.title, 'Title / Role'));
+            if (el.email) canvas.add(mk(el.email, 'hello@company.com'));
+            if (el.phone) canvas.add(mk(el.phone, '+1 (555) 123-4567'));
+
+            if (spec.logo) {
+                const L = spec.logo, w = L.width || 92, h = L.height || 92, acc = spec.accent || '#0e9355';
+                const ini = (el.companyName?.text || 'Logo').replace(/[^A-Za-z ]/g, '').split(/\s+/).filter(Boolean).map((s) => s[0]).join('').slice(0, 2).toUpperCase() || 'L';
+                canvas.add(L.shape === 'circle'
+                    ? new fabric.Circle({ left: L.left ?? 600, top: L.top ?? 56, radius: Math.min(w, h) / 2, fill: acc })
+                    : new fabric.Rect({ left: L.left ?? 600, top: L.top ?? 56, width: w, height: h, rx: 14, ry: 14, fill: acc }));
+                canvas.add(new fabric.IText(ini, {
+                    left: (L.left ?? 600) + w / 2, top: (L.top ?? 56) + h / 2, originX: 'center', originY: 'center',
+                    fontSize: Math.round(Math.min(w, h) * 0.42), fontFamily: font(spec.fontHeading), fontWeight: 'bold', fill: contrast(acc),
+                }));
+            }
+
+            if (document.fonts && document.fonts.ready) await document.fonts.ready;
+            canvas.renderAll();
+            return { png: canvas.toDataURL({ format: 'png', multiplier: 1 }), json: canvas.toJSON() };
+        };
+
+        window.__ready = true;
+    </script>
+</body>
+</html>

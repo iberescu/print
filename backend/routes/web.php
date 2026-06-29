@@ -13,6 +13,7 @@ Route::get('/product/{product}', [StorefrontController::class, 'product'])->name
 // Online designer (req 8/9/18)
 Route::get('/design/{product}', [DesignController::class, 'show'])->name('design.start');
 Route::post('/design/{product}', [DesignController::class, 'store'])->name('design.store');
+Route::get('/design/template/{template}/data', [DesignController::class, 'templateData'])->name('template.data');
 
 // Cart stub (Phase 5) — shows the saved design for now
 Route::get('/cart', function (Request $request) {

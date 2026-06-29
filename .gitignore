@@ -24,6 +24,9 @@ crawler/.userdata/
 crawler/data/raw/
 
 # === Generated / large ===
+templates/json/
+templates/previews/
+templates/index.json
 *.log
 .phpunit.result.cache
 
