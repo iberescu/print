@@ -47,6 +47,6 @@ const nameFont = computed(() => {
         <!-- contact block -->
         <text :x="c.w * 0.08" :y="c.h * 0.88" :font-size="c.w * 0.045" fill="#0c1f17">{{ brand.email || 'hello@company.com' }}</text>
         <text :x="c.w * 0.08" :y="c.h * 0.93" :font-size="c.w * 0.045" fill="#0c1f17">{{ brand.phone || '+1 (555) 123-4567' }}</text>
-        <rect :x="c.w * 0.08" :y="c.h * 0.955" :width="c.w * 0.84" height="5" rx="2.5" fill="#0e9355" />
+        <rect :x="c.w * 0.08" :y="c.h * 0.955" :width="c.w * 0.84" height="5" fill="#0e9355" />
     </svg>
 </template>

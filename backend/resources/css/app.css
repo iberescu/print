@@ -36,6 +36,11 @@
         scroll-behavior: smooth;
     }
 
+    /* No rounded corners anywhere (design spec) */
+    *, *::before, *::after {
+        border-radius: 0 !important;
+    }
+
     body {
         background-color: var(--color-paper);
         color: var(--color-ink);

@@ -64,7 +64,7 @@ function seedTemplate() {
     addText('hello@company.com', { left: 56, top: 282, fontSize: 17, fontFamily: 'Work Sans', rmpRole: 'email' });
     addText('+1 (555) 123-4567', { left: 56, top: 314, fontSize: 17, fontFamily: 'Work Sans', rmpRole: 'phone' });
     const logo = new fabric.Rect({
-        left: 560, top: 60, width: 150, height: 150, rx: 14, ry: 14,
+        left: 560, top: 60, width: 150, height: 150,
         fill: '#e3ddcc', stroke: '#0e9355', strokeDashArray: [6, 6], strokeWidth: 2,
     });
     canvas.add(logo);

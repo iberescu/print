@@ -3,6 +3,7 @@ import { Head, Link } from '@inertiajs/vue3';
 import StoreLayout from '../Layouts/StoreLayout.vue';
 import ProductCard from '../Components/ProductCard.vue';
 import SmartImage from '../Components/SmartImage.vue';
+import HeroSlider from '../Components/HeroSlider.vue';
 
 const props = defineProps({
     categories: { type: Array, default: () => [] },
@@ -10,106 +11,95 @@ const props = defineProps({
     freeShippingThreshold: { type: Number, default: 50 },
 });
 
-const steps = [
-    { n: '01', t: 'Pick a product', d: 'Business cards, flyers, banners, stickers and more — all customisable.' },
-    { n: '02', t: 'Design or upload', d: 'Use our online designer with ready-made templates, or upload your own artwork.' },
-    { n: '03', t: 'We print & ship', d: `Premium printing, delivered fast. Free shipping over $${props.freeShippingThreshold}.` },
+const slides = [
+    { eyebrow: 'New customer offer', title: 'Business cards from $10', text: '500 premium cards — design online or upload your own artwork.', cta: 'Shop business cards', href: '/category/business-cards', image: '/storage/products/standard-business-cards.jpg' },
+    { eyebrow: `Free shipping over $${props.freeShippingThreshold}`, title: 'Everything to launch your brand', text: 'Flyers, banners, stickers, signage and more — printed beautifully, delivered fast.', cta: 'Browse products', href: '#categories', image: '/storage/heroes/home.jpg' },
+    { eyebrow: 'Design online, free', title: 'Your logo on everything', text: 'Use our online designer and 200+ ready-made templates.', cta: 'Start designing', href: '/product/standard-business-cards', image: '/storage/products/flyers.jpg' },
+];
+
+const tools = [
+    { t: 'Design services', d: 'Let our experts design it for you.', i: 'm12 19 7-7-4-4-7 7-1 5zM15 5l4 4' },
+    { t: 'Logo maker', d: 'Create a logo in minutes.', i: 'M4 4h16v16H4zM4 9h16' },
+    { t: 'Free templates', d: '200+ professional designs.', i: 'M4 5h16M4 12h16M4 19h10' },
+    { t: 'Order samples', d: 'Feel the quality before you buy.', i: 'M5 7h14v12H5zM5 7l7 5 7-5' },
 ];
 </script>
 
 <template>
     <Head title="Custom Printing for Business" />
     <StoreLayout>
-        <!-- HERO -->
-        <section class="relative overflow-hidden">
-            <div class="mx-auto grid max-w-7xl items-center gap-10 px-6 py-16 lg:grid-cols-2 lg:py-24">
-                <div class="relative z-10">
-                    <p class="inline-flex items-center gap-2 rounded-full border border-brand-200 bg-brand-50 px-3 py-1 text-xs font-semibold uppercase tracking-widest text-brand-700">
-                        <span class="h-1.5 w-1.5 rounded-full bg-lime-accent"></span> Web-to-print, beautifully done
-                    </p>
-                    <h1 class="mt-5 font-display text-5xl font-semibold leading-[1.04] tracking-tight text-balance sm:text-6xl">
-                        Printing that makes your business look its best.
-                    </h1>
-                    <p class="mt-5 max-w-md text-lg leading-relaxed text-ink/60">
-                        From business cards to banners — design online with hundreds of templates, or upload your own. Premium stock, fast turnaround.
-                    </p>
-                    <div class="mt-8 flex flex-wrap items-center gap-3">
-                        <a href="#catalog" class="rounded-full bg-brand-600 px-7 py-3.5 font-semibold text-white shadow-lg shadow-brand-600/20 transition hover:bg-brand-700">Browse products</a>
-                        <a href="#how" class="rounded-full border border-ink/15 px-7 py-3.5 font-semibold text-ink transition hover:border-ink/30">How it works</a>
-                    </div>
-                    <div class="mt-8 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-ink/55">
-                        <span class="flex items-center gap-1.5"><span class="tracking-tight text-lime-accent">★★★★★</span> 4.8 / 5</span>
-                        <span class="hidden sm:inline">·</span>
-                        <span>Free shipping over ${{ freeShippingThreshold }}</span>
-                        <span class="hidden sm:inline">·</span>
-                        <span>2-day delivery options</span>
-                    </div>
-                </div>
+        <HeroSlider :slides="slides" />
 
-                <div class="relative">
-                    <div class="crop-corners aspect-[4/3] overflow-hidden rounded-3xl border border-paper-300 bg-paper-200 text-ink shadow-2xl shadow-ink/10">
-                        <SmartImage src="/storage/heroes/home.jpg" alt="RunMyPrint custom printing" />
-                    </div>
-                    <div class="absolute -bottom-5 -left-5 hidden rounded-2xl border border-paper-300 bg-white p-4 shadow-xl sm:block">
-                        <p class="text-xs font-medium uppercase tracking-wide text-ink/50">Business cards from</p>
-                        <p class="font-display text-2xl font-semibold text-brand-700">$10.00</p>
-                    </div>
-                </div>
+        <!-- trust strip -->
+        <section class="border-y border-paper-300">
+            <div class="mx-auto grid max-w-7xl grid-cols-2 gap-4 px-6 py-5 text-center text-sm md:grid-cols-4">
+                <div><p class="font-semibold text-ink">★ 4.8 / 5</p><p class="text-ink/55">12,000+ reviews</p></div>
+                <div><p class="font-semibold text-ink">🚚 Free shipping</p><p class="text-ink/55">on orders over ${{ freeShippingThreshold }}</p></div>
+                <div><p class="font-semibold text-ink">⚡ Fast turnaround</p><p class="text-ink/55">2-day options</p></div>
+                <div><p class="font-semibold text-ink">✅ 100% guarantee</p><p class="text-ink/55">love it or reprint</p></div>
             </div>
         </section>
 
-        <!-- CATEGORIES -->
-        <section id="catalog" class="mx-auto max-w-7xl px-6 py-12">
-            <div class="flex items-end justify-between">
-                <h2 class="font-display text-3xl font-semibold tracking-tight">Shop by category</h2>
-                <span class="text-sm text-ink/50">{{ categories.length }} categories</span>
-            </div>
-            <div class="mt-8 grid grid-cols-2 gap-5 md:grid-cols-3 lg:grid-cols-6">
-                <Link
-                    v-for="c in categories" :key="c.slug" :href="`/category/${c.slug}`"
-                    class="group flex flex-col overflow-hidden rounded-2xl border border-paper-300 bg-white transition hover:-translate-y-1 hover:shadow-lg"
-                >
-                    <div class="aspect-square overflow-hidden bg-paper-200">
+        <!-- explore all categories -->
+        <section id="categories" class="mx-auto max-w-7xl px-6 py-12">
+            <h2 class="mb-6 font-display text-2xl font-bold tracking-tight">Explore all categories</h2>
+            <div class="grid grid-cols-3 gap-4 sm:grid-cols-6">
+                <Link v-for="c in categories" :key="c.slug" :href="`/category/${c.slug}`" class="group text-center">
+                    <div class="aspect-square overflow-hidden border border-paper-300 bg-white">
                         <SmartImage :src="c.image" :alt="c.name" class="transition duration-500 group-hover:scale-105" />
                     </div>
-                    <div class="p-3 text-center">
-                        <p class="font-display text-sm font-semibold leading-tight text-ink">{{ c.name }}</p>
-                    </div>
+                    <p class="mt-2 text-sm font-medium text-ink transition group-hover:text-brand-700">{{ c.name }}</p>
                 </Link>
             </div>
         </section>
 
-        <!-- FEATURED -->
+        <!-- bestselling products -->
         <section class="mx-auto max-w-7xl px-6 py-12">
-            <div>
-                <p class="text-xs font-semibold uppercase tracking-widest text-brand-700/70">Popular right now</p>
-                <h2 class="mt-1 font-display text-3xl font-semibold tracking-tight">Bestselling products</h2>
+            <div class="mb-6 flex items-end justify-between">
+                <h2 class="font-display text-2xl font-bold tracking-tight">Bestselling products</h2>
+                <Link href="/category/business-cards" class="text-sm font-semibold text-brand-700 hover:underline">See all →</Link>
             </div>
-            <div class="mt-8 grid grid-cols-2 gap-5 md:grid-cols-3 lg:grid-cols-4">
+            <div class="grid grid-cols-2 gap-5 md:grid-cols-4">
                 <ProductCard v-for="p in featured" :key="p.slug" :product="p" />
             </div>
         </section>
 
-        <!-- HOW IT WORKS -->
-        <section id="how" class="border-y border-paper-300 bg-white/60">
-            <div class="mx-auto max-w-7xl px-6 py-16">
-                <h2 class="font-display text-3xl font-semibold tracking-tight">How it works</h2>
-                <div class="mt-10 grid gap-8 md:grid-cols-3">
-                    <div v-for="s in steps" :key="s.n">
-                        <span class="font-display text-5xl font-semibold text-brand-600/15">{{ s.n }}</span>
-                        <h3 class="mt-2 font-display text-xl font-semibold text-ink">{{ s.t }}</h3>
-                        <p class="mt-2 text-ink/60">{{ s.d }}</p>
-                    </div>
+        <!-- samples / promo banner -->
+        <section class="mx-auto max-w-7xl px-6 py-6">
+            <div class="grid items-stretch overflow-hidden bg-brand-950 text-paper md:grid-cols-2">
+                <div class="p-10 sm:p-14">
+                    <p class="text-sm font-semibold uppercase tracking-widest text-lime-accent">Not sure yet?</p>
+                    <h2 class="mt-3 font-display text-3xl font-semibold sm:text-4xl">Order a free sample pack</h2>
+                    <p class="mt-3 max-w-md text-paper/70">Feel our paper stocks and finishes before you buy — quality you can hold.</p>
+                    <a href="#categories" class="mt-6 inline-block bg-lime-accent px-7 py-3.5 font-semibold text-ink transition hover:brightness-95">Get free samples</a>
+                </div>
+                <div class="h-56 md:h-auto"><SmartImage src="/storage/products/premium-business-cards.jpg" alt="Sample pack" /></div>
+            </div>
+        </section>
+
+        <!-- tools to help build your business -->
+        <section class="mx-auto max-w-7xl px-6 py-12">
+            <h2 class="mb-6 font-display text-2xl font-bold tracking-tight">Tools to help build your business</h2>
+            <div class="grid grid-cols-2 gap-4 md:grid-cols-4">
+                <div v-for="t in tools" :key="t.t" class="border border-paper-300 bg-white p-6">
+                    <span class="grid h-11 w-11 place-items-center bg-brand-50 text-brand-700">
+                        <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path :d="t.i" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                    </span>
+                    <h3 class="mt-4 font-semibold text-ink">{{ t.t }}</h3>
+                    <p class="mt-1 text-sm text-ink/55">{{ t.d }}</p>
                 </div>
             </div>
         </section>
 
-        <!-- CTA -->
-        <section class="mx-auto max-w-7xl px-6 py-16">
-            <div class="crop-corners relative overflow-hidden rounded-3xl bg-brand-950 px-8 py-14 text-center text-paper">
-                <h2 class="font-display text-3xl font-semibold sm:text-4xl">Ready to make something great?</h2>
-                <p class="mx-auto mt-3 max-w-lg text-paper/60">Start your design in minutes. Free shipping on every order over ${{ freeShippingThreshold }}.</p>
-                <a href="#catalog" class="mt-7 inline-block rounded-full bg-lime-accent px-8 py-3.5 font-semibold text-ink transition hover:brightness-95">Start designing</a>
+        <!-- social proof -->
+        <section class="border-t border-paper-300 bg-paper-200">
+            <div class="mx-auto max-w-7xl px-6 py-12">
+                <h2 class="mb-6 text-center font-display text-2xl font-bold tracking-tight">Made by you <span class="text-brand-700">#MadeWithRunMyPrint</span></h2>
+                <div class="grid grid-cols-3 gap-3 sm:grid-cols-6">
+                    <div v-for="p in featured.slice(0, 6)" :key="p.slug" class="aspect-square overflow-hidden border border-paper-300 bg-white">
+                        <SmartImage :src="p.image" :alt="p.name" />
+                    </div>
+                </div>
             </div>
         </section>
     </StoreLayout>
