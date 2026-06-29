@@ -58,8 +58,10 @@ Legend: ✅ done · 🟡 in progress · ⬜ pending
 - ✅ Demo-mode fallback when no Stripe keys → order completes + success page
 - ⬜ Add Stripe TEST keys to `backend/.env` to enable live card payment
 
-## Phase 7 — Marketing feeds  ⬜  *(req 20)*
-- ⬜ Product feed: Google Shopping (XML) + RTB House
+## Phase 7 — Marketing feeds  ✅  *(req 20)*
+- ✅ Google Shopping feed: `/feed/google.xml` (RSS 2.0 + g: namespace, 20 products)
+- ✅ RTB House feed: `/feed/rtbhouse.xml` (generic product XML)
+- ✅ Absolute URLs + images; well-formed XML verified
 
 ## Phase 8 — Testing & parity  ⬜  *(req 13, 19)*
 - ⬜ Playwright e2e for the full purchase workflow
