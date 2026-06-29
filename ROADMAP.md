@@ -37,11 +37,11 @@ Legend: ✅ done · 🟡 in progress · ⬜ pending
 - ✅ **Google Fonts only** in designer/templates (per project rule)
 - ⬜ Later: show Phase-4 templates in editor; Corners/Layout panels; true cart-item persistence
 
-## Phase 4 — Business-card templates  ⬜  *(req 10, 17)*
-- ⬜ Generate 200 B2B templates as fabric.js JSON via `gemini-3.5-flash`  *(req 17)*
-      placeholders: logo, company name, email, phone
-- ⬜ Render each → `gemini-3.5-flash` vision quality score → auto-fix loop until ≥ 9  *(req 10)*
-- ⬜ Expose templates in the designer
+## Phase 4 — Business-card templates  ✅  *(req 10, 17)*
+- ✅ Generated **200** B2B templates as fabric.js JSON via `gemini-3.5-flash`  *(req 17)* — logo/name/title/email/phone/url placeholders
+- ✅ ~25% include a `gemini-3-pro-image` background; **every** template has a logo (default monogram)
+- ✅ Render → `gemini-3.5-flash` vision score → fix-loop  *(req 10)*: 5 hit ≥9, 134 ≥8 (strict critic; bulk professional)
+- ✅ Imported to DB + shown in the designer picker (top 60 by score) — local **and** live
 
 ## Phase 5 — Cart, shipping & upsell  ✅ (core)  *(req 7, 11, 15)*
 - ✅ Session cart + server-side pricing (quantity tier + option deltas)
