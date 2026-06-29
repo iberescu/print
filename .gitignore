@@ -1,0 +1,33 @@
+# === Secrets (NEVER commit) ===
+.env
+.env.*
+!.env.example
+backend/.env
+backend/.env.backup
+secrets/
+*.pem
+*.key
+
+# === Dependencies / build artifacts ===
+node_modules/
+vendor/
+backend/vendor/
+backend/node_modules/
+backend/public/build/
+backend/public/hot
+backend/storage/framework/cache/*
+backend/storage/framework/sessions/*
+backend/storage/framework/views/*
+backend/storage/logs/*
+crawler/node_modules/
+crawler/data/raw/
+
+# === Generated / large ===
+*.log
+.phpunit.result.cache
+
+# === OS / editor ===
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/

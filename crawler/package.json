@@ -1,0 +1,14 @@
+{
+  "name": "runmyprint-crawler",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Competitive research crawler: screenshot tour + product/price extraction (Vistaprint)",
+  "scripts": {
+    "screenshots": "node src/screenshots.mjs",
+    "crawl": "node src/crawl.mjs"
+  },
+  "dependencies": {
+    "playwright": "^1.49.1"
+  }
+}
