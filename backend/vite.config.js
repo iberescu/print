@@ -10,17 +10,13 @@ export default defineConfig({
             input: ['resources/css/app.css', 'resources/js/app.js'],
             refresh: true,
             fonts: [
-                bunny('Instrument Sans', {
-                    weights: [400, 500, 600],
-                }),
+                bunny('Fraunces', { weights: [400, 500, 600, 700, 900] }),
+                bunny('Instrument Sans', { weights: [400, 500, 600, 700] }),
             ],
         }),
         vue({
             template: {
-                transformAssetUrls: {
-                    base: null,
-                    includeAbsolute: false,
-                },
+                transformAssetUrls: { base: null, includeAbsolute: false },
             },
         }),
         tailwindcss(),
@@ -29,10 +25,8 @@ export default defineConfig({
         host: '0.0.0.0',
         port: 5173,
         strictPort: true,
-        // HMR served back to the browser on the host
         hmr: { host: 'localhost' },
         watch: {
-            // Windows bind mounts don't propagate inotify events -> poll
             usePolling: true,
             ignored: ['**/storage/framework/views/**'],
         },

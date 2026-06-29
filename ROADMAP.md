@@ -20,11 +20,14 @@ Legend: ✅ done · 🟡 in progress · ⬜ pending
 - ✅ Flow analysis from user screenshots → parity baseline (`research/02-flow-analysis.md`)
 - ⬜ Crawler: top-20 products + options (format/colors/pages/sizes) + prices → JSON price lists
 
-## Phase 2 — Catalog & storefront  ⬜  *(req 4, 5, 16)*
-- ⬜ Schema: products, options/variants, pricing tiers (from flow analysis signals)
-- ⬜ Seed catalog
-- ⬜ Home with Gemini-generated hero & product imagery  *(req 6)*
-- ⬜ Category + product detail pages (Paper Stock/Corners/Quantity panel, dual CTA) — frontend-design skill
+## Phase 2 — Catalog & storefront  ✅  *(req 4, 5, 16)*
+- ✅ Schema: categories, products, options/values (price deltas + badges), quantity tiers
+- ✅ Seed catalog — 6 categories, **20 products** with options + tiered pricing
+- ✅ **27 Gemini images** (hero + categories + products) via `gemini-3-pro-image`  *(req 6)*
+- ✅ Home / Category / Product pages — "print atelier" design (Fraunces + emerald), Inertia+Vue+Tailwind  *(req 5)*
+- ✅ Product buy panel: Paper Stock/Corners/Quantity, live price, dual CTA (Design / Upload)  *(req 9 entry point)*
+- ✅ Dynamic free-shipping nudge toward the $50 threshold
+- Note: catalog is **modeled** from flow-analysis signals; live price-crawl (req 3) deferred (Cloudflare) — optional later
 
 ## Phase 3 — Online designer & upload  ⬜  *(req 8, 9, 18)*
 - ⬜ fabric.js editor: Front/Back, toolbar (font/size/color/B/I/align), Corners/Layout/Background
