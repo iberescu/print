@@ -1,0 +1,8 @@
+# Production override — serve nginx on port 80.
+# Usage:  docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d
+name: runmyprint
+
+services:
+  web:
+    ports:
+      - "80:80"
