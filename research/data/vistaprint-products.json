@@ -1,0 +1,816 @@
+[
+  {
+    "url": "https://www.vistaprint.com/business-cards/matte",
+    "title": "Matte Business Cards",
+    "isProduct": true,
+    "category": "Business Cards",
+    "price": 14.99,
+    "options": [
+      {
+        "name": "Shape",
+        "values": [
+          {
+            "label": "Select...",
+            "priceDelta": 0
+          }
+        ]
+      },
+      {
+        "name": "Corners",
+        "values": [
+          {
+            "label": "Select...",
+            "priceDelta": 0
+          }
+        ]
+      }
+    ],
+    "quantities": [
+      {
+        "quantity": 50,
+        "totalPrice": 10,
+        "perUnit": 0.2
+      },
+      {
+        "quantity": 100,
+        "totalPrice": 14.99,
+        "perUnit": 0.15
+      },
+      {
+        "quantity": 250,
+        "totalPrice": 19.99,
+        "perUnit": 0.08
+      },
+      {
+        "quantity": 500,
+        "totalPrice": 24.99,
+        "perUnit": 0.05
+      },
+      {
+        "quantity": 1000,
+        "totalPrice": 39.99,
+        "perUnit": 0.04
+      }
+    ],
+    "screenshot": "research\\data\\shots\\01-matte.png"
+  },
+  {
+    "url": "https://www.vistaprint.com/business-cards/glossy",
+    "title": "Glossy Business Cards",
+    "isProduct": true,
+    "category": "Business Cards",
+    "price": 15.99,
+    "options": [
+      {
+        "name": "Shape",
+        "values": []
+      },
+      {
+        "name": "Corners",
+        "values": []
+      }
+    ],
+    "quantities": [
+      {
+        "quantity": 50,
+        "totalPrice": 10,
+        "perUnit": 0.2
+      },
+      {
+        "quantity": 100,
+        "totalPrice": 15.99,
+        "perUnit": 0.16
+      },
+      {
+        "quantity": 250,
+        "totalPrice": 21.99,
+        "perUnit": 0.09
+      },
+      {
+        "quantity": 500,
+        "totalPrice": 27.99,
+        "perUnit": 0.06
+      },
+      {
+        "quantity": 1000,
+        "totalPrice": 45.99,
+        "perUnit": 0.05
+      }
+    ],
+    "screenshot": "research\\data\\shots\\02-glossy.png"
+  },
+  {
+    "url": "https://www.vistaprint.com/business-cards/uncoated",
+    "title": "Uncoated Business Cards",
+    "isProduct": true,
+    "category": "Business Cards",
+    "price": 15.99,
+    "options": [
+      {
+        "name": "Shape",
+        "values": [
+          {
+            "label": "Standard",
+            "priceDelta": 0
+          },
+          {
+            "label": "Square",
+            "priceDelta": 11
+          }
+        ]
+      },
+      {
+        "name": "Corners",
+        "values": [
+          {
+            "label": "Standard",
+            "priceDelta": 0
+          },
+          {
+            "label": "Rounded",
+            "priceDelta": 7
+          }
+        ]
+      }
+    ],
+    "quantities": [
+      {
+        "quantity": 100,
+        "totalPrice": 15.99,
+        "perUnit": 0.16
+      }
+    ],
+    "screenshot": "research\\data\\shots\\03-uncoated.png"
+  },
+  {
+    "url": "https://www.vistaprint.com/business-cards/rounded-corner",
+    "title": "Rounded Corner Business Cards",
+    "isProduct": true,
+    "category": "Business Cards",
+    "price": 22.99,
+    "options": [
+      {
+        "name": "Shape",
+        "values": []
+      }
+    ],
+    "quantities": [
+      {
+        "quantity": 50,
+        "totalPrice": 16,
+        "perUnit": 0.32
+      },
+      {
+        "quantity": 100,
+        "totalPrice": 22.99,
+        "perUnit": 0.23
+      },
+      {
+        "quantity": 250,
+        "totalPrice": 31.99,
+        "perUnit": 0.13
+      },
+      {
+        "quantity": 500,
+        "totalPrice": 39.99,
+        "perUnit": 0.08
+      },
+      {
+        "quantity": 1000,
+        "totalPrice": 65.99,
+        "perUnit": 0.07
+      }
+    ],
+    "screenshot": "research\\data\\shots\\04-rounded-corner.png"
+  },
+  {
+    "url": "https://www.vistaprint.com/business-cards/square",
+    "title": "Square Business Cards",
+    "isProduct": true,
+    "category": "Business Cards",
+    "price": 26.99,
+    "options": [],
+    "quantities": [
+      {
+        "quantity": 50,
+        "totalPrice": 18,
+        "perUnit": 0.36
+      },
+      {
+        "quantity": 100,
+        "totalPrice": 26.99,
+        "perUnit": 0.27
+      },
+      {
+        "quantity": 250,
+        "totalPrice": 35.99,
+        "perUnit": 0.15
+      },
+      {
+        "quantity": 500,
+        "totalPrice": 45.99,
+        "perUnit": 0.1
+      },
+      {
+        "quantity": 1000,
+        "totalPrice": 70.99,
+        "perUnit": 0.08
+      }
+    ],
+    "screenshot": "research\\data\\shots\\05-square.png"
+  },
+  {
+    "url": "https://www.vistaprint.com/business-cards/circle",
+    "title": "Circle Business Cards",
+    "isProduct": true,
+    "category": "Business Cards",
+    "price": 39.99,
+    "options": [
+      {
+        "name": "Paper Stock",
+        "values": [
+          {
+            "label": "Glossy",
+            "priceDelta": 0
+          },
+          {
+            "label": "Uncoated",
+            "priceDelta": 0
+          }
+        ]
+      }
+    ],
+    "quantities": [
+      {
+        "quantity": 50,
+        "totalPrice": 39.99,
+        "perUnit": 0.8
+      }
+    ],
+    "screenshot": "research\\data\\shots\\06-circle.png"
+  },
+  {
+    "url": "https://www.vistaprint.com/business-cards/oval",
+    "title": "Oval Business Cards",
+    "isProduct": true,
+    "category": "Business Cards",
+    "price": 39.99,
+    "options": [
+      {
+        "name": "Paper Stock",
+        "values": [
+          {
+            "label": "Glossy",
+            "priceDelta": 0
+          },
+          {
+            "label": "Uncoated",
+            "priceDelta": 0
+          }
+        ]
+      }
+    ],
+    "quantities": [
+      {
+        "quantity": 50,
+        "totalPrice": 39.99,
+        "perUnit": 0.8
+      }
+    ],
+    "screenshot": "research\\data\\shots\\07-oval.png"
+  },
+  {
+    "url": "https://www.vistaprint.com/business-cards/leaf",
+    "title": "Leaf Business Cards",
+    "isProduct": true,
+    "category": "Business Cards",
+    "price": 39.99,
+    "options": [
+      {
+        "name": "Paper Stock",
+        "values": [
+          {
+            "label": "Glossy",
+            "priceDelta": 0
+          },
+          {
+            "label": "Uncoated",
+            "priceDelta": 0
+          }
+        ]
+      }
+    ],
+    "quantities": [
+      {
+        "quantity": 50,
+        "totalPrice": 39.99,
+        "perUnit": 0.8
+      }
+    ],
+    "screenshot": "research\\data\\shots\\08-leaf.png"
+  },
+  {
+    "url": "https://www.vistaprint.com/business-cards/natural-textured",
+    "title": "Natural Textured Business Cards",
+    "isProduct": true,
+    "category": "Business Cards",
+    "price": 29.99,
+    "options": [
+      {
+        "name": "Shape",
+        "values": [
+          {
+            "label": "Standard",
+            "priceDelta": 0
+          },
+          {
+            "label": "Square",
+            "priceDelta": 11
+          }
+        ]
+      },
+      {
+        "name": "Corners",
+        "values": [
+          {
+            "label": "Standard",
+            "priceDelta": 0
+          },
+          {
+            "label": "Rounded",
+            "priceDelta": 7
+          }
+        ]
+      }
+    ],
+    "quantities": [
+      {
+        "quantity": 100,
+        "totalPrice": 29.99,
+        "perUnit": 0.3
+      }
+    ],
+    "screenshot": "research\\data\\shots\\09-natural-textured.png"
+  },
+  {
+    "url": "https://www.vistaprint.com/business-cards/soft-touch",
+    "title": "Soft Touch Business Cards",
+    "isProduct": true,
+    "category": "Business Cards",
+    "price": 33.99,
+    "options": [
+      {
+        "name": "Shape",
+        "values": [
+          {
+            "label": "Standard",
+            "priceDelta": 0
+          },
+          {
+            "label": "Square",
+            "priceDelta": 11
+          }
+        ]
+      },
+      {
+        "name": "Corners",
+        "values": [
+          {
+            "label": "Standard",
+            "priceDelta": 0
+          },
+          {
+            "label": "Rounded",
+            "priceDelta": 7
+          }
+        ]
+      }
+    ],
+    "quantities": [
+      {
+        "quantity": 100,
+        "totalPrice": 33.99,
+        "perUnit": 0.34
+      }
+    ],
+    "screenshot": "research\\data\\shots\\10-soft-touch.png"
+  },
+  {
+    "url": "https://www.vistaprint.com/business-cards/cotton",
+    "title": "Cotton Business Cards",
+    "isProduct": true,
+    "category": "Business Cards",
+    "price": 28.99,
+    "options": [
+      {
+        "name": "Shapes",
+        "values": [
+          {
+            "label": "Standard",
+            "priceDelta": 0
+          },
+          {
+            "label": "Square",
+            "priceDelta": 11
+          }
+        ]
+      }
+    ],
+    "quantities": [
+      {
+        "quantity": 100,
+        "totalPrice": 28.99,
+        "perUnit": 0.29
+      }
+    ],
+    "screenshot": "research\\data\\shots\\11-cotton.png"
+  },
+  {
+    "url": "https://www.vistaprint.com/business-cards/linen",
+    "title": "Linen Business Cards",
+    "isProduct": true,
+    "category": "Business Cards",
+    "price": 33.99,
+    "options": [
+      {
+        "name": "Shape",
+        "values": [
+          {
+            "label": "Standard",
+            "priceDelta": 0
+          },
+          {
+            "label": "Square",
+            "priceDelta": 11
+          }
+        ]
+      },
+      {
+        "name": "Corners",
+        "values": [
+          {
+            "label": "Standard",
+            "priceDelta": 0
+          },
+          {
+            "label": "Rounded",
+            "priceDelta": 7
+          }
+        ]
+      }
+    ],
+    "quantities": [
+      {
+        "quantity": 100,
+        "totalPrice": 33.99,
+        "perUnit": 0.34
+      }
+    ],
+    "screenshot": "research\\data\\shots\\12-linen.png"
+  },
+  {
+    "url": "https://www.vistaprint.com/business-cards/kraft",
+    "title": "Kraft Business Cards",
+    "isProduct": true,
+    "category": "Business Cards",
+    "price": 33.99,
+    "options": [
+      {
+        "name": "Shape",
+        "values": [
+          {
+            "label": "Standard",
+            "priceDelta": 0
+          },
+          {
+            "label": "Square",
+            "priceDelta": 11
+          }
+        ]
+      },
+      {
+        "name": "Corners",
+        "values": [
+          {
+            "label": "Standard",
+            "priceDelta": 0
+          },
+          {
+            "label": "Rounded",
+            "priceDelta": 7
+          }
+        ]
+      }
+    ],
+    "quantities": [
+      {
+        "quantity": 100,
+        "totalPrice": 33.99,
+        "perUnit": 0.34
+      }
+    ],
+    "screenshot": "research\\data\\shots\\13-kraft.png"
+  },
+  {
+    "url": "https://www.vistaprint.com/business-cards/premium-plus",
+    "title": "Premium Plus Business Cards",
+    "isProduct": true,
+    "category": "Business Cards",
+    "price": 27.99,
+    "options": [
+      {
+        "name": "Paper Stock",
+        "values": []
+      },
+      {
+        "name": "Shape",
+        "values": []
+      },
+      {
+        "name": "Corners",
+        "values": []
+      }
+    ],
+    "quantities": [
+      {
+        "quantity": 50,
+        "totalPrice": 22.99,
+        "perUnit": 0.46
+      },
+      {
+        "quantity": 100,
+        "totalPrice": 27.99,
+        "perUnit": 0.28
+      },
+      {
+        "quantity": 250,
+        "totalPrice": 38.99,
+        "perUnit": 0.16
+      },
+      {
+        "quantity": 500,
+        "totalPrice": 46.99,
+        "perUnit": 0.1
+      },
+      {
+        "quantity": 1000,
+        "totalPrice": 79.99,
+        "perUnit": 0.08
+      }
+    ],
+    "screenshot": "research\\data\\shots\\14-premium-plus.png"
+  },
+  {
+    "url": "https://www.vistaprint.com/business-cards/painted-edge",
+    "title": "Painted Edge Business Cards",
+    "isProduct": true,
+    "category": "Business Cards",
+    "price": 39.99,
+    "options": [
+      {
+        "name": "Edge Color",
+        "values": [
+          {
+            "label": "Blue - #0083CA",
+            "priceDelta": 0
+          },
+          {
+            "label": "Teal - #0099B1",
+            "priceDelta": 0
+          },
+          {
+            "label": "Black - #231F20",
+            "priceDelta": 0
+          },
+          {
+            "label": "Gold - #C48A10",
+            "priceDelta": 0
+          },
+          {
+            "label": "Red - #ED1B2F",
+            "priceDelta": 0
+          },
+          {
+            "label": "Yellow - #FFF200",
+            "priceDelta": 0
+          }
+        ]
+      }
+    ],
+    "quantities": [
+      {
+        "quantity": 50,
+        "totalPrice": 39.99,
+        "perUnit": 0.8
+      }
+    ],
+    "screenshot": "research\\data\\shots\\15-painted-edge.png"
+  },
+  {
+    "url": "https://www.vistaprint.com/business-cards/ultra-thick",
+    "title": "Ultra Thick Business Cards",
+    "isProduct": true,
+    "category": "Business Cards",
+    "price": 37.99,
+    "options": [],
+    "quantities": [
+      {
+        "quantity": 50,
+        "totalPrice": 26.99,
+        "perUnit": 0.54
+      },
+      {
+        "quantity": 100,
+        "totalPrice": 37.99,
+        "perUnit": 0.38
+      },
+      {
+        "quantity": 250,
+        "totalPrice": 81.99,
+        "perUnit": 0.33
+      },
+      {
+        "quantity": 500,
+        "totalPrice": 143.99,
+        "perUnit": 0.29
+      },
+      {
+        "quantity": 1000,
+        "totalPrice": 241.99,
+        "perUnit": 0.25
+      }
+    ],
+    "screenshot": "research\\data\\shots\\16-ultra-thick.png"
+  },
+  {
+    "url": "https://www.vistaprint.com/business-cards/metallic",
+    "title": "Foil Accent Business Cards",
+    "isProduct": true,
+    "category": "Business Cards",
+    "price": 29.99,
+    "options": [
+      {
+        "name": "Paper Stock",
+        "values": [
+          {
+            "label": "Select...",
+            "priceDelta": 0
+          }
+        ]
+      },
+      {
+        "name": "Corners",
+        "values": [
+          {
+            "label": "Select...",
+            "priceDelta": 0
+          }
+        ]
+      }
+    ],
+    "quantities": [
+      {
+        "quantity": 100,
+        "totalPrice": 29.99,
+        "perUnit": 0.3
+      },
+      {
+        "quantity": 250,
+        "totalPrice": 40.99,
+        "perUnit": 0.17
+      },
+      {
+        "quantity": 500,
+        "totalPrice": 48.99,
+        "perUnit": 0.1
+      },
+      {
+        "quantity": 1000,
+        "totalPrice": 79.99,
+        "perUnit": 0.08
+      },
+      {
+        "quantity": 1500,
+        "totalPrice": 120.99,
+        "perUnit": 0.08
+      }
+    ],
+    "screenshot": "research\\data\\shots\\17-metallic.png"
+  },
+  {
+    "url": "https://www.vistaprint.com/business-cards/raised-print",
+    "title": "Embossed Gloss Business Cards",
+    "isProduct": true,
+    "category": "Business Cards",
+    "price": 28.99,
+    "options": [
+      {
+        "name": "Paper Thickness",
+        "values": [
+          {
+            "label": "Standard",
+            "priceDelta": 0
+          },
+          {
+            "label": "Premium",
+            "priceDelta": 3
+          }
+        ]
+      },
+      {
+        "name": "Corners",
+        "values": [
+          {
+            "label": "Standard",
+            "priceDelta": 0
+          },
+          {
+            "label": "Rounded",
+            "priceDelta": 7
+          }
+        ]
+      }
+    ],
+    "quantities": [
+      {
+        "quantity": 100,
+        "totalPrice": 28.99,
+        "perUnit": 0.29
+      }
+    ],
+    "screenshot": "research\\data\\shots\\18-raised-print.png"
+  },
+  {
+    "url": "https://www.vistaprint.com/business-cards/raised-foil",
+    "title": "Raised Foil Business Cards",
+    "isProduct": true,
+    "category": "Business Cards",
+    "price": 34.99,
+    "options": [
+      {
+        "name": "Foil Colors",
+        "values": [
+          {
+            "label": "Gold Raised Foil",
+            "priceDelta": 0
+          },
+          {
+            "label": "Silver Raised Foil",
+            "priceDelta": 0
+          }
+        ]
+      },
+      {
+        "name": "Corners",
+        "values": [
+          {
+            "label": "Standard",
+            "priceDelta": 0
+          },
+          {
+            "label": "Rounded",
+            "priceDelta": 7
+          }
+        ]
+      }
+    ],
+    "quantities": [
+      {
+        "quantity": 100,
+        "totalPrice": 34.99,
+        "perUnit": 0.35
+      }
+    ],
+    "screenshot": "research\\data\\shots\\19-raised-foil.png"
+  },
+  {
+    "url": "https://www.vistaprint.com/business-cards/qr-code",
+    "title": "QR Code Business Cards",
+    "isProduct": true,
+    "category": "Business Cards",
+    "price": 15.99,
+    "options": [
+      {
+        "name": "Shapes",
+        "values": [
+          {
+            "label": "Standard",
+            "priceDelta": 0
+          },
+          {
+            "label": "Square",
+            "priceDelta": 11
+          }
+        ]
+      }
+    ],
+    "quantities": [
+      {
+        "quantity": 100,
+        "totalPrice": 15.99,
+        "perUnit": 0.16
+      }
+    ],
+    "screenshot": "research\\data\\shots\\20-qr-code.png"
+  }
+]

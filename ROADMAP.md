@@ -18,7 +18,8 @@ Legend: ✅ done · 🟡 in progress · ⬜ pending
 ## Phase 1 — Competitive research  🟡  *(req 1, 3, 19)*
 - ✅ Playwright screenshot tour: home + business-cards landing captured (editor behind Cloudflare)
 - ✅ Flow analysis from user screenshots → parity baseline (`research/02-flow-analysis.md`)
-- ⬜ Crawler: top-20 products + options (format/colors/pages/sizes) + prices → JSON price lists
+- ✅ Crawler (Chromium + Gemini vision): top-20 products + options + per-qty prices → JSON/CSV (`crawl.mjs`)
+- ✅ Deep stealth crawler (`crawl-deep.mjs`): realistic UA + jitter + persistent profile + headed Cloudflare wait (human solves CAPTCHA), enumerates options × quantities
 
 ## Phase 2 — Catalog & storefront  ✅  *(req 4, 5, 16)*
 - ✅ Schema: categories, products, options/values (price deltas + badges), quantity tiers
@@ -29,10 +30,12 @@ Legend: ✅ done · 🟡 in progress · ⬜ pending
 - ✅ Dynamic free-shipping nudge toward the $50 threshold
 - Note: catalog is **modeled** from flow-analysis signals; live price-crawl (req 3) deferred (Cloudflare) — optional later
 
-## Phase 3 — Online designer & upload  ⬜  *(req 8, 9, 18)*
-- ⬜ fabric.js editor: Front/Back, toolbar (font/size/color/B/I/align), Corners/Layout/Background
-- ⬜ "Upload artwork" vs "Design online" branch  *(req 9)*
-- ⬜ Persist design JSON to cart/order item
+## Phase 3 — Online designer & upload  ✅ (core)  *(req 8, 9, 18)*
+- ✅ fabric.js v6 editor: step bar, text toolbar (font/size/color/B/I/align), Front/Back, background swatches, +Text / Upload / Delete
+- ✅ "Upload artwork" vs "Design online" branch  *(req 9)*
+- ✅ Save design (front+back JSON + preview) → cart (session)
+- ✅ **Google Fonts only** in designer/templates (per project rule)
+- ⬜ Later: show Phase-4 templates in editor; Corners/Layout panels; true cart-item persistence
 
 ## Phase 4 — Business-card templates  ⬜  *(req 10, 17)*
 - ⬜ Generate 200 B2B templates as fabric.js JSON via `gemini-3.5-flash`  *(req 17)*

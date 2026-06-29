@@ -1,0 +1,106 @@
+[
+  {
+    "url": "https://www.vistaprint.com/business-cards/matte",
+    "title": "Custom Matte Finish Business Cards | VistaPrint",
+    "options": [
+      {
+        "name": "Filter by rating",
+        "values": [
+          {
+            "label": "All ratings",
+            "quantities": []
+          },
+          {
+            "label": "5 Stars",
+            "quantities": []
+          },
+          {
+            "label": "4 Stars",
+            "quantities": []
+          },
+          {
+            "label": "3 Stars",
+            "quantities": []
+          },
+          {
+            "label": "2 Stars",
+            "quantities": []
+          },
+          {
+            "label": "1 Star",
+            "quantities": []
+          }
+        ]
+      },
+      {
+        "name": "Most Recent",
+        "values": [
+          {
+            "label": "Highest Rated",
+            "quantities": []
+          },
+          {
+            "label": "Lowest Rated",
+            "quantities": []
+          },
+          {
+            "label": "Most Recent",
+            "quantities": []
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "url": "https://www.vistaprint.com/business-cards/glossy",
+    "title": "Custom Glossy Business Cards | VistaPrint",
+    "options": [
+      {
+        "name": "Filter by rating",
+        "values": [
+          {
+            "label": "All ratings",
+            "quantities": []
+          },
+          {
+            "label": "5 Stars",
+            "quantities": []
+          },
+          {
+            "label": "4 Stars",
+            "quantities": []
+          },
+          {
+            "label": "3 Stars",
+            "quantities": []
+          },
+          {
+            "label": "2 Stars",
+            "quantities": []
+          },
+          {
+            "label": "1 Star",
+            "quantities": []
+          }
+        ]
+      },
+      {
+        "name": "Most Recent",
+        "values": [
+          {
+            "label": "Highest Rated",
+            "quantities": []
+          },
+          {
+            "label": "Lowest Rated",
+            "quantities": []
+          },
+          {
+            "label": "Most Recent",
+            "quantities": []
+          }
+        ]
+      }
+    ]
+  }
+]

@@ -20,6 +20,7 @@ backend/storage/framework/sessions/*
 backend/storage/framework/views/*
 backend/storage/logs/*
 crawler/node_modules/
+crawler/.userdata/
 crawler/data/raw/
 
 # === Generated / large ===
