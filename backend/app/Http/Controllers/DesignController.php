@@ -42,9 +42,10 @@ class DesignController extends Controller
             return [];
         }
 
+        // Only the columns the picker needs — never the heavy `data` (embedded base64 images).
         return Template::where('is_active', true)
             ->orderByDesc('score')->orderBy('sort_order')
-            ->take(60)->get()
+            ->take(60)->get(['ref', 'name', 'preview_path'])
             ->map(fn (Template $t) => ['ref' => $t->ref, 'name' => $t->name, 'preview' => $t->previewUrl()])
             ->all();
     }
