@@ -1,8 +1,8 @@
 <?php
 
+use App\Http\Controllers\CartController;
 use App\Http\Controllers\DesignController;
 use App\Http\Controllers\StorefrontController;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -12,14 +12,15 @@ Route::get('/product/{product}', [StorefrontController::class, 'product'])->name
 
 // Online designer (req 8/9/18)
 Route::get('/design/{product}', [DesignController::class, 'show'])->name('design.start');
-Route::post('/design/{product}', [DesignController::class, 'store'])->name('design.store');
 Route::get('/design/template/{template}/data', [DesignController::class, 'templateData'])->name('template.data');
 
-// Cart stub (Phase 5) — shows the saved design for now
-Route::get('/cart', function (Request $request) {
-    return Inertia::render('ComingSoon', [
-        'title'         => 'Your Cart',
-        'message'       => 'Full cart, free-shipping nudges and design-on-product upsells arrive in Phase 5. Your saved design is below.',
-        'pendingDesign' => $request->session()->get('pending_design'),
-    ]);
-})->name('cart');
+// Cart + free shipping + upsell (req 7/11/15)
+Route::get('/cart', [CartController::class, 'show'])->name('cart');
+Route::post('/cart/add/{product}', [CartController::class, 'add'])->name('cart.add');
+Route::post('/cart/remove/{lineId}', [CartController::class, 'remove'])->name('cart.remove');
+
+// Checkout (Stripe) — Phase 6 stub for now
+Route::get('/checkout', fn () => Inertia::render('ComingSoon', [
+    'title'   => 'Checkout',
+    'message' => 'Stripe checkout arrives in Phase 6. Your cart, shipping and totals are ready to wire up.',
+]))->name('checkout');

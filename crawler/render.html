@@ -27,6 +27,27 @@
             canvas.clear();
             canvas.backgroundColor = spec.background || '#ffffff';
 
+            // generated image (nano banana 2): full-bleed background or side panel
+            if (spec.image && spec.image.data) {
+                try {
+                    const img = await fabric.FabricImage.fromURL(spec.image.data, { crossOrigin: 'anonymous' });
+                    const role = spec.image.role || 'background';
+                    if (role === 'side-left' || role === 'side-right') {
+                        const panelW = spec.image.width || 300;
+                        const left = role === 'side-left' ? 0 : 760 - panelW;
+                        const scale = Math.max(panelW / img.width, 434 / img.height);
+                        img.set({ left, top: 0, scaleX: scale, scaleY: scale, selectable: false,
+                            clipPath: new fabric.Rect({ left, top: 0, width: panelW, height: 434, absolutePositioned: true }) });
+                        canvas.add(img);
+                    } else {
+                        const scale = Math.max(760 / img.width, 434 / img.height);
+                        img.set({ left: 0, top: 0, scaleX: scale, scaleY: scale, selectable: false });
+                        canvas.add(img);
+                        canvas.add(new fabric.Rect({ left: 0, top: 0, width: 760, height: 434, fill: spec.overlay || 'rgba(8,20,15,0.55)' }));
+                    }
+                } catch (e) { /* ignore image failures */ }
+            }
+
             (spec.shapes || []).forEach((s) => {
                 if (s.type === 'line') {
                     canvas.add(new fabric.Line([s.x1 || 0, s.y1 || 0, s.x2 || 0, s.y2 || 0], { stroke: s.fill || s.stroke || spec.accent || '#0e9355', strokeWidth: s.strokeWidth || 2 }));
@@ -47,14 +68,16 @@
             if (el.email) canvas.add(mk(el.email, 'hello@company.com'));
             if (el.phone) canvas.add(mk(el.phone, '+1 (555) 123-4567'));
 
-            if (spec.logo) {
-                const L = spec.logo, w = L.width || 92, h = L.height || 92, acc = spec.accent || '#0e9355';
+            // LOGO — always rendered (default if the spec omits it): a solid accent mark + monogram
+            const L = spec.logo || { left: 620, top: 48, width: 92, height: 92, shape: 'circle' };
+            {
+                const w = L.width || 92, h = L.height || 92, acc = spec.accent || '#0e9355';
                 const ini = (el.companyName?.text || 'Logo').replace(/[^A-Za-z ]/g, '').split(/\s+/).filter(Boolean).map((s) => s[0]).join('').slice(0, 2).toUpperCase() || 'L';
                 canvas.add(L.shape === 'circle'
-                    ? new fabric.Circle({ left: L.left ?? 600, top: L.top ?? 56, radius: Math.min(w, h) / 2, fill: acc })
-                    : new fabric.Rect({ left: L.left ?? 600, top: L.top ?? 56, width: w, height: h, rx: 14, ry: 14, fill: acc }));
+                    ? new fabric.Circle({ left: L.left ?? 620, top: L.top ?? 48, radius: Math.min(w, h) / 2, fill: acc })
+                    : new fabric.Rect({ left: L.left ?? 620, top: L.top ?? 48, width: w, height: h, rx: 14, ry: 14, fill: acc }));
                 canvas.add(new fabric.IText(ini, {
-                    left: (L.left ?? 600) + w / 2, top: (L.top ?? 56) + h / 2, originX: 'center', originY: 'center',
+                    left: (L.left ?? 620) + w / 2, top: (L.top ?? 48) + h / 2, originX: 'center', originY: 'center',
                     fontSize: Math.round(Math.min(w, h) * 0.42), fontFamily: font(spec.fontHeading), fontWeight: 'bold', fill: contrast(acc),
                 }));
             }

@@ -43,12 +43,13 @@ Legend: ✅ done · 🟡 in progress · ⬜ pending
 - ⬜ Render each → `gemini-3.5-flash` vision quality score → auto-fix loop until ≥ 9  *(req 10)*
 - ⬜ Expose templates in the designer
 
-## Phase 5 — Cart, shipping & upsell  ⬜  *(req 7, 11, 15)*
-- ⬜ Cart
-- ⬜ Free shipping over $50, surfaced after add-to-cart  *(req 7)*
-- ⬜ Upsell to reach $50 ("Related Accessories" + "match your design on…")  *(req 15)*
-- ⬜ SVG mockups: user's logo/design composited on product photos;
-      logo extracted from uploaded artwork via Gemini  *(req 11)*
+## Phase 5 — Cart, shipping & upsell  ✅ (core)  *(req 7, 11, 15)*
+- ✅ Session cart + server-side pricing (quantity tier + option deltas)
+- ✅ Free-shipping bar / "$X more for free shipping" after add-to-cart  *(req 7)*
+- ✅ Upsell to reach $50 — "Reach free shipping with" recommended products  *(req 15)*
+- ✅ "Put your design on more" — design composited on other products  *(req 11, first cut)*
+- ✅ Header cart badge; funnel verified product→design→add→cart (Playwright)
+- ⬜ Later: true SVG/perspective mockups + Gemini logo-extraction from uploaded artwork (full req 11)
 
 ## Phase 6 — Checkout & payments  ⬜  *(req 14)*
 - ⬜ Stripe checkout, order creation, free-shipping rule applied

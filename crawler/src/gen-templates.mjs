@@ -13,6 +13,7 @@ const KEY = process.env.GEMINI_API_KEY;
 const API = 'https://generativelanguage.googleapis.com/v1beta';
 const TEXT_MODEL = process.env.GEMINI_TEXT_MODEL || 'gemini-3.5-flash';
 const VISION_MODEL = process.env.GEMINI_VISION_MODEL || 'gemini-3.5-flash';
+const IMAGE_MODEL = process.env.GEMINI_IMAGE_MODEL || 'gemini-3-pro-image'; // "nano banana 2"
 const COUNT = Number(process.env.COUNT || 200);
 const CONCURRENCY = Number(process.env.CONCURRENCY || 3);
 const MIN_SCORE = Number(process.env.MIN_SCORE || 9);
@@ -33,8 +34,8 @@ const MOODS = ['modern & clean', 'elegant & premium', 'bold & energetic', 'warm 
 const briefFor = (i) =>
     `${MOODS[i % MOODS.length]} business card for a ${INDUSTRIES[i % INDUSTRIES.length]}, with a ${LAYOUTS[Math.floor(i / 2) % LAYOUTS.length]} layout. Design variation #${i + 1} — make it visually distinct.`;
 
-const genPrompt = (brief) => `Design a premium, professional B2B business card. Canvas 760x434 px, origin top-left.
-Style brief: ${brief}
+const genPrompt = (brief, hasImage) => `Design a premium, professional B2B business card. Canvas 760x434 px, origin top-left.
+Style brief: ${brief}${hasImage ? '\nA full-bleed BACKGROUND PHOTO sits behind everything under a dark overlay — use LIGHT (near-white) text colors and include an "overlay" key set to a dark translucent rgba like "rgba(10,20,15,0.55)".' : ''}
 Choose fontHeading & fontBody that FIT the industry/mood, using ONLY these Google Fonts (guide):
 ${FONT_GUIDE}
 Scripts (Great Vibes/Pinyon Script/Pacifico/Caveat) may be used for at most ONE accent word — never for body or contact text.
@@ -83,14 +84,39 @@ async function gemini(model, prompt, imgBuf, temperature) {
     return JSON.parse(t);
 }
 
+async function geminiImage(prompt) {
+    const r = await fetch(`${API}/models/${IMAGE_MODEL}:generateContent?key=${KEY}`, {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }], generationConfig: { responseModalities: ['IMAGE'] } }),
+    });
+    const j = await r.json();
+    for (const p of j?.candidates?.[0]?.content?.parts || []) {
+        const inl = p.inlineData || p.inline_data;
+        if (inl?.data) return { data: inl.data, mime: inl.mimeType || inl.mime_type || 'image/png' };
+    }
+    throw new Error('no image returned');
+}
+
+const imagePromptFor = (brief) =>
+    `Subtle, premium full-bleed background image for a business card. Theme: ${brief}. Muted, low-contrast, abstract or atmospheric; keep the center calm so overlaid text stays legible. No text, no logos, no faces, no watermark.`;
+
 async function makeTemplate(page, i, index) {
     const id = String(i + 1).padStart(3, '0');
     if (existsSync(jsonPath(id))) return { id, skipped: true };
     const brief = briefFor(i);
-    let spec = await gemini(TEXT_MODEL, genPrompt(brief), null, 0.95);
+    let image = null;
+    if (i % 4 === 0) { // ~25% of templates get a generated background image (nano banana 2)
+        try {
+            const im = await geminiImage(imagePromptFor(brief));
+            image = { data: `data:${im.mime};base64,${im.data}`, role: 'background' };
+        } catch (e) { /* fall back to a shape-based design */ }
+    }
+    let spec = await gemini(TEXT_MODEL, genPrompt(brief, !!image), null, 0.95);
     let best = null;
     for (let iter = 1; iter <= MAX_ITERS; iter++) {
-        const { png, json } = await page.evaluate((s) => window.buildAndRender(s), spec);
+        const renderSpec = image ? { ...spec, image } : spec;
+        const { png, json } = await page.evaluate((s) => window.buildAndRender(s), renderSpec);
         const buf = Buffer.from(png.split(',')[1], 'base64');
         let review = { score: 0, issues: [] };
         try { review = await gemini(VISION_MODEL, scorePrompt(), buf, 0.2); } catch (e) { review.issues = [String(e.message)]; }

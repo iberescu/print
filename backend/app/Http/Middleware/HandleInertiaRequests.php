@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use App\Models\Category;
+use App\Services\Cart;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Inertia\Middleware;
@@ -30,6 +31,10 @@ class HandleInertiaRequests extends Middleware
             ),
             'shop' => [
                 'freeShippingThreshold' => (float) config('shop.free_shipping_threshold'),
+            ],
+            'cart' => fn () => [
+                'count'    => app(Cart::class)->count(),
+                'subtotal' => app(Cart::class)->subtotal(),
             ],
             'flash' => [
                 'success' => fn () => $request->session()->get('success'),

@@ -9,6 +9,7 @@ const props = defineProps({
     category: { type: Object, default: () => ({}) },
     mode: { type: String, default: 'design' },
     templates: { type: Array, default: () => [] },
+    selection: { type: Object, default: () => ({}) },
 });
 
 const W = 760;
@@ -168,7 +169,12 @@ function addToCart() {
     saving.value = true;
     store[side.value] = canvas.toJSON();
     const preview = canvas.toDataURL({ format: 'jpeg', quality: 0.72, multiplier: 0.55 });
-    router.post(`/design/${props.product.slug}`, { design: store, preview }, { onFinish: () => (saving.value = false) });
+    router.post(`/cart/add/${props.product.slug}`, {
+        quantityId: props.selection?.quantityId ?? null,
+        optionValueIds: props.selection?.optionValueIds ?? [],
+        preview,
+        mode: props.mode,
+    }, { onFinish: () => (saving.value = false) });
 }
 </script>
 

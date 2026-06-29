@@ -39,7 +39,8 @@ const remainingForFree = computed(() => Math.max(0, props.freeShippingThreshold 
 function start(mode) {
     router.get(`/design/${props.product.slug}`, {
         mode,
-        qty: selectedQty.value?.quantity,
+        qty: selectedQtyId.value,
+        opts: Object.values(selectedValues.value),
     });
 }
 </script>

@@ -7,6 +7,7 @@ const page = usePage();
 const categories = computed(() => page.props.navCategories ?? []);
 const threshold = computed(() => page.props.shop?.freeShippingThreshold ?? 50);
 const flash = computed(() => page.props.flash?.success ?? null);
+const cartCount = computed(() => page.props.cart?.count ?? 0);
 const mobileOpen = ref(false);
 const year = new Date().getFullYear();
 </script>
@@ -60,6 +61,7 @@ const year = new Date().getFullYear();
                             <path d="M5 7h15l-1.5 9.5a2 2 0 0 1-2 1.5H8.5a2 2 0 0 1-2-1.7L5 4H3" stroke-linecap="round" stroke-linejoin="round" />
                             <circle cx="9" cy="20" r="1.4" fill="currentColor" /><circle cx="17" cy="20" r="1.4" fill="currentColor" />
                         </svg>
+                        <span v-if="cartCount" class="absolute -right-0.5 -top-0.5 grid h-4 min-w-[16px] place-items-center rounded-full bg-brand-600 px-1 text-[10px] font-bold text-white">{{ cartCount }}</span>
                     </Link>
                     <button class="grid h-10 w-10 place-items-center rounded-full text-ink/70 lg:hidden" aria-label="Menu" @click="mobileOpen = !mobileOpen">
                         <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round" /></svg>
