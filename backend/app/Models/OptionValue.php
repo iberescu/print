@@ -12,10 +12,16 @@ class OptionValue extends Model
     protected $casts = [
         'price_delta' => 'decimal:2',
         'is_default'  => 'boolean',
+        'attributes'  => 'array',
     ];
 
     public function option(): BelongsTo
     {
         return $this->belongsTo(ProductOption::class, 'product_option_id');
+    }
+
+    public function surface(): BelongsTo
+    {
+        return $this->belongsTo(Surface::class);
     }
 }

@@ -81,6 +81,7 @@ class StorefrontController extends Controller
                         'description' => $v->description,
                         'swatch'      => $v->swatch,
                         'isDefault'   => $v->is_default,
+                        'attributes'  => $v->attributes ?? [],
                     ]),
                 ]),
                 'quantities' => $product->quantities->map(fn ($q) => [

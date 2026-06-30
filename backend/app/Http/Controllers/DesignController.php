@@ -15,7 +15,7 @@ class DesignController extends Controller
     public function show(Product $product, Request $request): Response
     {
         abort_unless($product->is_active, 404);
-        $product->load(['category', 'options.values']);
+        $product->load(['category', 'surface', 'options.values.surface']);
 
         $opts = $this->optionIds($request);
 
@@ -25,7 +25,7 @@ class DesignController extends Controller
             'mode'      => $request->query('mode') === 'upload' ? 'upload' : 'design',
             'templates' => $this->templatesFor($product),
             'template'  => $request->query('template'),   // pre-apply this template ref (from the gallery)
-            'canvas'    => PrintSpec::canvas($product, $opts),
+            'canvas'    => $this->geometry($product, $opts),
             'selection' => [
                 'quantityId'     => ((int) $request->query('qty')) ?: null,
                 'optionValueIds' => $opts,
@@ -37,7 +37,7 @@ class DesignController extends Controller
     public function templates(Product $product, Request $request): Response
     {
         abort_unless($product->is_active && $product->supports_design, 404);
-        $product->load(['category', 'options.values']);
+        $product->load(['category', 'surface', 'options.values.surface']);
 
         $opts = $this->optionIds($request);
 
@@ -45,12 +45,39 @@ class DesignController extends Controller
             'product'   => $product->only('id', 'name', 'slug'),
             'category'  => ['name' => $product->category->name, 'slug' => $product->category->slug],
             'templates' => $this->templatesFor($product),
-            'canvas'    => PrintSpec::canvas($product, $opts),
+            'canvas'    => $this->geometry($product, $opts),
             'selection' => [
                 'quantityId'     => ((int) $request->query('qty')) ?: null,
                 'optionValueIds' => $opts,
             ],
         ]);
+    }
+
+    /** A surface assigned to the chosen option value (e.g. Format → A4) wins, then the
+     *  product's default surface, then the size-option derived geometry. */
+    private function geometry(Product $product, array $opts): array
+    {
+        $surface = null;
+        foreach ($product->options as $opt) {
+            $match = $opt->values->first(fn ($v) => in_array($v->id, $opts, true) && $v->surface);
+            if ($match) {
+                $surface = $match->surface;
+                break;
+            }
+        }
+        // no explicit selection → fall back to the default value's surface, then the product's
+        if (! $surface && empty($opts)) {
+            foreach ($product->options as $opt) {
+                $def = $opt->values->first(fn ($v) => $v->is_default && $v->surface);
+                if ($def) {
+                    $surface = $def->surface;
+                    break;
+                }
+            }
+        }
+        $surface ??= $product->surface;
+
+        return $surface ? PrintSpec::fromSurface($surface) : PrintSpec::canvas($product, $opts);
     }
 
     public function templateData(Template $template): JsonResponse

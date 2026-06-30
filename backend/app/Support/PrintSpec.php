@@ -3,6 +3,7 @@
 namespace App\Support;
 
 use App\Models\Product;
+use App\Models\Surface;
 
 /**
  * Resolves the online-designer canvas for a product, honouring the selected
@@ -46,13 +47,60 @@ class PrintSpec
         $safety = (int) round((self::SAFETY[$unit] ?? 0) * $pxPerUnit);
 
         return [
-            'w'      => $trimW + 2 * $bleed,
-            'h'      => $trimH + 2 * $bleed,
-            'trimW'  => $trimW,
-            'trimH'  => $trimH,
-            'bleed'  => $bleed,
-            'safety' => $safety,
-            'label'  => $label,
+            'w'       => $trimW + 2 * $bleed,
+            'h'       => $trimH + 2 * $bleed,
+            'trimW'   => $trimW,
+            'trimH'   => $trimH,
+            'bleed'   => $bleed,
+            'safety'  => $safety,
+            'label'   => $label,
+            'noPrint' => [],
+            'fold'    => [],
+        ];
+    }
+
+    /**
+     * Canvas geometry from a managed Surface — includes no-print zones and fold lines.
+     *
+     * @return array{w:int,h:int,trimW:int,trimH:int,bleed:int,safety:int,label:string,noPrint:array,fold:array}
+     */
+    public static function fromSurface(Surface $surface): array
+    {
+        $w = (float) $surface->width;
+        $h = (float) $surface->height;
+        $ppu = self::LONG_EDGE / max($w, $h, 1);
+
+        $trimW = (int) round($w * $ppu);
+        $trimH = (int) round($h * $ppu);
+        $bleed = (int) round((float) $surface->bleed * $ppu);
+        $safety = (int) round((float) $surface->safety * $ppu);
+
+        $px = fn ($v) => (int) round((float) $v * $ppu);
+
+        $noPrint = collect($surface->no_print_areas ?? [])->map(fn ($a) => [
+            'x'     => $bleed + $px($a['x'] ?? 0),
+            'y'     => $bleed + $px($a['y'] ?? 0),
+            'w'     => $px($a['w'] ?? 0),
+            'h'     => $px($a['h'] ?? 0),
+            'label' => $a['label'] ?? 'No print',
+        ])->values()->all();
+
+        $fold = collect($surface->fold_lines ?? [])->map(fn ($f) => [
+            'orientation' => (($f['orientation'] ?? 'vertical') === 'horizontal') ? 'horizontal' : 'vertical',
+            'pos'         => $bleed + $px($f['position'] ?? 0),
+            'label'       => $f['label'] ?? 'Fold',
+        ])->values()->all();
+
+        return [
+            'w'       => $trimW + 2 * $bleed,
+            'h'       => $trimH + 2 * $bleed,
+            'trimW'   => $trimW,
+            'trimH'   => $trimH,
+            'bleed'   => $bleed,
+            'safety'  => $safety,
+            'label'   => $surface->name,
+            'noPrint' => $noPrint,
+            'fold'    => $fold,
         ];
     }
 

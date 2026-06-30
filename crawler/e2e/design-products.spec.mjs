@@ -65,6 +65,21 @@ test('flyer with A4 selected shows the A4 format', async ({ page }, testInfo) =>
     }
 });
 
+// Surface manager: fold lines and no-print zones render in the designer.
+test('a folded product shows a fold line in the designer', async ({ page }) => {
+    await page.goto('/design/folded-business-cards');
+    await page.waitForSelector('.canvas-container canvas');
+    await expect(page.getByText(/fold line/i)).toBeVisible();
+    expect(await page.locator('line[stroke="#9333ea"]').count()).toBeGreaterThan(0);
+});
+
+test('a banner surface shows a no-print zone in the designer', async ({ page }) => {
+    await page.goto('/design/roll-up-banner');
+    await page.waitForSelector('.canvas-container canvas');
+    await expect(page.getByText(/no-print area/i)).toBeVisible();
+    expect(await page.locator('rect[fill="rgba(15,23,42,0.42)"]').count()).toBeGreaterThan(0);
+});
+
 // Item 2: the template gallery appears BEFORE the editor and a pick opens the editor.
 test('templates gallery appears before the editor and applies a pick', async ({ page }) => {
     await page.goto('/product/standard-business-cards');

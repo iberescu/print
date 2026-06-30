@@ -30,6 +30,12 @@ const optionDeltas = computed(() => {
     });
     return sum;
 });
+// specs (weight, thickness, width/height…) for the currently-selected value of an option
+const specsFor = (o) => {
+    const v = o.values.find((x) => x.id === selectedValues.value[o.id]);
+    return (v?.attributes ?? []).filter((a) => a.name || a.value);
+};
+
 const total = computed(() => (selectedQty.value ? Number(selectedQty.value.total) + optionDeltas.value : 0));
 const perUnit = computed(() =>
     selectedQty.value?.quantity ? total.value / selectedQty.value.quantity : 0
@@ -127,6 +133,11 @@ function addDirect() {
                                 <span v-if="Number(v.priceDelta) > 0" class="ml-1 text-ink/45">+{{ money(v.priceDelta) }}</span>
                                 <span v-if="v.badge" class="ml-2 rounded-full bg-lime-accent px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-ink">{{ v.badge }}</span>
                             </button>
+                        </div>
+
+                        <!-- specs for the selected value (weight, thickness, dimensions…) -->
+                        <div v-if="specsFor(o).length" class="mt-2.5 flex flex-wrap gap-x-4 gap-y-1 text-xs text-ink/55">
+                            <span v-for="a in specsFor(o)" :key="a.name"><span class="font-medium text-ink/75">{{ a.name }}:</span> {{ a.value }}</span>
                         </div>
                     </div>
 

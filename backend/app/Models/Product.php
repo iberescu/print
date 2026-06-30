@@ -28,6 +28,11 @@ class Product extends Model
         return $this->belongsTo(Category::class);
     }
 
+    public function surface(): BelongsTo
+    {
+        return $this->belongsTo(Surface::class);
+    }
+
     public function options(): HasMany
     {
         return $this->hasMany(ProductOption::class)->orderBy('sort_order');

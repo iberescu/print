@@ -27,6 +27,8 @@ const safeW = Math.max(0, trimW - 2 * safety);
 const safeH = Math.max(0, trimH - 2 * safety);
 // Filled bleed band = full canvas minus the trim rect (evenodd makes the trim a hole).
 const guidePath = `M0 0H${W}V${H}H0Z M${bleed} ${bleed}h${trimW}v${trimH}h${-trimW}Z`;
+const noPrint = props.canvas?.noPrint || []; // [{x,y,w,h,label}] (canvas px)
+const fold = props.canvas?.fold || [];       // [{orientation,pos,label}] (canvas px)
 const isBusinessCard = props.category?.slug === 'business-cards';
 
 const canvasEl = ref(null);
@@ -348,10 +350,12 @@ function addToCart() {
                 <p class="text-sm font-medium text-ink/50">
                     {{ side === 'front' ? 'Front' : 'Back' }} design · <span class="text-ink/40">every copy will print exactly like this</span>
                 </p>
-                <div v-if="bleed && showGuides" class="flex flex-wrap items-center justify-center gap-x-4 gap-y-1 text-xs text-ink/60">
-                    <span class="flex items-center gap-1.5"><span class="inline-block h-3 w-4 bg-rose-500/15 ring-1 ring-rose-500/60"></span>Bleed — trimmed off</span>
+                <div v-if="(bleed || noPrint.length || fold.length) && showGuides" class="flex flex-wrap items-center justify-center gap-x-4 gap-y-1 text-xs text-ink/60">
+                    <span v-if="bleed" class="flex items-center gap-1.5"><span class="inline-block h-3 w-4 bg-rose-500/15 ring-1 ring-rose-500/60"></span>Bleed — trimmed off</span>
                     <span class="flex items-center gap-1.5"><span class="inline-block h-0 w-5 border-t-2 border-rose-500"></span>Trim / cut line</span>
                     <span class="flex items-center gap-1.5"><span class="inline-block h-0 w-5 border-t-2 border-dashed border-sky-500"></span>Safe area — keep text &amp; logos inside</span>
+                    <span v-if="noPrint.length" class="flex items-center gap-1.5"><span class="inline-block h-3 w-4 bg-slate-800/40 ring-1 ring-slate-800"></span>No-print area</span>
+                    <span v-if="fold.length" class="flex items-center gap-1.5"><span class="inline-block h-0 w-5 border-t-2 border-dashed border-purple-600"></span>Fold line</span>
                 </div>
             </div>
             <div class="relative">
@@ -359,10 +363,22 @@ function addToCart() {
                     <canvas ref="canvasEl"></canvas>
                 </div>
                 <!-- print guides: bleed band (red tint) · trim/cut line (solid) · safe area (dashed) -->
-                <svg v-if="bleed && showGuides" class="pointer-events-none absolute inset-0 h-full w-full" :viewBox="`0 0 ${W} ${H}`" preserveAspectRatio="none">
-                    <path :d="guidePath" fill="rgba(225,29,72,0.12)" fill-rule="evenodd" />
+                <svg v-if="(bleed || noPrint.length || fold.length) && showGuides" class="pointer-events-none absolute inset-0 h-full w-full" :viewBox="`0 0 ${W} ${H}`" preserveAspectRatio="none">
+                    <path v-if="bleed" :d="guidePath" fill="rgba(225,29,72,0.12)" fill-rule="evenodd" />
                     <rect :x="bleed" :y="bleed" :width="trimW" :height="trimH" fill="none" stroke="#e11d48" stroke-width="1.5" />
                     <rect :x="bleed + safety" :y="bleed + safety" :width="safeW" :height="safeH" fill="none" stroke="#0ea5e9" stroke-width="1.5" stroke-dasharray="7 5" />
+                    <!-- no-print zones -->
+                    <g v-for="(z, i) in noPrint" :key="'np' + i">
+                        <rect :x="z.x" :y="z.y" :width="z.w" :height="z.h" fill="rgba(15,23,42,0.42)" stroke="#0f172a" stroke-width="1" stroke-dasharray="4 3" />
+                        <text :x="z.x + 5" :y="z.y + 15" fill="#ffffff" font-size="11" font-family="sans-serif">{{ z.label }}</text>
+                    </g>
+                    <!-- fold lines -->
+                    <g v-for="(f, i) in fold" :key="'fold' + i">
+                        <line v-if="f.orientation === 'vertical'" :x1="f.pos" :y1="bleed" :x2="f.pos" :y2="bleed + trimH" stroke="#9333ea" stroke-width="1.5" stroke-dasharray="2 4" />
+                        <line v-else :x1="bleed" :y1="f.pos" :x2="bleed + trimW" :y2="f.pos" stroke="#9333ea" stroke-width="1.5" stroke-dasharray="2 4" />
+                        <text v-if="f.orientation === 'vertical'" :x="f.pos + 4" :y="bleed + 15" fill="#9333ea" font-size="11" font-family="sans-serif">{{ f.label }}</text>
+                        <text v-else :x="bleed + 4" :y="f.pos - 5" fill="#9333ea" font-size="11" font-family="sans-serif">{{ f.label }}</text>
+                    </g>
                 </svg>
                 <div v-if="mode === 'upload' && !uploaded" class="absolute inset-0 flex flex-col items-center justify-center gap-3 rounded-2xl bg-white/85 text-center backdrop-blur-sm">
                     <svg class="h-10 w-10 text-brand-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 16V4m0 0L8 8m4-4 4 4M5 20h14" stroke-linecap="round" stroke-linejoin="round" /></svg>
