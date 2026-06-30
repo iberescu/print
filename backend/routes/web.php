@@ -9,6 +9,7 @@ use App\Http\Controllers\UpsellController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [StorefrontController::class, 'home'])->name('home');
+Route::get('/offer', fn () => view('offer'))->name('offer'); // standalone landing (own <head> tracking)
 Route::get('/category/{category}', [StorefrontController::class, 'category'])->name('category.show');
 Route::get('/product/{product}', [StorefrontController::class, 'product'])->name('product.show');
 
