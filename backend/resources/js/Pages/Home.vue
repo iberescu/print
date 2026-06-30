@@ -17,13 +17,6 @@ const slides = [
     { eyebrow: 'New customer offer', title: 'Business cards from $10', text: '500 premium cards — design online in minutes or upload your own artwork.', cta: 'Shop business cards', href: '/category/business-cards', image: props.heroImage },
     { eyebrow: `Free shipping over $${props.freeShippingThreshold}`, title: 'Your logo, on everything', text: 'Use our free online designer and 200+ ready-made templates.', cta: 'Start designing', href: '/product/standard-business-cards', image: props.heroImage },
 ];
-
-const tools = [
-    { t: 'Design services', d: 'Let our experts design it for you.', i: 'm12 19 7-7-4-4-7 7-1 5zM15 5l4 4' },
-    { t: 'Logo maker', d: 'Create a logo in minutes.', i: 'M4 4h16v16H4zM4 9h16' },
-    { t: 'Free templates', d: '200+ professional designs.', i: 'M4 5h16M4 12h16M4 19h10' },
-    { t: 'Order samples', d: 'Feel the quality before you buy.', i: 'M5 7h14v12H5zM5 7l7 5 7-5' },
-];
 </script>
 
 <template>
@@ -88,16 +81,63 @@ const tools = [
             </div>
         </section>
 
-        <!-- tools to help build your business -->
-        <section class="mx-auto max-w-7xl px-6 pb-4 sm:px-8">
-            <h2 class="mb-9 font-display text-3xl font-bold tracking-tight sm:text-4xl">Tools to grow your business</h2>
+        <!-- creative print divider -->
+        <div class="mx-auto mt-16 max-w-7xl px-6 sm:mt-20 sm:px-8"><div class="print-divider"></div></div>
+
+        <!-- tools to grow your business -->
+        <section class="mx-auto max-w-7xl px-6 py-14 sm:px-8 sm:py-16">
+            <div class="mb-9">
+                <p class="text-sm font-semibold uppercase tracking-widest text-brand-600">Everything you need</p>
+                <h2 class="mt-2 font-display text-3xl font-bold tracking-tight sm:text-4xl">Tools to grow your business</h2>
+            </div>
             <div class="grid grid-cols-2 gap-6 md:grid-cols-4">
-                <div v-for="t in tools" :key="t.t" class="rounded-2xl border border-paper-300 bg-white p-7 shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-xl">
-                    <span class="grid h-12 w-12 place-items-center rounded-xl bg-brand-50 text-brand-700">
-                        <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path :d="t.i" stroke-linecap="round" stroke-linejoin="round" /></svg>
-                    </span>
-                    <h3 class="mt-5 font-semibold text-ink">{{ t.t }}</h3>
-                    <p class="mt-1.5 text-sm text-ink/55">{{ t.d }}</p>
+                <!-- Design services -->
+                <div class="group rounded-2xl border border-paper-300 bg-white p-7 shadow-sm transition duration-300 hover:-translate-y-1.5 hover:shadow-xl">
+                    <svg viewBox="0 0 64 64" class="h-16 w-16 transition duration-300 group-hover:scale-105" aria-hidden="true">
+                        <rect x="3" y="3" width="58" height="58" rx="16" fill="#ecfdf3" />
+                        <path d="M32 16c-9.5 0-17 6.7-17 15 0 8.4 6 12.6 11.6 12.6 2.3 0 3.3-1.7 3.3-3.4 0-1.9 1.3-3 3.2-3H37c5.6 0 11-3.5 11-9.9C48 22.4 41 16 32 16z" fill="#0e9355" />
+                        <circle cx="23" cy="31" r="2.7" fill="#ffffff" />
+                        <circle cx="29" cy="25" r="2.7" fill="#c7f23d" />
+                        <circle cx="38" cy="26" r="2.7" fill="#2b3b55" />
+                        <circle cx="42" cy="34" r="2.7" fill="#ffffff" />
+                    </svg>
+                    <h3 class="mt-5 font-semibold text-ink">Design services</h3>
+                    <p class="mt-1.5 text-sm text-ink/55">Let our experts design it for you.</p>
+                </div>
+                <!-- Logo maker -->
+                <div class="group rounded-2xl border border-paper-300 bg-white p-7 shadow-sm transition duration-300 hover:-translate-y-1.5 hover:shadow-xl">
+                    <svg viewBox="0 0 64 64" class="h-16 w-16 transition duration-300 group-hover:scale-105" aria-hidden="true">
+                        <rect x="3" y="3" width="58" height="58" rx="16" fill="#eef2f9" />
+                        <path d="M32 14l15 5.2v9.6c0 9.7-6.4 16.2-15 19.2-8.6-3-15-9.5-15-19.2v-9.6z" fill="#2b3b55" />
+                        <path d="M32 23l3.2 6.6 7.3.6-5.5 4.8 1.7 7.1L32 44.4l-6.7 3.7 1.7-7.1-5.5-4.8 7.3-.6z" fill="#c7f23d" />
+                    </svg>
+                    <h3 class="mt-5 font-semibold text-ink">Logo maker</h3>
+                    <p class="mt-1.5 text-sm text-ink/55">Create a logo in minutes.</p>
+                </div>
+                <!-- Free templates -->
+                <div class="group rounded-2xl border border-paper-300 bg-white p-7 shadow-sm transition duration-300 hover:-translate-y-1.5 hover:shadow-xl">
+                    <svg viewBox="0 0 64 64" class="h-16 w-16 transition duration-300 group-hover:scale-105" aria-hidden="true">
+                        <rect x="3" y="3" width="58" height="58" rx="16" fill="#ecfdf3" />
+                        <rect x="27" y="17" width="20" height="28" rx="3" fill="#2b3b55" />
+                        <rect x="19" y="21" width="20" height="28" rx="3" fill="#0e9355" />
+                        <rect x="23" y="27" width="12" height="2.6" rx="1.3" fill="#ffffff" />
+                        <rect x="23" y="32.5" width="12" height="2.6" rx="1.3" fill="#ffffff" opacity="0.65" />
+                        <rect x="23" y="38" width="8" height="2.6" rx="1.3" fill="#c7f23d" />
+                    </svg>
+                    <h3 class="mt-5 font-semibold text-ink">Free templates</h3>
+                    <p class="mt-1.5 text-sm text-ink/55">200+ professional designs.</p>
+                </div>
+                <!-- Order samples -->
+                <div class="group rounded-2xl border border-paper-300 bg-white p-7 shadow-sm transition duration-300 hover:-translate-y-1.5 hover:shadow-xl">
+                    <svg viewBox="0 0 64 64" class="h-16 w-16 transition duration-300 group-hover:scale-105" aria-hidden="true">
+                        <rect x="3" y="3" width="58" height="58" rx="16" fill="#eef2f9" />
+                        <g transform="rotate(-22 31 47)"><rect x="26" y="20" width="10" height="28" rx="3" fill="#2b3b55" /></g>
+                        <g transform="rotate(-1 31 47)"><rect x="26" y="20" width="10" height="28" rx="3" fill="#0e9355" /></g>
+                        <g transform="rotate(20 31 47)"><rect x="26" y="20" width="10" height="28" rx="3" fill="#c7f23d" /></g>
+                        <circle cx="31" cy="47" r="2.5" fill="#2b3b55" />
+                    </svg>
+                    <h3 class="mt-5 font-semibold text-ink">Order samples</h3>
+                    <p class="mt-1.5 text-sm text-ink/55">Feel the quality before you buy.</p>
                 </div>
             </div>
         </section>

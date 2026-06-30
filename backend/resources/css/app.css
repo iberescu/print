@@ -54,6 +54,19 @@
         background-color: var(--color-lime-accent);
         color: var(--color-navy);
     }
+
+    /* Uniform small radius across the UI (design spec) */
+    *, *::before, *::after {
+        border-radius: 3px !important;
+    }
+
+    /* Pointer cursor on every interactive element */
+    a, button, [role="button"], label, summary, select {
+        cursor: pointer;
+    }
+    button:disabled, [disabled] {
+        cursor: not-allowed;
+    }
 }
 
 @layer utilities {
@@ -64,5 +77,23 @@
 
     .text-balance {
         text-wrap: balance;
+    }
+
+    /* Breathing room above the soft-grey section bands */
+    section.bg-paper-200 {
+        margin-top: 2.5rem;
+    }
+    @media (min-width: 640px) {
+        section.bg-paper-200 {
+            margin-top: 4rem;
+        }
+    }
+
+    /* Creative print-style divider — perforated "tear here" line with brand dots */
+    .print-divider {
+        height: 16px;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='30' height='16'%3E%3Crect x='2' y='7' width='13' height='2' rx='1' fill='%23ccd3df'/%3E%3Ccircle cx='22' cy='8' r='1.5' fill='%230e9355'/%3E%3C/svg%3E");
+        background-repeat: repeat-x;
+        background-position: center;
     }
 }
