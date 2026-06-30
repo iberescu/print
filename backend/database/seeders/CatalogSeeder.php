@@ -49,10 +49,11 @@ class CatalogSeeder extends Seeder
 
                 foreach (array_values($quantities) as $qi => $q) {
                     $product->quantities()->create([
-                        'quantity'   => $q[0],
-                        'unit_price' => $q[1],
-                        'is_default' => $q[2] ?? false,
-                        'sort_order' => $qi,
+                        'quantity'    => $q[0],
+                        'unit_price'  => $q[1],
+                        'is_default'  => $q[2] ?? false,
+                        'total_price' => $q[3] ?? null, // exact crawled total when provided
+                        'sort_order'  => $qi,
                     ]);
                 }
             }
@@ -76,26 +77,27 @@ class CatalogSeeder extends Seeder
                         'options' => [
                             ['name' => 'Paper Stock', 'values' => [
                                 ['label' => 'Matte', 'is_default' => true],
-                                ['label' => 'Glossy'],
-                                ['label' => 'Premium Matte', 'price_delta' => 5, 'badge' => $rec, 'description' => 'Sturdy, high-end feel'],
-                                ['label' => 'Recycled', 'price_delta' => 3],
+                                ['label' => 'Glossy', 'price_delta' => 1],
+                                ['label' => 'Premium Matte', 'price_delta' => 13, 'badge' => $rec, 'description' => 'Sturdy, high-end feel'],
+                                ['label' => 'Recycled', 'price_delta' => 1],
                             ]],
                             ['name' => 'Corners', 'values' => [
                                 ['label' => 'Square', 'is_default' => true],
-                                ['label' => 'Rounded', 'price_delta' => 4],
+                                ['label' => 'Rounded', 'price_delta' => 7],
                             ]],
                         ],
-                        'quantities' => [[50, 0.20, true], [100, 0.16], [250, 0.10], [500, 0.08], [1000, 0.06]],
+                        // Exact Vistaprint "Matte Business Cards" tiers (crawled snapshot).
+                        'quantities' => [[50, 0.20, true, 10.00], [100, 0.15, false, 14.99], [250, 0.08, false, 19.99], [500, 0.05, false, 24.99], [1000, 0.04, false, 39.99]],
                     ],
                     [
-                        'name' => 'Premium Business Cards', 'from_price' => 20.00,
+                        'name' => 'Premium Business Cards', 'from_price' => 22.99,
                         'tagline' => 'Thicker stock and luxe finishes that feel the part.',
                         'description' => 'Heavyweight cards with soft-touch and premium finish options.',
                         'options' => [
                             ['name' => 'Paper Stock', 'values' => [
                                 ['label' => 'Premium', 'is_default' => true],
-                                ['label' => 'Premium Plus', 'price_delta' => 7, 'badge' => $rec, 'description' => 'Noticeably thicker & heavier'],
-                                ['label' => 'Soft Touch', 'price_delta' => 12, 'description' => 'Velvety suede-like coating'],
+                                ['label' => 'Premium Plus', 'price_delta' => 5, 'badge' => $rec, 'description' => 'Noticeably thicker & heavier'],
+                                ['label' => 'Soft Touch', 'price_delta' => 6, 'description' => 'Velvety suede-like coating'],
                             ]],
                             ['name' => 'Finish', 'values' => [
                                 ['label' => 'Matte', 'is_default' => true],
@@ -103,22 +105,24 @@ class CatalogSeeder extends Seeder
                                 ['label' => 'Soft-Touch', 'price_delta' => 3],
                             ]],
                         ],
-                        'quantities' => [[50, 0.40, true], [100, 0.30], [250, 0.22], [500, 0.18], [1000, 0.14]],
+                        // Exact Vistaprint "Premium Plus Business Cards" tiers (crawled snapshot).
+                        'quantities' => [[50, 0.46, true, 22.99], [100, 0.28, false, 27.99], [250, 0.16, false, 38.99], [500, 0.10, false, 46.99], [1000, 0.08, false, 79.99]],
                     ],
                     [
-                        'name' => 'Rounded Corner Business Cards', 'from_price' => 15.00,
+                        'name' => 'Rounded Corner Business Cards', 'from_price' => 16.00,
                         'tagline' => 'Soft, modern corners that stand out.',
                         'description' => 'Smooth rounded corners on durable card stock.',
                         'options' => [
                             ['name' => 'Paper Stock', 'values' => [
-                                ['label' => 'Matte', 'is_default' => true], ['label' => 'Glossy'],
+                                ['label' => 'Matte', 'is_default' => true], ['label' => 'Glossy', 'price_delta' => 1],
                             ]],
                             ['name' => 'Size', 'values' => [
                                 ['label' => 'Standard 3.5×2"', 'is_default' => true],
-                                ['label' => 'Square 2.5×2.5"', 'price_delta' => 2],
+                                ['label' => 'Square 2.5×2.5"', 'price_delta' => 11],
                             ]],
                         ],
-                        'quantities' => [[50, 0.30, true], [100, 0.24], [250, 0.16], [500, 0.12]],
+                        // Exact Vistaprint "Rounded Corner Business Cards" tiers (crawled snapshot).
+                        'quantities' => [[50, 0.32, true, 16.00], [100, 0.23, false, 22.99], [250, 0.13, false, 31.99], [500, 0.08, false, 39.99], [1000, 0.07, false, 65.99]],
                     ],
                     [
                         'name' => 'Folded Business Cards', 'from_price' => 25.00,

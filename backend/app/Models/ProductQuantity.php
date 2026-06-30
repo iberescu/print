@@ -10,8 +10,9 @@ class ProductQuantity extends Model
     protected $guarded = [];
 
     protected $casts = [
-        'unit_price' => 'decimal:4',
-        'is_default' => 'boolean',
+        'unit_price'  => 'decimal:4',
+        'total_price' => 'decimal:2',
+        'is_default'  => 'boolean',
     ];
 
     public function product(): BelongsTo
@@ -21,6 +22,9 @@ class ProductQuantity extends Model
 
     public function totalPrice(): float
     {
-        return round($this->quantity * (float) $this->unit_price, 2);
+        // Prefer an exact crawled total; otherwise derive from the per-unit price.
+        return $this->total_price !== null
+            ? (float) $this->total_price
+            : round($this->quantity * (float) $this->unit_price, 2);
     }
 }
