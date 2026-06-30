@@ -20,7 +20,7 @@ const logout = () => router.post('/logout');
         <div class="bg-navy text-paper">
             <div class="mx-auto flex max-w-7xl items-center justify-between px-4 py-2.5 text-[13px] sm:px-8">
                 <span class="flex items-center gap-2.5 font-medium">
-                    <svg viewBox="0 0 26 22" class="h-5 w-auto shrink-0 text-lime-accent" fill="currentColor" aria-hidden="true">
+                    <svg viewBox="0 0 26 22" class="h-5 w-auto shrink-0 text-white" fill="currentColor" aria-hidden="true">
                         <rect x="0" y="6" width="5" height="1.8" rx="0.9" opacity="0.75" />
                         <rect x="1" y="10" width="4" height="1.8" rx="0.9" opacity="0.5" />
                         <rect x="6" y="4" width="10" height="11" rx="1.6" />
