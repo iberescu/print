@@ -24,6 +24,9 @@
     /* Accent — fresh lime */
     --color-lime-accent: #c7f23d;
 
+    /* Brand blue — the logo's blue, for primary CTAs */
+    --color-brand-blue: #398aff;
+
     /* Navy — premium deep-blue surface (brand background) */
     --color-navy: #2b3b55;
     --color-navy-600: #36486a;

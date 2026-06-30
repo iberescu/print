@@ -12,11 +12,10 @@ const hero = props.slides[0] ?? {};
             <div class="absolute inset-0 bg-gradient-to-r from-navy/95 via-navy/65 to-navy/10"></div>
             <div class="absolute inset-0 flex items-center">
                 <div class="max-w-xl px-8 text-white sm:px-16">
-                    <p class="inline-block bg-white/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-widest text-lime-accent ring-1 ring-white/15 backdrop-blur-sm sm:text-sm">{{ hero.eyebrow }}</p>
-                    <h1 class="mt-5 font-display text-4xl font-extrabold leading-[1.04] tracking-tight sm:text-6xl">{{ hero.title }}</h1>
+                    <h1 class="font-display text-4xl font-extrabold leading-[1.04] tracking-tight sm:text-6xl">{{ hero.title }}</h1>
                     <p class="mt-4 max-w-md text-base text-white/75 sm:mt-5 sm:text-lg">{{ hero.text }}</p>
                     <div class="mt-7 flex flex-wrap items-center gap-3 sm:mt-9">
-                        <Link :href="hero.href" class="bg-lime-accent px-8 py-3.5 font-semibold text-navy shadow-lg shadow-lime-accent/20 transition hover:brightness-95">{{ hero.cta }}</Link>
+                        <Link :href="hero.href" class="bg-brand-blue px-8 py-3.5 font-semibold text-white shadow-lg shadow-brand-blue/30 transition hover:brightness-110">{{ hero.cta }}</Link>
                         <Link href="/category/business-cards" class="border border-white/30 px-7 py-3.5 font-semibold text-white backdrop-blur-sm transition hover:bg-white/10">Business cards</Link>
                     </div>
                 </div>
