@@ -16,10 +16,17 @@ const mobileMenuOpen = ref(false);
     <div class="flex min-h-screen flex-col bg-paper">
         <!-- utility bar -->
         <div class="bg-navy text-paper">
-            <div class="mx-auto flex max-w-7xl items-center justify-between px-6 py-2 text-[13px]">
-                <span class="flex items-center gap-2 font-medium">
-                    <svg class="h-4 w-4 text-lime-accent" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 7h11v9H3zM14 10h4l3 3v3h-7" stroke-linecap="round" stroke-linejoin="round" /></svg>
-                    Free shipping on orders over ${{ threshold }}
+            <div class="mx-auto flex max-w-7xl items-center justify-between px-4 py-2.5 text-[13px] sm:px-8">
+                <span class="flex items-center gap-2.5 font-medium">
+                    <svg viewBox="0 0 26 22" class="h-5 w-auto shrink-0 text-lime-accent" fill="currentColor" aria-hidden="true">
+                        <rect x="0" y="6" width="5" height="1.8" rx="0.9" opacity="0.75" />
+                        <rect x="1" y="10" width="4" height="1.8" rx="0.9" opacity="0.5" />
+                        <rect x="6" y="4" width="10" height="11" rx="1.6" />
+                        <path d="M16 8h3.3c.5 0 .97.23 1.28.63L23 12v3h-7z" />
+                        <circle cx="10" cy="16.5" r="2.3" /><circle cx="10" cy="16.5" r="0.9" fill="#2b3b55" />
+                        <circle cx="19" cy="16.5" r="2.3" /><circle cx="19" cy="16.5" r="0.9" fill="#2b3b55" />
+                    </svg>
+                    <span class="text-white"><span class="font-semibold">Free shipping</span> on orders over <span class="font-semibold">${{ threshold }}</span></span>
                 </span>
                 <nav class="hidden items-center gap-5 text-paper/80 sm:flex">
                     <a href="#" class="hover:text-paper">Help center</a>
