@@ -22,8 +22,9 @@ class CheckoutController extends Controller
         }
 
         return Inertia::render('Checkout', [
-            'items'   => $this->cart->items(),
-            'summary' => $this->summary(),
+            'items'    => $this->cart->items(),
+            'summary'  => $this->summary(),
+            'customer' => ['name' => auth()->user()?->name, 'email' => auth()->user()?->email],
         ]);
     }
 

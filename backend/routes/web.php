@@ -6,6 +6,8 @@ use App\Http\Controllers\Admin\DashboardController as AdminDashboard;
 use App\Http\Controllers\Admin\OrderController as AdminOrders;
 use App\Http\Controllers\Admin\ProductController as AdminProducts;
 use App\Http\Controllers\Admin\SurfaceController as AdminSurfaces;
+use App\Http\Controllers\AccountController;
+use App\Http\Controllers\Auth\AuthController as CustomerAuth;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\DesignController;
@@ -34,9 +36,21 @@ Route::get('/upsell', [UpsellController::class, 'show'])->name('upsell.show');
 Route::post('/upsell/add/{product}', [UpsellController::class, 'add'])->name('upsell.add');
 Route::post('/upsell/next', [UpsellController::class, 'next'])->name('upsell.next');
 
-// Checkout + Stripe (req 14)
-Route::get('/checkout', [CheckoutController::class, 'show'])->name('checkout');
-Route::post('/checkout', [CheckoutController::class, 'place'])->name('checkout.place');
+// Customer accounts — Google + email/password (req: login before checkout)
+Route::get('/login', [CustomerAuth::class, 'showLogin'])->name('login');
+Route::post('/login', [CustomerAuth::class, 'login'])->name('login.attempt');
+Route::get('/register', [CustomerAuth::class, 'showRegister'])->name('register');
+Route::post('/register', [CustomerAuth::class, 'register'])->name('register.store');
+Route::get('/auth/google', [CustomerAuth::class, 'redirectToGoogle'])->name('auth.google');
+Route::get('/auth/google/callback', [CustomerAuth::class, 'handleGoogleCallback']);
+Route::post('/logout', [CustomerAuth::class, 'logout'])->middleware('auth')->name('logout');
+Route::get('/account', [AccountController::class, 'show'])->middleware('auth')->name('account');
+
+// Checkout + Stripe (req 14) — must be signed in to check out
+Route::middleware('auth')->group(function () {
+    Route::get('/checkout', [CheckoutController::class, 'show'])->name('checkout');
+    Route::post('/checkout', [CheckoutController::class, 'place'])->name('checkout.place');
+});
 Route::get('/checkout/success', [CheckoutController::class, 'success'])->name('checkout.success');
 Route::post('/stripe/webhook', [CheckoutController::class, 'webhook'])->name('stripe.webhook');
 
@@ -45,7 +59,7 @@ Route::get('/feed/google.xml', [FeedController::class, 'google'])->name('feed.go
 Route::get('/feed/rtbhouse.xml', [FeedController::class, 'rtbhouse'])->name('feed.rtbhouse');
 
 // Admin dashboard + PIM
-Route::get('/admin/login', [AdminAuth::class, 'show'])->name('login');
+Route::get('/admin/login', [AdminAuth::class, 'show'])->name('admin.login.show');
 Route::post('/admin/login', [AdminAuth::class, 'login'])->name('admin.login');
 Route::post('/admin/logout', [AdminAuth::class, 'logout'])->name('admin.logout');
 
