@@ -22,37 +22,7 @@ const slides = [
 <template>
     <Head title="Custom Printing for Business" />
     <StoreLayout>
-        <HeroSlider :slides="slides" />
-
-        <!-- trust strip -->
-        <section class="border-y border-paper-300 bg-paper-200">
-            <div class="mx-auto grid max-w-7xl grid-cols-2 gap-x-6 gap-y-7 px-6 py-9 md:grid-cols-4 sm:px-8">
-                <div class="flex items-center gap-3.5">
-                    <span class="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-brand-50 text-brand-600">
-                        <svg viewBox="0 0 24 24" class="h-6 w-6" fill="currentColor" aria-hidden="true"><path d="M12 2.5l2.95 5.98 6.6.96-4.78 4.66 1.13 6.57L12 17.56l-5.9 3.1 1.13-6.57L2.45 9.44l6.6-.96z" /></svg>
-                    </span>
-                    <div><p class="font-semibold leading-tight text-ink">4.8 / 5</p><p class="text-sm text-ink/55">12,000+ reviews</p></div>
-                </div>
-                <div class="flex items-center gap-3.5">
-                    <span class="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-brand-50 text-brand-600">
-                        <svg viewBox="0 0 24 24" class="h-6 w-6" fill="currentColor" aria-hidden="true"><rect x="2" y="6.5" width="11" height="8.5" rx="1.5" /><path d="M13.5 9.5h3.3c.34 0 .66.17.85.46L20.6 13v2h-7.1z" /><circle cx="6.7" cy="17" r="2" /><circle cx="16.8" cy="17" r="2" /></svg>
-                    </span>
-                    <div><p class="font-semibold leading-tight text-ink">Free shipping</p><p class="text-sm text-ink/55">on orders over ${{ freeShippingThreshold }}</p></div>
-                </div>
-                <div class="flex items-center gap-3.5">
-                    <span class="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-brand-50 text-brand-600">
-                        <svg viewBox="0 0 24 24" class="h-6 w-6" fill="currentColor" aria-hidden="true"><path d="M13 2L4.5 13.2c-.4.5 0 1.3.7 1.3H10l-1 7.5 8.8-11.6c.4-.5 0-1.3-.7-1.3H12z" /></svg>
-                    </span>
-                    <div><p class="font-semibold leading-tight text-ink">Fast turnaround</p><p class="text-sm text-ink/55">2-day options</p></div>
-                </div>
-                <div class="flex items-center gap-3.5">
-                    <span class="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-brand-50 text-brand-600">
-                        <svg viewBox="0 0 24 24" class="h-6 w-6" aria-hidden="true"><path d="M12 2l8 3v6c0 5-3.4 8.5-8 10-4.6-1.5-8-5-8-10V5z" fill="currentColor" /><path d="M8.4 12.2l2.5 2.5 4.7-5" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" /></svg>
-                    </span>
-                    <div><p class="font-semibold leading-tight text-ink">100% guarantee</p><p class="text-sm text-ink/55">love it or reprint</p></div>
-                </div>
-            </div>
-        </section>
+        <HeroSlider :slides="slides" :threshold="freeShippingThreshold" />
 
         <!-- explore all categories -->
         <section id="categories" class="mx-auto max-w-7xl px-6 py-16 sm:px-8 sm:py-20">
