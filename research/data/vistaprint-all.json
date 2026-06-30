@@ -1,0 +1,1145 @@
+[
+  {
+    "ourCategory": "business-cards",
+    "url": "https://www.vistaprint.com/business-cards/matte",
+    "isProduct": true,
+    "title": "Matte Business Cards",
+    "category": "Business Cards",
+    "price": 14.99,
+    "options": [
+      {
+        "name": "Shape",
+        "values": []
+      },
+      {
+        "name": "Corners",
+        "values": []
+      }
+    ],
+    "quantities": [
+      {
+        "quantity": 50,
+        "totalPrice": 10,
+        "perUnit": 0.2
+      },
+      {
+        "quantity": 100,
+        "totalPrice": 14.99,
+        "perUnit": 0.15
+      },
+      {
+        "quantity": 250,
+        "totalPrice": 19.99,
+        "perUnit": 0.08
+      },
+      {
+        "quantity": 500,
+        "totalPrice": 24.99,
+        "perUnit": 0.05
+      },
+      {
+        "quantity": 1000,
+        "totalPrice": 39.99,
+        "perUnit": 0.04
+      }
+    ],
+    "screenshot": "research\\data\\shots-all\\01-matte.png"
+  },
+  {
+    "ourCategory": "business-cards",
+    "url": "https://www.vistaprint.com/business-cards/glossy",
+    "isProduct": true,
+    "title": "Glossy Business Cards",
+    "category": "Business Cards",
+    "price": 15.99,
+    "options": [
+      {
+        "name": "Shape",
+        "values": []
+      },
+      {
+        "name": "Corners",
+        "values": []
+      }
+    ],
+    "quantities": [
+      {
+        "quantity": 50,
+        "totalPrice": 10,
+        "perUnit": 0.2
+      },
+      {
+        "quantity": 100,
+        "totalPrice": 15.99,
+        "perUnit": 0.16
+      },
+      {
+        "quantity": 250,
+        "totalPrice": 21.99,
+        "perUnit": 0.09
+      },
+      {
+        "quantity": 500,
+        "totalPrice": 27.99,
+        "perUnit": 0.06
+      },
+      {
+        "quantity": 1000,
+        "totalPrice": 45.99,
+        "perUnit": 0.05
+      }
+    ],
+    "screenshot": "research\\data\\shots-all\\02-glossy.png"
+  },
+  {
+    "ourCategory": "business-cards",
+    "url": "https://www.vistaprint.com/business-cards/uncoated",
+    "isProduct": true,
+    "title": "Uncoated Business Cards",
+    "category": "Business Cards",
+    "price": 15.99,
+    "options": [
+      {
+        "name": "Shape",
+        "values": [
+          {
+            "label": "Standard",
+            "priceDelta": 0
+          },
+          {
+            "label": "Square",
+            "priceDelta": 11
+          }
+        ]
+      },
+      {
+        "name": "Corners",
+        "values": [
+          {
+            "label": "Standard",
+            "priceDelta": 0
+          },
+          {
+            "label": "Rounded",
+            "priceDelta": 7
+          }
+        ]
+      }
+    ],
+    "quantities": [
+      {
+        "quantity": 100,
+        "totalPrice": 15.99,
+        "perUnit": 0.16
+      }
+    ],
+    "screenshot": "research\\data\\shots-all\\03-uncoated.png"
+  },
+  {
+    "ourCategory": "business-cards",
+    "url": "https://www.vistaprint.com/business-cards/rounded-corner",
+    "isProduct": true,
+    "title": "Rounded Corner Business Cards",
+    "category": "Business Cards",
+    "price": 22.99,
+    "options": [
+      {
+        "name": "Shape",
+        "values": [
+          {
+            "label": "Select...",
+            "priceDelta": 0
+          }
+        ]
+      }
+    ],
+    "quantities": [
+      {
+        "quantity": 50,
+        "totalPrice": 16,
+        "perUnit": 0.32
+      },
+      {
+        "quantity": 100,
+        "totalPrice": 22.99,
+        "perUnit": 0.23
+      },
+      {
+        "quantity": 250,
+        "totalPrice": 31.99,
+        "perUnit": 0.13
+      },
+      {
+        "quantity": 500,
+        "totalPrice": 39.99,
+        "perUnit": 0.08
+      },
+      {
+        "quantity": 1000,
+        "totalPrice": 65.99,
+        "perUnit": 0.07
+      }
+    ],
+    "screenshot": "research\\data\\shots-all\\04-rounded-corner.png"
+  },
+  {
+    "ourCategory": "other",
+    "url": "https://www.vistaprint.com/marketing-materials/packaging-inserts",
+    "isProduct": true,
+    "title": "Packaging Insert Cards",
+    "category": "Marketing Materials",
+    "price": 41.99,
+    "options": [
+      {
+        "name": "Orientation",
+        "values": [
+          {
+            "label": "Horizontal",
+            "priceDelta": 0
+          }
+        ]
+      },
+      {
+        "name": "Paper Thickness",
+        "values": [
+          {
+            "label": "Standard",
+            "priceDelta": 0
+          }
+        ]
+      },
+      {
+        "name": "Paper Stock",
+        "values": [
+          {
+            "label": "Glossy (front only)",
+            "priceDelta": 0
+          }
+        ]
+      },
+      {
+        "name": "Corners",
+        "values": [
+          {
+            "label": "Standard",
+            "priceDelta": 0
+          }
+        ]
+      }
+    ],
+    "quantities": [
+      {
+        "quantity": 100,
+        "totalPrice": 41.99,
+        "perUnit": 0.42
+      }
+    ],
+    "screenshot": "research\\data\\shots-all\\05-packaging-inserts.png"
+  },
+  {
+    "ourCategory": "marketing-materials",
+    "url": "https://www.vistaprint.com/marketing-materials/standard-postcards",
+    "isProduct": true,
+    "title": "Standard Postcards",
+    "category": "Marketing Materials",
+    "price": 21.99,
+    "options": [
+      {
+        "name": "Product Orientation",
+        "values": [
+          {
+            "label": "Horizontal",
+            "priceDelta": 0
+          },
+          {
+            "label": "Vertical",
+            "priceDelta": 0
+          }
+        ]
+      },
+      {
+        "name": "Size",
+        "values": [
+          {
+            "label": "4.2\" x 5.5\"",
+            "priceDelta": 0
+          }
+        ]
+      },
+      {
+        "name": "Paper Stock",
+        "values": []
+      },
+      {
+        "name": "Corners",
+        "values": []
+      }
+    ],
+    "quantities": [
+      {
+        "quantity": 100,
+        "totalPrice": 21.99,
+        "perUnit": 0.22
+      }
+    ],
+    "screenshot": "research\\data\\shots-all\\06-standard-postcards.png"
+  },
+  {
+    "ourCategory": "marketing-materials",
+    "url": "https://www.vistaprint.com/marketing-materials/rounded-corner-postcards",
+    "isProduct": true,
+    "title": "Rounded Corner Postcards",
+    "category": "Marketing Materials",
+    "price": 31.99,
+    "options": [
+      {
+        "name": "Orientation",
+        "values": []
+      },
+      {
+        "name": "Size",
+        "values": [
+          {
+            "label": "4.2\" x 5.5\"",
+            "priceDelta": 0
+          }
+        ]
+      },
+      {
+        "name": "Paper Thickness",
+        "values": []
+      },
+      {
+        "name": "Paper Stocks",
+        "values": []
+      }
+    ],
+    "quantities": [
+      {
+        "quantity": 100,
+        "totalPrice": 31.99,
+        "perUnit": 0.32
+      }
+    ],
+    "screenshot": "research\\data\\shots-all\\07-rounded-corner-postcards.png"
+  },
+  {
+    "ourCategory": "marketing-materials",
+    "url": "https://www.vistaprint.com/marketing-materials/die-cut-postcards",
+    "isProduct": true,
+    "title": "Die-Cut Postcards",
+    "category": "Marketing Materials",
+    "price": 74.99,
+    "options": [
+      {
+        "name": "Shapes",
+        "values": []
+      },
+      {
+        "name": "Orientation",
+        "values": []
+      },
+      {
+        "name": "Paper Thickness",
+        "values": []
+      },
+      {
+        "name": "Paper Stock",
+        "values": []
+      }
+    ],
+    "quantities": [
+      {
+        "quantity": 100,
+        "totalPrice": 74.99,
+        "perUnit": 0.75
+      }
+    ],
+    "screenshot": "research\\data\\shots-all\\08-die-cut-postcards.png"
+  },
+  {
+    "ourCategory": "marketing-materials",
+    "url": "https://www.vistaprint.com/marketing-materials/mailing-services-postcards",
+    "isProduct": true,
+    "title": "Postcard Mailing Services",
+    "category": "Marketing Materials",
+    "price": 55.99,
+    "options": [
+      {
+        "name": "Size",
+        "values": []
+      },
+      {
+        "name": "Estimated quantity",
+        "values": [
+          {
+            "label": "50 Recipients",
+            "priceDelta": 0
+          }
+        ]
+      }
+    ],
+    "quantities": [
+      {
+        "quantity": 50,
+        "totalPrice": 55.99,
+        "perUnit": 1.12
+      }
+    ],
+    "screenshot": "research\\data\\shots-all\\09-mailing-services-postcards.png"
+  },
+  {
+    "ourCategory": "other",
+    "url": "https://www.vistaprint.com/marketing-materials/booklets/saddle-stitch",
+    "isProduct": true,
+    "title": "Saddle-Stitch Booklets",
+    "category": "Booklets, Catalogs & Magazines",
+    "price": 5.99,
+    "options": [
+      {
+        "name": "Size",
+        "values": [
+          {
+            "label": "5\" x 7\"",
+            "priceDelta": 0
+          }
+        ]
+      },
+      {
+        "name": "Product Orientation",
+        "values": [
+          {
+            "label": "Portrait",
+            "priceDelta": 0
+          }
+        ]
+      },
+      {
+        "name": "Page Count",
+        "values": [
+          {
+            "label": "8p (cover + 4 inside)",
+            "priceDelta": 0
+          }
+        ]
+      },
+      {
+        "name": "Binding Placement",
+        "values": [
+          {
+            "label": "Left Side",
+            "priceDelta": 0
+          }
+        ]
+      },
+      {
+        "name": "Inside Paper",
+        "values": [
+          {
+            "label": "Select...",
+            "priceDelta": 0
+          }
+        ]
+      },
+      {
+        "name": "Cover Paper",
+        "values": [
+          {
+            "label": "Select...",
+            "priceDelta": 0
+          }
+        ]
+      }
+    ],
+    "quantities": [
+      {
+        "quantity": 1,
+        "totalPrice": 5.99,
+        "perUnit": 5.99
+      }
+    ],
+    "screenshot": "research\\data\\shots-all\\10-saddle-stitch.png"
+  },
+  {
+    "ourCategory": "other",
+    "url": "https://www.vistaprint.com/marketing-materials/booklets/wire-bound",
+    "isProduct": true,
+    "title": "Wire-Bound Booklets",
+    "category": "Booklets, Catalogs & Magazines",
+    "price": 41.99,
+    "options": [
+      {
+        "name": "Size",
+        "values": [
+          {
+            "label": "8.5\" x 11\"",
+            "priceDelta": 0
+          }
+        ]
+      },
+      {
+        "name": "Orientation",
+        "values": [
+          {
+            "label": "Portrait",
+            "priceDelta": 0
+          },
+          {
+            "label": "Landscape",
+            "priceDelta": 0
+          }
+        ]
+      },
+      {
+        "name": "Binding Placement",
+        "values": [
+          {
+            "label": "Left Side",
+            "priceDelta": 0
+          },
+          {
+            "label": "Top",
+            "priceDelta": 0
+          }
+        ]
+      },
+      {
+        "name": "Cover Paper Stock",
+        "values": [
+          {
+            "label": "Standard Matte (80lb Text)",
+            "priceDelta": 0
+          }
+        ]
+      },
+      {
+        "name": "Inside Paper Stock",
+        "values": [
+          {
+            "label": "Standard Matte (80lb Text)",
+            "priceDelta": 0
+          }
+        ]
+      }
+    ],
+    "quantities": [
+      {
+        "quantity": 1,
+        "totalPrice": 41.99,
+        "perUnit": 41.99
+      }
+    ],
+    "screenshot": "research\\data\\shots-all\\11-wire-bound.png"
+  },
+  {
+    "ourCategory": "other",
+    "url": "https://www.vistaprint.com/marketing-materials/booklets/perfect-bound-booklets",
+    "isProduct": true,
+    "title": "Perfect-Bound Booklets",
+    "category": "Booklets, Catalogs & Magazines",
+    "price": 15,
+    "options": [
+      {
+        "name": "Size",
+        "values": [
+          {
+            "label": "8.5\" x 11\"",
+            "priceDelta": 0
+          }
+        ]
+      },
+      {
+        "name": "Orientation",
+        "values": [
+          {
+            "label": "Landscape",
+            "priceDelta": 0
+          },
+          {
+            "label": "Portrait",
+            "priceDelta": 0
+          }
+        ]
+      },
+      {
+        "name": "Inside Paper",
+        "values": [
+          {
+            "label": "Select...",
+            "priceDelta": 0
+          }
+        ]
+      },
+      {
+        "name": "Cover Paper",
+        "values": [
+          {
+            "label": "Select...",
+            "priceDelta": 0
+          }
+        ]
+      },
+      {
+        "name": "Cover Paper Lamination",
+        "values": [
+          {
+            "label": "None",
+            "priceDelta": 0
+          }
+        ]
+      }
+    ],
+    "quantities": [
+      {
+        "quantity": 1,
+        "totalPrice": 15,
+        "perUnit": 15
+      }
+    ],
+    "screenshot": "research\\data\\shots-all\\12-perfect-bound-booklets.png"
+  },
+  {
+    "ourCategory": "other",
+    "url": "https://www.vistaprint.com/marketing-materials/booklets/self-cover-booklets",
+    "isProduct": true,
+    "title": "Self-Cover Booklets",
+    "category": "Booklets, Catalogs & Magazines",
+    "price": 5.99,
+    "options": [
+      {
+        "name": "Size",
+        "values": [
+          {
+            "label": "5\" x 7\"",
+            "priceDelta": 0
+          }
+        ]
+      },
+      {
+        "name": "Product Orientation",
+        "values": [
+          {
+            "label": "Portrait",
+            "priceDelta": 0
+          }
+        ]
+      },
+      {
+        "name": "Page Count",
+        "values": [
+          {
+            "label": "8p (cover + 4 inside)",
+            "priceDelta": 0
+          }
+        ]
+      },
+      {
+        "name": "Binding Placement",
+        "values": [
+          {
+            "label": "Left Side",
+            "priceDelta": 0
+          }
+        ]
+      },
+      {
+        "name": "Paper Stock",
+        "values": [
+          {
+            "label": "Budget Glossy (70lb Text)",
+            "priceDelta": 0
+          }
+        ]
+      }
+    ],
+    "quantities": [
+      {
+        "quantity": 1,
+        "totalPrice": 5.99,
+        "perUnit": 5.99
+      }
+    ],
+    "screenshot": "research\\data\\shots-all\\13-self-cover-booklets.png"
+  },
+  {
+    "ourCategory": "other",
+    "url": "https://www.vistaprint.com/marketing-materials/custom-tickets",
+    "isProduct": true,
+    "title": "Custom Tickets",
+    "category": "Marketing Materials",
+    "price": 22.99,
+    "options": [
+      {
+        "name": "Size",
+        "values": []
+      },
+      {
+        "name": "Orientation",
+        "values": []
+      },
+      {
+        "name": "Perforation",
+        "values": []
+      },
+      {
+        "name": "Paper Stock",
+        "values": []
+      }
+    ],
+    "quantities": [
+      {
+        "quantity": 50,
+        "totalPrice": 22.99,
+        "perUnit": 0.46
+      }
+    ],
+    "screenshot": "research\\data\\shots-all\\14-custom-tickets.png"
+  },
+  {
+    "ourCategory": "stationery",
+    "url": "https://www.vistaprint.com/stationery/gift-certificates",
+    "isProduct": true,
+    "title": "Gift Certificates",
+    "category": "Personal Stationery",
+    "price": 14.99,
+    "options": [
+      {
+        "name": "Paper stocks",
+        "values": []
+      },
+      {
+        "name": "Corners",
+        "values": []
+      },
+      {
+        "name": "Paper Finish",
+        "values": []
+      }
+    ],
+    "quantities": [
+      {
+        "quantity": 20,
+        "totalPrice": 14.99,
+        "perUnit": 0.75
+      }
+    ],
+    "screenshot": "research\\data\\shots-all\\15-gift-certificates.png"
+  },
+  {
+    "ourCategory": "other",
+    "url": "https://www.vistaprint.com/marketing-materials/bookmarks",
+    "isProduct": true,
+    "title": "Custom Bookmarks",
+    "category": "Marketing Materials",
+    "price": 66,
+    "options": [],
+    "quantities": [
+      {
+        "quantity": 200,
+        "totalPrice": 66,
+        "perUnit": 0.33
+      }
+    ],
+    "screenshot": "research\\data\\shots-all\\16-bookmarks.png"
+  },
+  {
+    "ourCategory": "stationery",
+    "url": "https://www.vistaprint.com/stationery/letterhead",
+    "isProduct": true,
+    "title": "Company Letterhead",
+    "category": "Personal Stationery",
+    "price": 149.99,
+    "options": [],
+    "quantities": [
+      {
+        "quantity": 250,
+        "totalPrice": 149.99,
+        "perUnit": 0.6
+      }
+    ],
+    "screenshot": "research\\data\\shots-all\\17-letterhead.png"
+  },
+  {
+    "ourCategory": "other",
+    "url": "https://www.vistaprint.com/sample-kits/business-sample-kit",
+    "isProduct": true,
+    "title": "Free Business Sample Kit",
+    "category": "Sample Kits",
+    "price": 0,
+    "options": [],
+    "quantities": [
+      {
+        "quantity": 1,
+        "totalPrice": 0,
+        "perUnit": 0
+      }
+    ],
+    "screenshot": "research\\data\\shots-all\\18-business-sample-kit.png"
+  },
+  {
+    "ourCategory": "stationery",
+    "url": "https://www.vistaprint.com/stationery/stamps/self-inking-stamps",
+    "isProduct": true,
+    "title": "Self-Inking Stamps",
+    "category": "Stamps and Ink",
+    "price": 12.99,
+    "options": [
+      {
+        "name": "Size",
+        "values": [
+          {
+            "label": "Small (1.42\" x 0.47\")",
+            "priceDelta": 0
+          },
+          {
+            "label": "Medium (2.24\" x 0.83\")",
+            "priceDelta": 4
+          },
+          {
+            "label": "Large (3.00\" x 1.50\")",
+            "priceDelta": 8
+          }
+        ]
+      },
+      {
+        "name": "Ink Color",
+        "values": [
+          {
+            "label": "Black",
+            "priceDelta": 0
+          },
+          {
+            "label": "Blue",
+            "priceDelta": 0
+          },
+          {
+            "label": "Red",
+            "priceDelta": 0
+          }
+        ]
+      }
+    ],
+    "quantities": [
+      {
+        "quantity": 1,
+        "totalPrice": 12.99,
+        "perUnit": 12.99
+      }
+    ],
+    "screenshot": "research\\data\\shots-all\\19-self-inking-stamps.png"
+  },
+  {
+    "ourCategory": "stationery",
+    "url": "https://www.vistaprint.com/marketing-materials/presentation-folders",
+    "isProduct": true,
+    "title": "Presentation Folders",
+    "category": "Marketing Materials",
+    "price": 314.99,
+    "options": [
+      {
+        "name": "Size",
+        "values": []
+      },
+      {
+        "name": "Paper Thickness",
+        "values": []
+      },
+      {
+        "name": "Paper Stock",
+        "values": []
+      }
+    ],
+    "quantities": [
+      {
+        "quantity": 100,
+        "totalPrice": 314.99,
+        "perUnit": 3.15
+      }
+    ],
+    "screenshot": "research\\data\\shots-all\\20-presentation-folders.png"
+  },
+  {
+    "ourCategory": "signs-banners",
+    "url": "https://www.vistaprint.com/signs-banners/triangular-point-of-sale-displays",
+    "isProduct": true,
+    "title": "Triangular Point of Sale Displays",
+    "category": "Display Signs",
+    "price": 99.99,
+    "options": [
+      {
+        "name": "Material",
+        "values": []
+      }
+    ],
+    "quantities": [
+      {
+        "quantity": 1,
+        "totalPrice": 99.99,
+        "perUnit": 99.99
+      },
+      {
+        "quantity": 2,
+        "totalPrice": 177.77,
+        "perUnit": 88.89
+      },
+      {
+        "quantity": 3,
+        "totalPrice": 255.55,
+        "perUnit": 85.19
+      },
+      {
+        "quantity": 4,
+        "totalPrice": 333.33,
+        "perUnit": 83.34
+      },
+      {
+        "quantity": 5,
+        "totalPrice": 411.11,
+        "perUnit": 82.23
+      }
+    ],
+    "screenshot": "research\\data\\shots-all\\21-triangular-point-of-sale-displays.png"
+  },
+  {
+    "ourCategory": "stickers-labels",
+    "url": "https://www.vistaprint.com/labels-stickers/custom-stickers/single-stickers",
+    "isProduct": true,
+    "title": "Sticker Singles",
+    "category": "Custom Single Stickers",
+    "price": 103.99,
+    "options": [
+      {
+        "name": "Shape",
+        "values": [
+          {
+            "label": "Circle",
+            "priceDelta": 0
+          }
+        ]
+      },
+      {
+        "name": "Size",
+        "values": [
+          {
+            "label": "2\" x 2\"",
+            "priceDelta": 0
+          }
+        ]
+      },
+      {
+        "name": "Material",
+        "values": [
+          {
+            "label": "White Plastic (BOPP)",
+            "priceDelta": 0
+          }
+        ]
+      },
+      {
+        "name": "Product Orientation",
+        "values": [
+          {
+            "label": "Select...",
+            "priceDelta": 0
+          }
+        ]
+      }
+    ],
+    "quantities": [
+      {
+        "quantity": 200,
+        "totalPrice": 103.99,
+        "perUnit": 0.52
+      }
+    ],
+    "screenshot": "research\\data\\shots-all\\22-single-stickers.png"
+  },
+  {
+    "ourCategory": "stickers-labels",
+    "url": "https://www.vistaprint.com/labels-stickers/custom-stickers/die-cut-sticker-singles",
+    "isProduct": true,
+    "title": "Die-Cut Sticker Singles",
+    "category": "Custom Single Stickers",
+    "price": 103.99,
+    "options": [
+      {
+        "name": "Size",
+        "values": [
+          {
+            "label": "2\" x 2\"",
+            "priceDelta": 0
+          },
+          {
+            "label": "2.5\" x 2.5\"",
+            "priceDelta": 0
+          },
+          {
+            "label": "3\" x 3\"",
+            "priceDelta": 0
+          },
+          {
+            "label": "3.5\" x 3.5\"",
+            "priceDelta": 0
+          },
+          {
+            "label": "4\" x 4\"",
+            "priceDelta": 0
+          },
+          {
+            "label": "4.5\" x 4.5\"",
+            "priceDelta": 0
+          },
+          {
+            "label": "5\" x 5\"",
+            "priceDelta": 0
+          }
+        ]
+      },
+      {
+        "name": "Material",
+        "values": [
+          {
+            "label": "White Plastic (BOPP)",
+            "priceDelta": 0
+          },
+          {
+            "label": "White Paper",
+            "priceDelta": 0
+          },
+          {
+            "label": "Clear Plastic (BOPP)",
+            "priceDelta": 0
+          },
+          {
+            "label": "Holographic (BOPP)",
+            "priceDelta": 0
+          }
+        ]
+      }
+    ],
+    "quantities": [
+      {
+        "quantity": 10,
+        "totalPrice": 10,
+        "perUnit": 1
+      },
+      {
+        "quantity": 200,
+        "totalPrice": 103.99,
+        "perUnit": 0.52
+      }
+    ],
+    "screenshot": "research\\data\\shots-all\\23-die-cut-sticker-singles.png"
+  },
+  {
+    "ourCategory": "stickers-labels",
+    "url": "https://www.vistaprint.com/labels-stickers/custom-stickers/kiss-cut-stickers",
+    "isProduct": true,
+    "title": "Kiss-Cut Stickers",
+    "category": "Custom Single Stickers",
+    "price": 45,
+    "options": [
+      {
+        "name": "Size",
+        "values": [
+          {
+            "label": "3\" x 3\"",
+            "priceDelta": 0
+          },
+          {
+            "label": "3.5\" x 3.5\"",
+            "priceDelta": 7
+          },
+          {
+            "label": "4\" x 4\"",
+            "priceDelta": 15
+          },
+          {
+            "label": "4.5\"x4.5\"",
+            "priceDelta": 24
+          },
+          {
+            "label": "5\"x 5\"",
+            "priceDelta": 34
+          }
+        ]
+      },
+      {
+        "name": "Material",
+        "values": [
+          {
+            "label": "White Plastic",
+            "priceDelta": 0
+          },
+          {
+            "label": "Clear Plastic",
+            "priceDelta": 3.15
+          }
+        ]
+      }
+    ],
+    "quantities": [
+      {
+        "quantity": 25,
+        "totalPrice": 45,
+        "perUnit": 1.8
+      }
+    ],
+    "screenshot": "research\\data\\shots-all\\24-kiss-cut-stickers.png"
+  },
+  {
+    "ourCategory": "stickers-labels",
+    "url": "https://www.vistaprint.com/labels-stickers/custom-stickers/sheet-stickers",
+    "isProduct": true,
+    "title": "Sheet Stickers",
+    "category": "Sheet Labels & Stickers",
+    "price": 24.99,
+    "options": [
+      {
+        "name": "Shape",
+        "values": [
+          {
+            "label": "Custom (Die-Cut)",
+            "priceDelta": 0
+          },
+          {
+            "label": "Circle",
+            "priceDelta": 0
+          },
+          {
+            "label": "Oval",
+            "priceDelta": 0
+          },
+          {
+            "label": "Rounded Rectangle",
+            "priceDelta": 0
+          },
+          {
+            "label": "Rounded Square",
+            "priceDelta": 0
+          }
+        ]
+      },
+      {
+        "name": "Size",
+        "values": []
+      },
+      {
+        "name": "Product Orientation",
+        "values": []
+      },
+      {
+        "name": "Material",
+        "values": []
+      }
+    ],
+    "quantities": [
+      {
+        "quantity": 144,
+        "totalPrice": 24.99,
+        "perUnit": 0.18
+      }
+    ],
+    "screenshot": "research\\data\\shots-all\\25-sheet-stickers.png"
+  }
+]

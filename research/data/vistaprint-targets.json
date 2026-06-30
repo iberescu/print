@@ -1,0 +1,792 @@
+[
+  {
+    "ourSlug": "flyers",
+    "ourCategory": "marketing-materials",
+    "url": "https://www.vistaprint.com/marketing-materials/flyers",
+    "isProduct": true,
+    "title": "Custom Flyers",
+    "category": "Flyers",
+    "price": 45,
+    "options": [
+      {
+        "name": "Paper Thickness",
+        "values": []
+      },
+      {
+        "name": "Paper Stock",
+        "values": []
+      }
+    ],
+    "quantities": [
+      {
+        "quantity": 25,
+        "totalPrice": 9,
+        "perUnit": 0.36
+      },
+      {
+        "quantity": 50,
+        "totalPrice": 13,
+        "perUnit": 0.26
+      },
+      {
+        "quantity": 100,
+        "totalPrice": 20,
+        "perUnit": 0.2
+      },
+      {
+        "quantity": 250,
+        "totalPrice": 32.5,
+        "perUnit": 0.13
+      },
+      {
+        "quantity": 500,
+        "totalPrice": 45,
+        "perUnit": 0.09
+      },
+      {
+        "quantity": 750,
+        "totalPrice": 60,
+        "perUnit": 0.08
+      },
+      {
+        "quantity": 1000,
+        "totalPrice": 70,
+        "perUnit": 0.07
+      }
+    ],
+    "screenshot": "research\\data\\shots-targets\\flyers.png"
+  },
+  {
+    "ourSlug": "posters",
+    "ourCategory": "marketing-materials",
+    "url": "https://www.vistaprint.com/signs-posters/posters",
+    "isProduct": true,
+    "title": "Custom Posters",
+    "category": "Personalized Posters",
+    "price": 4.99,
+    "options": [
+      {
+        "name": "Orientation",
+        "values": [
+          {
+            "label": "Horizontal",
+            "priceDelta": 0
+          },
+          {
+            "label": "Vertical",
+            "priceDelta": 0
+          }
+        ]
+      },
+      {
+        "name": "Size",
+        "values": []
+      },
+      {
+        "name": "Paper Stock",
+        "values": [
+          {
+            "label": "Semi-Gloss",
+            "priceDelta": 0
+          }
+        ]
+      }
+    ],
+    "quantities": [
+      {
+        "quantity": 1,
+        "totalPrice": 4.99,
+        "perUnit": 4.99
+      },
+      {
+        "quantity": 2,
+        "totalPrice": 9,
+        "perUnit": 4.5
+      },
+      {
+        "quantity": 3,
+        "totalPrice": 12,
+        "perUnit": 4
+      },
+      {
+        "quantity": 4,
+        "totalPrice": 16,
+        "perUnit": 4
+      },
+      {
+        "quantity": 5,
+        "totalPrice": 19,
+        "perUnit": 3.8
+      },
+      {
+        "quantity": 10,
+        "totalPrice": 22,
+        "perUnit": 2.2
+      },
+      {
+        "quantity": 20,
+        "totalPrice": 40,
+        "perUnit": 2
+      }
+    ],
+    "screenshot": "research\\data\\shots-targets\\posters.png"
+  },
+  {
+    "ourSlug": "brochures",
+    "ourCategory": "marketing-materials",
+    "url": "https://www.vistaprint.com/marketing-materials/brochures/bi-fold",
+    "isProduct": true,
+    "title": "Bi-Fold Brochures",
+    "category": "Brochures",
+    "price": 19.99,
+    "options": [
+      {
+        "name": "Size",
+        "values": []
+      },
+      {
+        "name": "Paper Thickness",
+        "values": []
+      },
+      {
+        "name": "Paper Stock",
+        "values": []
+      }
+    ],
+    "quantities": [
+      {
+        "quantity": 25,
+        "totalPrice": 19.99,
+        "perUnit": 0.8
+      },
+      {
+        "quantity": 50,
+        "totalPrice": 40,
+        "perUnit": 0.8
+      },
+      {
+        "quantity": 100,
+        "totalPrice": 65,
+        "perUnit": 0.65
+      },
+      {
+        "quantity": 250,
+        "totalPrice": 120,
+        "perUnit": 0.48
+      },
+      {
+        "quantity": 500,
+        "totalPrice": 190,
+        "perUnit": 0.38
+      },
+      {
+        "quantity": 750,
+        "totalPrice": 225,
+        "perUnit": 0.3
+      },
+      {
+        "quantity": 1000,
+        "totalPrice": 250,
+        "perUnit": 0.25
+      }
+    ],
+    "screenshot": "research\\data\\shots-targets\\brochures.png"
+  },
+  {
+    "ourSlug": "postcards",
+    "ourCategory": "marketing-materials",
+    "url": "https://www.vistaprint.com/marketing-materials/standard-postcards",
+    "isProduct": true,
+    "title": "Standard Postcards",
+    "category": "Marketing Materials",
+    "price": 21.99,
+    "options": [
+      {
+        "name": "Product Orientation",
+        "values": [
+          {
+            "label": "Horizontal",
+            "priceDelta": 0
+          },
+          {
+            "label": "Vertical",
+            "priceDelta": 0
+          }
+        ]
+      },
+      {
+        "name": "Size",
+        "values": [
+          {
+            "label": "4.2\" x 5.5\"",
+            "priceDelta": 0
+          }
+        ]
+      },
+      {
+        "name": "Paper Stock",
+        "values": []
+      },
+      {
+        "name": "Corners",
+        "values": []
+      }
+    ],
+    "quantities": [
+      {
+        "quantity": 25,
+        "totalPrice": 15,
+        "perUnit": 0.6
+      },
+      {
+        "quantity": 50,
+        "totalPrice": 19,
+        "perUnit": 0.38
+      },
+      {
+        "quantity": 100,
+        "totalPrice": 21.99,
+        "perUnit": 0.22
+      },
+      {
+        "quantity": 250,
+        "totalPrice": 35,
+        "perUnit": 0.14
+      },
+      {
+        "quantity": 500,
+        "totalPrice": 45,
+        "perUnit": 0.09
+      },
+      {
+        "quantity": 750,
+        "totalPrice": 60,
+        "perUnit": 0.08
+      },
+      {
+        "quantity": 1000,
+        "totalPrice": 70,
+        "perUnit": 0.07
+      }
+    ],
+    "screenshot": "research\\data\\shots-targets\\postcards.png"
+  },
+  {
+    "ourSlug": "vinyl-banner",
+    "ourCategory": "signs-banners",
+    "url": "https://www.vistaprint.com/signs-banners/vinyl-banners",
+    "isProduct": true,
+    "title": "Vinyl Banners",
+    "category": "Hanging Banners",
+    "price": 6.99,
+    "options": [
+      {
+        "name": "Product Orientation",
+        "values": [
+          {
+            "label": "Horizontal",
+            "priceDelta": 0
+          },
+          {
+            "label": "Vertical",
+            "priceDelta": 0
+          }
+        ]
+      },
+      {
+        "name": "Size",
+        "values": [
+          {
+            "label": "Custom",
+            "priceDelta": 0
+          }
+        ]
+      },
+      {
+        "name": "Printed Sides",
+        "values": [
+          {
+            "label": "Single-Sided",
+            "priceDelta": 0
+          }
+        ]
+      }
+    ],
+    "quantities": [
+      {
+        "quantity": 1,
+        "totalPrice": 6.99,
+        "perUnit": 6.99
+      },
+      {
+        "quantity": 2,
+        "totalPrice": 9,
+        "perUnit": 4.5
+      },
+      {
+        "quantity": 3,
+        "totalPrice": 13.02,
+        "perUnit": 4.34
+      },
+      {
+        "quantity": 4,
+        "totalPrice": 17,
+        "perUnit": 4.25
+      },
+      {
+        "quantity": 5,
+        "totalPrice": 21,
+        "perUnit": 4.2
+      },
+      {
+        "quantity": 6,
+        "totalPrice": 25.02,
+        "perUnit": 4.17
+      },
+      {
+        "quantity": 7,
+        "totalPrice": 29.05,
+        "perUnit": 4.15
+      }
+    ],
+    "screenshot": "research\\data\\shots-targets\\vinyl-banner.png"
+  },
+  {
+    "ourSlug": "yard-signs",
+    "ourCategory": "signs-banners",
+    "url": "https://www.vistaprint.com/signs-banners/yard-signs",
+    "isProduct": true,
+    "title": "Yard Signs",
+    "category": "Rigid Signs",
+    "price": 7.99,
+    "options": [
+      {
+        "name": "Shapes",
+        "values": []
+      },
+      {
+        "name": "Orientation",
+        "values": [
+          {
+            "label": "Horizontal",
+            "priceDelta": 0
+          },
+          {
+            "label": "Vertical",
+            "priceDelta": 0
+          }
+        ]
+      },
+      {
+        "name": "Size",
+        "values": []
+      },
+      {
+        "name": "Grommets",
+        "values": [
+          {
+            "label": "Grommets",
+            "priceDelta": 0
+          },
+          {
+            "label": "No Grommets",
+            "priceDelta": 0
+          }
+        ]
+      }
+    ],
+    "quantities": [
+      {
+        "quantity": 1,
+        "totalPrice": 7.99,
+        "perUnit": 7.99
+      },
+      {
+        "quantity": 2,
+        "totalPrice": 15,
+        "perUnit": 7.5
+      },
+      {
+        "quantity": 3,
+        "totalPrice": 22.02,
+        "perUnit": 7.34
+      },
+      {
+        "quantity": 4,
+        "totalPrice": 29,
+        "perUnit": 7.25
+      },
+      {
+        "quantity": 5,
+        "totalPrice": 36,
+        "perUnit": 7.2
+      },
+      {
+        "quantity": 6,
+        "totalPrice": 43.02,
+        "perUnit": 7.17
+      },
+      {
+        "quantity": 7,
+        "totalPrice": 50.05,
+        "perUnit": 7.15
+      }
+    ],
+    "screenshot": "research\\data\\shots-targets\\yard-signs.png"
+  },
+  {
+    "ourSlug": "window-decals",
+    "ourCategory": "signs-banners",
+    "url": "https://www.vistaprint.com/signs-banners/window-decals",
+    "isProduct": true,
+    "title": "Window Decals",
+    "category": "Window Decals",
+    "price": 11.9,
+    "options": [
+      {
+        "name": "Shapes",
+        "values": [
+          {
+            "label": "Custom",
+            "priceDelta": 0
+          },
+          {
+            "label": "Square/Rectangular",
+            "priceDelta": 0
+          },
+          {
+            "label": "Circle/Oval",
+            "priceDelta": 0
+          }
+        ]
+      },
+      {
+        "name": "Film Color",
+        "values": [
+          {
+            "label": "Clear",
+            "priceDelta": 0
+          },
+          {
+            "label": "White",
+            "priceDelta": 0
+          }
+        ]
+      }
+    ],
+    "quantities": [
+      {
+        "quantity": 1,
+        "totalPrice": 11.9,
+        "perUnit": 11.9
+      },
+      {
+        "quantity": 2,
+        "totalPrice": 21.8,
+        "perUnit": 10.9
+      },
+      {
+        "quantity": 3,
+        "totalPrice": 32.1,
+        "perUnit": 10.7
+      },
+      {
+        "quantity": 4,
+        "totalPrice": 42,
+        "perUnit": 10.5
+      },
+      {
+        "quantity": 5,
+        "totalPrice": 51.5,
+        "perUnit": 10.3
+      }
+    ],
+    "screenshot": "research\\data\\shots-targets\\window-decals.png"
+  },
+  {
+    "ourSlug": "letterhead",
+    "ourCategory": "stationery",
+    "url": "https://www.vistaprint.com/stationery/letterhead",
+    "isProduct": true,
+    "title": "Company Letterhead",
+    "category": "Personal Stationery",
+    "price": 149.99,
+    "options": [],
+    "quantities": [
+      {
+        "quantity": 100,
+        "totalPrice": 86.99,
+        "perUnit": 0.87
+      },
+      {
+        "quantity": 150,
+        "totalPrice": 99.99,
+        "perUnit": 0.67
+      },
+      {
+        "quantity": 200,
+        "totalPrice": 124.99,
+        "perUnit": 0.63
+      },
+      {
+        "quantity": 250,
+        "totalPrice": 149.99,
+        "perUnit": 0.6
+      }
+    ],
+    "screenshot": "research\\data\\shots-targets\\letterhead.png"
+  },
+  {
+    "ourSlug": "custom-stickers",
+    "ourCategory": "stickers-labels",
+    "url": "https://www.vistaprint.com/labels-stickers/custom-stickers/single-stickers",
+    "isProduct": true,
+    "title": "Sticker Singles",
+    "category": "Custom Single Stickers",
+    "price": 103.99,
+    "options": [
+      {
+        "name": "Shape",
+        "values": [
+          {
+            "label": "Circle",
+            "priceDelta": 0
+          }
+        ]
+      },
+      {
+        "name": "Size",
+        "values": [
+          {
+            "label": "2\" x 2\"",
+            "priceDelta": 0
+          }
+        ]
+      },
+      {
+        "name": "Material",
+        "values": [
+          {
+            "label": "White Plastic (BOPP)",
+            "priceDelta": 0
+          }
+        ]
+      }
+    ],
+    "quantities": [
+      {
+        "quantity": 10,
+        "totalPrice": 10,
+        "perUnit": 1
+      },
+      {
+        "quantity": 25,
+        "totalPrice": 24,
+        "perUnit": 0.96
+      },
+      {
+        "quantity": 50,
+        "totalPrice": 45,
+        "perUnit": 0.9
+      },
+      {
+        "quantity": 100,
+        "totalPrice": 70,
+        "perUnit": 0.7
+      },
+      {
+        "quantity": 150,
+        "totalPrice": 90,
+        "perUnit": 0.6
+      },
+      {
+        "quantity": 200,
+        "totalPrice": 103.99,
+        "perUnit": 0.52
+      },
+      {
+        "quantity": 250,
+        "totalPrice": 110,
+        "perUnit": 0.44
+      }
+    ],
+    "screenshot": "research\\data\\shots-targets\\custom-stickers.png"
+  },
+  {
+    "ourSlug": "roll-labels",
+    "ourCategory": "stickers-labels",
+    "url": "https://www.vistaprint.com/labels-stickers/roll-labels",
+    "isProduct": true,
+    "title": "Roll Labels",
+    "category": "Custom Roll Labels",
+    "price": 104.44,
+    "options": [
+      {
+        "name": "Shapes",
+        "values": [
+          {
+            "label": "Circle",
+            "priceDelta": 0
+          },
+          {
+            "label": "Oval",
+            "priceDelta": 0
+          },
+          {
+            "label": "Rounded Square",
+            "priceDelta": 0
+          },
+          {
+            "label": "Rounded Rectangle",
+            "priceDelta": 0
+          },
+          {
+            "label": "Custom (Die-Cut)",
+            "priceDelta": 0
+          }
+        ]
+      },
+      {
+        "name": "Size",
+        "values": []
+      },
+      {
+        "name": "Material",
+        "values": []
+      },
+      {
+        "name": "Roll Style",
+        "values": [
+          {
+            "label": "Multi-Column Roll",
+            "priceDelta": 0
+          }
+        ]
+      }
+    ],
+    "quantities": [
+      {
+        "quantity": 50,
+        "totalPrice": 34.5,
+        "perUnit": 0.69
+      },
+      {
+        "quantity": 100,
+        "totalPrice": 55,
+        "perUnit": 0.55
+      },
+      {
+        "quantity": 200,
+        "totalPrice": 60,
+        "perUnit": 0.3
+      },
+      {
+        "quantity": 250,
+        "totalPrice": 65,
+        "perUnit": 0.26
+      },
+      {
+        "quantity": 500,
+        "totalPrice": 80,
+        "perUnit": 0.16
+      },
+      {
+        "quantity": 1000,
+        "totalPrice": 104.44,
+        "perUnit": 0.11
+      },
+      {
+        "quantity": 1500,
+        "totalPrice": 135,
+        "perUnit": 0.09
+      }
+    ],
+    "screenshot": "research\\data\\shots-targets\\roll-labels.png"
+  },
+  {
+    "ourSlug": "sheet-labels",
+    "ourCategory": "stickers-labels",
+    "url": "https://www.vistaprint.com/labels-stickers/custom-stickers/sheet-stickers",
+    "isProduct": true,
+    "title": "Sheet Stickers",
+    "category": "Sheet Labels & Stickers",
+    "price": 24.99,
+    "options": [
+      {
+        "name": "Shape",
+        "values": [
+          {
+            "label": "Custom (Die-Cut)",
+            "priceDelta": 0
+          },
+          {
+            "label": "Circle",
+            "priceDelta": 0
+          },
+          {
+            "label": "Oval",
+            "priceDelta": 0
+          },
+          {
+            "label": "Rounded Rectangle",
+            "priceDelta": 0
+          },
+          {
+            "label": "Rounded Square",
+            "priceDelta": 0
+          }
+        ]
+      },
+      {
+        "name": "Size",
+        "values": []
+      },
+      {
+        "name": "Product Orientation",
+        "values": []
+      },
+      {
+        "name": "Material",
+        "values": []
+      }
+    ],
+    "quantities": [
+      {
+        "quantity": 72,
+        "totalPrice": 15.12,
+        "perUnit": 0.21
+      },
+      {
+        "quantity": 80,
+        "totalPrice": 16.8,
+        "perUnit": 0.21
+      },
+      {
+        "quantity": 90,
+        "totalPrice": 18.9,
+        "perUnit": 0.21
+      },
+      {
+        "quantity": 96,
+        "totalPrice": 19.2,
+        "perUnit": 0.2
+      },
+      {
+        "quantity": 100,
+        "totalPrice": 20,
+        "perUnit": 0.2
+      },
+      {
+        "quantity": 120,
+        "totalPrice": 24,
+        "perUnit": 0.2
+      },
+      {
+        "quantity": 144,
+        "totalPrice": 24.99,
+        "perUnit": 0.18
+      }
+    ],
+    "screenshot": "research\\data\\shots-targets\\sheet-labels.png"
+  }
+]

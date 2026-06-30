@@ -146,7 +146,7 @@ class CatalogSeeder extends Seeder
                 'description' => 'Flyers, postcards, brochures and posters that get you noticed.',
                 'products' => [
                     [
-                        'name' => 'Flyers', 'from_price' => 20.00, 'badge' => 'Popular',
+                        'name' => 'Flyers', 'from_price' => 9.00, 'badge' => 'Popular',
                         'tagline' => 'Spread the word, affordably.',
                         'description' => 'Vibrant flyers for events, promos and handouts.',
                         'options' => [
@@ -163,10 +163,10 @@ class CatalogSeeder extends Seeder
                                 ['label' => 'Double-sided', 'price_delta' => 8],
                             ]],
                         ],
-                        'quantities' => [[25, 0.80, true], [50, 0.55], [100, 0.35], [250, 0.22], [500, 0.18]],
+                        'quantities' => [[25, 0.36, true, 9.00], [50, 0.26, false, 13.00], [100, 0.20, false, 20.00], [250, 0.13, false, 32.50], [500, 0.09, false, 45.00], [750, 0.08, false, 60.00], [1000, 0.07, false, 70.00]], // exact Vistaprint tiers (crawled)
                     ],
                     [
-                        'name' => 'Postcards', 'from_price' => 22.00,
+                        'name' => 'Postcards', 'from_price' => 15.00,
                         'tagline' => 'Direct mail that lands.',
                         'description' => 'Premium postcards with multiple sizes and finishes.',
                         'options' => [
@@ -180,10 +180,10 @@ class CatalogSeeder extends Seeder
                                 ['label' => 'Single-sided', 'is_default' => true], ['label' => 'Double-sided', 'price_delta' => 6],
                             ]],
                         ],
-                        'quantities' => [[25, 0.88, true], [50, 0.60], [100, 0.40], [250, 0.28], [500, 0.22]],
+                        'quantities' => [[25, 0.60, true, 15.00], [50, 0.38, false, 19.00], [100, 0.22, false, 21.99], [250, 0.14, false, 35.00], [500, 0.09, false, 45.00], [750, 0.08, false, 60.00], [1000, 0.07, false, 70.00]], // exact Vistaprint tiers (crawled)
                     ],
                     [
-                        'name' => 'Brochures', 'from_price' => 45.00,
+                        'name' => 'Brochures', 'from_price' => 19.99,
                         'tagline' => 'Tell your full story.',
                         'description' => 'Folded brochures in bi-fold, tri-fold and Z-fold layouts.',
                         'options' => [
@@ -194,10 +194,10 @@ class CatalogSeeder extends Seeder
                                 ['label' => 'Gloss 170gsm', 'is_default' => true], ['label' => 'Silk 250gsm', 'price_delta' => 15, 'badge' => $rec],
                             ]],
                         ],
-                        'quantities' => [[25, 1.80, true], [50, 1.20], [100, 0.90], [250, 0.65]],
+                        'quantities' => [[25, 0.80, true, 19.99], [50, 0.80, false, 40.00], [100, 0.65, false, 65.00], [250, 0.48, false, 120.00], [500, 0.38, false, 190.00], [750, 0.30, false, 225.00], [1000, 0.25, false, 250.00]], // exact Vistaprint Bi-Fold tiers (crawled)
                     ],
                     [
-                        'name' => 'Posters', 'from_price' => 13.00,
+                        'name' => 'Posters', 'from_price' => 4.99,
                         'tagline' => 'Big, bold, eye-catching.',
                         'description' => 'Large-format posters in matte, satin or gloss.',
                         'options' => [
@@ -208,7 +208,7 @@ class CatalogSeeder extends Seeder
                                 ['label' => 'Matte', 'is_default' => true], ['label' => 'Satin', 'price_delta' => 4], ['label' => 'Gloss', 'price_delta' => 4],
                             ]],
                         ],
-                        'quantities' => [[1, 12.99, true], [5, 9.99], [10, 7.99], [25, 5.99]],
+                        'quantities' => [[1, 4.99, true, 4.99], [2, 4.50, false, 9.00], [3, 4.00, false, 12.00], [4, 4.00, false, 16.00], [5, 3.80, false, 19.00], [10, 2.20, false, 22.00], [20, 2.00, false, 40.00]], // exact Vistaprint tiers (crawled)
                     ],
                 ],
             ],
@@ -232,7 +232,7 @@ class CatalogSeeder extends Seeder
                         'quantities' => [[1, 89.00, true], [2, 79.00], [5, 69.00]],
                     ],
                     [
-                        'name' => 'Vinyl Banner', 'from_price' => 29.00,
+                        'name' => 'Vinyl Banner', 'from_price' => 6.99,
                         'tagline' => 'Weatherproof and built to last.',
                         'description' => 'Durable outdoor vinyl banners with hemmed edges.',
                         'options' => [
@@ -243,10 +243,10 @@ class CatalogSeeder extends Seeder
                                 ['label' => 'Standard (every 2 ft)', 'is_default' => true], ['label' => 'None'],
                             ]],
                         ],
-                        'quantities' => [[1, 29.00, true], [2, 26.00], [5, 22.00], [10, 18.00]],
+                        'quantities' => [[1, 6.99, true, 6.99], [2, 4.50, false, 9.00], [3, 4.34, false, 13.02], [4, 4.25, false, 17.00], [5, 4.20, false, 21.00], [6, 4.17, false, 25.02], [7, 4.15, false, 29.05]], // exact Vistaprint tiers (crawled)
                     ],
                     [
-                        'name' => 'Yard Signs', 'from_price' => 19.00,
+                        'name' => 'Yard Signs', 'from_price' => 7.99,
                         'tagline' => 'Plant your message anywhere.',
                         'description' => 'Coroplast yard signs with optional H-stake.',
                         'options' => [
@@ -257,10 +257,10 @@ class CatalogSeeder extends Seeder
                                 ['label' => 'Single-sided', 'is_default' => true], ['label' => 'Double-sided', 'price_delta' => 6],
                             ]],
                         ],
-                        'quantities' => [[1, 19.00, true], [5, 15.00], [10, 12.00], [25, 9.50]],
+                        'quantities' => [[1, 7.99, true, 7.99], [2, 7.50, false, 15.00], [3, 7.34, false, 22.02], [4, 7.25, false, 29.00], [5, 7.20, false, 36.00], [6, 7.17, false, 43.02], [7, 7.15, false, 50.05]], // exact Vistaprint tiers (crawled)
                     ],
                     [
-                        'name' => 'Window Decals', 'from_price' => 14.00,
+                        'name' => 'Window Decals', 'from_price' => 11.90,
                         'tagline' => 'Stick your brand to any glass.',
                         'description' => 'Static-cling or adhesive vinyl decals for windows and storefronts.',
                         'options' => [
@@ -271,7 +271,7 @@ class CatalogSeeder extends Seeder
                                 ['label' => 'Static Cling', 'is_default' => true], ['label' => 'Adhesive Vinyl'],
                             ]],
                         ],
-                        'quantities' => [[1, 14.00, true], [5, 11.00], [10, 9.00]],
+                        'quantities' => [[1, 11.90, true, 11.90], [2, 10.90, false, 21.80], [3, 10.70, false, 32.10], [4, 10.50, false, 42.00], [5, 10.30, false, 51.50]], // exact Vistaprint tiers (crawled)
                     ],
                 ],
             ],
@@ -295,10 +295,10 @@ class CatalogSeeder extends Seeder
                                 ['label' => 'Matte Paper', 'is_default' => true], ['label' => 'White Vinyl', 'price_delta' => 4], ['label' => 'Clear Vinyl', 'price_delta' => 6], ['label' => 'Holographic', 'price_delta' => 10],
                             ]],
                         ],
-                        'quantities' => [[50, 0.20, true], [100, 0.14], [250, 0.09], [500, 0.07], [1000, 0.05]],
+                        'quantities' => [[10, 1.00, true, 10.00], [25, 0.96, false, 24.00], [50, 0.90, false, 45.00], [100, 0.70, false, 70.00], [150, 0.60, false, 90.00], [200, 0.52, false, 103.99], [250, 0.44, false, 110.00]], // exact Vistaprint Sticker Singles tiers (crawled)
                     ],
                     [
-                        'name' => 'Roll Labels', 'from_price' => 20.00,
+                        'name' => 'Roll Labels', 'from_price' => 34.50,
                         'tagline' => 'Product labels on a roll.',
                         'description' => 'Perfect for bottles, jars and packaging.',
                         'options' => [
@@ -309,10 +309,10 @@ class CatalogSeeder extends Seeder
                                 ['label' => 'Matte', 'is_default' => true], ['label' => 'Gloss'], ['label' => 'Clear', 'price_delta' => 5],
                             ]],
                         ],
-                        'quantities' => [[100, 0.20, true], [250, 0.13], [500, 0.09], [1000, 0.06]],
+                        'quantities' => [[50, 0.69, true, 34.50], [100, 0.55, false, 55.00], [200, 0.30, false, 60.00], [250, 0.26, false, 65.00], [500, 0.16, false, 80.00], [1000, 0.11, false, 104.44], [1500, 0.09, false, 135.00]], // exact Vistaprint tiers (crawled)
                     ],
                     [
-                        'name' => 'Sheet Labels', 'from_price' => 13.00,
+                        'name' => 'Sheet Labels', 'from_price' => 15.12,
                         'tagline' => 'Address, shipping and round labels.',
                         'description' => 'Easy-peel labels on letter-size sheets.',
                         'options' => [
@@ -323,7 +323,7 @@ class CatalogSeeder extends Seeder
                                 ['label' => 'Matte', 'is_default' => true], ['label' => 'Gloss', 'price_delta' => 2],
                             ]],
                         ],
-                        'quantities' => [[10, 1.30, true], [25, 0.90], [50, 0.70], [100, 0.55]],
+                        'quantities' => [[72, 0.21, true, 15.12], [80, 0.21, false, 16.80], [90, 0.21, false, 18.90], [96, 0.20, false, 19.20], [100, 0.20, false, 20.00], [120, 0.20, false, 24.00], [144, 0.18, false, 24.99]], // exact Vistaprint Sheet Stickers tiers (crawled)
                     ],
                 ],
             ],
@@ -333,7 +333,7 @@ class CatalogSeeder extends Seeder
                 'description' => 'Letterhead, envelopes and notepads to match your brand.',
                 'products' => [
                     [
-                        'name' => 'Letterhead', 'from_price' => 25.00,
+                        'name' => 'Letterhead', 'from_price' => 86.99,
                         'tagline' => 'Put your brand on every page.',
                         'description' => 'Premium letterhead on quality uncoated stock.',
                         'options' => [
@@ -344,7 +344,7 @@ class CatalogSeeder extends Seeder
                                 ['label' => 'Single-sided', 'is_default' => true], ['label' => 'Double-sided', 'price_delta' => 8],
                             ]],
                         ],
-                        'quantities' => [[50, 0.50, true], [100, 0.35], [250, 0.25], [500, 0.20]],
+                        'quantities' => [[100, 0.87, true, 86.99], [150, 0.67, false, 99.99], [200, 0.63, false, 124.99], [250, 0.60, false, 149.99]], // exact Vistaprint tiers (crawled)
                     ],
                     [
                         'name' => 'Envelopes', 'from_price' => 30.00,
