@@ -26,11 +26,31 @@ const slides = [
 
         <!-- trust strip -->
         <section class="border-y border-paper-300 bg-paper-200">
-            <div class="mx-auto grid max-w-7xl grid-cols-2 gap-6 px-6 py-7 text-center text-sm md:grid-cols-4 sm:px-8">
-                <div><p class="font-semibold text-ink">★ 4.8 / 5</p><p class="text-ink/55">12,000+ reviews</p></div>
-                <div><p class="font-semibold text-ink">🚚 Free shipping</p><p class="text-ink/55">on orders over ${{ freeShippingThreshold }}</p></div>
-                <div><p class="font-semibold text-ink">⚡ Fast turnaround</p><p class="text-ink/55">2-day options</p></div>
-                <div><p class="font-semibold text-ink">✅ 100% guarantee</p><p class="text-ink/55">love it or reprint</p></div>
+            <div class="mx-auto grid max-w-7xl grid-cols-2 gap-x-6 gap-y-7 px-6 py-9 md:grid-cols-4 sm:px-8">
+                <div class="flex items-center gap-3.5">
+                    <span class="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-brand-50 text-brand-600">
+                        <svg viewBox="0 0 24 24" class="h-6 w-6" fill="currentColor" aria-hidden="true"><path d="M12 2.5l2.95 5.98 6.6.96-4.78 4.66 1.13 6.57L12 17.56l-5.9 3.1 1.13-6.57L2.45 9.44l6.6-.96z" /></svg>
+                    </span>
+                    <div><p class="font-semibold leading-tight text-ink">4.8 / 5</p><p class="text-sm text-ink/55">12,000+ reviews</p></div>
+                </div>
+                <div class="flex items-center gap-3.5">
+                    <span class="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-brand-50 text-brand-600">
+                        <svg viewBox="0 0 24 24" class="h-6 w-6" fill="currentColor" aria-hidden="true"><rect x="2" y="6.5" width="11" height="8.5" rx="1.5" /><path d="M13.5 9.5h3.3c.34 0 .66.17.85.46L20.6 13v2h-7.1z" /><circle cx="6.7" cy="17" r="2" /><circle cx="16.8" cy="17" r="2" /></svg>
+                    </span>
+                    <div><p class="font-semibold leading-tight text-ink">Free shipping</p><p class="text-sm text-ink/55">on orders over ${{ freeShippingThreshold }}</p></div>
+                </div>
+                <div class="flex items-center gap-3.5">
+                    <span class="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-brand-50 text-brand-600">
+                        <svg viewBox="0 0 24 24" class="h-6 w-6" fill="currentColor" aria-hidden="true"><path d="M13 2L4.5 13.2c-.4.5 0 1.3.7 1.3H10l-1 7.5 8.8-11.6c.4-.5 0-1.3-.7-1.3H12z" /></svg>
+                    </span>
+                    <div><p class="font-semibold leading-tight text-ink">Fast turnaround</p><p class="text-sm text-ink/55">2-day options</p></div>
+                </div>
+                <div class="flex items-center gap-3.5">
+                    <span class="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-brand-50 text-brand-600">
+                        <svg viewBox="0 0 24 24" class="h-6 w-6" aria-hidden="true"><path d="M12 2l8 3v6c0 5-3.4 8.5-8 10-4.6-1.5-8-5-8-10V5z" fill="currentColor" /><path d="M8.4 12.2l2.5 2.5 4.7-5" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                    </span>
+                    <div><p class="font-semibold leading-tight text-ink">100% guarantee</p><p class="text-sm text-ink/55">love it or reprint</p></div>
+                </div>
             </div>
         </section>
 
@@ -81,9 +101,6 @@ const slides = [
             </div>
         </section>
 
-        <!-- creative print divider -->
-        <div class="mx-auto mt-16 max-w-7xl px-6 sm:mt-20 sm:px-8"><div class="print-divider"></div></div>
-
         <!-- tools to grow your business -->
         <section class="mx-auto max-w-7xl px-6 py-14 sm:px-8 sm:py-16">
             <div class="mb-9">
@@ -95,10 +112,10 @@ const slides = [
                 <div class="group rounded-2xl border border-paper-300 bg-white p-7 shadow-sm transition duration-300 hover:-translate-y-1.5 hover:shadow-xl">
                     <svg viewBox="0 0 64 64" class="h-16 w-16 transition duration-300 group-hover:scale-105" aria-hidden="true">
                         <rect x="3" y="3" width="58" height="58" rx="16" fill="#ecfdf3" />
-                        <path d="M32 16c-9.5 0-17 6.7-17 15 0 8.4 6 12.6 11.6 12.6 2.3 0 3.3-1.7 3.3-3.4 0-1.9 1.3-3 3.2-3H37c5.6 0 11-3.5 11-9.9C48 22.4 41 16 32 16z" fill="#0e9355" />
+                        <path d="M32 16c-9.5 0-17 6.7-17 15 0 8.4 6 12.6 11.6 12.6 2.3 0 3.3-1.7 3.3-3.4 0-1.9 1.3-3 3.2-3H37c5.6 0 11-3.5 11-9.9C48 22.4 41 16 32 16z" fill="#2b3b55" />
                         <circle cx="23" cy="31" r="2.7" fill="#ffffff" />
                         <circle cx="29" cy="25" r="2.7" fill="#c7f23d" />
-                        <circle cx="38" cy="26" r="2.7" fill="#2b3b55" />
+                        <circle cx="38" cy="26" r="2.7" fill="#647ba0" />
                         <circle cx="42" cy="34" r="2.7" fill="#ffffff" />
                     </svg>
                     <h3 class="mt-5 font-semibold text-ink">Design services</h3>
@@ -118,8 +135,8 @@ const slides = [
                 <div class="group rounded-2xl border border-paper-300 bg-white p-7 shadow-sm transition duration-300 hover:-translate-y-1.5 hover:shadow-xl">
                     <svg viewBox="0 0 64 64" class="h-16 w-16 transition duration-300 group-hover:scale-105" aria-hidden="true">
                         <rect x="3" y="3" width="58" height="58" rx="16" fill="#ecfdf3" />
-                        <rect x="27" y="17" width="20" height="28" rx="3" fill="#2b3b55" />
-                        <rect x="19" y="21" width="20" height="28" rx="3" fill="#0e9355" />
+                        <rect x="27" y="17" width="20" height="28" rx="3" fill="#647ba0" />
+                        <rect x="19" y="21" width="20" height="28" rx="3" fill="#2b3b55" />
                         <rect x="23" y="27" width="12" height="2.6" rx="1.3" fill="#ffffff" />
                         <rect x="23" y="32.5" width="12" height="2.6" rx="1.3" fill="#ffffff" opacity="0.65" />
                         <rect x="23" y="38" width="8" height="2.6" rx="1.3" fill="#c7f23d" />
@@ -132,7 +149,7 @@ const slides = [
                     <svg viewBox="0 0 64 64" class="h-16 w-16 transition duration-300 group-hover:scale-105" aria-hidden="true">
                         <rect x="3" y="3" width="58" height="58" rx="16" fill="#eef2f9" />
                         <g transform="rotate(-22 31 47)"><rect x="26" y="20" width="10" height="28" rx="3" fill="#2b3b55" /></g>
-                        <g transform="rotate(-1 31 47)"><rect x="26" y="20" width="10" height="28" rx="3" fill="#0e9355" /></g>
+                        <g transform="rotate(-1 31 47)"><rect x="26" y="20" width="10" height="28" rx="3" fill="#647ba0" /></g>
                         <g transform="rotate(20 31 47)"><rect x="26" y="20" width="10" height="28" rx="3" fill="#c7f23d" /></g>
                         <circle cx="31" cy="47" r="2.5" fill="#2b3b55" />
                     </svg>

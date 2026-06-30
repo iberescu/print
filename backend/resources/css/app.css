@@ -8,18 +8,18 @@
     --font-sans: 'Poppins', ui-sans-serif, system-ui, sans-serif;
     --font-display: 'Poppins', ui-sans-serif, system-ui, sans-serif;
 
-    /* Brand — fresh green action accent (matches the logo) */
-    --color-brand-50: #ecfdf3;
-    --color-brand-100: #d1fadf;
-    --color-brand-200: #a6f4c5;
-    --color-brand-300: #6ce9a6;
-    --color-brand-400: #32d583;
-    --color-brand-500: #12b76a;
-    --color-brand-600: #0e9355;
-    --color-brand-700: #0b7440;
-    --color-brand-800: #0a5c34;
-    --color-brand-900: #084c2c;
-    --color-brand-950: #03291a;
+    /* Brand — deep navy is the primary action colour (#2b3b55) */
+    --color-brand-50: #eef1f6;
+    --color-brand-100: #dbe2ec;
+    --color-brand-200: #bbc8da;
+    --color-brand-300: #92a3bd;
+    --color-brand-400: #647ba0;
+    --color-brand-500: #3f5476;
+    --color-brand-600: #2b3b55;
+    --color-brand-700: #233148;
+    --color-brand-800: #1c2738;
+    --color-brand-900: #161f2d;
+    --color-brand-950: #0e1420;
 
     /* Accent — fresh lime */
     --color-lime-accent: #c7f23d;
@@ -87,13 +87,5 @@
         section.bg-paper-200 {
             margin-top: 4rem;
         }
-    }
-
-    /* Creative print-style divider — perforated "tear here" line with brand dots */
-    .print-divider {
-        height: 16px;
-        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='30' height='16'%3E%3Crect x='2' y='7' width='13' height='2' rx='1' fill='%23ccd3df'/%3E%3Ccircle cx='22' cy='8' r='1.5' fill='%230e9355'/%3E%3C/svg%3E");
-        background-repeat: repeat-x;
-        background-position: center;
     }
 }

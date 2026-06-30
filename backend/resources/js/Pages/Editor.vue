@@ -29,8 +29,8 @@ const applyingTpl = ref(false);
 // Google Fonts only — curated set (loaded from fonts.googleapis.com below).
 const fonts = ['Montserrat', 'Inter', 'Bebas Neue', 'Oswald', 'Poppins', 'Playfair Display', 'Cormorant Garamond', 'DM Serif Display', 'Anton', 'Archivo Black', 'Raleway', 'Rubik', 'Nunito', 'Lora', 'Abril Fatface', 'Barlow Condensed', 'League Spartan', 'Space Grotesk', 'Urbanist', 'Libre Baskerville', 'Merriweather', 'Figtree', 'Manrope', 'Sora', 'Outfit', 'Rajdhani', 'Work Sans', 'Plus Jakarta Sans', 'Great Vibes', 'Pinyon Script', 'Pacifico', 'Caveat', 'Fredericka the Great'];
 const sizes = [12, 14, 16, 18, 20, 24, 28, 32, 40, 48, 56, 64, 72];
-const palette = ['#0c1f17', '#0e9355', '#c7f23d', '#ffffff', '#111111', '#c0392b', '#1f2a44', '#b0703a'];
-const bgPalette = ['#ffffff', '#f8f6ef', '#0c1f17', '#0e9355', '#1f2a44', '#e7dcc4', '#c0392b'];
+const palette = ['#0c1f17', '#2b3b55', '#c7f23d', '#ffffff', '#111111', '#c0392b', '#1f2a44', '#b0703a'];
+const bgPalette = ['#ffffff', '#f8f6ef', '#0c1f17', '#2b3b55', '#1f2a44', '#e7dcc4', '#c0392b'];
 
 const GOOGLE_FONTS_HREF =
     'https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Inter:wght@400;600;700&family=Bebas+Neue&family=Oswald:wght@400;600;700&family=Poppins:wght@400;600;700&family=Playfair+Display:wght@400;700;900&family=Cormorant+Garamond:wght@400;600;700&family=DM+Serif+Display&family=Anton&family=Archivo+Black&family=Raleway:wght@400;600;700&family=Rubik:wght@400;600;700&family=Nunito:wght@400;600;700&family=Lora:wght@400;600;700&family=Abril+Fatface&family=Barlow+Condensed:wght@400;600;700&family=League+Spartan:wght@400;700&family=Space+Grotesk:wght@400;600;700&family=Urbanist:wght@400;600;700&family=Libre+Baskerville:wght@400;700&family=Merriweather:wght@400;700&family=Figtree:wght@400;600;700&family=Manrope:wght@400;600;700&family=Sora:wght@400;600;700&family=Outfit:wght@400;600;700&family=Rajdhani:wght@400;600;700&family=Work+Sans:wght@400;600;700&family=Plus+Jakarta+Sans:wght@400;600;700&family=Great+Vibes&family=Pinyon+Script&family=Pacifico&family=Caveat:wght@400;700&family=Fredericka+the+Great&display=swap';
@@ -60,16 +60,16 @@ function seedTemplate() {
     canvas.backgroundColor = '#f8f6ef';
     addText('Company Name', { left: 56, top: 58, fontSize: 32, fontWeight: 'bold', fontFamily: 'Playfair Display', rmpRole: 'companyName' });
     addText('Your Name', { left: 56, top: 110, fontSize: 22, fontFamily: 'Work Sans', rmpRole: 'name' });
-    addText('Title / Role', { left: 56, top: 140, fontSize: 17, fill: '#0e9355', fontFamily: 'Work Sans', rmpRole: 'title' });
+    addText('Title / Role', { left: 56, top: 140, fontSize: 17, fill: '#2b3b55', fontFamily: 'Work Sans', rmpRole: 'title' });
     addText('yourcompany.com', { left: 56, top: 250, fontSize: 17, fontFamily: 'Work Sans', rmpRole: 'url' });
     addText('hello@company.com', { left: 56, top: 282, fontSize: 17, fontFamily: 'Work Sans', rmpRole: 'email' });
     addText('+1 (555) 123-4567', { left: 56, top: 314, fontSize: 17, fontFamily: 'Work Sans', rmpRole: 'phone' });
     const logo = new fabric.Rect({
         left: 560, top: 60, width: 150, height: 150,
-        fill: '#e3ddcc', stroke: '#0e9355', strokeDashArray: [6, 6], strokeWidth: 2,
+        fill: '#e3ddcc', stroke: '#2b3b55', strokeDashArray: [6, 6], strokeWidth: 2,
     });
     canvas.add(logo);
-    canvas.add(new fabric.IText('LOGO', { left: 600, top: 125, originX: 'left', originY: 'top', fontSize: 18, fill: '#0e935580', fontFamily: 'Work Sans', selectable: false, evented: false }));
+    canvas.add(new fabric.IText('LOGO', { left: 600, top: 125, originX: 'left', originY: 'top', fontSize: 18, fill: '#2b3b5580', fontFamily: 'Work Sans', selectable: false, evented: false }));
     canvas.renderAll();
 }
 
@@ -92,7 +92,11 @@ function fitCanvas() {
     if (!canvas || !stageEl.value) return;
     const avail = Math.max(220, stageEl.value.clientWidth - 32);
     const scale = Math.min(1, avail / W);
-    canvas.setDimensions({ width: Math.round(W * scale), height: Math.round(H * scale) }, { cssOnly: true });
+    // Scale both the canvas size AND the viewport zoom so object/pointer coords stay
+    // correct (cssOnly scaling misaligns clicks). setZoom is the supported responsive path.
+    canvas.setDimensions({ width: Math.round(W * scale), height: Math.round(H * scale) });
+    canvas.setZoom(scale);
+    canvas.requestRenderAll();
 }
 
 onMounted(() => {
@@ -102,8 +106,8 @@ onMounted(() => {
     if (fabric.InteractiveFabricObject?.ownDefaults) {
         Object.assign(fabric.InteractiveFabricObject.ownDefaults, {
             cornerSize: 13, touchCornerSize: 44, cornerStyle: 'circle',
-            transparentCorners: false, cornerColor: '#0e9355',
-            cornerStrokeColor: '#ffffff', borderColor: '#0e9355', padding: 4,
+            transparentCorners: false, cornerColor: '#2b3b55',
+            cornerStrokeColor: '#ffffff', borderColor: '#2b3b55', padding: 4,
         });
     }
 
@@ -313,11 +317,12 @@ function addToCart() {
                     <h3 class="font-display text-lg font-semibold text-ink">Choose a template</h3>
                     <button class="text-xl text-ink/50 hover:text-ink" @click="showTemplates = false">✕</button>
                 </div>
-                <div class="grid flex-1 grid-cols-2 gap-3 overflow-auto p-4">
-                    <button v-for="t in templates" :key="t.ref" class="group overflow-hidden rounded-lg border border-paper-300 bg-white transition hover:ring-2 hover:ring-brand-600" @click="applyTemplate(t.ref)">
-                        <img v-if="t.preview" :src="t.preview" :alt="t.name" loading="lazy" class="aspect-[760/434] w-full object-cover" />
-                        <div v-else class="aspect-[760/434] w-full bg-paper-200"></div>
-                        <p class="truncate px-2 py-1.5 text-left text-xs text-ink/70">{{ t.name }}</p>
+                <div class="grid flex-1 grid-cols-2 gap-4 overflow-auto bg-paper-200 p-4">
+                    <button v-for="t in templates" :key="t.ref" class="group flex h-max flex-col overflow-hidden rounded-xl border border-paper-300 bg-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-lg hover:ring-2 hover:ring-brand-600" @click="applyTemplate(t.ref)">
+                        <div class="relative h-28 w-full overflow-hidden bg-paper-200 sm:h-32">
+                            <img v-if="t.preview" :src="t.preview" :alt="t.name" loading="lazy" class="absolute inset-0 h-full w-full object-cover" />
+                        </div>
+                        <p class="truncate px-2.5 py-2 text-left text-xs font-medium text-ink/70">{{ t.name }}</p>
                     </button>
                 </div>
                 <div v-if="applyingTpl" class="border-t border-paper-300 p-3 text-center text-sm text-ink/60">Loading template…</div>
