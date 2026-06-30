@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { completeUpsell } from './helpers.mjs';
+import { completeUpsell, clickContinue } from './helpers.mjs';
 
 // Forced multi-step upsell before the cart (req 3) + related-product step (req 4).
 async function addBusinessCard(page) {
@@ -21,15 +21,18 @@ test('cart is gated until the upsell steps are completed', async ({ page }) => {
 test('business-card upsell offers a non-personalised card holder', async ({ page }) => {
     await addBusinessCard(page);
     // step 1 = brand; advance to the related-products step
-    await page.getByRole('button', { name: /continue/i }).first().click();
-    await page.waitForLoadState('networkidle');
+    await clickContinue(page);
 
     await expect(page.getByRole('heading', { name: /complete your order/i })).toBeVisible();
     await expect(page.getByText(/card holder/i).first()).toBeVisible();
     await expect(page.getByText(/not personalised/i).first()).toBeVisible();
 
-    // adding the holder works, then continue through to the cart
-    await page.getByRole('button', { name: /add to order/i }).first().click();
+    // adding the holder works, then continue through to the cart. Wait for the
+    // add to finish before continuing — otherwise the next visit cancels it.
+    await Promise.all([
+        page.waitForResponse((r) => /\/upsell\/add\//.test(r.url())),
+        page.getByRole('button', { name: /add to order/i }).first().click(),
+    ]);
     await expect(page.getByRole('button', { name: /added/i }).first()).toBeVisible();
     await completeUpsell(page);
     await page.waitForURL('**/cart');
