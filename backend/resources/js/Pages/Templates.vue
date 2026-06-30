@@ -11,8 +11,8 @@ const props = defineProps({
     selection: { type: Object, default: () => ({}) },
 });
 
-// Frame the previews in the product's real aspect (BC 1.75:1, A4 portrait, …).
-const aspect = computed(() => (props.canvas?.w && props.canvas?.h ? props.canvas.w / props.canvas.h : 1.75));
+// Frame the previews in the product's trim aspect (BC 1.75:1, A4 portrait, …).
+const aspect = computed(() => (props.canvas?.trimW && props.canvas?.trimH ? props.canvas.trimW / props.canvas.trimH : 1.75));
 
 function openEditor(templateRef = null) {
     router.get(`/design/${props.product.slug}`, {

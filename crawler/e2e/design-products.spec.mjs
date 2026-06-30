@@ -80,6 +80,19 @@ test('templates gallery appears before the editor and applies a pick', async ({ 
     await expect(page.locator('canvas')).toHaveCount(2);
 });
 
+// Print guides: bleed band + trim line + safe area render and can be toggled.
+test('designer shows bleed / trim / safe-area guides and toggles them', async ({ page }) => {
+    await page.goto('/design/standard-business-cards');
+    await page.waitForSelector('.canvas-container canvas');
+
+    await expect(page.locator('path[fill-rule="evenodd"]')).toHaveCount(1); // the bleed band
+    await expect(page.getByText(/bleed — trimmed off/i)).toBeVisible();
+    await expect(page.getByText(/safe area/i)).toBeVisible();
+
+    await page.getByRole('button', { name: /Guides/i }).click();
+    await expect(page.locator('path[fill-rule="evenodd"]')).toHaveCount(0);
+});
+
 test('templates gallery: start from scratch opens a blank editor', async ({ page }) => {
     await page.goto('/design/standard-business-cards/templates');
     await page.getByRole('button', { name: /start from scratch/i }).click();

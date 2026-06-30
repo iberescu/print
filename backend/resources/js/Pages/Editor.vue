@@ -14,9 +14,19 @@ const props = defineProps({
     selection: { type: Object, default: () => ({}) },
 });
 
-// Canvas matches the product's print format (A4 flyer, business-card landscape, …).
+// Canvas matches the product's print format (A4 flyer, business-card landscape, …)
+// and includes print bleed: the full canvas is W×H, the trim (cut) box sits inset
+// by `bleed`, and the safe area inset by `bleed + safety`.
 const W = props.canvas?.w || 760;
 const H = props.canvas?.h || 434;
+const bleed = props.canvas?.bleed || 0;
+const safety = props.canvas?.safety || 0;
+const trimW = props.canvas?.trimW || W;
+const trimH = props.canvas?.trimH || H;
+const safeW = Math.max(0, trimW - 2 * safety);
+const safeH = Math.max(0, trimH - 2 * safety);
+// Filled bleed band = full canvas minus the trim rect (evenodd makes the trim a hole).
+const guidePath = `M0 0H${W}V${H}H0Z M${bleed} ${bleed}h${trimW}v${trimH}h${-trimW}Z`;
 const isBusinessCard = props.category?.slug === 'business-cards';
 
 const canvasEl = ref(null);
@@ -29,6 +39,35 @@ const saving = ref(false);
 const fileInput = ref(null);
 const showTemplates = ref(false);
 const applyingTpl = ref(false);
+const showGuides = ref(true);
+
+// Template/seed art is authored at the trim origin (0,0). Shift it into the trim
+// area so the margins stay bleed, and grow any full-bleed colour block (a rect
+// sitting on the trim edge) OUTWARD into the bleed — this never changes the
+// trimmed result, it just prevents white slivers if the cut drifts.
+function offsetByBleed() {
+    if (!bleed) return;
+    const eps = 2;
+    const L = bleed, T = bleed, R = bleed + trimW, B = bleed + trimH;
+    canvas.getObjects().forEach((o) => {
+        o.left += bleed;
+        o.top += bleed;
+        if ((o.type || '').toLowerCase() === 'rect' && !o.angle) {
+            const sx = o.scaleX || 1, sy = o.scaleY || 1;
+            const w = o.width * sx, h = o.height * sy;
+            const left = o.left, top = o.top;
+            let nl = left, nt = top, nw = w, nh = h;
+            if (Math.abs(left - L) <= eps) { nl = 0; nw += bleed; }
+            if (Math.abs(top - T) <= eps) { nt = 0; nh += bleed; }
+            if (Math.abs(left + w - R) <= eps) { nw += bleed; }
+            if (Math.abs(top + h - B) <= eps) { nh += bleed; }
+            if (nl !== left || nt !== top || nw !== w || nh !== h) {
+                o.set({ left: nl, top: nt, width: nw / sx, height: nh / sy });
+            }
+        }
+        o.setCoords();
+    });
+}
 
 // Google Fonts only — curated set (loaded from fonts.googleapis.com below).
 const fonts = ['Montserrat', 'Inter', 'Bebas Neue', 'Oswald', 'Poppins', 'Playfair Display', 'Cormorant Garamond', 'DM Serif Display', 'Anton', 'Archivo Black', 'Raleway', 'Rubik', 'Nunito', 'Lora', 'Abril Fatface', 'Barlow Condensed', 'League Spartan', 'Space Grotesk', 'Urbanist', 'Libre Baskerville', 'Merriweather', 'Figtree', 'Manrope', 'Sora', 'Outfit', 'Rajdhani', 'Work Sans', 'Plus Jakarta Sans', 'Great Vibes', 'Pinyon Script', 'Pacifico', 'Caveat', 'Fredericka the Great'];
@@ -74,6 +113,7 @@ function seedTemplate() {
     });
     canvas.add(logo);
     canvas.add(new fabric.IText('LOGO', { left: 600, top: 125, originX: 'left', originY: 'top', fontSize: 18, fill: '#2b3b5580', fontFamily: 'Work Sans', selectable: false, evented: false }));
+    offsetByBleed();
     canvas.renderAll();
 }
 
@@ -206,11 +246,13 @@ async function applyTemplate(ref) {
         const res = await fetch(`/design/template/${ref}/data`, { headers: { Accept: 'application/json' } });
         const { data } = await res.json();
         await canvas.loadFromJSON(data);
-        if (document.fonts?.ready) await document.fonts.ready;
-        canvas.renderAll();
+        offsetByBleed(); // template art is authored at trim origin; nudge it inside the bleed
+        canvas.requestRenderAll();
         store[side.value] = canvas.toJSON();
         showTemplates.value = false;
-    } catch (e) { /* keep current canvas on failure */ }
+        // repaint once fonts settle (non-blocking, so the design shows immediately)
+        if (document.fonts?.ready) document.fonts.ready.then(() => canvas && canvas.requestRenderAll());
+    } catch (e) { console.error('applyTemplate failed', e); }
     applyingTpl.value = false;
 }
 
@@ -272,6 +314,7 @@ function addToCart() {
             <button class="rounded-md px-3 py-1.5 text-sm font-medium hover:bg-white/10" @click="fileInput.click()">↑ Upload image</button>
             <button v-if="templates.length" class="rounded-md px-3 py-1.5 text-sm font-medium hover:bg-white/10" @click="showTemplates = true">▦ Templates</button>
             <button class="rounded-md px-3 py-1.5 text-sm font-medium hover:bg-white/10 disabled:opacity-30" :disabled="!hasSel" @click="removeSel">🗑 Delete</button>
+            <button v-if="bleed" class="rounded-md px-3 py-1.5 text-sm font-medium hover:bg-white/10" :class="showGuides ? 'bg-white/15' : ''" @click="showGuides = !showGuides" title="Show print bleed &amp; safe-area guides">▣ Guides</button>
             <input ref="fileInput" type="file" accept="image/*" class="hidden" @change="onFile" />
 
             <div class="mx-1 h-6 w-px bg-white/15"></div>
@@ -301,13 +344,26 @@ function addToCart() {
         </div>
 
         <div ref="stageEl" class="relative flex flex-1 flex-col items-center justify-center gap-4 overflow-auto p-4 sm:gap-6 sm:p-8">
-            <p class="text-sm font-medium text-ink/50">
-                {{ side === 'front' ? 'Front' : 'Back' }} design · <span class="text-ink/40">every copy will print exactly like this</span>
-            </p>
+            <div class="flex flex-col items-center gap-2">
+                <p class="text-sm font-medium text-ink/50">
+                    {{ side === 'front' ? 'Front' : 'Back' }} design · <span class="text-ink/40">every copy will print exactly like this</span>
+                </p>
+                <div v-if="bleed && showGuides" class="flex flex-wrap items-center justify-center gap-x-4 gap-y-1 text-xs text-ink/60">
+                    <span class="flex items-center gap-1.5"><span class="inline-block h-3 w-4 bg-rose-500/15 ring-1 ring-rose-500/60"></span>Bleed — trimmed off</span>
+                    <span class="flex items-center gap-1.5"><span class="inline-block h-0 w-5 border-t-2 border-rose-500"></span>Trim / cut line</span>
+                    <span class="flex items-center gap-1.5"><span class="inline-block h-0 w-5 border-t-2 border-dashed border-sky-500"></span>Safe area — keep text &amp; logos inside</span>
+                </div>
+            </div>
             <div class="relative">
                 <div class="overflow-hidden rounded-2xl bg-white shadow-[0_30px_60px_-25px_rgba(12,31,23,0.5)] ring-1 ring-paper-300">
                     <canvas ref="canvasEl"></canvas>
                 </div>
+                <!-- print guides: bleed band (red tint) · trim/cut line (solid) · safe area (dashed) -->
+                <svg v-if="bleed && showGuides" class="pointer-events-none absolute inset-0 h-full w-full" :viewBox="`0 0 ${W} ${H}`" preserveAspectRatio="none">
+                    <path :d="guidePath" fill="rgba(225,29,72,0.12)" fill-rule="evenodd" />
+                    <rect :x="bleed" :y="bleed" :width="trimW" :height="trimH" fill="none" stroke="#e11d48" stroke-width="1.5" />
+                    <rect :x="bleed + safety" :y="bleed + safety" :width="safeW" :height="safeH" fill="none" stroke="#0ea5e9" stroke-width="1.5" stroke-dasharray="7 5" />
+                </svg>
                 <div v-if="mode === 'upload' && !uploaded" class="absolute inset-0 flex flex-col items-center justify-center gap-3 rounded-2xl bg-white/85 text-center backdrop-blur-sm">
                     <svg class="h-10 w-10 text-brand-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 16V4m0 0L8 8m4-4 4 4M5 20h14" stroke-linecap="round" stroke-linejoin="round" /></svg>
                     <p class="font-display text-lg font-semibold text-ink">Upload your artwork</p>

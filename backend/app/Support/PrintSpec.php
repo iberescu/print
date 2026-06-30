@@ -5,15 +5,21 @@ namespace App\Support;
 use App\Models\Product;
 
 /**
- * Resolves the online-designer canvas size for a product, honouring the
- * selected "Size" option (A4 flyer → A4, business card → 3.5×2" landscape, …).
- * Only the aspect ratio + orientation matter for the canvas, so dimensions can
- * be carried in whatever unit the label uses — they're scaled to a fixed px edge.
+ * Resolves the online-designer canvas for a product, honouring the selected
+ * "Size" option (A4 flyer → A4, business card → 3.5×2" landscape, …) and adding
+ * print bleed + a safe margin. The canvas is the FULL bleed size; the trim
+ * (cut) rectangle sits inset by `bleed`, and the safe area inset by
+ * `bleed + safety`. Only ratios matter, so dimensions carry the label's unit
+ * and are scaled to a fixed px edge.
  */
 class PrintSpec
 {
-    /** The longer canvas edge, in px. BC (3.5×2") lands on exactly 760×434. */
+    /** The trim's longer edge, in px. BC (3.5×2") trims at exactly 760×434. */
     private const LONG_EDGE = 760;
+
+    /** Bleed / safe margin per unit (≈ 1/8" or 3 mm; 1/4 ft ≈ 3" for large format). */
+    private const BLEED  = ['in' => 0.125, 'mm' => 3.0, 'ft' => 0.25];
+    private const SAFETY = ['in' => 0.125, 'mm' => 3.0, 'ft' => 0.25];
 
     /** Named ISO sizes in mm at their natural (portrait) orientation. */
     private const NAMED = [
@@ -22,27 +28,35 @@ class PrintSpec
         'DL' => [99, 210], 'C4' => [229, 324], 'C5' => [162, 229],
     ];
 
-    /** Products whose print is conventionally landscape / portrait regardless of label order. */
     private const LANDSCAPE = ['vinyl-banner', 'yard-signs'];
     private const PORTRAIT  = ['roll-up-banner'];
 
     /**
-     * @param  int[]  $optionValueIds  selected option-value ids (to read the chosen Size)
-     * @return array{w:int,h:int,label:string}
+     * @param  int[]  $optionValueIds
+     * @return array{w:int,h:int,trimW:int,trimH:int,bleed:int,safety:int,label:string}
      */
     public static function canvas(Product $product, array $optionValueIds = []): array
     {
-        [$w, $h, $label] = self::dimensions($product, $optionValueIds);
-        $scale = self::LONG_EDGE / max($w, $h);
+        [$w, $h, $label, $unit] = self::dimensions($product, $optionValueIds);
+
+        $pxPerUnit = self::LONG_EDGE / max($w, $h);
+        $trimW = (int) round($w * $pxPerUnit);
+        $trimH = (int) round($h * $pxPerUnit);
+        $bleed = (int) round((self::BLEED[$unit] ?? 0) * $pxPerUnit);
+        $safety = (int) round((self::SAFETY[$unit] ?? 0) * $pxPerUnit);
 
         return [
-            'w'     => max(80, (int) round($w * $scale)),
-            'h'     => max(80, (int) round($h * $scale)),
-            'label' => $label,
+            'w'      => $trimW + 2 * $bleed,
+            'h'      => $trimH + 2 * $bleed,
+            'trimW'  => $trimW,
+            'trimH'  => $trimH,
+            'bleed'  => $bleed,
+            'safety' => $safety,
+            'label'  => $label,
         ];
     }
 
-    /** @return array{0:float,1:float,2:string} [width, height, displayLabel] */
+    /** @return array{0:float,1:float,2:string,3:string} [width, height, label, unit] */
     private static function dimensions(Product $product, array $ids): array
     {
         $size = $product->options->firstWhere('name', 'Size');
@@ -58,7 +72,7 @@ class PrintSpec
         return self::fallback($product);
     }
 
-    /** @return array{0:float,1:float,2:string}|null */
+    /** @return array{0:float,1:float,2:string,3:string}|null */
     private static function parse(string $label, Product $product): ?array
     {
         $slug = $product->slug;
@@ -67,6 +81,7 @@ class PrintSpec
         if (preg_match('/(\d+(?:\.\d+)?)\s*[×x]\s*(\d+(?:\.\d+)?)/u', $label, $m)) {
             $w = (float) $m[1];
             $h = (float) $m[2];
+            $unit = stripos($label, 'ft') !== false ? 'ft' : 'in';
             if (in_array($slug, self::LANDSCAPE, true) && $h > $w) {
                 [$w, $h] = [$h, $w];
             }
@@ -74,7 +89,7 @@ class PrintSpec
                 [$w, $h] = [$h, $w];
             }
 
-            return [$w, $h, trim($label)];
+            return [$w, $h, trim($label), $unit];
         }
 
         // Named ISO size: "A4", "DL", "C5"
@@ -85,30 +100,30 @@ class PrintSpec
                 [$w, $h] = [max($w, $h), min($w, $h)];
             }
 
-            return [$w, $h, $key];
+            return [$w, $h, $key, 'mm'];
         }
 
         // Single dimension → square: "2\"", "3\"", "1.5\""
         if (preg_match('/^(\d+(?:\.\d+)?)\s*"?$/', trim($label), $m)) {
             $s = (float) $m[1];
 
-            return [$s, $s, trim($label)];
+            return [$s, $s, trim($label), 'in'];
         }
 
         return null; // not a size label (e.g. "S", "Standard", "Large")
     }
 
-    /** @return array{0:float,1:float,2:string} */
+    /** @return array{0:float,1:float,2:string,3:string} */
     private static function fallback(Product $product): array
     {
         return match ($product->slug) {
-            'letterhead', 'sheet-labels' => [8.5, 11, 'US Letter'],   // portrait
-            'brochures'                  => [297, 210, 'A4'],          // flat sheet, landscape
-            'custom-t-shirts'            => [12, 16, 'Print area'],    // front print area
-            'tote-bags'                  => [14, 16, 'Print area'],
+            'letterhead', 'sheet-labels' => [8.5, 11, 'US Letter', 'in'],   // portrait
+            'brochures'                  => [297, 210, 'A4', 'mm'],          // flat sheet, landscape
+            'custom-t-shirts'            => [12, 16, 'Print area', 'in'],    // front print area
+            'tote-bags'                  => [14, 16, 'Print area', 'in'],
             default                      => $product->category->slug === 'business-cards'
-                ? [3.5, 2, '3.5 × 2 in']                              // business card, landscape
-                : [210, 297, 'A4'],                                   // safe portrait default
+                ? [3.5, 2, '3.5 × 2 in', 'in']                              // business card, landscape
+                : [210, 297, 'A4', 'mm'],                                   // safe portrait default
         };
     }
 }
