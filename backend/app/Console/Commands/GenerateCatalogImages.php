@@ -35,17 +35,12 @@ class GenerateCatalogImages extends Command
         if (in_array($only, ['all', 'hero'], true)) {
             $tasks[] = [
                 'path'   => 'heroes/home',
-                'maxw'   => 1800,
+                'maxw'   => 1600,
                 'prompt' => 'Premium wide flat-lay hero photo, slightly angled top-down, of an array of custom-branded '
-                    .'business products beautifully arranged on the RIGHT side of the frame: a neatly folded forest-green '
-                    .'polo shirt, two ceramic mugs (one navy, one white), several navy ballpoint pens, a brushed metal '
-                    .'water bottle with a green grip band, a natural canvas tote bag, a stack of business cards in a clear '
-                    .'acrylic holder, a navy spiral notebook and a scatter of round sticker badges — a cohesive forest-green, '
-                    .'navy and white brand palette. The products rest on a rich royal-blue surface printed with a subtle '
-                    .'blueprint graph-paper grid of faint lighter-blue lines. Soft realistic drop shadows ground every item. '
-                    .'The LEFT 40 percent of the frame is clean, empty, evenly-lit blue gridded surface with generous '
-                    .'negative space reserved for headline text. Bright even studio lighting, crisp focus, rich saturated '
-                    .'colour, premium editorial e-commerce product photography. No text, no logo, no watermark.',
+                    .'business products beautifully arranged on a clean light surface: a folded polo shirt, two ceramic '
+                    .'mugs, ballpoint pens, a metal water bottle, a canvas tote bag, a stack of business cards in a holder, '
+                    .'a notebook and some stickers — cohesive green, navy and white brand palette. Bright airy lifestyle '
+                    .'commercial photography, lots of clean empty space on the left third for headline text. '.self::STYLE,
                 'save'   => null,
             ];
         }
