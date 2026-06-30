@@ -43,6 +43,14 @@ function start(mode) {
         opts: Object.values(selectedValues.value),
     });
 }
+
+// Non-personalised products (accessories) skip the designer and add straight to cart.
+function addDirect() {
+    router.post(`/cart/add/${props.product.slug}`, {
+        quantityId: selectedQtyId.value,
+        optionValueIds: Object.values(selectedValues.value),
+    });
+}
 </script>
 
 <template>
@@ -153,8 +161,15 @@ function start(mode) {
                             <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 16V4m0 0L8 8m4-4 4 4M5 20h14" stroke-linecap="round" stroke-linejoin="round"/></svg>
                             Upload your design
                         </button>
-                        <button type="button" @click="start('design')" class="w-full text-center text-sm font-medium text-brand-700 underline-offset-4 hover:underline">
+                        <button v-if="product.supportsDesign" type="button" @click="start('design')" class="w-full text-center text-sm font-medium text-brand-700 underline-offset-4 hover:underline">
                             or browse {{ product.name.toLowerCase() }} templates
+                        </button>
+                        <button
+                            v-if="!product.supportsDesign && !product.supportsUpload" type="button" @click="addDirect"
+                            class="flex w-full items-center justify-center gap-2 rounded-full bg-brand-600 px-6 py-4 text-base font-semibold text-white shadow-lg shadow-brand-600/20 transition hover:bg-brand-700"
+                        >
+                            <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M5 7h15l-1.5 9.5a2 2 0 0 1-2 1.5H8.5a2 2 0 0 1-2-1.7L5 4H3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                            Add to cart
                         </button>
                     </div>
 

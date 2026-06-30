@@ -2,13 +2,11 @@
 import { Head, Link, router } from '@inertiajs/vue3';
 import { computed } from 'vue';
 import StoreLayout from '../Layouts/StoreLayout.vue';
-import BrandMockup from '../Components/BrandMockup.vue';
 
 const props = defineProps({
     items: { type: Array, default: () => [] },
     summary: { type: Object, default: () => ({}) },
     recommended: { type: Array, default: () => [] },
-    designMockups: { type: [Object, Array], default: () => [] },
 });
 
 const money = (n) => '$' + Number(n || 0).toFixed(2);
@@ -16,7 +14,6 @@ const progress = computed(() => {
     const t = props.summary.threshold || 50;
     return Math.min(100, Math.round(((props.summary.subtotal || 0) / t) * 100));
 });
-const hasMockups = computed(() => props.designMockups && props.designMockups.brand);
 const remove = (id) => router.post(`/cart/remove/${id}`, {}, { preserveScroll: true });
 </script>
 
@@ -73,23 +70,6 @@ const remove = (id) => router.post(`/cart/remove/${id}`, {}, { preserveScroll: t
                     <Link href="/" class="mt-3 block text-center text-sm text-ink/55 transition hover:text-ink">Continue shopping</Link>
                 </aside>
             </div>
-
-            <!-- req 11: brand elements laid into per-product SVG mockups -->
-            <section v-if="hasMockups" class="mt-16">
-                <h2 class="font-display text-2xl font-semibold tracking-tight">Put your brand on more</h2>
-                <p class="mt-1 text-ink/55">We'll lay your logo, company name and details onto each product.</p>
-                <div class="mt-6 grid grid-cols-2 gap-5 md:grid-cols-4">
-                    <Link v-for="p in designMockups.products" :key="p.slug" :href="`/product/${p.slug}`" class="group overflow-hidden rounded-2xl border border-paper-300 bg-white transition hover:-translate-y-1 hover:shadow-lg">
-                        <div class="aspect-square overflow-hidden bg-paper-200">
-                            <BrandMockup :brand="designMockups.brand" :variant="p.mockup" />
-                        </div>
-                        <div class="p-3">
-                            <p class="font-display text-sm font-semibold text-ink">{{ p.name }}</p>
-                            <p class="text-xs text-ink/55">From {{ money(p.fromPrice) }}</p>
-                        </div>
-                    </Link>
-                </div>
-            </section>
 
             <!-- req 15: nudge toward free shipping -->
             <section v-if="recommended.length" class="mt-16">

@@ -17,15 +17,17 @@ class CartController extends Controller
     {
     }
 
-    public function show(): Response
+    public function show()
     {
-        $items = $this->cart->items();
+        // Forced upsell: can't reach the cart until the upsell steps are done.
+        if ($this->cart->upsellPending()) {
+            return redirect()->route('upsell.show');
+        }
 
         return Inertia::render('Cart', [
-            'items'         => $items,
-            'summary'       => $this->summary(),
-            'recommended'   => $this->recommended(),
-            'designMockups' => $this->designMockups($items),
+            'items'       => $this->cart->items(),
+            'summary'     => $this->summary(),
+            'recommended' => $this->recommended(),
         ]);
     }
 
@@ -57,7 +59,15 @@ class CartController extends Controller
             'brand'      => $request->input('brand') ?: null,
         ]);
 
-        return redirect()->route('cart')->with('success', "“{$product->name}” added to your cart.");
+        $product->loadMissing('category');
+        $steps = $this->upsellSteps($product, $data);
+        $this->cart->setUpsell($steps);
+
+        $flash = "“{$product->name}” added to your cart.";
+
+        return $steps
+            ? redirect()->route('upsell.show')->with('success', $flash)
+            : redirect()->route('cart')->with('success', $flash);
     }
 
     public function remove(string $lineId): RedirectResponse
@@ -96,27 +106,20 @@ class CartController extends Controller
             ])->all();
     }
 
-    /** req 11: the user's brand elements (logo, name, url, contact) laid into per-product SVG mockups. */
-    private function designMockups(array $items): array
+    /** Which forced upsell steps apply to what was just added (req: multi-step upsell). */
+    private function upsellSteps(Product $product, array $data): array
     {
-        $withBrand = collect($items)->reverse()->first(fn ($i) => ! empty($i['brand']));
-        $brand = $withBrand['brand'] ?? null;
-        if (! $brand) {
-            return [];
+        $steps = [];
+
+        $brand = $data['brand'] ?? null;
+        if (is_array($brand) && array_filter($brand)) {
+            $steps[] = 'brand';   // lay the buyer's brand onto more products (req 11)
+        }
+        if (optional($product->category)->slug === 'business-cards') {
+            $steps[] = 'related'; // non-personalised add-ons — card holders etc.
         }
 
-        $map = ['flyers' => 'flyer', 'posters' => 'poster', 'postcards' => 'postcard', 'notepads' => 'notepad', 'tote-bags' => 'tote'];
-        $surfaces = Product::whereIn('slug', array_keys($map))->orderBy('sort_order')->get();
-
-        return [
-            'brand'    => $brand,
-            'products' => $surfaces->map(fn (Product $p) => [
-                'name'      => $p->name,
-                'slug'      => $p->slug,
-                'fromPrice' => (float) $p->from_price,
-                'mockup'    => $map[$p->slug] ?? 'flyer',
-            ])->all(),
-        ];
+        return $steps;
     }
 
     private function img(?string $path): ?string

@@ -1,13 +1,16 @@
 import { test, expect } from '@playwright/test';
+import { completeUpsell } from './helpers.mjs';
 
-// Full funnel: design → cart → checkout → paid (req 14 / 15).
-test('full funnel: design → cart → checkout → paid', async ({ page }) => {
+// Full funnel: design → forced upsell → cart → checkout → paid (req 3 / 14 / 15).
+test('full funnel: design → upsell → cart → checkout → paid', async ({ page }) => {
     await page.goto('/product/standard-business-cards');
     await page.getByRole('button', { name: /design online/i }).first().click();
     await page.waitForURL('**/design/**');
     await expect(page.locator('canvas')).toHaveCount(2);
 
     await page.getByRole('button', { name: /add to cart/i }).click();
+    await page.waitForURL('**/upsell');     // upsell comes before the cart
+    await completeUpsell(page);
     await page.waitForURL('**/cart');
     await expect(page.getByText(/free shipping/i).first()).toBeVisible();
 

@@ -416,6 +416,34 @@ class CatalogSeeder extends Seeder
                     ],
                 ],
             ],
+            [
+                'name' => 'Accessories', 'slug' => 'accessories', 'sort_order' => 6,
+                'tagline' => 'Finishing touches for your cards.',
+                'description' => 'Holders, cases and stands to present and protect your business cards in style.',
+                'products' => [
+                    [
+                        'name' => 'Metal Business Card Holder', 'from_price' => 12.00, 'badge' => 'Pairs well',
+                        'tagline' => 'Keep your cards crisp and close to hand.',
+                        'description' => 'Sleek brushed-metal holder that protects your cards and looks sharp on any desk. Not personalised — ships ready to use.',
+                        'supports_design' => false, 'supports_upload' => false,
+                        'quantities' => [[1, 12.00, true], [2, 11.00], [5, 9.50]],
+                    ],
+                    [
+                        'name' => 'Leather Card Case', 'from_price' => 19.00,
+                        'tagline' => 'Premium leather, pocket-ready.',
+                        'description' => 'Full-grain leather case that carries around 25 cards in understated style. Not personalised.',
+                        'supports_design' => false, 'supports_upload' => false,
+                        'quantities' => [[1, 19.00, true], [2, 17.00], [5, 15.00]],
+                    ],
+                    [
+                        'name' => 'Acrylic Desk Card Stand', 'from_price' => 9.00,
+                        'tagline' => 'Display your cards front and centre.',
+                        'description' => 'Crystal-clear acrylic stand that shows off your cards at reception desks and events. Not personalised.',
+                        'supports_design' => false, 'supports_upload' => false,
+                        'quantities' => [[1, 9.00, true], [2, 8.00], [5, 6.50]],
+                    ],
+                ],
+            ],
         ];
     }
 }

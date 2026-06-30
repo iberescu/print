@@ -16,6 +16,7 @@ const W = 760;
 const H = 434;
 
 const canvasEl = ref(null);
+const stageEl = ref(null);
 let canvas = null;
 const side = ref('front');
 const store = { front: null, back: null };
@@ -45,7 +46,7 @@ function ensureFonts() {
 
 const hasSel = ref(false);
 const isText = ref(false);
-const sel = reactive({ fontFamily: 'Playfair Display', fontSize: 40, fill: '#0c1f17', bold: false, italic: false, align: 'left' });
+const sel = reactive({ text: '', fontFamily: 'Playfair Display', fontSize: 40, fill: '#0c1f17', bold: false, italic: false, align: 'left' });
 
 function addText(text, opts = {}) {
     const t = new fabric.IText(text, {
@@ -77,6 +78,7 @@ function syncSelection() {
     hasSel.value = !!o;
     isText.value = !!o && (o.type === 'i-text' || o.type === 'textbox');
     if (o && isText.value) {
+        sel.text = o.text ?? '';
         sel.fontFamily = o.fontFamily || sel.fontFamily;
         sel.fontSize = o.fontSize || sel.fontSize;
         sel.fill = typeof o.fill === 'string' ? o.fill : sel.fill;
@@ -86,8 +88,25 @@ function syncSelection() {
     }
 }
 
+function fitCanvas() {
+    if (!canvas || !stageEl.value) return;
+    const avail = Math.max(220, stageEl.value.clientWidth - 32);
+    const scale = Math.min(1, avail / W);
+    canvas.setDimensions({ width: Math.round(W * scale), height: Math.round(H * scale) }, { cssOnly: true });
+}
+
 onMounted(() => {
     ensureFonts();
+
+    // Bigger, touch-friendly selection handles — easier to grab/resize on mobile.
+    if (fabric.InteractiveFabricObject?.ownDefaults) {
+        Object.assign(fabric.InteractiveFabricObject.ownDefaults, {
+            cornerSize: 13, touchCornerSize: 44, cornerStyle: 'circle',
+            transparentCorners: false, cornerColor: '#0e9355',
+            cornerStrokeColor: '#ffffff', borderColor: '#0e9355', padding: 4,
+        });
+    }
+
     canvas = new fabric.Canvas(canvasEl.value, { backgroundColor: '#ffffff', preserveObjectStacking: true });
     canvas.setDimensions({ width: W, height: H });
     canvas.on('selection:created', syncSelection);
@@ -97,12 +116,18 @@ onMounted(() => {
     if (props.mode === 'design') seedTemplate();
     else { canvas.backgroundColor = '#ffffff'; canvas.renderAll(); }
 
+    fitCanvas();
+    window.addEventListener('resize', fitCanvas);
+
     if (typeof document !== 'undefined' && document.fonts?.ready) {
         document.fonts.ready.then(() => canvas && canvas.requestRenderAll());
     }
 });
 
-onBeforeUnmount(() => canvas && canvas.dispose());
+onBeforeUnmount(() => {
+    window.removeEventListener('resize', fitCanvas);
+    canvas && canvas.dispose();
+});
 
 function apply(prop, val) {
     const o = canvas.getActiveObject();
@@ -116,6 +141,7 @@ const setColor = (c) => { sel.fill = c; apply('fill', c); };
 const toggleBold = () => { sel.bold = !sel.bold; apply('fontWeight', sel.bold ? 'bold' : 'normal'); };
 const toggleItalic = () => { sel.italic = !sel.italic; apply('fontStyle', sel.italic ? 'italic' : 'normal'); };
 const setAlign = (a) => { sel.align = a; apply('textAlign', a); };
+const setText = (v) => { sel.text = v; apply('text', v); };
 const setBg = (c) => { canvas.backgroundColor = c; canvas.requestRenderAll(); };
 
 function newText() {
@@ -210,7 +236,7 @@ function addToCart() {
                     <p class="text-xs text-ink/50">{{ category.name }}</p>
                 </div>
             </div>
-            <div class="flex items-center gap-2 text-sm font-medium">
+            <div class="hidden items-center gap-2 text-sm font-medium sm:flex">
                 <span class="rounded-full bg-brand-50 px-3 py-1 text-brand-700">1 · Design</span>
                 <span class="text-ink/30">2 · Review</span>
             </div>
@@ -229,6 +255,8 @@ function addToCart() {
             <div class="mx-1 h-6 w-px bg-white/15"></div>
 
             <template v-if="isText">
+                <input :value="sel.text" @input="setText($event.target.value)" placeholder="Edit text"
+                       class="w-32 shrink-0 rounded-md bg-white/10 px-2 py-1.5 text-sm text-paper placeholder:text-paper/40 focus:outline-none sm:w-44" />
                 <select :value="sel.fontFamily" class="rounded-md bg-white/10 px-2 py-1.5 text-sm focus:outline-none" @change="setFont($event.target.value)">
                     <option v-for="f in fonts" :key="f" :value="f" class="text-ink">{{ f }}</option>
                 </select>
@@ -250,7 +278,7 @@ function addToCart() {
             <span v-else class="px-2 text-sm text-paper/45">Select an element to edit its text style</span>
         </div>
 
-        <div class="relative flex flex-1 flex-col items-center justify-center gap-6 overflow-auto p-8">
+        <div ref="stageEl" class="relative flex flex-1 flex-col items-center justify-center gap-4 overflow-auto p-4 sm:gap-6 sm:p-8">
             <p class="text-sm font-medium text-ink/50">
                 {{ side === 'front' ? 'Front' : 'Back' }} design · <span class="text-ink/40">all of your cards will look like this</span>
             </p>

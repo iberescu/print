@@ -5,6 +5,7 @@ use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\DesignController;
 use App\Http\Controllers\FeedController;
 use App\Http\Controllers\StorefrontController;
+use App\Http\Controllers\UpsellController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [StorefrontController::class, 'home'])->name('home');
@@ -19,6 +20,11 @@ Route::get('/design/template/{template}/data', [DesignController::class, 'templa
 Route::get('/cart', [CartController::class, 'show'])->name('cart');
 Route::post('/cart/add/{product}', [CartController::class, 'add'])->name('cart.add');
 Route::post('/cart/remove/{lineId}', [CartController::class, 'remove'])->name('cart.remove');
+
+// Forced upsell steps before the cart (multi-step upsell + card-holder cross-sell)
+Route::get('/upsell', [UpsellController::class, 'show'])->name('upsell.show');
+Route::post('/upsell/add/{product}', [UpsellController::class, 'add'])->name('upsell.add');
+Route::post('/upsell/next', [UpsellController::class, 'next'])->name('upsell.next');
 
 // Checkout + Stripe (req 14)
 Route::get('/checkout', [CheckoutController::class, 'show'])->name('checkout');

@@ -27,7 +27,9 @@ class HandleInertiaRequests extends Middleware
             'navCategories' => Cache::remember(
                 'nav.categories',
                 600,
-                fn () => Category::where('is_active', true)->orderBy('sort_order')->get(['name', 'slug'])
+                // toArray() — caching an Eloquent Collection in Redis deserializes to a
+                // broken __PHP_Incomplete_Class on cache hits, blanking the nav.
+                fn () => Category::where('is_active', true)->orderBy('sort_order')->get(['name', 'slug'])->toArray()
             ),
             'shop' => [
                 'freeShippingThreshold' => (float) config('shop.free_shipping_threshold'),

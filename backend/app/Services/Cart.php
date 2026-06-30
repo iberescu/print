@@ -5,6 +5,8 @@ namespace App\Services;
 class Cart
 {
     private const KEY = 'cart';
+    private const UPSELL = 'cart_upsell';
+    private const UPSELL_I = 'cart_upsell_i';
 
     /** @return array<int,array<string,mixed>> */
     public function items(): array
@@ -32,7 +34,44 @@ class Cart
 
     public function clear(): void
     {
-        session()->forget(self::KEY);
+        session()->forget([self::KEY, self::UPSELL, self::UPSELL_I]);
+    }
+
+    /** Forced upsell flow: an ordered list of step keys the buyer passes before the cart. */
+    public function setUpsell(array $steps): void
+    {
+        session([self::UPSELL => array_values($steps), self::UPSELL_I => 0]);
+    }
+
+    /** @return array<int,string> */
+    public function upsellSteps(): array
+    {
+        return session(self::UPSELL, []);
+    }
+
+    public function upsellIndex(): int
+    {
+        return (int) session(self::UPSELL_I, 0);
+    }
+
+    public function upsellCurrent(): ?string
+    {
+        return $this->upsellSteps()[$this->upsellIndex()] ?? null;
+    }
+
+    public function upsellPending(): bool
+    {
+        return $this->upsellCurrent() !== null;
+    }
+
+    public function advanceUpsell(): void
+    {
+        session([self::UPSELL_I => $this->upsellIndex() + 1]);
+    }
+
+    public function clearUpsell(): void
+    {
+        session()->forget([self::UPSELL, self::UPSELL_I]);
     }
 
     public function count(): int
