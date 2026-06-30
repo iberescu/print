@@ -14,6 +14,7 @@ Route::get('/category/{category}', [StorefrontController::class, 'category'])->n
 Route::get('/product/{product}', [StorefrontController::class, 'product'])->name('product.show');
 
 // Online designer (req 8/9/18)
+Route::get('/design/{product}/templates', [DesignController::class, 'templates'])->name('design.templates');
 Route::get('/design/{product}', [DesignController::class, 'show'])->name('design.start');
 Route::get('/design/template/{template}/data', [DesignController::class, 'templateData'])->name('template.data');
 

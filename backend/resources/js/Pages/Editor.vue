@@ -9,11 +9,15 @@ const props = defineProps({
     category: { type: Object, default: () => ({}) },
     mode: { type: String, default: 'design' },
     templates: { type: Array, default: () => [] },
+    template: { type: String, default: null },
+    canvas: { type: Object, default: () => ({}) },
     selection: { type: Object, default: () => ({}) },
 });
 
-const W = 760;
-const H = 434;
+// Canvas matches the product's print format (A4 flyer, business-card landscape, …).
+const W = props.canvas?.w || 760;
+const H = props.canvas?.h || 434;
+const isBusinessCard = props.category?.slug === 'business-cards';
 
 const canvasEl = ref(null);
 const stageEl = ref(null);
@@ -73,6 +77,17 @@ function seedTemplate() {
     canvas.renderAll();
 }
 
+// Generic starter for non-business-card formats (flyers, posters, signs, …),
+// scaled to whatever canvas size the product's format produced.
+function seedGeneric() {
+    canvas.backgroundColor = '#ffffff';
+    const cx = W / 2;
+    addText('Your Headline', { left: cx, top: Math.round(H * 0.30), originX: 'center', textAlign: 'center', fontSize: Math.max(20, Math.round(W * 0.075)), fontWeight: 'bold', fontFamily: 'Poppins', fill: '#2b3b55', rmpRole: 'companyName' });
+    addText('Add your message, details or call to action here.', { left: cx, top: Math.round(H * 0.46), originX: 'center', textAlign: 'center', fontSize: Math.max(13, Math.round(W * 0.032)), fontFamily: 'Work Sans', fill: '#16233b' });
+    addText('yourcompany.com', { left: cx, top: Math.round(H * 0.62), originX: 'center', textAlign: 'center', fontSize: Math.max(12, Math.round(W * 0.028)), fontFamily: 'Work Sans', fill: '#647ba0', rmpRole: 'url' });
+    canvas.renderAll();
+}
+
 function syncSelection() {
     const o = canvas.getActiveObject();
     hasSel.value = !!o;
@@ -90,8 +105,10 @@ function syncSelection() {
 
 function fitCanvas() {
     if (!canvas || !stageEl.value) return;
-    const avail = Math.max(220, stageEl.value.clientWidth - 32);
-    const scale = Math.min(1, avail / W);
+    // Fit by BOTH width and height so portrait/tall formats (A4, banners) stay in view.
+    const availW = Math.max(220, stageEl.value.clientWidth - 32);
+    const availH = Math.max(220, stageEl.value.clientHeight - 120); // room for label + side toggle
+    const scale = Math.min(1, availW / W, availH / H);
     // Scale both the canvas size AND the viewport zoom so object/pointer coords stay
     // correct (cssOnly scaling misaligns clicks). setZoom is the supported responsive path.
     canvas.setDimensions({ width: Math.round(W * scale), height: Math.round(H * scale) });
@@ -117,7 +134,8 @@ onMounted(() => {
     canvas.on('selection:updated', syncSelection);
     canvas.on('selection:cleared', () => { hasSel.value = false; isText.value = false; });
 
-    if (props.mode === 'design') seedTemplate();
+    if (props.template) applyTemplate(props.template);
+    else if (props.mode === 'design') (isBusinessCard ? seedTemplate : seedGeneric)();
     else { canvas.backgroundColor = '#ffffff'; canvas.renderAll(); }
 
     fitCanvas();
@@ -237,7 +255,7 @@ function addToCart() {
                 <div class="hidden h-6 w-px bg-paper-300 sm:block"></div>
                 <div class="hidden sm:block">
                     <p class="text-sm font-semibold text-ink">{{ product.name }}</p>
-                    <p class="text-xs text-ink/50">{{ category.name }}</p>
+                    <p class="text-xs text-ink/50">{{ category.name }}<span v-if="props.canvas?.label"> · {{ props.canvas.label }}</span></p>
                 </div>
             </div>
             <div class="hidden items-center gap-2 text-sm font-medium sm:flex">
@@ -284,7 +302,7 @@ function addToCart() {
 
         <div ref="stageEl" class="relative flex flex-1 flex-col items-center justify-center gap-4 overflow-auto p-4 sm:gap-6 sm:p-8">
             <p class="text-sm font-medium text-ink/50">
-                {{ side === 'front' ? 'Front' : 'Back' }} design · <span class="text-ink/40">all of your cards will look like this</span>
+                {{ side === 'front' ? 'Front' : 'Back' }} design · <span class="text-ink/40">every copy will print exactly like this</span>
             </p>
             <div class="relative">
                 <div class="overflow-hidden rounded-2xl bg-white shadow-[0_30px_60px_-25px_rgba(12,31,23,0.5)] ring-1 ring-paper-300">

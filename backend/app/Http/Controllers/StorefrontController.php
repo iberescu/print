@@ -66,6 +66,8 @@ class StorefrontController extends Controller
                 'image'          => $this->img($product->image_path),
                 'supportsDesign' => $product->supports_design,
                 'supportsUpload' => $product->supports_upload,
+                'templateCount'  => \App\Models\Template::where('is_active', true)
+                    ->where('category', $product->category->slug)->count(),
                 'category'       => ['name' => $product->category->name, 'slug' => $product->category->slug],
                 'options'        => $product->options->map(fn ($o) => [
                     'id'     => $o->id,

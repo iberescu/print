@@ -44,6 +44,14 @@ function start(mode) {
     });
 }
 
+// Browse templates first (gallery), carrying the chosen quantity + options.
+function browseTemplates() {
+    router.get(`/design/${props.product.slug}/templates`, {
+        qty: selectedQtyId.value,
+        opts: Object.values(selectedValues.value),
+    });
+}
+
 // Non-personalised products (accessories) skip the designer and add straight to cart.
 function addDirect() {
     router.post(`/cart/add/${props.product.slug}`, {
@@ -161,7 +169,7 @@ function addDirect() {
                             <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 16V4m0 0L8 8m4-4 4 4M5 20h14" stroke-linecap="round" stroke-linejoin="round"/></svg>
                             Upload your design
                         </button>
-                        <button v-if="product.supportsDesign" type="button" @click="start('design')" class="w-full text-center text-sm font-medium text-brand-700 underline-offset-4 hover:underline">
+                        <button v-if="product.supportsDesign && product.templateCount" type="button" @click="browseTemplates" class="w-full text-center text-sm font-medium text-brand-700 underline-offset-4 hover:underline">
                             or browse {{ product.name.toLowerCase() }} templates
                         </button>
                         <button
