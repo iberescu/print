@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="RunMyPrint — custom business printing. Design online or upload your artwork.">
-    <link rel="icon" type="image/png" href="/storage/brand/logo.png">
+    <link rel="icon" type="image/svg+xml" href="/storage/brand/logo.svg">
     <title inertia>{{ config('app.name', 'RunMyPrint') }}</title>
     @vite(['resources/js/app.js', 'resources/css/app.css'])
     @inertiaHead
