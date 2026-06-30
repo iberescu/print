@@ -13,7 +13,7 @@ const props = defineProps({
 });
 
 const slides = [
-    { eyebrow: 'Premium custom printing', title: 'Everything to launch your brand', text: 'Business cards, flyers, signage, stickers, apparel and more — designed online, printed beautifully, delivered fast.', cta: 'Browse products', href: '#categories', image: props.heroImage },
+    { eyebrow: 'Premium custom printing', title: 'Everything to launch your brand', text: 'Business cards, flyers, signage, stickers, apparel and more — designed online, printed beautifully, delivered fast.', cta: 'Browse products', href: '#bestsellers', image: props.heroImage },
     { eyebrow: 'New customer offer', title: 'Business cards from $10', text: '500 premium cards — design online in minutes or upload your own artwork.', cta: 'Shop business cards', href: '/category/business-cards', image: props.heroImage },
     { eyebrow: `Free shipping over $${props.freeShippingThreshold}`, title: 'Your logo, on everything', text: 'Use our free online designer and 200+ ready-made templates.', cta: 'Start designing', href: '/product/standard-business-cards', image: props.heroImage },
 ];
@@ -24,26 +24,8 @@ const slides = [
     <StoreLayout>
         <HeroSlider :slides="slides" />
 
-        <!-- explore all categories -->
-        <section id="categories" class="mx-auto max-w-7xl px-6 py-16 sm:px-8 sm:py-20">
-            <div class="mb-9 flex items-end justify-between">
-                <div>
-                    <p class="text-sm font-semibold uppercase tracking-widest text-brand-600">Shop by category</p>
-                    <h2 class="mt-2 font-display text-3xl font-bold tracking-tight sm:text-4xl">Explore the catalog</h2>
-                </div>
-            </div>
-            <div class="grid grid-cols-2 gap-5 sm:grid-cols-3 lg:grid-cols-6">
-                <Link v-for="c in categories" :key="c.slug" :href="`/category/${c.slug}`" class="group text-center">
-                    <div class="aspect-square overflow-hidden rounded-2xl border border-paper-300 bg-paper-200 shadow-sm transition duration-300 group-hover:-translate-y-1 group-hover:shadow-xl">
-                        <SmartImage :src="c.image" :alt="c.name" class="transition duration-500 group-hover:scale-105" />
-                    </div>
-                    <p class="mt-3 text-sm font-semibold text-ink transition group-hover:text-brand-700">{{ c.name }}</p>
-                </Link>
-            </div>
-        </section>
-
         <!-- bestselling products -->
-        <section class="bg-paper-200">
+        <section id="bestsellers" class="bg-paper-200">
             <div class="mx-auto max-w-7xl px-6 py-16 sm:px-8 sm:py-20">
                 <div class="mb-9 flex items-end justify-between">
                     <div>
@@ -65,7 +47,7 @@ const slides = [
                     <p class="text-sm font-semibold uppercase tracking-widest text-lime-accent">Not sure yet?</p>
                     <h2 class="mt-4 font-display text-3xl font-bold leading-tight sm:text-4xl">Order a free sample pack</h2>
                     <p class="mt-4 max-w-md text-white/70">Feel our paper stocks and finishes before you buy — premium quality you can hold.</p>
-                    <a href="#categories" class="mt-8 inline-block rounded-full bg-lime-accent px-8 py-4 font-semibold text-navy transition hover:brightness-95">Get free samples</a>
+                    <a href="#bestsellers" class="mt-8 inline-block rounded-full bg-lime-accent px-8 py-4 font-semibold text-navy transition hover:brightness-95">Get free samples</a>
                 </div>
                 <div class="min-h-56 md:min-h-0"><SmartImage :src="heroImage" alt="Sample pack" /></div>
             </div>

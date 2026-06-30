@@ -42,7 +42,7 @@ const mobileMenuOpen = ref(false);
                 <button class="grid h-10 w-10 shrink-0 place-items-center text-ink/80 hover:text-ink md:hidden" aria-label="Open menu" @click="mobileMenuOpen = true">
                     <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round" /></svg>
                 </button>
-                <Link href="/" class="shrink-0"><AppLogo /></Link>
+                <Link href="/" class="shrink-0"><AppLogo featured /></Link>
                 <div class="hidden flex-1 items-center border border-ink/20 bg-white px-4 py-2.5 md:flex">
                     <svg class="h-5 w-5 text-ink/40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="11" cy="11" r="7" /><path d="m21 21-4.3-4.3" stroke-linecap="round" /></svg>
                     <input type="text" placeholder="What are you looking for?" class="w-full bg-transparent px-3 text-sm placeholder:text-ink/40 focus:outline-none" />
@@ -68,7 +68,7 @@ const mobileMenuOpen = ref(false);
             <nav class="hidden border-t border-paper-300 md:block">
                 <div class="mx-auto flex max-w-7xl items-center gap-1 overflow-x-auto px-6">
                     <Link v-for="c in categories" :key="c.slug" :href="`/category/${c.slug}`"
-                          class="whitespace-nowrap px-3 py-3 text-sm font-medium text-ink/75 transition hover:text-brand-700 hover:shadow-[inset_0_-3px_0_0_var(--color-brand-600)]">
+                          class="whitespace-nowrap px-3 py-3 text-sm font-medium tracking-[1px] text-ink/75 transition hover:text-brand-700 hover:shadow-[inset_0_-3px_0_0_var(--color-brand-600)]">
                         {{ c.name }}
                     </Link>
                 </div>
