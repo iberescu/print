@@ -18,8 +18,9 @@ class GenerateCatalogImages extends Command
 
     protected $description = 'Generate catalog imagery (hero, categories, products) with Gemini';
 
-    private const STYLE = 'Professional e-commerce product photography, soft seamless light-grey studio background, '
-        .'soft natural shadows, photorealistic, sharp focus, centered composition, no text, no logo, no watermark.';
+    private const STYLE = 'Vibrant modern commercial product photography for a premium print brand. Bright even studio '
+        .'lighting, crisp focus, rich saturated colour, clean soft white-to-light-grey gradient background, subtle '
+        .'realistic shadows, generous negative space, editorial e-commerce style. No text, no logo, no watermark.';
 
     public function handle(GeminiClient $gemini): int
     {
@@ -34,9 +35,12 @@ class GenerateCatalogImages extends Command
         if (in_array($only, ['all', 'hero'], true)) {
             $tasks[] = [
                 'path'   => 'heroes/home',
-                'prompt' => 'Bright, airy hero photograph of a modern small-business desk: a neat stack of business '
-                    .'cards, a few flyers and a laptop showing a colourful design tool, lots of clean negative space '
-                    .'on the right for headline text. Cinematic, professional, shallow depth of field. '.self::STYLE,
+                'maxw'   => 1600,
+                'prompt' => 'Premium wide flat-lay hero photo, slightly angled top-down, of an array of custom-branded '
+                    .'business products beautifully arranged on a clean light surface: a folded polo shirt, two ceramic '
+                    .'mugs, ballpoint pens, a metal water bottle, a canvas tote bag, a stack of business cards in a holder, '
+                    .'a notebook and some stickers — cohesive green, navy and white brand palette. Bright airy lifestyle '
+                    .'commercial photography, lots of clean empty space on the left third for headline text. '.self::STYLE,
                 'save'   => null,
             ];
         }
@@ -45,8 +49,9 @@ class GenerateCatalogImages extends Command
             foreach (Category::orderBy('sort_order')->get() as $cat) {
                 $tasks[] = [
                     'path'   => "categories/{$cat->slug}",
-                    'prompt' => "Clean modern flat-lay representing the \"{$cat->name}\" print category "
-                        ."({$cat->tagline}). Assorted printed products tastefully arranged. ".self::STYLE,
+                    'maxw'   => 1000,
+                    'prompt' => "Vibrant modern flat-lay representing the \"{$cat->name}\" print category "
+                        ."({$cat->tagline}). A bright, colourful arrangement of assorted printed products. ".self::STYLE,
                     'save'   => fn (string $p) => tap($cat)->update(['image_path' => $p]),
                 ];
             }
@@ -56,8 +61,10 @@ class GenerateCatalogImages extends Command
             foreach (Product::with('category')->orderBy('sort_order')->get() as $product) {
                 $tasks[] = [
                     'path'   => "products/{$product->slug}",
+                    'maxw'   => 1000,
                     'prompt' => "{$product->name} ({$product->category->name}) — {$product->tagline} "
-                        .'A single hero product shot of this printed item. '.self::STYLE,
+                        .'A single vibrant hero product shot of this printed item, styled and colourful, '
+                        .'filling the frame. '.self::STYLE,
                     'save'   => fn (string $p) => tap($product)->update(['image_path' => $p]),
                 ];
             }
@@ -74,14 +81,14 @@ class GenerateCatalogImages extends Command
 
             try {
                 $img  = $gemini->generateImage($task['prompt']);
-                $ext  = str_contains($img['mime'], 'png') ? 'png' : 'jpg';
-                $path = "{$task['path']}.{$ext}";
-                $disk->put($path, $img['data']);
+                $webp = $this->toWebp($img['data'], $task['maxw'] ?? 1000);
+                $path = "{$task['path']}.webp";
+                $disk->put($path, $webp);
                 if ($task['save']) {
                     ($task['save'])($path);
                 }
                 $count++;
-                $this->info("ok    {$path}  (".number_format(strlen($img['data']) / 1024, 0)." KB)");
+                $this->info("ok    {$path}  (".number_format(strlen($webp) / 1024, 0)." KB, web-ready)");
             } catch (Throwable $e) {
                 $this->error("fail  {$task['path']}: ".$e->getMessage());
             }
@@ -97,6 +104,30 @@ class GenerateCatalogImages extends Command
 
     private function existing($disk, string $base): bool
     {
-        return $disk->exists("{$base}.jpg") || $disk->exists("{$base}.png");
+        return $disk->exists("{$base}.webp") || $disk->exists("{$base}.jpg") || $disk->exists("{$base}.png");
+    }
+
+    /** Resize (cap width) and re-encode to web-ready webp. */
+    private function toWebp(string $data, int $maxW): string
+    {
+        $im = @imagecreatefromstring($data);
+        if ($im === false) {
+            return $data;
+        }
+        $w = imagesx($im);
+        $h = imagesy($im);
+        if ($w > $maxW) {
+            $scaled = imagescale($im, $maxW, (int) round($h * $maxW / $w));
+            if ($scaled !== false) {
+                imagedestroy($im);
+                $im = $scaled;
+            }
+        }
+        ob_start();
+        imagewebp($im, null, 82);
+        $out = ob_get_clean();
+        imagedestroy($im);
+
+        return $out !== false && $out !== '' ? $out : $data;
     }
 }

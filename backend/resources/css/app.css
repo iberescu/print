@@ -4,11 +4,11 @@
 @source '../../storage/framework/views/*.php';
 
 @theme {
-    /* Type — characterful display serif + clean grotesque body */
-    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif;
-    --font-display: 'Fraunces', ui-serif, Georgia, serif;
+    /* Type — Poppins throughout (geometric, modern, premium) */
+    --font-sans: 'Poppins', ui-sans-serif, system-ui, sans-serif;
+    --font-display: 'Poppins', ui-sans-serif, system-ui, sans-serif;
 
-    /* Brand — deep print-ink emerald */
+    /* Brand — fresh green action accent (matches the logo) */
     --color-brand-50: #ecfdf3;
     --color-brand-100: #d1fadf;
     --color-brand-200: #a6f4c5;
@@ -24,21 +24,23 @@
     /* Accent — fresh lime */
     --color-lime-accent: #c7f23d;
 
-    /* Warm neutrals — ink on paper */
-    --color-ink: #0c1f17;
-    --color-paper: #f8f6ef;
-    --color-paper-200: #efeadd;
-    --color-paper-300: #e3ddcc;
+    /* Navy — premium deep-blue surface (brand background) */
+    --color-navy: #2b3b55;
+    --color-navy-600: #36486a;
+    --color-navy-700: #233148;
+    --color-navy-800: #1c2738;
+    --color-navy-950: #131b29;
+
+    /* Neutrals — black ink on white paper */
+    --color-ink: #16233b;          /* near-black, navy-tinted text */
+    --color-paper: #ffffff;        /* page background */
+    --color-paper-200: #f4f6f9;    /* soft grey alternating sections */
+    --color-paper-300: #e4e8ef;    /* hairline borders */
 }
 
 @layer base {
     html {
         scroll-behavior: smooth;
-    }
-
-    /* Subtle, uniform small radius on all elements (design spec) */
-    *, *::before, *::after {
-        border-radius: 3px !important;
     }
 
     body {
@@ -50,38 +52,11 @@
 
     ::selection {
         background-color: var(--color-lime-accent);
-        color: var(--color-ink);
+        color: var(--color-navy);
     }
 }
 
 @layer utilities {
-    /* Print registration / crop-mark corner accents */
-    .crop-corners {
-        position: relative;
-    }
-    .crop-corners::before,
-    .crop-corners::after {
-        content: '';
-        position: absolute;
-        width: 14px;
-        height: 14px;
-        border-color: currentColor;
-        opacity: 0.35;
-        pointer-events: none;
-    }
-    .crop-corners::before {
-        top: 10px;
-        left: 10px;
-        border-top: 1.5px solid;
-        border-left: 1.5px solid;
-    }
-    .crop-corners::after {
-        bottom: 10px;
-        right: 10px;
-        border-bottom: 1.5px solid;
-        border-right: 1.5px solid;
-    }
-
     /* Subtle paper grain */
     .bg-grain {
         background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");

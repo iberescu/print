@@ -10,9 +10,9 @@ const money = (n) => '$' + Number(n).toFixed(2);
 <template>
     <Link
         :href="`/product/${product.slug}`"
-        class="group relative flex flex-col overflow-hidden rounded-2xl border border-paper-300 bg-white transition duration-300 hover:-translate-y-1 hover:shadow-[0_22px_48px_-24px_rgba(12,31,23,0.45)]"
+        class="group relative flex flex-col overflow-hidden rounded-2xl border border-paper-300 bg-white shadow-sm transition duration-300 hover:-translate-y-1.5 hover:shadow-[0_28px_55px_-28px_rgba(43,59,85,0.55)]"
     >
-        <div class="crop-corners relative aspect-square overflow-hidden bg-paper-200 text-ink">
+        <div class="relative aspect-square overflow-hidden bg-paper-200">
             <SmartImage
                 :src="product.image"
                 :alt="product.name"
@@ -25,7 +25,7 @@ const money = (n) => '$' + Number(n).toFixed(2);
                 {{ product.badge }}
             </span>
         </div>
-        <div class="flex flex-1 flex-col p-4">
+        <div class="flex flex-1 flex-col p-5">
             <p v-if="product.category" class="text-[11px] font-semibold uppercase tracking-widest text-brand-700/70">
                 {{ product.category }}
             </p>

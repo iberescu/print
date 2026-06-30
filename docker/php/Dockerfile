@@ -3,10 +3,10 @@ FROM php:8.4-fpm-alpine
 # System deps + PHP extensions needed by Laravel + image handling
 RUN apk add --no-cache \
         git curl bash \
-        libzip-dev libpng-dev libjpeg-turbo-dev freetype-dev \
+        libzip-dev libpng-dev libjpeg-turbo-dev freetype-dev libwebp-dev \
         icu-dev oniguruma-dev \
     && apk add --no-cache --virtual .build-deps $PHPIZE_DEPS \
-    && docker-php-ext-configure gd --with-freetype --with-jpeg \
+    && docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp \
     && docker-php-ext-install -j"$(nproc)" pdo_mysql gd zip bcmath intl exif \
     && pecl install redis \
     && docker-php-ext-enable redis \

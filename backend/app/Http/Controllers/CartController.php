@@ -124,6 +124,6 @@ class CartController extends Controller
 
     private function img(?string $path): ?string
     {
-        return $path && Storage::disk('public')->exists($path) ? Storage::disk('public')->url($path) : null;
+        return \App\Support\Img::url($path);
     }
 }

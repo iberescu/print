@@ -15,7 +15,7 @@ const mobileMenuOpen = ref(false);
 <template>
     <div class="flex min-h-screen flex-col bg-paper">
         <!-- utility bar -->
-        <div class="bg-brand-950 text-paper">
+        <div class="bg-navy text-paper">
             <div class="mx-auto flex max-w-7xl items-center justify-between px-6 py-2 text-[13px]">
                 <span class="flex items-center gap-2 font-medium">
                     <svg class="h-4 w-4 text-lime-accent" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 7h11v9H3zM14 10h4l3 3v3h-7" stroke-linecap="round" stroke-linejoin="round" /></svg>
@@ -31,7 +31,7 @@ const mobileMenuOpen = ref(false);
 
         <!-- header -->
         <header class="sticky top-0 z-40 border-b border-paper-300 bg-paper">
-            <div class="mx-auto flex max-w-7xl items-center gap-3 px-4 py-3 sm:gap-6 sm:px-6 sm:py-4">
+            <div class="mx-auto flex max-w-7xl items-center gap-3 px-4 py-4 sm:gap-8 sm:px-8 sm:py-5">
                 <button class="grid h-10 w-10 shrink-0 place-items-center text-ink/80 hover:text-ink md:hidden" aria-label="Open menu" @click="mobileMenuOpen = true">
                     <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round" /></svg>
                 </button>
@@ -121,11 +121,11 @@ const mobileMenuOpen = ref(false);
         </section>
 
         <!-- footer -->
-        <footer class="bg-brand-950 text-paper/75">
+        <footer class="bg-navy text-paper/75">
             <div class="mx-auto grid max-w-7xl gap-8 px-6 py-14 sm:grid-cols-2 lg:grid-cols-5">
                 <div>
                     <div class="flex items-center gap-2 text-paper">
-                        <img src="/storage/brand/logo.png" alt="runmyprint" class="h-10 w-auto" />
+                        <img src="/storage/brand/logo.png" alt="runmyprint" class="h-14 w-auto" />
                     </div>
                     <p class="mt-4 text-sm leading-relaxed text-paper/55">Premium custom printing for growing businesses.</p>
                     <div class="mt-5 flex gap-2.5">
@@ -166,6 +166,18 @@ const mobileMenuOpen = ref(false);
                         <li><Link href="/cart" class="transition hover:text-lime-accent">Cart</Link></li>
                         <li><a href="#" class="transition hover:text-lime-accent">Saved designs</a></li>
                     </ul>
+                </div>
+            </div>
+            <!-- supported payments -->
+            <div class="border-t border-white/10">
+                <div class="mx-auto flex max-w-7xl flex-wrap items-center gap-x-4 gap-y-3 px-6 py-5 sm:px-8">
+                    <span class="text-[11px] font-semibold uppercase tracking-widest text-paper/45">We accept</span>
+                    <div class="flex flex-wrap items-center gap-2">
+                        <span class="grid h-8 w-12 place-items-center rounded-md bg-white shadow-sm"><span class="text-[13px] font-extrabold italic tracking-tighter text-[#1a1f71]">VISA</span></span>
+                        <span class="grid h-8 w-12 place-items-center rounded-md bg-white shadow-sm" aria-label="Mastercard"><svg viewBox="0 0 40 24" class="h-4"><circle cx="16" cy="12" r="8" fill="#eb001b" /><circle cx="24" cy="12" r="8" fill="#f79e1b" fill-opacity="0.9" /></svg></span>
+                        <span class="grid h-8 w-14 place-items-center rounded-md bg-white shadow-sm"><span class="text-[12px] font-extrabold tracking-tight"><span class="text-[#003087]">Pay</span><span class="text-[#0070e0]">Pal</span></span></span>
+                        <span class="flex h-8 w-16 items-center justify-center gap-0.5 rounded-md bg-white shadow-sm" aria-label="Apple Pay"><svg viewBox="0 0 24 24" class="h-3.5 w-3.5" fill="#000"><path d="M17.05 12.04c-.03-2.6 2.12-3.85 2.22-3.91-1.21-1.77-3.09-2.01-3.76-2.04-1.6-.16-3.12.94-3.93.94-.81 0-2.06-.92-3.39-.89-1.74.03-3.35 1.01-4.24 2.57-1.81 3.14-.46 7.78 1.3 10.33.86 1.25 1.88 2.65 3.22 2.6 1.29-.05 1.78-.83 3.34-.83 1.56 0 2 .83 3.37.81 1.39-.03 2.27-1.27 3.12-2.53.98-1.45 1.39-2.85 1.41-2.92-.03-.01-2.7-1.04-2.73-4.11z" /><path d="M14.6 4.6c.71-.86 1.19-2.06 1.06-3.25-1.02.04-2.26.68-2.99 1.54-.66.76-1.23 1.98-1.08 3.14 1.14.09 2.3-.58 3.01-1.43z" /></svg><span class="text-[11px] font-semibold text-black">Pay</span></span>
+                    </div>
                 </div>
             </div>
             <div class="border-t border-white/10">

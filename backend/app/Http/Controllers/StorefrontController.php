@@ -25,6 +25,7 @@ class StorefrontController extends Controller
         return Inertia::render('Home', [
             'categories'            => $categories,
             'featured'              => $featured,
+            'heroImage'             => \App\Support\Img::url('heroes/home'),
             'freeShippingThreshold' => (float) config('shop.free_shipping_threshold'),
         ]);
     }
@@ -123,9 +124,6 @@ class StorefrontController extends Controller
 
     private function img(?string $path): ?string
     {
-        if ($path && Storage::disk('public')->exists($path)) {
-            return Storage::disk('public')->url($path);
-        }
-        return null;
+        return \App\Support\Img::url($path);
     }
 }
