@@ -348,14 +348,14 @@ function addToCart() {
         <div ref="stageEl" class="relative flex flex-1 flex-col items-center justify-center gap-4 overflow-auto p-4 sm:gap-6 sm:p-8">
             <div class="flex flex-col items-center gap-2">
                 <p class="text-sm font-medium text-ink/50">
-                    {{ side === 'front' ? 'Front' : 'Back' }} design · <span class="text-ink/40">every copy will print exactly like this</span>
+                    {{ side === 'front' ? 'Front' : 'Back' }} design<span class="hidden text-ink/40 sm:inline"> · every copy will print exactly like this</span>
                 </p>
-                <div v-if="(bleed || noPrint.length || fold.length) && showGuides" class="flex flex-wrap items-center justify-center gap-x-4 gap-y-1 text-xs text-ink/60">
-                    <span v-if="bleed" class="flex items-center gap-1.5"><span class="inline-block h-3 w-4 bg-rose-500/15 ring-1 ring-rose-500/60"></span>Bleed — trimmed off</span>
-                    <span class="flex items-center gap-1.5"><span class="inline-block h-0 w-5 border-t-2 border-rose-500"></span>Trim / cut line</span>
-                    <span class="flex items-center gap-1.5"><span class="inline-block h-0 w-5 border-t-2 border-dashed border-sky-500"></span>Safe area — keep text &amp; logos inside</span>
-                    <span v-if="noPrint.length" class="flex items-center gap-1.5"><span class="inline-block h-3 w-4 bg-slate-800/40 ring-1 ring-slate-800"></span>No-print area</span>
-                    <span v-if="fold.length" class="flex items-center gap-1.5"><span class="inline-block h-0 w-5 border-t-2 border-dashed border-purple-600"></span>Fold line</span>
+                <div v-if="(bleed || noPrint.length || fold.length) && showGuides" class="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-[11px] text-ink/60 sm:gap-x-4 sm:text-xs">
+                    <span v-if="bleed" class="flex items-center gap-1.5"><span class="inline-block h-3 w-4 bg-rose-500/15 ring-1 ring-rose-500/60"></span>Bleed<span class="hidden sm:inline"> — trimmed off</span></span>
+                    <span class="flex items-center gap-1.5"><span class="inline-block h-0 w-5 border-t-2 border-rose-500"></span>Trim<span class="hidden sm:inline"> / cut line</span></span>
+                    <span class="flex items-center gap-1.5"><span class="inline-block h-0 w-5 border-t-2 border-dashed border-sky-500"></span>Safe<span class="hidden sm:inline"> area — keep text &amp; logos inside</span></span>
+                    <span v-if="noPrint.length" class="flex items-center gap-1.5"><span class="inline-block h-3 w-4 bg-slate-800/40 ring-1 ring-slate-800"></span>No-print<span class="hidden sm:inline"> area</span></span>
+                    <span v-if="fold.length" class="flex items-center gap-1.5"><span class="inline-block h-0 w-5 border-t-2 border-dashed border-purple-600"></span>Fold<span class="hidden sm:inline"> line</span></span>
                 </div>
             </div>
             <div class="relative">

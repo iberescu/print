@@ -9,6 +9,6 @@ defineProps({ featured: { type: Boolean, default: false } });
         src="/storage/brand/logo.svg"
         alt="runmyprint"
         :class="featured ? 'h-[94px] w-auto sm:h-[109px]' : 'h-[72px] w-auto sm:h-[84px]'"
-        :style="featured ? { transform: 'rotate(-5deg)' } : null"
+        style="transform: rotate(-5deg)"
     />
 </template>

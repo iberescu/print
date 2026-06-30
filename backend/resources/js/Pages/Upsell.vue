@@ -4,6 +4,7 @@ import { ref, computed } from 'vue';
 import StoreLayout from '../Layouts/StoreLayout.vue';
 import BrandMockup from '../Components/BrandMockup.vue';
 import SmartImage from '../Components/SmartImage.vue';
+import FreeShippingBar from '../Components/FreeShippingBar.vue';
 
 const props = defineProps({
     step: { type: String, required: true },
@@ -42,22 +43,15 @@ function next() {
     <StoreLayout>
         <div class="mx-auto max-w-6xl px-4 py-8 sm:px-6 sm:py-10">
             <!-- progress -->
-            <div class="flex items-center justify-between gap-4">
-                <p class="text-sm font-medium text-ink/55">Step {{ stepIndex }} of {{ stepCount }} · before checkout</p>
-                <button class="text-sm font-medium text-ink/45 underline-offset-4 transition hover:text-ink hover:underline" @click="next">
-                    {{ isLast ? 'Skip to cart' : 'Skip' }}
-                </button>
-            </div>
+            <p class="text-sm font-medium text-ink/55">Step {{ stepIndex }} of {{ stepCount }} · before checkout</p>
             <div class="mt-2 flex gap-1.5">
                 <div v-for="i in stepCount" :key="i" class="h-1.5 flex-1 rounded-full transition-colors" :class="i <= stepIndex ? 'bg-brand-600' : 'bg-paper-300'"></div>
             </div>
 
+            <FreeShippingBar class="mt-5" :subtotal="summary.subtotal" :threshold="summary.threshold" :remaining="summary.remaining" :qualifies="summary.qualifies" />
+
             <h1 class="mt-7 font-display text-3xl font-semibold tracking-tight sm:text-4xl">{{ heading }}</h1>
             <p class="mt-2 max-w-2xl text-ink/60">{{ sub }}</p>
-            <p v-if="!summary.qualifies" class="mt-3 text-sm text-ink/60">
-                Add <strong class="text-ink">{{ money(summary.remaining) }}</strong> more to unlock free shipping.
-            </p>
-            <p v-else class="mt-3 text-sm font-medium text-brand-700">🎉 Your order qualifies for free shipping!</p>
 
             <!-- products -->
             <div class="mt-7 grid grid-cols-2 gap-4 sm:gap-5 md:grid-cols-3 lg:grid-cols-4">

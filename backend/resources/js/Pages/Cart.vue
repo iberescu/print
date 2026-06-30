@@ -1,19 +1,15 @@
 <script setup>
 import { Head, Link, router } from '@inertiajs/vue3';
-import { computed } from 'vue';
 import StoreLayout from '../Layouts/StoreLayout.vue';
+import FreeShippingBar from '../Components/FreeShippingBar.vue';
 
-const props = defineProps({
+defineProps({
     items: { type: Array, default: () => [] },
     summary: { type: Object, default: () => ({}) },
     recommended: { type: Array, default: () => [] },
 });
 
 const money = (n) => '$' + Number(n || 0).toFixed(2);
-const progress = computed(() => {
-    const t = props.summary.threshold || 50;
-    return Math.min(100, Math.round(((props.summary.subtotal || 0) / t) * 100));
-});
 const remove = (id) => router.post(`/cart/remove/${id}`, {}, { preserveScroll: true });
 </script>
 
@@ -22,6 +18,8 @@ const remove = (id) => router.post(`/cart/remove/${id}`, {}, { preserveScroll: t
     <StoreLayout>
         <div class="mx-auto max-w-7xl px-6 py-10">
             <h1 class="font-display text-3xl font-semibold tracking-tight">Your cart</h1>
+
+            <FreeShippingBar v-if="items.length" class="mt-6" :subtotal="summary.subtotal" :threshold="summary.threshold" :remaining="summary.remaining" :qualifies="summary.qualifies" />
 
             <div v-if="!items.length" class="mt-10 rounded-2xl border border-paper-300 bg-white p-12 text-center">
                 <p class="text-ink/60">Your cart is empty.</p>
@@ -54,13 +52,6 @@ const remove = (id) => router.post(`/cart/remove/${id}`, {}, { preserveScroll: t
                 </div>
 
                 <aside class="h-max rounded-2xl border border-paper-300 bg-white p-5 lg:sticky lg:top-24">
-                    <div class="mb-4 rounded-xl bg-paper-200 p-3">
-                        <p v-if="summary.qualifies" class="text-sm font-semibold text-brand-700">🎉 You've unlocked free shipping!</p>
-                        <p v-else class="text-sm text-ink/70">Add <strong class="text-ink">{{ money(summary.remaining) }}</strong> more for free shipping</p>
-                        <div class="mt-2 h-2 overflow-hidden rounded-full bg-paper-300">
-                            <div class="h-full rounded-full bg-brand-600 transition-all duration-500" :style="{ width: progress + '%' }"></div>
-                        </div>
-                    </div>
                     <dl class="space-y-2 text-sm">
                         <div class="flex justify-between"><dt class="text-ink/60">Subtotal</dt><dd class="font-medium">{{ money(summary.subtotal) }}</dd></div>
                         <div class="flex justify-between"><dt class="text-ink/60">Shipping</dt><dd class="font-medium">{{ summary.shipping ? money(summary.shipping) : 'FREE' }}</dd></div>
