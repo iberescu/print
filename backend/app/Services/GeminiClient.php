@@ -66,6 +66,23 @@ class GeminiClient
     }
 
     /**
+     * Generate structured JSON (responseMimeType=application/json).
+     *
+     * @return array<string,mixed>
+     */
+    public function generateJson(string $prompt, ?string $model = null): array
+    {
+        $resp = $this->http()->post($this->url($model ?? config('shop.gemini.text_model')), [
+            'contents'         => [['parts' => [['text' => $prompt]]]],
+            'generationConfig' => ['responseMimeType' => 'application/json'],
+        ])->throw();
+
+        $text = (string) $resp->json('candidates.0.content.parts.0.text', '{}');
+
+        return json_decode($text, true) ?? [];
+    }
+
+    /**
      * Ask a vision model to evaluate an image and return parsed JSON.
      *
      * @param  array{mime:string,data:string}  $image

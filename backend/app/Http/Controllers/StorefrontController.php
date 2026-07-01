@@ -61,6 +61,7 @@ class StorefrontController extends Controller
                 'slug'           => $product->slug,
                 'tagline'        => $product->tagline,
                 'description'    => $product->description,
+                'seo'            => $product->seo,
                 'fromPrice'      => (float) $product->from_price,
                 'badge'          => $product->badge,
                 'image'          => $this->img($product->image_path),
@@ -92,9 +93,35 @@ class StorefrontController extends Controller
                     'isDefault' => $q->is_default,
                 ]),
             ],
+            'related'               => $this->related($product),
             'categories'            => $this->nav(),
             'freeShippingThreshold' => (float) config('shop.free_shipping_threshold'),
         ]);
+    }
+
+    /** Up to 4 related products: same category first, then top products from elsewhere. */
+    private function related(Product $product)
+    {
+        $same = Product::with('category')
+            ->where('is_active', true)
+            ->where('id', '!=', $product->id)
+            ->where('category_id', $product->category_id)
+            ->orderByRaw('badge IS NULL')
+            ->orderBy('sort_order')
+            ->take(4)->get();
+
+        if ($same->count() < 4) {
+            $fill = Product::with('category')
+                ->where('is_active', true)
+                ->where('id', '!=', $product->id)
+                ->whereNotIn('id', $same->pluck('id'))
+                ->orderByRaw('badge IS NULL')
+                ->orderBy('sort_order')
+                ->take(4 - $same->count())->get();
+            $same = $same->concat($fill);
+        }
+
+        return $same->map(fn (Product $p) => $this->productCard($p));
     }
 
     private function nav()

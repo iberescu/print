@@ -12,6 +12,7 @@ class Product extends Model
 
     protected $casts = [
         'gallery'          => 'array',
+        'seo'              => 'array',
         'from_price'       => 'decimal:2',
         'supports_design'  => 'boolean',
         'supports_upload'  => 'boolean',

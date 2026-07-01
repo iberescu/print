@@ -1,15 +1,71 @@
 <script setup>
 import { Head, Link, router } from '@inertiajs/vue3';
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted, onBeforeUnmount } from 'vue';
 import StoreLayout from '../Layouts/StoreLayout.vue';
 import SmartImage from '../Components/SmartImage.vue';
 
 const props = defineProps({
     product: { type: Object, required: true },
+    related: { type: Array, default: () => [] },
     freeShippingThreshold: { type: Number, default: 50 },
 });
 
 const money = (n) => '$' + Number(n).toFixed(2);
+
+// SEO copy (generated, original) — description paragraphs, spec details, FAQ.
+const seo = computed(() => props.product.seo || {});
+const descParagraphs = computed(() =>
+    String(seo.value.description || props.product.description || '')
+        .split(/\n+/).map((s) => s.trim()).filter(Boolean)
+);
+const details = computed(() => seo.value.details || []);
+const faq = computed(() => (seo.value.faq || []).filter((f) => f.q && f.a));
+const metaDescription = computed(() =>
+    (seo.value.description || props.product.tagline || props.product.name)
+        .replace(/\s+/g, ' ').trim().slice(0, 155)
+);
+
+// Product + FAQ structured data (JSON-LD) + a product-specific meta description.
+let ldEl = null;
+let prevDesc = null;
+onMounted(() => {
+    const meta = document.querySelector('meta[name="description"]');
+    if (meta) { prevDesc = meta.getAttribute('content'); meta.setAttribute('content', metaDescription.value); }
+    const p = props.product;
+    const abs = (u) => (!u ? undefined : u.startsWith('http') ? u : window.location.origin + u);
+    const graph = [{
+        '@context': 'https://schema.org', '@type': 'Product',
+        name: p.name,
+        description: (seo.value.description || p.tagline || '').replace(/\s+/g, ' ').trim().slice(0, 500),
+        category: p.category?.name,
+        image: p.image ? [abs(p.image)] : undefined,
+        brand: { '@type': 'Brand', name: 'RunMyPrint' },
+        offers: {
+            '@type': 'Offer', priceCurrency: 'USD',
+            price: Number(p.fromPrice || 0).toFixed(2),
+            availability: 'https://schema.org/InStock',
+            url: window.location.href,
+        },
+    }];
+    if (faq.value.length) {
+        graph.push({
+            '@context': 'https://schema.org', '@type': 'FAQPage',
+            mainEntity: faq.value.map((f) => ({
+                '@type': 'Question', name: f.q,
+                acceptedAnswer: { '@type': 'Answer', text: f.a },
+            })),
+        });
+    }
+    ldEl = document.createElement('script');
+    ldEl.type = 'application/ld+json';
+    ldEl.text = JSON.stringify(graph);
+    document.head.appendChild(ldEl);
+});
+onBeforeUnmount(() => {
+    if (ldEl) { ldEl.remove(); ldEl = null; }
+    const meta = document.querySelector('meta[name="description"]');
+    if (meta && prevDesc !== null) meta.setAttribute('content', prevDesc);
+});
 
 const initial = {};
 props.product.options.forEach((o) => {
@@ -201,10 +257,54 @@ function addDirect() {
                 </div>
             </div>
 
-            <!-- description -->
-            <div class="mt-16 max-w-3xl">
-                <h2 class="font-display text-2xl font-semibold tracking-tight">About {{ product.name }}</h2>
-                <p class="mt-4 leading-relaxed text-ink/65">{{ product.description }}</p>
+            <!-- SEO content: description + details + FAQ -->
+            <div class="mt-16 grid gap-10 lg:grid-cols-3 lg:gap-14">
+                <div class="lg:col-span-2">
+                    <h2 class="font-display text-2xl font-semibold tracking-tight">About {{ product.name }}</h2>
+                    <div class="mt-4 space-y-4 leading-relaxed text-ink/65">
+                        <p v-for="(para, i) in descParagraphs" :key="i">{{ para }}</p>
+                    </div>
+
+                    <template v-if="faq.length">
+                        <h2 class="mt-12 font-display text-2xl font-semibold tracking-tight">Frequently asked questions</h2>
+                        <div class="mt-4 divide-y divide-paper-300 border-y border-paper-300">
+                            <details v-for="(f, i) in faq" :key="i" class="group py-4">
+                                <summary class="flex cursor-pointer list-none items-center justify-between gap-4 text-[15px] font-medium text-ink">
+                                    {{ f.q }}
+                                    <svg class="h-5 w-5 shrink-0 text-ink/40 transition group-open:rotate-45" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 5v14M5 12h14" stroke-linecap="round" /></svg>
+                                </summary>
+                                <p class="mt-2.5 pr-8 text-sm leading-relaxed text-ink/60">{{ f.a }}</p>
+                            </details>
+                        </div>
+                    </template>
+                </div>
+
+                <aside v-if="details.length">
+                    <div class="rounded-2xl border border-paper-300 bg-paper-200/60 p-6 lg:sticky lg:top-24">
+                        <h3 class="font-display text-lg font-semibold text-ink">Product details</h3>
+                        <ul class="mt-4 space-y-2.5 text-sm text-ink/70">
+                            <li v-for="(d, i) in details" :key="i" class="flex gap-2.5">
+                                <svg class="mt-0.5 h-4 w-4 shrink-0 text-brand-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 13 4 4L19 7" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                                <span>{{ d }}</span>
+                            </li>
+                        </ul>
+                    </div>
+                </aside>
+            </div>
+
+            <!-- related products -->
+            <div v-if="related.length" class="mt-16 border-t border-paper-300 pt-10">
+                <h2 class="font-display text-2xl font-semibold tracking-tight">You might also like</h2>
+                <div class="mt-6 grid grid-cols-2 gap-5 sm:grid-cols-4">
+                    <Link v-for="r in related" :key="r.slug" :href="`/product/${r.slug}`" class="group">
+                        <div class="crop-corners aspect-square overflow-hidden rounded-2xl border border-paper-300 bg-paper-200 transition group-hover:shadow-lg group-hover:shadow-ink/5">
+                            <SmartImage :src="r.image" :alt="r.name" />
+                        </div>
+                        <p class="mt-3 text-sm font-medium text-ink transition group-hover:text-brand-700">{{ r.name }}</p>
+                        <p v-if="r.tagline" class="truncate text-xs text-ink/50">{{ r.tagline }}</p>
+                        <p class="mt-0.5 text-sm text-ink/70">from {{ money(r.fromPrice) }}</p>
+                    </Link>
+                </div>
             </div>
         </div>
     </StoreLayout>
