@@ -12,7 +12,9 @@ class StorefrontController extends Controller
 {
     public function home(): Response
     {
-        $categories = Category::where('is_active', true)->orderBy('sort_order')->get()
+        $categories = Category::where('is_active', true)
+            ->whereHas('products', fn ($q) => $q->where('is_active', true))
+            ->orderBy('sort_order')->get()
             ->map(fn (Category $c) => $this->categoryCard($c));
 
         $featured = Product::with('category')
@@ -126,7 +128,9 @@ class StorefrontController extends Controller
 
     private function nav()
     {
-        return Category::where('is_active', true)->orderBy('sort_order')->get(['name', 'slug']);
+        return Category::where('is_active', true)
+            ->whereHas('products', fn ($q) => $q->where('is_active', true))
+            ->orderBy('sort_order')->get(['name', 'slug']);
     }
 
     private function categoryCard(Category $c): array
