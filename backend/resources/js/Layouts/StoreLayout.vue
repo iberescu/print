@@ -9,6 +9,7 @@ const threshold = computed(() => page.props.shop?.freeShippingThreshold ?? 50);
 const flash = computed(() => page.props.flash?.success ?? null);
 const cartCount = computed(() => page.props.cart?.count ?? 0);
 const user = computed(() => page.props.auth?.user ?? null);
+const company = computed(() => page.props.shop?.company ?? {});
 const year = new Date().getFullYear();
 const mobileMenuOpen = ref(false);
 const logout = () => router.post('/logout');
@@ -19,7 +20,7 @@ const logout = () => router.post('/logout');
         <!-- utility bar -->
         <div class="bg-navy text-paper">
             <div class="mx-auto flex max-w-7xl items-center justify-between px-4 py-2.5 text-[13px] sm:px-8">
-                <span class="flex items-center gap-2.5 font-medium">
+                <span class="flex items-center gap-2.5">
                     <svg viewBox="0 0 26 22" class="h-5 w-auto shrink-0 text-white" fill="currentColor" aria-hidden="true">
                         <rect x="0" y="6" width="5" height="1.8" rx="0.9" opacity="0.75" />
                         <rect x="1" y="10" width="4" height="1.8" rx="0.9" opacity="0.5" />
@@ -77,7 +78,7 @@ const logout = () => router.post('/logout');
                 <div class="mx-auto flex max-w-7xl items-center gap-1 overflow-x-auto px-6">
                     <Link v-for="c in categories" :key="c.slug" :href="`/category/${c.slug}`"
                           style="border-radius: 0 !important"
-                          class="whitespace-nowrap px-3 py-3 text-sm font-medium tracking-[1px] text-ink/75 transition hover:text-brand-700 hover:shadow-[inset_0_-2px_0_0_var(--color-brand-blue)]">
+                          class="whitespace-nowrap px-3 py-3 text-sm tracking-[1px] text-ink/75 transition hover:text-brand-700 hover:shadow-[inset_0_-2px_0_0_var(--color-brand-blue)]">
                         {{ c.name }}
                     </Link>
                 </div>
@@ -168,11 +169,11 @@ const logout = () => router.post('/logout');
                 <div>
                     <h4 class="text-xs font-semibold uppercase tracking-widest text-paper/45">Help</h4>
                     <ul class="mt-4 space-y-2.5 text-sm text-paper/70">
-                        <li><a href="#" class="transition hover:text-lime-accent">Contact us</a></li>
-                        <li><a href="#" class="transition hover:text-lime-accent">Shipping &amp; delivery</a></li>
-                        <li><a href="#" class="transition hover:text-lime-accent">Returns</a></li>
-                        <li><a href="#" class="transition hover:text-lime-accent">File prep &amp; templates</a></li>
-                        <li><a href="#" class="transition hover:text-lime-accent">FAQ</a></li>
+                        <li><a :href="`mailto:${company.email}`" class="transition hover:text-lime-accent">Contact us</a></li>
+                        <li><Link href="/shipping" class="transition hover:text-lime-accent">Shipping &amp; delivery</Link></li>
+                        <li><Link href="/returns" class="transition hover:text-lime-accent">Returns</Link></li>
+                        <li><Link href="/faq" class="transition hover:text-lime-accent">FAQ</Link></li>
+                        <li><Link href="/terms" class="transition hover:text-lime-accent">Terms</Link></li>
                     </ul>
                 </div>
                 <div>
@@ -199,11 +200,10 @@ const logout = () => router.post('/logout');
             </div>
             <div class="border-t border-white/10">
                 <div class="mx-auto flex max-w-7xl flex-col items-center justify-between gap-3 px-6 py-6 text-xs text-paper/45 sm:flex-row">
-                    <p>© {{ year }} RunMyPrint. All rights reserved.</p>
+                    <p>© {{ year }} {{ company.brand || 'RunMyPrint' }} · {{ company.name }} · {{ company.address }}</p>
                     <p class="flex items-center gap-4">
-                        <a href="#" class="hover:text-paper/70">Privacy</a>
-                        <a href="#" class="hover:text-paper/70">Terms</a>
-                        <a href="#" class="hover:text-paper/70">Cookies</a>
+                        <Link href="/terms" class="hover:text-paper/70">Terms</Link>
+                        <Link href="/faq" class="hover:text-paper/70">FAQ</Link>
                         <span class="hidden sm:inline">🔒 Secure checkout · Stripe</span>
                     </p>
                 </div>

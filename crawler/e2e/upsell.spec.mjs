@@ -1,12 +1,12 @@
 import { test, expect } from '@playwright/test';
-import { completeUpsell, clickContinue } from './helpers.mjs';
+import { completeUpsell, clickContinue, reviewAndAdd } from './helpers.mjs';
 
 // Forced multi-step upsell before the cart (req 3) + related-product step (req 4).
 async function addBusinessCard(page) {
     await page.goto('/product/standard-business-cards');
     await page.getByRole('button', { name: /design online/i }).first().click();
     await page.waitForURL('**/design/**');
-    await page.getByRole('button', { name: /add to cart/i }).click();
+    await reviewAndAdd(page); // design → review → approve → add
     await page.waitForURL('**/upsell');
 }
 

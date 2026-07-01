@@ -101,22 +101,29 @@ function addText(text, opts = {}) {
     return t;
 }
 
+// Drop the "your logo here" placeholder image at final canvas coords (inside the
+// safe area). Async — the caller doesn't need to await it.
+async function addLogoPlaceholder({ left, top, width, center = false }) {
+    try {
+        const img = await fabric.FabricImage.fromURL('/storage/brand/logo-placeholder.webp', { crossOrigin: 'anonymous' });
+        img.scaleToWidth(width);
+        img.set({ left, top, originX: center ? 'center' : 'left', originY: 'top', rmpRole: 'logo' });
+        canvas.add(img);
+        canvas.requestRenderAll();
+    } catch (e) { /* placeholder is optional */ }
+}
+
 function seedTemplate() {
     canvas.backgroundColor = '#f8f6ef';
     addText('Company Name', { left: 56, top: 58, fontSize: 32, fontWeight: 'bold', fontFamily: 'Playfair Display', rmpRole: 'companyName' });
     addText('Your Name', { left: 56, top: 110, fontSize: 22, fontFamily: 'Work Sans', rmpRole: 'name' });
     addText('Title / Role', { left: 56, top: 140, fontSize: 17, fill: '#2b3b55', fontFamily: 'Work Sans', rmpRole: 'title' });
     addText('yourcompany.com', { left: 56, top: 250, fontSize: 17, fontFamily: 'Work Sans', rmpRole: 'url' });
-    addText('hello@company.com', { left: 56, top: 282, fontSize: 17, fontFamily: 'Work Sans', rmpRole: 'email' });
-    addText('+1 (555) 123-4567', { left: 56, top: 314, fontSize: 17, fontFamily: 'Work Sans', rmpRole: 'phone' });
-    const logo = new fabric.Rect({
-        left: 560, top: 60, width: 150, height: 150,
-        fill: '#e3ddcc', stroke: '#2b3b55', strokeDashArray: [6, 6], strokeWidth: 2,
-    });
-    canvas.add(logo);
-    canvas.add(new fabric.IText('LOGO', { left: 600, top: 125, originX: 'left', originY: 'top', fontSize: 18, fill: '#2b3b5580', fontFamily: 'Work Sans', selectable: false, evented: false }));
+    addText('+1 (555) 123-4567', { left: 56, top: 282, fontSize: 17, fontFamily: 'Work Sans', rmpRole: 'phone' });
     offsetByBleed();
     canvas.renderAll();
+    // logo placeholder, top-right, inside the safe area (final canvas coords)
+    addLogoPlaceholder({ left: bleed + 560, top: bleed + 52, width: 150 });
 }
 
 // Generic starter for non-business-card formats (flyers, posters, signs, …),
@@ -124,10 +131,12 @@ function seedTemplate() {
 function seedGeneric() {
     canvas.backgroundColor = '#ffffff';
     const cx = W / 2;
-    addText('Your Headline', { left: cx, top: Math.round(H * 0.30), originX: 'center', textAlign: 'center', fontSize: Math.max(20, Math.round(W * 0.075)), fontWeight: 'bold', fontFamily: 'Poppins', fill: '#2b3b55', rmpRole: 'companyName' });
-    addText('Add your message, details or call to action here.', { left: cx, top: Math.round(H * 0.46), originX: 'center', textAlign: 'center', fontSize: Math.max(13, Math.round(W * 0.032)), fontFamily: 'Work Sans', fill: '#16233b' });
-    addText('yourcompany.com', { left: cx, top: Math.round(H * 0.62), originX: 'center', textAlign: 'center', fontSize: Math.max(12, Math.round(W * 0.028)), fontFamily: 'Work Sans', fill: '#647ba0', rmpRole: 'url' });
+    addText('Your Headline', { left: cx, top: Math.round(H * 0.34), originX: 'center', textAlign: 'center', fontSize: Math.max(20, Math.round(W * 0.075)), fontWeight: 'bold', fontFamily: 'Poppins', fill: '#2b3b55', rmpRole: 'companyName' });
+    addText('Add your message, details or call to action here.', { left: cx, top: Math.round(H * 0.49), originX: 'center', textAlign: 'center', fontSize: Math.max(13, Math.round(W * 0.032)), fontFamily: 'Work Sans', fill: '#16233b' });
+    addText('yourcompany.com', { left: cx, top: Math.round(H * 0.64), originX: 'center', textAlign: 'center', fontSize: Math.max(12, Math.round(W * 0.028)), fontFamily: 'Work Sans', fill: '#647ba0', rmpRole: 'url' });
     canvas.renderAll();
+    // logo placeholder, top-centre inside the safe area
+    addLogoPlaceholder({ left: cx, top: Math.max(bleed + safety + 6, Math.round(H * 0.12)), width: Math.round(W * 0.24), center: true });
 }
 
 function syncSelection() {
@@ -184,7 +193,7 @@ onMounted(() => {
     window.addEventListener('resize', fitCanvas);
 
     if (typeof document !== 'undefined' && document.fonts?.ready) {
-        document.fonts.ready.then(() => canvas && canvas.requestRenderAll());
+        document.fonts.ready.then(() => repaintFonts());
     }
 });
 
@@ -199,7 +208,28 @@ function apply(prop, val) {
     o.set(prop, val);
     canvas.requestRenderAll();
 }
-const setFont = (f) => { sel.fontFamily = f; apply('fontFamily', f); };
+const setFont = async (f) => {
+    sel.fontFamily = f;
+    const o = canvas.getActiveObject();
+    if (!o) return;
+    o.set('fontFamily', f);
+    o.dirty = true;
+    canvas.requestRenderAll();
+    // fabric caches glyphs rendered with the fallback font — load the webfont,
+    // then mark the object dirty so it re-rasterises with the real font.
+    try {
+        await Promise.all([document.fonts.load(`400 40px "${f}"`), document.fonts.load(`700 40px "${f}"`)]);
+    } catch (e) { /* keep fallback */ }
+    o.dirty = true;
+    canvas.requestRenderAll();
+};
+
+// Force every text object to re-render (used after webfonts finish loading).
+function repaintFonts() {
+    if (!canvas) return;
+    canvas.getObjects().forEach((o) => { o.dirty = true; });
+    canvas.requestRenderAll();
+}
 const setSize = (s) => { sel.fontSize = Number(s); apply('fontSize', Number(s)); };
 const setColor = (c) => { sel.fill = c; apply('fill', c); };
 const toggleBold = () => { sel.bold = !sel.bold; apply('fontWeight', sel.bold ? 'bold' : 'normal'); };
@@ -253,7 +283,7 @@ async function applyTemplate(ref) {
         store[side.value] = canvas.toJSON();
         showTemplates.value = false;
         // repaint once fonts settle (non-blocking, so the design shows immediately)
-        if (document.fonts?.ready) document.fonts.ready.then(() => canvas && canvas.requestRenderAll());
+        if (document.fonts?.ready) document.fonts.ready.then(() => repaintFonts());
     } catch (e) { console.error('applyTemplate failed', e); }
     applyingTpl.value = false;
 }
@@ -276,11 +306,11 @@ function extractBrand() {
     return b;
 }
 
-function addToCart() {
+function goToReview() {
     saving.value = true;
     store[side.value] = canvas.toJSON();
-    const preview = canvas.toDataURL({ format: 'jpeg', quality: 0.72, multiplier: 0.55 });
-    router.post(`/cart/add/${props.product.slug}`, {
+    const preview = canvas.toDataURL({ format: 'jpeg', quality: 0.82, multiplier: 0.7 });
+    router.post(`/design/${props.product.slug}/review`, {
         quantityId: props.selection?.quantityId ?? null,
         optionValueIds: props.selection?.optionValueIds ?? [],
         preview,
@@ -306,8 +336,8 @@ function addToCart() {
                 <span class="rounded-full bg-brand-50 px-3 py-1 text-brand-700">1 · Design</span>
                 <span class="text-ink/30">2 · Review</span>
             </div>
-            <button :disabled="saving" class="rounded-full bg-brand-600 px-6 py-2.5 text-sm font-semibold text-white transition hover:bg-brand-700 disabled:opacity-60" @click="addToCart">
-                {{ saving ? 'Saving…' : 'Add to cart →' }}
+            <button :disabled="saving" class="rounded-full bg-brand-600 px-6 py-2.5 text-sm font-semibold text-white transition hover:bg-brand-700 disabled:opacity-60" @click="goToReview">
+                {{ saving ? 'Saving…' : 'Review →' }}
             </button>
         </header>
 

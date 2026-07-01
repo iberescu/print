@@ -15,6 +15,7 @@ use App\Http\Controllers\FeedController;
 use App\Http\Controllers\StorefrontController;
 use App\Http\Controllers\UpsellController;
 use Illuminate\Support\Facades\Route;
+use Inertia\Inertia;
 
 Route::get('/', [StorefrontController::class, 'home'])->name('home');
 Route::get('/offer', fn () => view('offer'))->name('offer'); // standalone landing (own <head> tracking)
@@ -23,6 +24,8 @@ Route::get('/product/{product}', [StorefrontController::class, 'product'])->name
 
 // Online designer (req 8/9/18)
 Route::get('/design/{product}/templates', [DesignController::class, 'templates'])->name('design.templates');
+Route::post('/design/{product}/review', [DesignController::class, 'review'])->name('design.review.stash');
+Route::get('/design/{product}/review', [DesignController::class, 'showReview'])->name('design.review');
 Route::get('/design/{product}', [DesignController::class, 'show'])->name('design.start');
 Route::get('/design/template/{template}/data', [DesignController::class, 'templateData'])->name('template.data');
 
@@ -57,6 +60,12 @@ Route::post('/stripe/webhook', [CheckoutController::class, 'webhook'])->name('st
 // Marketing feeds (req 20)
 Route::get('/feed/google.xml', [FeedController::class, 'google'])->name('feed.google');
 Route::get('/feed/rtbhouse.xml', [FeedController::class, 'rtbhouse'])->name('feed.rtbhouse');
+
+// Legal / info pages
+Route::get('/faq', fn () => Inertia::render('Legal/Faq'))->name('faq');
+Route::get('/terms', fn () => Inertia::render('Legal/Terms'))->name('terms');
+Route::get('/shipping', fn () => Inertia::render('Legal/Shipping', ['threshold' => (float) config('shop.free_shipping_threshold')]))->name('shipping');
+Route::get('/returns', fn () => Inertia::render('Legal/Returns'))->name('returns');
 
 // Admin dashboard + PIM
 Route::get('/admin/login', [AdminAuth::class, 'show'])->name('admin.login.show');

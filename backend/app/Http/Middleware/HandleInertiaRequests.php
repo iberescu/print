@@ -38,6 +38,7 @@ class HandleInertiaRequests extends Middleware
             ),
             'shop' => [
                 'freeShippingThreshold' => (float) config('shop.free_shipping_threshold'),
+                'company'               => config('shop.company'),
             ],
             'cart' => fn () => [
                 'count'    => app(Cart::class)->count(),

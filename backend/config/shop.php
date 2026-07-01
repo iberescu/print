@@ -7,6 +7,17 @@ return [
     'free_shipping_threshold' => (float) env('FREE_SHIPPING_THRESHOLD', 50),
 
     /*
+    | Legal entity behind the storefront (shown on legal pages + the footer).
+    */
+    'company' => [
+        'name'    => 'OptiPrime, LLC',
+        'brand'   => 'RunMyPrint',
+        'state'   => 'Delaware',
+        'address' => '390 NE 191st St #13882, Miami, FL 33179',
+        'email'   => 'support@runmyprint.com',
+    ],
+
+    /*
     | Google Gemini models (verified live against the API).
     */
     'gemini' => [

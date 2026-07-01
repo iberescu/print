@@ -9,6 +9,14 @@ export async function clickContinue(page) {
     await page.waitForLoadState('networkidle');
 }
 
+// Editor → Review step → approve → add to cart.
+export async function reviewAndAdd(page) {
+    await page.getByRole('button', { name: /^review/i }).click();
+    await page.waitForURL('**/review');
+    await page.getByRole('checkbox').first().check();
+    await page.getByRole('button', { name: /add to cart/i }).click();
+}
+
 export async function completeUpsell(page) {
     for (let i = 0; i < 6; i++) {
         if (new URL(page.url()).pathname === '/cart') return;

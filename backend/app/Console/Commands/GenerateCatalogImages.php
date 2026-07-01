@@ -12,7 +12,7 @@ use Throwable;
 class GenerateCatalogImages extends Command
 {
     protected $signature = 'images:generate
-        {--only=all : all|products|categories|hero}
+        {--only=all : all|products|categories|hero|logo}
         {--limit=0 : max items to generate (0 = no limit)}
         {--force : regenerate even if an image already exists}';
 
@@ -31,6 +31,18 @@ class GenerateCatalogImages extends Command
         $count = 0;
 
         $tasks = [];
+
+        if (in_array($only, ['all', 'logo'], true)) {
+            $tasks[] = [
+                'path'   => 'brand/logo-placeholder',
+                'maxw'   => 512,
+                'prompt' => 'A clean, neutral LOGO PLACEHOLDER graphic for an online design tool, on a pure white background. '
+                    .'Centered: a soft rounded square outline in light grey with a simple abstract emblem inside — a stylised '
+                    .'mountain-and-circle mark in medium slate grey (#8a97ad) — signalling "your logo here". Minimal, flat, '
+                    .'lots of padding, subtle, professional. No real brand, no photorealism, no colourful gradients.',
+                'save'   => null,
+            ];
+        }
 
         if (in_array($only, ['all', 'hero'], true)) {
             $tasks[] = [

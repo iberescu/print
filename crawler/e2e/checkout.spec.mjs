@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { completeUpsell } from './helpers.mjs';
+import { completeUpsell, reviewAndAdd } from './helpers.mjs';
 
 // Full funnel: design → forced upsell → cart → checkout → paid (req 3 / 14 / 15).
 test('full funnel: design → upsell → cart → checkout → paid', async ({ page }) => {
@@ -18,7 +18,7 @@ test('full funnel: design → upsell → cart → checkout → paid', async ({ p
     await page.waitForURL('**/design/**');
     await expect(page.locator('canvas')).toHaveCount(2);
 
-    await page.getByRole('button', { name: /add to cart/i }).click();
+    await reviewAndAdd(page);               // design → review → approve → add
     await page.waitForURL('**/upsell');     // upsell comes before the cart
     await completeUpsell(page);
     await page.waitForURL('**/cart');

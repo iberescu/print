@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use App\Models\Template;
+use App\Services\Pricing;
 use App\Support\PrintSpec;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -83,6 +85,51 @@ class DesignController extends Controller
     public function templateData(Template $template): JsonResponse
     {
         return response()->json(['data' => $template->data]);
+    }
+
+    /** Stash the finished design, then show the review step (PRG). */
+    public function review(Product $product, Request $request): RedirectResponse
+    {
+        abort_unless($product->is_active, 404);
+
+        $data = $request->validate([
+            'preview'          => ['nullable', 'string'],
+            'brand'            => ['nullable', 'array'],
+            'mode'             => ['nullable', 'string'],
+            'quantityId'       => ['nullable', 'integer'],
+            'optionValueIds'   => ['nullable', 'array'],
+            'optionValueIds.*' => ['integer'],
+        ]);
+
+        session(['design.review' => $data + ['product' => $product->slug]]);
+
+        return redirect()->route('design.review', $product);
+    }
+
+    public function showReview(Product $product, Pricing $pricing): Response|RedirectResponse
+    {
+        abort_unless($product->is_active, 404);
+
+        $d = session('design.review');
+        if (! $d || ($d['product'] ?? null) !== $product->slug) {
+            return redirect()->route('design.start', $product);
+        }
+
+        $product->load('category');
+        $quote = $pricing->quote($product, $d['quantityId'] ?? null, $d['optionValueIds'] ?? []);
+
+        return Inertia::render('Review', [
+            'product'  => $product->only('id', 'name', 'slug'),
+            'category' => ['name' => $product->category->name, 'slug' => $product->category->slug],
+            'preview'  => $d['preview'] ?? null,
+            'mode'     => $d['mode'] ?? 'design',
+            'design'   => [
+                'brand'          => $d['brand'] ?? null,
+                'quantityId'     => $d['quantityId'] ?? null,
+                'optionValueIds' => $d['optionValueIds'] ?? [],
+            ],
+            'quote'    => $quote,
+        ]);
     }
 
     /** @return int[] */

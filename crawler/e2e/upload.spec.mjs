@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { fileURLToPath } from 'url';
-import { completeUpsell } from './helpers.mjs';
+import { completeUpsell, reviewAndAdd } from './helpers.mjs';
 
 const artwork = fileURLToPath(new URL('./fixtures/artwork.png', import.meta.url));
 
@@ -16,7 +16,7 @@ test('upload workflow: place artwork → upsell → cart', async ({ page }) => {
     await page.locator('input[type="file"]').setInputFiles(artwork);
     await expect(page.getByText(/upload your artwork/i)).toBeHidden();
 
-    await page.getByRole('button', { name: /add to cart/i }).click();
+    await reviewAndAdd(page); // design → review → approve → add
     await page.waitForURL('**/upsell');
     await completeUpsell(page);
     await page.waitForURL('**/cart');
