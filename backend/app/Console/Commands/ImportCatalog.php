@@ -217,25 +217,49 @@ class ImportCatalog extends Command
             return null;
         }
 
-        $folded = (bool) ($s['folded'] ?? false);
+        $folded = (bool) ($s['folded'] ?? false) || ! empty($s['fold']);
         $trim = fn ($n) => rtrim(rtrim(number_format($n, 2, '.', ''), '0'), '.');
         $tw = $trim($w);
         $th = $trim($h);
         $slug = 's-'.$tw.'x'.$th.$unit.($folded ? '-fold' : '');
 
+        // Prefer real geometry read from the spec template SVG; else print-standard / heuristic.
+        $bleed = is_numeric($s['bleed'] ?? null) && $s['bleed'] > 0 ? (float) $s['bleed'] : (self::BLEED[$unit] ?? 0);
+        $safety = is_numeric($s['safety'] ?? null) && $s['safety'] >= 0 ? (float) $s['safety'] : (self::SAFETY[$unit] ?? 0);
+
         $foldLines = [];
-        if ($folded) {
+        if (! empty($s['fold']) && is_array($s['fold'])) {
+            foreach ($s['fold'] as $f) {
+                if (! is_numeric($f['position'] ?? null)) {
+                    continue;
+                }
+                $foldLines[] = ['label' => 'Fold', 'orientation' => ($f['orientation'] ?? 'vertical') === 'horizontal' ? 'horizontal' : 'vertical', 'position' => round((float) $f['position'], 2)];
+            }
+        } elseif ($folded) {
             $vertical = ($s['foldOrientation'] ?? 'vertical') !== 'horizontal';
             $foldLines[] = ['label' => 'Fold', 'orientation' => $vertical ? 'vertical' : 'horizontal', 'position' => round(($vertical ? $w : $h) / 2, 2)];
         }
 
         $noPrint = [];
-        $note = (string) ($s['noPrintNote'] ?? '');
-        if ($note !== '' && preg_match('/pocket|pole|grommet|hem/i', $note)) {
-            $band = round($h * 0.06, 2);
-            $noPrint[] = ['label' => Str::limit($note, 24, ''), 'x' => 0, 'y' => 0, 'w' => $w, 'h' => $band];
-            if (preg_match('/top.*bottom|both|pole/i', $note)) {
-                $noPrint[] = ['label' => 'Bottom '.Str::limit($note, 16, ''), 'x' => 0, 'y' => $h - $band, 'w' => $w, 'h' => $band];
+        if (! empty($s['noPrint']) && is_array($s['noPrint'])) {
+            foreach ($s['noPrint'] as $z) {
+                if (! is_numeric($z['w'] ?? null) || ! is_numeric($z['h'] ?? null)) {
+                    continue;
+                }
+                $noPrint[] = [
+                    'label' => Str::limit((string) ($z['label'] ?? 'No print'), 24, ''),
+                    'x' => round((float) ($z['x'] ?? 0), 2), 'y' => round((float) ($z['y'] ?? 0), 2),
+                    'w' => round((float) $z['w'], 2), 'h' => round((float) $z['h'], 2),
+                ];
+            }
+        } else {
+            $note = (string) ($s['noPrintNote'] ?? '');
+            if ($note !== '' && preg_match('/pocket|pole|grommet|hem/i', $note)) {
+                $band = round($h * 0.06, 2);
+                $noPrint[] = ['label' => Str::limit($note, 24, ''), 'x' => 0, 'y' => 0, 'w' => $w, 'h' => $band];
+                if (preg_match('/top.*bottom|both|pole/i', $note)) {
+                    $noPrint[] = ['label' => 'Bottom '.Str::limit($note, 16, ''), 'x' => 0, 'y' => $h - $band, 'w' => $w, 'h' => $band];
+                }
             }
         }
 
@@ -251,8 +275,8 @@ class ImportCatalog extends Command
             'unit'           => $unit,
             'width'          => $w,
             'height'         => $h,
-            'bleed'          => self::BLEED[$unit] ?? 0,
-            'safety'         => self::SAFETY[$unit] ?? 0,
+            'bleed'          => $bleed,
+            'safety'         => $safety,
             'no_print_areas' => $noPrint,
             'fold_lines'     => $foldLines,
             'is_active'      => true,
