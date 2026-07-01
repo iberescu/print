@@ -7,6 +7,7 @@ use App\Models\Product;
 use App\Models\Surface;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 /**
@@ -126,6 +127,8 @@ class ImportCatalog extends Command
                     'is_active'       => true,
                     'surface_id'      => $productSurface?->id,
                     'sort_order'      => $order++,
+                    // link the committed product image if one exists for this slug
+                    'image_path'      => Storage::disk('public')->exists("products/{$slug}.webp") ? "products/{$slug}.webp" : null,
                 ]);
 
                 $product->options()->delete();
