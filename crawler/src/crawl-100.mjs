@@ -460,6 +460,7 @@ async function main() {
             const n = String(products.length + 1).padStart(3, '0');
             const shots = [];
             shots.push(await page.screenshot({ path: path.join(SHOTS, `${n}-${slug}-buy.png`), fullPage: false }));
+            await page.waitForSelector('button[aria-haspopup="listbox"]', { timeout: 5000 }).catch(() => {}); // let option controls hydrate
             const dom = await expandOptions(page);                 // {options, quantities} from the DOM (before specs opens)
             // open specs, select all options so the print template generates, then download + parse the SVG
             await openSpecs(page);
