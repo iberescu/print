@@ -77,6 +77,11 @@ class ProductController extends Controller
                 'isActive'       => (bool) $product->is_active,
                 'surfaceId'      => $product->surface_id,
                 'image'          => Img::url($product->image_path),
+                'seo'            => [
+                    'description' => $product->seo['description'] ?? '',
+                    'details'     => array_values($product->seo['details'] ?? []),
+                    'faq'         => array_values($product->seo['faq'] ?? []),
+                ],
             ],
             'categories' => Category::orderBy('sort_order')->get(['id', 'name']),
             'surfaces'   => Surface::orderBy('name')->get(['id', 'name']),
@@ -121,6 +126,7 @@ class ProductController extends Controller
                 'supports_upload' => $data['supportsUpload'] ?? false,
                 'is_active'       => $data['isActive'] ?? false,
                 'surface_id'      => $data['surfaceId'] ?? null,
+                'seo'             => $this->cleanSeo($data['seo'] ?? null),
             ]);
 
             // Rebuild options/values/quantities (FK cascade clears child values).
@@ -186,6 +192,13 @@ class ProductController extends Controller
             'supportsUpload'                => ['boolean'],
             'isActive'                      => ['boolean'],
             'surfaceId'                     => ['nullable', 'integer', 'exists:surfaces,id'],
+            'seo'                           => ['nullable', 'array'],
+            'seo.description'               => ['nullable', 'string', 'max:4000'],
+            'seo.details'                   => ['array'],
+            'seo.details.*'                 => ['nullable', 'string', 'max:200'],
+            'seo.faq'                       => ['array'],
+            'seo.faq.*.q'                   => ['nullable', 'string', 'max:300'],
+            'seo.faq.*.a'                   => ['nullable', 'string', 'max:2000'],
             'options'                       => ['array'],
             'options.*.name'                => ['required', 'string', 'max:120'],
             'options.*.type'                => ['required', 'in:select,radio,swatch'],
@@ -207,6 +220,33 @@ class ProductController extends Controller
             'quantities.*.totalPrice'       => ['nullable', 'numeric', 'min:0'],
             'quantities.*.isDefault'        => ['boolean'],
         ]);
+    }
+
+    /** Normalise SEO content: trim, drop blank details/FAQ, null when empty. */
+    private function cleanSeo($seo): ?array
+    {
+        if (! is_array($seo)) {
+            return null;
+        }
+
+        $description = trim((string) ($seo['description'] ?? ''));
+        $details = array_values(array_filter(
+            array_map(fn ($d) => trim((string) $d), (array) ($seo['details'] ?? [])),
+            fn ($d) => $d !== '',
+        ));
+        $faq = array_values(array_filter(
+            array_map(fn ($f) => [
+                'q' => trim((string) ($f['q'] ?? '')),
+                'a' => trim((string) ($f['a'] ?? '')),
+            ], (array) ($seo['faq'] ?? [])),
+            fn ($f) => $f['q'] !== '' && $f['a'] !== '',
+        ));
+
+        if ($description === '' && ! $details && ! $faq) {
+            return null;
+        }
+
+        return ['description' => $description, 'details' => $details, 'faq' => $faq];
     }
 
     /** Drop blank spec rows; keep ordered [{name,value}]. */

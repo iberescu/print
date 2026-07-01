@@ -23,6 +23,11 @@ const form = useForm({
     supportsUpload: props.product.supportsUpload,
     isActive: props.product.isActive,
     surfaceId: props.product.surfaceId ?? null,
+    seo: {
+        description: props.product.seo?.description ?? '',
+        details: [...(props.product.seo?.details ?? [])],
+        faq: (props.product.seo?.faq ?? []).map((f) => ({ q: f.q ?? '', a: f.a ?? '' })),
+    },
     options: props.options.map((o) => ({
         name: o.name, type: o.type, required: o.required,
         values: o.values.map((v) => ({
@@ -51,6 +56,12 @@ const isOpen = (oi, vi) => !!openValue[`${oi}-${vi}`];
 const toggleValue = (oi, vi) => (openValue[`${oi}-${vi}`] = !openValue[`${oi}-${vi}`]);
 const addAttr = (oi, vi) => form.options[oi].values[vi].attributes.push({ name: '', value: '' });
 const removeAttr = (oi, vi, ai) => form.options[oi].values[vi].attributes.splice(ai, 1);
+
+// SEO content (drives the storefront product page + JSON-LD)
+const addDetail = () => form.seo.details.push('');
+const removeDetail = (i) => form.seo.details.splice(i, 1);
+const addFaq = () => form.seo.faq.push({ q: '', a: '' });
+const removeFaq = (i) => form.seo.faq.splice(i, 1);
 
 // pricing tiers
 const addTier = () => form.quantities.push({ quantity: 1, unitPrice: 0, totalPrice: 0, isDefault: form.quantities.length === 0 });
@@ -129,6 +140,46 @@ const destroy = () => {
                     <label class="flex items-center gap-2"><input v-model="form.isActive" type="checkbox" class="h-4 w-4" /> Active (visible in store)</label>
                     <label class="flex items-center gap-2"><input v-model="form.supportsDesign" type="checkbox" class="h-4 w-4" /> Online designer</label>
                     <label class="flex items-center gap-2"><input v-model="form.supportsUpload" type="checkbox" class="h-4 w-4" /> Upload artwork</label>
+                </div>
+            </section>
+
+            <!-- SEO content (storefront product page + JSON-LD) -->
+            <section class="rounded-2xl border border-paper-300 bg-white p-6 shadow-sm">
+                <div class="mb-4">
+                    <h2 class="font-display text-base font-semibold text-ink">SEO content</h2>
+                    <p class="text-sm text-ink/50">Shown on the product page (About / Product details / FAQ) and emitted as Product + FAQ structured data for search engines.</p>
+                </div>
+
+                <div>
+                    <label class="mb-1 block text-xs font-medium text-ink/55">About / description <span class="text-ink/35">— blank lines separate paragraphs</span></label>
+                    <textarea v-model="form.seo.description" rows="6" placeholder="Two short paragraphs describing the product, its benefits and use cases…" class="w-full border border-ink/20 px-3 py-2 text-sm leading-relaxed focus:border-brand-600 focus:outline-none"></textarea>
+                    <p v-if="form.errors['seo.description']" class="mt-1 text-xs text-red-600">{{ form.errors['seo.description'] }}</p>
+                </div>
+
+                <div class="mt-5 grid gap-6 md:grid-cols-2">
+                    <!-- details -->
+                    <div>
+                        <label class="mb-1.5 block text-xs font-medium text-ink/55">Product details</label>
+                        <div v-for="(d, i) in form.seo.details" :key="i" class="mb-1.5 flex items-center gap-2">
+                            <span class="text-brand-600">✓</span>
+                            <input v-model="form.seo.details[i]" placeholder="e.g. Available in A5, DL and A4" class="flex-1 border border-ink/20 px-2.5 py-1.5 text-sm focus:border-brand-600 focus:outline-none" />
+                            <button class="px-2 text-ink/40 hover:text-red-600" title="Remove" @click="removeDetail(i)">✕</button>
+                        </div>
+                        <button class="mt-1 text-sm font-medium text-brand-700 hover:underline" @click="addDetail">+ Add detail</button>
+                    </div>
+
+                    <!-- faq -->
+                    <div>
+                        <label class="mb-1.5 block text-xs font-medium text-ink/55">FAQ</label>
+                        <div v-for="(f, i) in form.seo.faq" :key="i" class="mb-2 rounded-lg border border-paper-300 bg-paper-200/40 p-2.5">
+                            <div class="flex items-center gap-2">
+                                <input v-model="f.q" placeholder="Question" class="flex-1 border border-ink/20 bg-white px-2.5 py-1.5 text-sm font-medium focus:border-brand-600 focus:outline-none" />
+                                <button class="px-2 text-ink/40 hover:text-red-600" title="Remove" @click="removeFaq(i)">✕</button>
+                            </div>
+                            <textarea v-model="f.a" rows="2" placeholder="Answer" class="mt-1.5 w-full border border-ink/20 bg-white px-2.5 py-1.5 text-sm focus:border-brand-600 focus:outline-none"></textarea>
+                        </div>
+                        <button class="mt-1 text-sm font-medium text-brand-700 hover:underline" @click="addFaq">+ Add question</button>
+                    </div>
                 </div>
             </section>
 

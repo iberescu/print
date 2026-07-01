@@ -58,16 +58,25 @@ class GenerateProductSeo extends Command
             $this->info('Wrote '.$file);
         }
 
+        // Import seeds the bundle into the DB, but the admin PIM is the source of
+        // truth: never overwrite a product that already has SEO copy unless --force.
         $n = 0;
+        $kept = 0;
         foreach ($store as $slug => $seo) {
             $p = Product::where('slug', $slug)->first();
-            if ($p) {
-                $p->seo = $seo;
-                $p->save();
-                $n++;
+            if (! $p) {
+                continue;
             }
+            if (! $this->option('force') && ! empty($p->seo['description'])) {
+                $kept++;
+
+                continue;
+            }
+            $p->seo = $seo;
+            $p->save();
+            $n++;
         }
-        $this->info("Applied SEO copy to {$n} products.");
+        $this->info("Seeded SEO copy to {$n} products (kept {$kept} existing — edit those in the admin PIM).");
 
         return self::SUCCESS;
     }
