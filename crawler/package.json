@@ -8,6 +8,9 @@
     "screenshots": "node src/screenshots.mjs",
     "crawl": "node src/crawl.mjs",
     "crawl:deep": "node src/crawl-deep.mjs",
+    "crawl:all": "node src/crawl-all.mjs",
+    "crawl:targets": "node src/crawl-targets.mjs",
+    "crawl:100": "node src/crawl-100.mjs",
     "templates": "node src/gen-templates.mjs",
     "test": "playwright test"
   },
