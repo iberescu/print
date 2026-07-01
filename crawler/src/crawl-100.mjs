@@ -46,7 +46,10 @@ const UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML,
 const BLOCK =
     /\/(account|cart|help|sign-?in|login|customer|orders?|gallery|about|careers|reviews|contact|blog|ideas|incentives|promotions|wallet|saved|my-|legal|privacy|terms|sitemap|store-locator|design-services|customer-care)\b/i;
 
-const SEEDS = [
+// SEED_URLS (comma-separated) overrides the default seeds — used for targeted top-up crawls.
+const SEEDS = process.env.SEED_URLS
+    ? process.env.SEED_URLS.split(',').map((u) => ['*', u.trim()]).filter((x) => x[1])
+    : [
     ['*', `${BASE}/`],
     ['business-cards', `${BASE}/business-cards`],
     ['marketing-materials', `${BASE}/marketing-materials`],
@@ -95,13 +98,16 @@ const looksBlocked = (h) =>
     ['just a moment', 'verify you are human', 'captcha', 'attention required', 'pardon our interruption'].some((s) =>
         h.toLowerCase().includes(s));
 
+// Order matters: check stickers + signage BEFORE marketing, because the Vistaprint
+// signage URL path is "signs-POSTERs" and a bare /poster/ would otherwise steal
+// posters/yard-signs/banners into marketing-materials.
 function catOf(s) {
     s = (s || '').toLowerCase();
     if (/business.?card/.test(s)) return 'business-cards';
-    if (/flyer|postcard|brochure|poster|leaflet|menu|greeting|calendar|door.?hanger/.test(s)) return 'marketing-materials';
-    if (/banner|yard.?sign|lawn.?sign|a.?frame|\bsign\b|decal|cling|feather|tablecloth|backdrop|foam/.test(s)) return 'signs-banners';
-    if (/sticker|label|magnet/.test(s)) return 'stickers-labels';
-    if (/letterhead|envelope|notepad|notebook|stationery|folder/.test(s)) return 'stationery';
+    if (/sticker|\blabel/.test(s)) return 'stickers-labels';
+    if (/banner|\bposter|yard.?sign|lawn.?sign|a.?frame|\bsign|decal|cling|feather|\bflag|tablecloth|backdrop|foam|car.?magnet|point of sale/.test(s)) return 'signs-banners';
+    if (/flyer|postcard|brochure|leaflet|menu|greeting|calendar|door.?hanger|literature/.test(s)) return 'marketing-materials';
+    if (/letterhead|envelope|notepad|notebook|stationery|\bfolder|certificate|\bstamp|bookmark/.test(s)) return 'stationery';
     if (/t.?shirt|shirt|tote|\bbag\b|hoodie|\bhat\b|\bcap\b|apparel|clothing|polo|mug|drinkware|\bpen\b/.test(s)) return 'apparel-bags';
     return 'other';
 }

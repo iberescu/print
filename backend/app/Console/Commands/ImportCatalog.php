@@ -80,7 +80,7 @@ class ImportCatalog extends Command
             if ($title === '') {
                 continue;
             }
-            $catSlug = in_array($rec['ourCategory'] ?? '', array_keys(self::CATEGORIES), true) ? $rec['ourCategory'] : 'other';
+            $catSlug = $this->categorize($title, (string) ($rec['category'] ?? ''), (string) ($rec['ourCategory'] ?? ''));
             $slug = $this->uniqueSlug($title, $slugs);
             $slugs[] = $slug;
 
@@ -295,6 +295,26 @@ class ImportCatalog extends Command
             ['name' => 'Width', 'value' => "{$dims['width']} {$unit}"],
             ['name' => 'Height', 'value' => "{$dims['height']} {$unit}"],
         ];
+    }
+
+    /**
+     * Map a product to a catalog category from its TITLE (clean — avoids the
+     * "signs-posters" URL-path pollution). Signage/stickers are checked before
+     * marketing so posters/yard-signs/banners don't get stolen by /poster/.
+     */
+    private function categorize(string $title, string $vpCategory, string $fallback): string
+    {
+        $s = strtolower($title.' '.$vpCategory);
+
+        return match (true) {
+            (bool) preg_match('/business.?card/', $s)                                                                        => 'business-cards',
+            (bool) preg_match('/sticker|\blabel/', $s)                                                                       => 'stickers-labels',
+            (bool) preg_match('/banner|poster|yard.?sign|lawn.?sign|a.?frame|\bsign|decal|cling|feather|flag|tablecloth|backdrop|foam|car.?magnet|point of sale/', $s) => 'signs-banners',
+            (bool) preg_match('/flyer|postcard|brochure|leaflet|menu|greeting|calendar|door.?hanger|literature/', $s)        => 'marketing-materials',
+            (bool) preg_match('/letterhead|envelope|notepad|notebook|stationery|folder|certificate|stamp|bookmark/', $s)     => 'stationery',
+            (bool) preg_match('/t.?shirt|shirt|tote|\bbag|hoodie|\bhat|\bcap|apparel|clothing|polo|mug|drinkware|\bpen/', $s) => 'apparel-bags',
+            default => in_array($fallback, array_keys(self::CATEGORIES), true) ? $fallback : 'other',
+        };
     }
 
     private function uniqueSlug(string $title, array $taken): string
