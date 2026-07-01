@@ -76,7 +76,8 @@ const logout = () => router.post('/logout');
             <nav class="hidden md:block">
                 <div class="mx-auto flex max-w-7xl items-center gap-1 overflow-x-auto px-6">
                     <Link v-for="c in categories" :key="c.slug" :href="`/category/${c.slug}`"
-                          class="whitespace-nowrap px-3 py-3 text-sm font-medium tracking-[1px] text-ink/75 transition hover:text-brand-700 hover:shadow-[inset_0_-3px_0_0_var(--color-brand-600)]">
+                          style="border-radius: 0 !important"
+                          class="whitespace-nowrap px-3 py-3 text-sm font-medium tracking-[1px] text-ink/75 transition hover:text-brand-700 hover:shadow-[inset_0_-2px_0_0_var(--color-brand-blue)]">
                         {{ c.name }}
                     </Link>
                 </div>
