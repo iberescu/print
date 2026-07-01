@@ -180,6 +180,8 @@ onMounted(() => {
     }
 
     canvas = new fabric.Canvas(canvasEl.value, { backgroundColor: '#ffffff', preserveObjectStacking: true });
+    // Test seam: expose the fabric canvas only when ?test=1 (used by e2e/audit scripts; no-op in production).
+    if (typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('test') === '1') window.__rmpCanvas = canvas;
     canvas.setDimensions({ width: W, height: H });
     canvas.on('selection:created', syncSelection);
     canvas.on('selection:updated', syncSelection);
@@ -215,14 +217,42 @@ const setFont = async (f) => {
     o.set('fontFamily', f);
     o.dirty = true;
     canvas.requestRenderAll();
-    // fabric caches glyphs rendered with the fallback font — load the webfont,
-    // then mark the object dirty so it re-rasterises with the real font.
+    // Load the webfont, then resize the text box to the REAL metrics. Changing to a
+    // wider font otherwise clips the text: fabric's offscreen measuring canvas keeps
+    // reporting the fallback width for a just-loaded webfont, so the object stays too
+    // narrow and the render cache cuts the overflow. fitTextWidth() measures with an
+    // on-DOM canvas (which does see the loaded font) and sets the width explicitly.
     try {
         await Promise.all([document.fonts.load(`400 40px "${f}"`), document.fonts.load(`700 40px "${f}"`)]);
     } catch (e) { /* keep fallback */ }
-    o.dirty = true;
+    fitTextWidth(o);
     canvas.requestRenderAll();
 };
+
+// Resize a text object's box to fit its text in the currently-loaded font. fabric's
+// own metrics cache can miss a late-loaded webfont (leaving a wider font clipped), so
+// we measure each line with a real canvas 2D context and set the width ourselves.
+function fitTextWidth(o) {
+    if (!o || !['i-text', 'text', 'textbox'].includes(o.type)) return;
+    if (typeof o.initDimensions === 'function') o.initDimensions(); // recompute line heights
+    if (o.type !== 'textbox') { // textbox has a fixed width and wraps — don't override it
+        try {
+            const ctx = document.createElement('canvas').getContext('2d');
+            const style = o.fontStyle && o.fontStyle !== 'normal' ? `${o.fontStyle} ` : '';
+            const weight = o.fontWeight && o.fontWeight !== 'normal' ? `${o.fontWeight} ` : '';
+            ctx.font = `${style}${weight}${o.fontSize}px "${o.fontFamily}"`;
+            const gap = ((o.charSpacing || 0) / 1000) * o.fontSize;
+            let max = 0;
+            for (const line of String(o.text ?? '').split('\n')) {
+                const w = ctx.measureText(line).width + Math.max(0, line.length - 1) * gap;
+                if (w > max) max = w;
+            }
+            if (max > 0) o.set('width', max);
+        } catch (e) { /* keep fabric's width */ }
+    }
+    o.setCoords();
+    o.dirty = true;
+}
 
 // Force every text object to re-render (used after webfonts finish loading).
 function repaintFonts() {
