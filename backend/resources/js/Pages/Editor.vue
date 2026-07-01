@@ -194,9 +194,10 @@ onMounted(() => {
     fitCanvas();
     window.addEventListener('resize', fitCanvas);
 
-    if (typeof document !== 'undefined' && document.fonts?.ready) {
-        document.fonts.ready.then(() => repaintFonts());
-    }
+    // Seeds are measured before webfonts finish loading → load the fonts then re-fit
+    // the text so a wider webfont isn't clipped. Templates keep their authored widths
+    // (applyTemplate repaints them after loading their fonts).
+    if (typeof document !== 'undefined' && !props.template) refitText();
 });
 
 onBeforeUnmount(() => {
@@ -260,6 +261,33 @@ function repaintFonts() {
     canvas.getObjects().forEach((o) => { o.dirty = true; });
     canvas.requestRenderAll();
 }
+
+// Load every webfont currently used on the canvas (both weights). We can't rely on
+// document.fonts.ready — for dynamically-added @font-faces it can resolve BEFORE the
+// specific fonts finish, so we load each family explicitly.
+async function loadCanvasFonts() {
+    if (!canvas || !document.fonts) return;
+    const families = [...new Set(canvas.getObjects().map((o) => o.fontFamily).filter(Boolean))];
+    await Promise.all(families.flatMap((f) => [
+        document.fonts.load(`400 40px "${f}"`).catch(() => {}),
+        document.fonts.load(`700 40px "${f}"`).catch(() => {}),
+    ]));
+}
+
+// Re-fit seeded text to its real font metrics after webfonts load. The seed runs
+// before the fonts finish downloading, so text is measured with the fallback; a
+// wider webfont then overflows that stale width and clips. Refitting fixes it.
+// (Template designs keep their authored widths — repaintFonts only.)
+async function refitText() {
+    if (!canvas) return;
+    await loadCanvasFonts();
+    if (!canvas) return; // may have unmounted while awaiting
+    canvas.getObjects().forEach((o) => {
+        if (['i-text', 'text', 'textbox'].includes(o.type)) fitTextWidth(o);
+        else o.dirty = true;
+    });
+    canvas.requestRenderAll();
+}
 const setSize = (s) => { sel.fontSize = Number(s); apply('fontSize', Number(s)); };
 const setColor = (c) => { sel.fill = c; apply('fill', c); };
 const toggleBold = () => { sel.bold = !sel.bold; apply('fontWeight', sel.bold ? 'bold' : 'normal'); };
@@ -313,7 +341,7 @@ async function applyTemplate(ref) {
         store[side.value] = canvas.toJSON();
         showTemplates.value = false;
         // repaint once fonts settle (non-blocking, so the design shows immediately)
-        if (document.fonts?.ready) document.fonts.ready.then(() => repaintFonts());
+        loadCanvasFonts().then(() => repaintFonts());
     } catch (e) { console.error('applyTemplate failed', e); }
     applyingTpl.value = false;
 }
