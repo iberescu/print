@@ -209,8 +209,33 @@ async function parseWithGemini(images, extraText) {
 // Option values live behind custom listbox buttons (not native <select>). Open each
 // and read all its values from the DOM. Call BEFORE opening the specs drawer so only
 // the buy-panel option dropdowns are present (keeps order aligned with the screenshot).
-async function expandOptions(page) {
+// A value-list is the quantity selector (not a print option) if most of its entries
+// look like price/tier text.
+function looksLikeQuantities(vals) {
+    if (!vals.length) return false;
+    const q = vals.filter((v) => /\$|\/\s*unit|savings|get a quote|^\s*\d[\d,]*\s*$/i.test(v)).length;
+    return q >= Math.ceil(vals.length * 0.6);
+}
+
+// Parse "100$15.99 $0.16 / unit 20% savings" -> {quantity,totalPrice,perUnit}.
+function parseQtyList(vals) {
     const out = [];
+    for (const v of vals) {
+        const m = v.match(/^(\d[\d,]*)\D*?\$([\d.]+)(?:\D*?\$([\d.]+))?/);
+        if (!m) continue;
+        const quantity = +m[1].replace(/,/g, '');
+        const totalPrice = +m[2];
+        if (quantity > 0 && totalPrice > 0) out.push({ quantity, totalPrice, perUnit: m[3] ? +m[3] : +(totalPrice / quantity).toFixed(4) });
+    }
+    return out;
+}
+
+// Expand every buy-panel dropdown: real options -> options[]; the quantity dropdown
+// (skipped as an option) -> parsed tier list so dropdown-quantity products aren't
+// left with only the one visible tier.
+async function expandOptions(page) {
+    const options = [];
+    let quantities = [];
     try {
         const triggers = await page.$$('button[aria-haspopup="listbox"]');
         for (const t of triggers) {
@@ -221,11 +246,18 @@ async function expandOptions(page) {
                 const values = await page.$$eval('[role="option"]', (els) => els.map((e) => (e.textContent || '').trim()).filter(Boolean));
                 await page.keyboard.press('Escape').catch(() => {});
                 await sleep(150);
-                if (values.length) out.push({ values: [...new Set(values)] });
+                const uniq = [...new Set(values)];
+                if (!uniq.length) continue;
+                if (looksLikeQuantities(uniq)) {
+                    const q = parseQtyList(uniq);
+                    if (q.length > quantities.length) quantities = q;
+                } else {
+                    options.push({ values: uniq });
+                }
             } catch {}
         }
     } catch {}
-    return out;
+    return { options, quantities };
 }
 
 // Select the first value of every option dropdown — Vistaprint only generates the
@@ -332,18 +364,30 @@ function applySvgGeometry(parsed, geo) {
     if (geo.fold) { s.fold = geo.fold; s.folded = true; }
 }
 
-// DOM option values are authoritative; keep Gemini's names + any per-value deltas.
+// DOM option values are authoritative (complete). Match each DOM value-list to the
+// Gemini option with the most label overlap (keeps the right NAME + per-value deltas),
+// robust to order/count mismatches; unmatched lists append with a generic name.
 function mergeOptions(parsed, dom) {
     if (!dom?.length) return;
-    const opts = parsed.options || [];
-    for (let i = 0; i < dom.length; i++) {
-        const byLabel = Object.fromEntries(((opts[i]?.values) || []).map((v) => [String(v.label).toLowerCase(), v.priceDelta || 0]));
-        parsed.options = parsed.options || [];
-        parsed.options[i] = {
-            name: opts[i]?.name || `Option ${i + 1}`,
-            values: dom[i].values.map((l) => ({ label: l, priceDelta: byLabel[l.toLowerCase()] || 0 })),
-        };
+    const gem = parsed.options || [];
+    const used = new Set();
+    for (const d of dom) {
+        const dl = d.values.map((v) => v.toLowerCase());
+        let best = -1, score = 0;
+        gem.forEach((o, i) => {
+            if (used.has(i)) return;
+            const overlap = (o.values || []).filter((v) => dl.includes(String(v.label).toLowerCase())).length;
+            if (overlap > score) { score = overlap; best = i; }
+        });
+        if (best >= 0 && score > 0) {
+            const byLabel = Object.fromEntries((gem[best].values || []).map((v) => [String(v.label).toLowerCase(), v.priceDelta || 0]));
+            gem[best] = { name: gem[best].name, values: d.values.map((l) => ({ label: l, priceDelta: byLabel[l.toLowerCase()] || 0 })) };
+            used.add(best);
+        } else {
+            gem.push({ name: `Option ${gem.length + 1}`, values: d.values.map((l) => ({ label: l, priceDelta: 0 })) });
+        }
     }
+    parsed.options = gem;
 }
 
 async function main() {
@@ -416,7 +460,7 @@ async function main() {
             const n = String(products.length + 1).padStart(3, '0');
             const shots = [];
             shots.push(await page.screenshot({ path: path.join(SHOTS, `${n}-${slug}-buy.png`), fullPage: false }));
-            const domOptions = await expandOptions(page);          // full option values from the DOM (before specs opens)
+            const dom = await expandOptions(page);                 // {options, quantities} from the DOM (before specs opens)
             // open specs, select all options so the print template generates, then download + parse the SVG
             await openSpecs(page);
             await selectAllOptions(page);
@@ -427,11 +471,13 @@ async function main() {
             const geo = svgText ? parseSvgTemplate(svgText) : null;  // precise bleed/trim/safe/fold (mm), deterministic
 
             const parsed = await parseWithGemini(shots, '');         // prices/tiers/dims/option names from the screenshots
+            // dropdown-quantity products only show one tier in the screenshot — use the fuller DOM tier list
+            if (parsed && dom.quantities.length > (parsed.quantities || []).length) parsed.quantities = dom.quantities;
             if (parsed?.isProduct && (parsed.quantities || []).length) {
                 const cat = catOf(`${url} ${parsed.title} ${parsed.category}`);
                 if (cat !== 'other' && capped(cat)) { log(`[${attempts}] skip (cap ${cat}) ${parsed.title}`); continue; }
                 counts[cat] = (counts[cat] || 0) + 1;
-                mergeOptions(parsed, domOptions);                  // DOM values are authoritative
+                mergeOptions(parsed, dom.options);                 // DOM values are authoritative
                 applySvgGeometry(parsed, geo);                     // exact surface geometry from the template SVG
                 if (rawDl?.buf) {
                     const ext = rawDl.buf[0] === 0x50 && rawDl.buf[1] === 0x4b ? 'zip' : 'svg';
@@ -440,7 +486,7 @@ async function main() {
                         if (svgText && ext === 'zip') await writeFile(path.join(TPL, `${n}-${slug}.svg`), svgText); // extracted svg
                     } catch {}
                 }
-                products.push({ ourCategory: cat, url, ...parsed, surfaceSvg: geo, domOptionCount: domOptions.length, screenshots: [`${n}-${slug}-buy.png`, `${n}-${slug}-specs.png`] });
+                products.push({ ourCategory: cat, url, ...parsed, surfaceSvg: geo, domOptionCount: dom.options.length, screenshots: [`${n}-${slug}-buy.png`, `${n}-${slug}-specs.png`] });
                 await save();
                 const nOpts = (parsed.options || []).reduce((a, o) => a + (o.values || []).length, 0);
                 log(`[${attempts}] ✅ ${parsed.title} [${cat}] ${(parsed.quantities || []).length} tiers · ${(parsed.options || []).length} opts/${nOpts} vals · surface=${parsed.surface ? `${parsed.surface.width}x${parsed.surface.height}${parsed.surface.unit} b=${parsed.surface.bleed ?? '?'}` : '?'} · svg=${svgText ? 'Y' : 'n'} (total ${products.length}/${MAX_PRODUCTS})`);
