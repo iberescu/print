@@ -44,7 +44,10 @@ const PACE_MS = process.env.PACE_MS
 const UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36';
 
 const BLOCK =
-    /\/(account|cart|help|sign-?in|login|customer|orders?|gallery|about|careers|reviews|contact|blog|ideas|incentives|promotions|wallet|saved|my-|legal|privacy|terms|sitemap|store-locator|design-services|customer-care)\b/i;
+    /\/(account|cart|help|sign-?in|login|customer|orders?|gallery|about|careers|reviews|contact|blog|ideas|incentives|promotions|wallet|saved|my-|legal|privacy|terms|sitemap|store-locator|design-services|customer-care|packaging)\b/i;
+
+// Product types we never want in the catalogue (user: no packaging — boxes/bags/wrap are out of scope).
+const EXCLUDE_TITLE = /packaging|pizza box|deli paper|tissue paper|\bribbon\b|wrapping paper|crinkle|mailer box|shipping box|sos bag|clamshell|product box|\bpouch|butcher paper|takeout|take-?out|food (pail|tray|wrap)|paper bag|to-?go bag|plastic cup/i;
 
 // SEED_URLS (comma-separated) overrides the default seeds — used for targeted top-up crawls.
 const SEEDS = process.env.SEED_URLS
@@ -442,6 +445,7 @@ async function main() {
             const parsed = await parseWithGemini(shots, '');         // prices/tiers/dims/option names from the screenshots
             // dropdown-quantity products only show one tier in the screenshot — use the fuller DOM tier list
             if (parsed && dom.quantities.length > (parsed.quantities || []).length) parsed.quantities = dom.quantities;
+            if (parsed?.isProduct && EXCLUDE_TITLE.test(parsed.title || '')) { log(`[${attempts}] skip (excluded type) ${parsed.title}`); await jitter(); continue; }
             if (parsed?.isProduct && (parsed.quantities || []).length) {
                 const cat = catOf(`${url} ${parsed.title} ${parsed.category}`);
                 if (cat !== 'other' && capped(cat)) { log(`[${attempts}] skip (cap ${cat}) ${parsed.title}`); continue; }

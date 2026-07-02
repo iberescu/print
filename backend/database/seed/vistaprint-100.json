@@ -1946,196 +1946,6 @@
     ]
   },
   {
-    "ourCategory": "other",
-    "url": "https://www.vistaprint.com/marketing-materials/packaging-inserts",
-    "isProduct": true,
-    "title": "Packaging Insert Cards",
-    "category": "Packaging Insert Cards",
-    "price": 41.99,
-    "options": [
-      {
-        "name": "Orientation",
-        "values": [
-          {
-            "label": "Vertical",
-            "priceDelta": 0
-          },
-          {
-            "label": "Horizontal",
-            "priceDelta": 0
-          }
-        ]
-      },
-      {
-        "name": "Paper Thickness",
-        "values": [
-          {
-            "label": "Standard",
-            "priceDelta": 0
-          },
-          {
-            "label": "Premium",
-            "priceDelta": 0
-          },
-          {
-            "label": "Premium Plus",
-            "priceDelta": 0
-          }
-        ]
-      },
-      {
-        "name": "Paper Stock",
-        "values": [
-          {
-            "label": "Glossy (front only)",
-            "priceDelta": 0
-          },
-          {
-            "label": "Matte",
-            "priceDelta": 0
-          },
-          {
-            "label": "Uncoated",
-            "priceDelta": 0
-          },
-          {
-            "label": "Recycled",
-            "priceDelta": 0
-          }
-        ]
-      },
-      {
-        "name": "Corners",
-        "values": [
-          {
-            "label": "Standard",
-            "priceDelta": 0
-          },
-          {
-            "label": "Rounded",
-            "priceDelta": 0
-          }
-        ]
-      }
-    ],
-    "quantities": [
-      {
-        "quantity": 50,
-        "totalPrice": 0.68,
-        "perUnit": 0.0136
-      },
-      {
-        "quantity": 100,
-        "totalPrice": 0.42,
-        "perUnit": 0.0042
-      },
-      {
-        "quantity": 250,
-        "totalPrice": 0.26,
-        "perUnit": 0.001
-      },
-      {
-        "quantity": 500,
-        "totalPrice": 0.16,
-        "perUnit": 0.0003
-      },
-      {
-        "quantity": 750,
-        "totalPrice": 0.12,
-        "perUnit": 0.0002
-      },
-      {
-        "quantity": 1000,
-        "totalPrice": 0.1,
-        "perUnit": 0.0001
-      },
-      {
-        "quantity": 1500,
-        "totalPrice": 0.1,
-        "perUnit": 0.0001
-      },
-      {
-        "quantity": 2000,
-        "totalPrice": 0.1,
-        "perUnit": 0.0001
-      },
-      {
-        "quantity": 2500,
-        "totalPrice": 0.09,
-        "perUnit": 0
-      },
-      {
-        "quantity": 3000,
-        "totalPrice": 0.09,
-        "perUnit": 0
-      },
-      {
-        "quantity": 4000,
-        "totalPrice": 0.08,
-        "perUnit": 0
-      },
-      {
-        "quantity": 5000,
-        "totalPrice": 0.07,
-        "perUnit": 0
-      },
-      {
-        "quantity": 6000,
-        "totalPrice": 0.07,
-        "perUnit": 0
-      },
-      {
-        "quantity": 7000,
-        "totalPrice": 0.07,
-        "perUnit": 0
-      },
-      {
-        "quantity": 8000,
-        "totalPrice": 0.07,
-        "perUnit": 0
-      },
-      {
-        "quantity": 9000,
-        "totalPrice": 0.07,
-        "perUnit": 0
-      },
-      {
-        "quantity": 10000,
-        "totalPrice": 0.06,
-        "perUnit": 0
-      },
-      {
-        "quantity": 15000,
-        "totalPrice": 0.06,
-        "perUnit": 0
-      },
-      {
-        "quantity": 20000,
-        "totalPrice": 0.06,
-        "perUnit": 0
-      }
-    ],
-    "surface": {
-      "unit": "in",
-      "width": 6,
-      "height": 4,
-      "bleed": 0.125,
-      "safety": 0.125,
-      "fold": null,
-      "noPrint": null,
-      "folded": false,
-      "noPrintNote": null
-    },
-    "material": "Paper",
-    "specsText": "Orientation: Horizontal\nPaper Thickness: Standard\nPaper Stock: Glossy (front only)\nCorners: Standard\nQuantity: 100 ($0.42 / unit)",
-    "surfaceSvg": null,
-    "domOptionCount": 4,
-    "screenshots": [
-      "019-packaging-inserts-buy.png",
-      "019-packaging-inserts-specs.png"
-    ]
-  },
-  {
     "ourCategory": "marketing-materials",
     "url": "https://www.vistaprint.com/marketing-materials/standard-postcards",
     "isProduct": true,
@@ -11924,308 +11734,6 @@
   },
   {
     "ourCategory": "stickers-labels",
-    "url": "https://www.vistaprint.com/labels-stickers/labels/packaging",
-    "isProduct": true,
-    "title": "Packaging Labels",
-    "category": "Packaging Labels",
-    "price": 104.44,
-    "options": [
-      {
-        "name": "Shapes",
-        "values": [
-          {
-            "label": "Custom (Die-Cut)",
-            "priceDelta": 0,
-            "dimensions": null
-          },
-          {
-            "label": "Circle",
-            "priceDelta": 0,
-            "dimensions": null
-          },
-          {
-            "label": "Oval",
-            "priceDelta": 0,
-            "dimensions": null
-          },
-          {
-            "label": "Rectangle",
-            "priceDelta": 0,
-            "dimensions": null
-          },
-          {
-            "label": "Square",
-            "priceDelta": 0,
-            "dimensions": null
-          }
-        ]
-      },
-      {
-        "name": "Size",
-        "values": []
-      },
-      {
-        "name": "Material",
-        "values": []
-      },
-      {
-        "name": "Roll Style",
-        "values": [
-          {
-            "label": "Multi-Column Roll",
-            "priceDelta": 0,
-            "dimensions": null
-          }
-        ]
-      },
-      {
-        "name": "Option 5",
-        "values": [
-          {
-            "label": "CustomOut of stock",
-            "priceDelta": 0
-          },
-          {
-            "label": "1\" x 1\"",
-            "priceDelta": 0
-          },
-          {
-            "label": "1\"x2\"",
-            "priceDelta": 0
-          },
-          {
-            "label": "1\"x3\"",
-            "priceDelta": 0
-          },
-          {
-            "label": "1.5\" x 1.5\"",
-            "priceDelta": 0
-          },
-          {
-            "label": "2\" x 2\"",
-            "priceDelta": 0
-          },
-          {
-            "label": "2\" x 3\"",
-            "priceDelta": 0
-          },
-          {
-            "label": "2\"x3.5\"",
-            "priceDelta": 0
-          },
-          {
-            "label": "2\"x4\"",
-            "priceDelta": 0
-          },
-          {
-            "label": "2.5\" x 2.5\"",
-            "priceDelta": 0
-          },
-          {
-            "label": "2.5\"x3\"",
-            "priceDelta": 0
-          },
-          {
-            "label": "3\" x 3\"",
-            "priceDelta": 0
-          },
-          {
-            "label": "3.5\" x 3.5\"",
-            "priceDelta": 0
-          },
-          {
-            "label": "3\" x 4\"",
-            "priceDelta": 0
-          },
-          {
-            "label": "3\" x 5\"",
-            "priceDelta": 0
-          },
-          {
-            "label": "4\" x 4\"",
-            "priceDelta": 0
-          },
-          {
-            "label": "3.75\"x5\"",
-            "priceDelta": 0
-          },
-          {
-            "label": "4\" x 6\"",
-            "priceDelta": 0
-          },
-          {
-            "label": "5\"x 5\"",
-            "priceDelta": 0
-          }
-        ]
-      },
-      {
-        "name": "Option 6",
-        "values": [
-          {
-            "label": "White Plastic (BOPP)Recommended",
-            "priceDelta": 0
-          },
-          {
-            "label": "Clear Plastic (BOPP)",
-            "priceDelta": 0
-          },
-          {
-            "label": "Silver Foil (BOPP)",
-            "priceDelta": 0
-          },
-          {
-            "label": "Gold Foil (BOPP)Out of stock",
-            "priceDelta": 0
-          },
-          {
-            "label": "Holographic Plastic (BOPP)",
-            "priceDelta": 0
-          },
-          {
-            "label": "White Paper",
-            "priceDelta": 0
-          }
-        ]
-      },
-      {
-        "name": "Option 7",
-        "values": [
-          {
-            "label": "Single-Column Roll",
-            "priceDelta": 0
-          },
-          {
-            "label": "Multi-Column RollNew",
-            "priceDelta": 0
-          }
-        ]
-      }
-    ],
-    "quantities": [
-      {
-        "quantity": 50,
-        "totalPrice": 0.69,
-        "perUnit": 0.0138
-      },
-      {
-        "quantity": 100,
-        "totalPrice": 0.55,
-        "perUnit": 0.0055
-      },
-      {
-        "quantity": 150,
-        "totalPrice": 0.38,
-        "perUnit": 0.0025
-      },
-      {
-        "quantity": 200,
-        "totalPrice": 0.3,
-        "perUnit": 0.0015
-      },
-      {
-        "quantity": 250,
-        "totalPrice": 0.26,
-        "perUnit": 0.001
-      },
-      {
-        "quantity": 300,
-        "totalPrice": 0.22,
-        "perUnit": 0.0007
-      },
-      {
-        "quantity": 400,
-        "totalPrice": 0.18,
-        "perUnit": 0.0004
-      },
-      {
-        "quantity": 500,
-        "totalPrice": 0.16,
-        "perUnit": 0.0003
-      },
-      {
-        "quantity": 600,
-        "totalPrice": 0.14,
-        "perUnit": 0.0002
-      },
-      {
-        "quantity": 700,
-        "totalPrice": 0.13,
-        "perUnit": 0.0002
-      },
-      {
-        "quantity": 750,
-        "totalPrice": 0.13,
-        "perUnit": 0.0002
-      },
-      {
-        "quantity": 800,
-        "totalPrice": 0.12,
-        "perUnit": 0.0001
-      },
-      {
-        "quantity": 900,
-        "totalPrice": 0.11,
-        "perUnit": 0.0001
-      },
-      {
-        "quantity": 1000,
-        "totalPrice": 0.11,
-        "perUnit": 0.0001
-      },
-      {
-        "quantity": 1500,
-        "totalPrice": 0.09,
-        "perUnit": 0.0001
-      },
-      {
-        "quantity": 2000,
-        "totalPrice": 0.08,
-        "perUnit": 0
-      },
-      {
-        "quantity": 2500,
-        "totalPrice": 0.07,
-        "perUnit": 0
-      },
-      {
-        "quantity": 3000,
-        "totalPrice": 0.06,
-        "perUnit": 0
-      },
-      {
-        "quantity": 4000,
-        "totalPrice": 0.05,
-        "perUnit": 0
-      },
-      {
-        "quantity": 5000,
-        "totalPrice": 0.05,
-        "perUnit": 0
-      }
-    ],
-    "surface": {
-      "unit": "in",
-      "width": null,
-      "height": null,
-      "bleed": null,
-      "safety": null,
-      "fold": null,
-      "noPrint": null,
-      "folded": false,
-      "noPrintNote": null
-    },
-    "material": null,
-    "specsText": "NEW: Custom sizes available\n4 unwind directions\nEasy-peel labels on rolls\n18 size options\n4 shape options - custom, circle, oval, rectangle, square\n5 material & 3 finish options\nQuantities from 50 to 5,000",
-    "surfaceSvg": null,
-    "domOptionCount": 3,
-    "screenshots": [
-      "058-packaging-buy.png",
-      "058-packaging-specs.png"
-    ]
-  },
-  {
-    "ourCategory": "stickers-labels",
     "url": "https://www.vistaprint.com/labels-stickers/custom-stickers/circle",
     "isProduct": true,
     "title": "Circle Stickers",
@@ -13828,243 +13336,6 @@
     "screenshots": [
       "066-holographic-stickers-buy.png",
       "066-holographic-stickers-specs.png"
-    ]
-  },
-  {
-    "ourCategory": "other",
-    "url": "https://www.vistaprint.com/packaging/drink-cups/custom-clear-plastic-cups",
-    "isProduct": true,
-    "title": "Custom Clear Plastic Cups",
-    "category": "Drink Cups",
-    "price": 380,
-    "options": [
-      {
-        "name": "Capacity",
-        "values": [
-          {
-            "label": "12 oz",
-            "priceDelta": 0,
-            "dimensions": null
-          },
-          {
-            "label": "16 oz",
-            "priceDelta": 20,
-            "dimensions": null
-          },
-          {
-            "label": "20 oz",
-            "priceDelta": null,
-            "dimensions": null
-          },
-          {
-            "label": "24 oz",
-            "priceDelta": null,
-            "dimensions": null
-          }
-        ]
-      },
-      {
-        "name": "Print Colors",
-        "values": [
-          {
-            "label": "Royal Blue",
-            "priceDelta": 0,
-            "dimensions": null
-          }
-        ]
-      }
-    ],
-    "quantities": [
-      {
-        "quantity": 1000,
-        "totalPrice": 380,
-        "perUnit": 0.38
-      },
-      {
-        "quantity": 2000,
-        "totalPrice": 735,
-        "perUnit": 0.37
-      },
-      {
-        "quantity": 3000,
-        "totalPrice": 1,
-        "perUnit": 0.0003
-      },
-      {
-        "quantity": 4000,
-        "totalPrice": 1,
-        "perUnit": 0.0003
-      },
-      {
-        "quantity": 5000,
-        "totalPrice": 1,
-        "perUnit": 0.0002
-      },
-      {
-        "quantity": 6000,
-        "totalPrice": 2,
-        "perUnit": 0.0003
-      },
-      {
-        "quantity": 7000,
-        "totalPrice": 2,
-        "perUnit": 0.0003
-      },
-      {
-        "quantity": 8000,
-        "totalPrice": 2,
-        "perUnit": 0.0003
-      },
-      {
-        "quantity": 9000,
-        "totalPrice": 3,
-        "perUnit": 0.0003
-      },
-      {
-        "quantity": 10000,
-        "totalPrice": 3,
-        "perUnit": 0.0003
-      },
-      {
-        "quantity": 11000,
-        "totalPrice": 3,
-        "perUnit": 0.0003
-      },
-      {
-        "quantity": 12000,
-        "totalPrice": 4,
-        "perUnit": 0.0003
-      }
-    ],
-    "surface": {
-      "unit": "in",
-      "width": null,
-      "height": null,
-      "bleed": null,
-      "safety": null,
-      "fold": null,
-      "noPrint": null,
-      "folded": false,
-      "noPrintNote": null
-    },
-    "material": "Clear Plastic",
-    "specsText": "Upgrade your drinks with single-color printing on our clear plastic cups. Available in quantities 1,000 to 12,000 – and orders over $100 ship free.",
-    "surfaceSvg": null,
-    "domOptionCount": 0,
-    "screenshots": [
-      "067-custom-clear-plastic-cups-buy.png",
-      "067-custom-clear-plastic-cups-specs.png"
-    ]
-  },
-  {
-    "ourCategory": "other",
-    "url": "https://www.vistaprint.com/packaging/shopping-bags/to-go-bags",
-    "isProduct": true,
-    "title": "To-Go Bags",
-    "category": "Shopping Bags",
-    "price": 269.99,
-    "options": [
-      {
-        "name": "Size (W x D x H)",
-        "values": [
-          {
-            "label": "5.5\" x 3.25\" x 8.25\"",
-            "priceDelta": 0
-          },
-          {
-            "label": "10\" x 7\" x 12\"",
-            "priceDelta": 0
-          },
-          {
-            "label": "13\" x 7\" x 13\"",
-            "priceDelta": 0
-          },
-          {
-            "label": "16\" x 6\" x 12\"",
-            "priceDelta": 0
-          },
-          {
-            "label": "14\" x 9.65\" x 16\"",
-            "priceDelta": 0
-          }
-        ]
-      },
-      {
-        "name": "Print Area",
-        "values": [
-          {
-            "label": "Front Only",
-            "priceDelta": 0,
-            "dimensions": null
-          },
-          {
-            "label": "Blank",
-            "priceDelta": 0,
-            "dimensions": null
-          }
-        ]
-      },
-      {
-        "name": "Paper Stock",
-        "values": [
-          {
-            "label": "Brown Kraft",
-            "priceDelta": 0,
-            "dimensions": null
-          },
-          {
-            "label": "White",
-            "priceDelta": 0,
-            "dimensions": null
-          }
-        ]
-      }
-    ],
-    "quantities": [
-      {
-        "quantity": 250,
-        "totalPrice": 269.99,
-        "perUnit": 1.08
-      },
-      {
-        "quantity": 500,
-        "totalPrice": 420,
-        "perUnit": 0.84
-      },
-      {
-        "quantity": 750,
-        "totalPrice": 600,
-        "perUnit": 0.8
-      },
-      {
-        "quantity": 1000,
-        "totalPrice": 720,
-        "perUnit": 0.72
-      },
-      {
-        "quantity": 2000,
-        "totalPrice": 1330,
-        "perUnit": 0.67
-      }
-    ],
-    "surface": {
-      "unit": "in",
-      "width": 10,
-      "height": 12,
-      "bleed": null,
-      "safety": null,
-      "fold": null,
-      "noPrint": null,
-      "folded": false,
-      "noPrintNote": null
-    },
-    "material": "Paper Stock",
-    "specsText": "Size (W x D x H): 10\" x 7\" x 12\"",
-    "surfaceSvg": null,
-    "domOptionCount": 1,
-    "screenshots": [
-      "068-to-go-bags-buy.png",
-      "068-to-go-bags-specs.png"
     ]
   },
   {
@@ -16274,6 +15545,552 @@
     "screenshots": [
       "081-free-business-card-sample-kit-buy.png",
       "081-free-business-card-sample-kit-specs.png"
+    ]
+  },
+  {
+    "ourCategory": "stickers-labels",
+    "url": "https://www.vistaprint.com/labels-stickers/labels/waterproof",
+    "isProduct": true,
+    "title": "Waterproof Labels",
+    "category": "Waterproof Labels",
+    "price": 119.32,
+    "options": [
+      {
+        "name": "Shapes",
+        "values": [
+          {
+            "label": "Custom",
+            "priceDelta": 0,
+            "dimensions": null
+          },
+          {
+            "label": "Circle",
+            "priceDelta": 0,
+            "dimensions": null
+          },
+          {
+            "label": "Oval",
+            "priceDelta": 0,
+            "dimensions": null
+          },
+          {
+            "label": "Square",
+            "priceDelta": 0,
+            "dimensions": null
+          },
+          {
+            "label": "Rectangle",
+            "priceDelta": 0,
+            "dimensions": null
+          }
+        ]
+      },
+      {
+        "name": "Size",
+        "values": [
+          {
+            "label": "CustomOut of stock",
+            "priceDelta": 0
+          },
+          {
+            "label": "1\" x 1\"",
+            "priceDelta": 0
+          },
+          {
+            "label": "1\"x2\"",
+            "priceDelta": 0
+          },
+          {
+            "label": "1\"x3\"",
+            "priceDelta": 0
+          },
+          {
+            "label": "1.5\" x 1.5\"",
+            "priceDelta": 0
+          },
+          {
+            "label": "2\" x 2\"",
+            "priceDelta": 0
+          },
+          {
+            "label": "2\" x 3\"",
+            "priceDelta": 0
+          },
+          {
+            "label": "2\"x3.5\"",
+            "priceDelta": 0
+          },
+          {
+            "label": "2\"x4\"",
+            "priceDelta": 0
+          },
+          {
+            "label": "2.5\" x 2.5\"",
+            "priceDelta": 0
+          },
+          {
+            "label": "2.5\"x3\"",
+            "priceDelta": 0
+          },
+          {
+            "label": "3\" x 3\"",
+            "priceDelta": 0
+          },
+          {
+            "label": "3.5\" x 3.5\"",
+            "priceDelta": 0
+          },
+          {
+            "label": "3\" x 4\"",
+            "priceDelta": 0
+          },
+          {
+            "label": "3\" x 5\"",
+            "priceDelta": 0
+          },
+          {
+            "label": "4\" x 4\"",
+            "priceDelta": 0
+          },
+          {
+            "label": "3.75\"x5\"",
+            "priceDelta": 0
+          },
+          {
+            "label": "4\" x 6\"",
+            "priceDelta": 0
+          },
+          {
+            "label": "5\"x 5\"",
+            "priceDelta": 0
+          }
+        ]
+      },
+      {
+        "name": "Material",
+        "values": [
+          {
+            "label": "Clear Plastic",
+            "priceDelta": 0,
+            "dimensions": null
+          },
+          {
+            "label": "White Plastic",
+            "priceDelta": 0,
+            "dimensions": null
+          }
+        ]
+      },
+      {
+        "name": "Roll Style",
+        "values": [
+          {
+            "label": "Single-Column Roll",
+            "priceDelta": 0
+          },
+          {
+            "label": "Multi-Column RollNew",
+            "priceDelta": 0
+          }
+        ]
+      },
+      {
+        "name": "Option 5",
+        "values": [
+          {
+            "label": "White Plastic (BOPP)Recommended",
+            "priceDelta": 0
+          },
+          {
+            "label": "Clear Plastic (BOPP)",
+            "priceDelta": 0
+          }
+        ]
+      }
+    ],
+    "quantities": [
+      {
+        "quantity": 50,
+        "totalPrice": 0.78,
+        "perUnit": 0.0156
+      },
+      {
+        "quantity": 100,
+        "totalPrice": 0.63,
+        "perUnit": 0.0063
+      },
+      {
+        "quantity": 200,
+        "totalPrice": 0.34,
+        "perUnit": 0.0017
+      },
+      {
+        "quantity": 250,
+        "totalPrice": 0.29,
+        "perUnit": 0.0012
+      },
+      {
+        "quantity": 500,
+        "totalPrice": 0.18,
+        "perUnit": 0.0004
+      },
+      {
+        "quantity": 1000,
+        "totalPrice": 0.12,
+        "perUnit": 0.0001
+      },
+      {
+        "quantity": 1500,
+        "totalPrice": 0.1,
+        "perUnit": 0.0001
+      },
+      {
+        "quantity": 2000,
+        "totalPrice": 0.09,
+        "perUnit": 0
+      },
+      {
+        "quantity": 2500,
+        "totalPrice": 0.08,
+        "perUnit": 0
+      },
+      {
+        "quantity": 3000,
+        "totalPrice": 0.07,
+        "perUnit": 0
+      },
+      {
+        "quantity": 4000,
+        "totalPrice": 0.06,
+        "perUnit": 0
+      },
+      {
+        "quantity": 10000,
+        "totalPrice": 0.04,
+        "perUnit": 0
+      },
+      {
+        "quantity": 15000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 25000,
+        "totalPrice": 0.02,
+        "perUnit": 0
+      },
+      {
+        "quantity": 50000,
+        "totalPrice": 0.02,
+        "perUnit": 0
+      }
+    ],
+    "surface": {
+      "unit": "in",
+      "width": 1.5,
+      "height": 1.5,
+      "bleed": null,
+      "safety": null,
+      "fold": null,
+      "noPrint": null,
+      "folded": false,
+      "noPrintNote": null
+    },
+    "material": "Clear or white plastic",
+    "specsText": "Sizes available: 1.5\" x 1.5\", 2\" x 2\", 2\" x 3\". Shape options: Custom, Circle, Oval, Square, Rectangle. Clear or white plastic material options.",
+    "surfaceSvg": null,
+    "domOptionCount": 3,
+    "screenshots": [
+      "082-waterproof-buy.png",
+      "082-waterproof-specs.png"
+    ]
+  },
+  {
+    "ourCategory": "stickers-labels",
+    "url": "https://www.vistaprint.com/labels-stickers/custom-stickers/custom-laptop-stickers",
+    "isProduct": true,
+    "title": "Custom Laptop Stickers",
+    "category": "Custom Single Stickers",
+    "price": 67.99,
+    "options": [
+      {
+        "name": "Shape",
+        "values": [
+          {
+            "label": "Custom",
+            "priceDelta": 0,
+            "dimensions": null
+          },
+          {
+            "label": "Circle",
+            "priceDelta": 0,
+            "dimensions": null
+          },
+          {
+            "label": "Oval",
+            "priceDelta": 0,
+            "dimensions": null
+          },
+          {
+            "label": "Square",
+            "priceDelta": 0,
+            "dimensions": null
+          },
+          {
+            "label": "Rectangle",
+            "priceDelta": 0,
+            "dimensions": null
+          },
+          {
+            "label": "Heart",
+            "priceDelta": 0,
+            "dimensions": null
+          },
+          {
+            "label": "Arch",
+            "priceDelta": 0,
+            "dimensions": null
+          },
+          {
+            "label": "Jar",
+            "priceDelta": 0,
+            "dimensions": null
+          },
+          {
+            "label": "Text Bubble",
+            "priceDelta": 0,
+            "dimensions": null
+          },
+          {
+            "label": "Star",
+            "priceDelta": 0,
+            "dimensions": null
+          },
+          {
+            "label": "Starburst",
+            "priceDelta": 0,
+            "dimensions": null
+          },
+          {
+            "label": "Hexagon",
+            "priceDelta": 0,
+            "dimensions": null
+          }
+        ]
+      },
+      {
+        "name": "Size",
+        "values": []
+      },
+      {
+        "name": "Product Orientation",
+        "values": []
+      },
+      {
+        "name": "Material",
+        "values": []
+      },
+      {
+        "name": "Option 5",
+        "values": [
+          {
+            "label": "1\"x2\"",
+            "priceDelta": 0
+          },
+          {
+            "label": "1.5\" x 1.5\"",
+            "priceDelta": 0
+          },
+          {
+            "label": "2\" x 2\"",
+            "priceDelta": 0
+          },
+          {
+            "label": "2\" x 3\"",
+            "priceDelta": 0
+          },
+          {
+            "label": "2.5\" x 2.5\"",
+            "priceDelta": 0
+          },
+          {
+            "label": "3\" x 3\"",
+            "priceDelta": 0
+          },
+          {
+            "label": "3\" x 4\"",
+            "priceDelta": 0
+          },
+          {
+            "label": "3\" x 5\"",
+            "priceDelta": 0
+          },
+          {
+            "label": "4\" x 4\"",
+            "priceDelta": 0
+          },
+          {
+            "label": "3.5\" x 3.5\"",
+            "priceDelta": 0
+          },
+          {
+            "label": "4.5\"x 4.5\"",
+            "priceDelta": 0
+          },
+          {
+            "label": "5\"x 5\"",
+            "priceDelta": 0
+          }
+        ]
+      },
+      {
+        "name": "Option 6",
+        "values": [
+          {
+            "label": "Horizontal",
+            "priceDelta": 0
+          },
+          {
+            "label": "Vertical",
+            "priceDelta": 0
+          }
+        ]
+      },
+      {
+        "name": "Option 7",
+        "values": [
+          {
+            "label": "White Plastic (BOPP)",
+            "priceDelta": 0
+          },
+          {
+            "label": "Clear Plastic (BOPP)",
+            "priceDelta": 0
+          },
+          {
+            "label": "White Paper",
+            "priceDelta": 0
+          },
+          {
+            "label": "Gold Foil (BOPP)",
+            "priceDelta": 0
+          },
+          {
+            "label": "Silver Foil (BOPP)",
+            "priceDelta": 0
+          },
+          {
+            "label": "Holographic Plastic (BOPP)",
+            "priceDelta": 0
+          }
+        ]
+      }
+    ],
+    "quantities": [
+      {
+        "quantity": 10,
+        "totalPrice": 0.9,
+        "perUnit": 0.09
+      },
+      {
+        "quantity": 25,
+        "totalPrice": 0.8,
+        "perUnit": 0.032
+      },
+      {
+        "quantity": 50,
+        "totalPrice": 0.68,
+        "perUnit": 0.0136
+      },
+      {
+        "quantity": 100,
+        "totalPrice": 0.46,
+        "perUnit": 0.0046
+      },
+      {
+        "quantity": 150,
+        "totalPrice": 0.39,
+        "perUnit": 0.0026
+      },
+      {
+        "quantity": 200,
+        "totalPrice": 0.34,
+        "perUnit": 0.0017
+      },
+      {
+        "quantity": 250,
+        "totalPrice": 0.31,
+        "perUnit": 0.0012
+      },
+      {
+        "quantity": 300,
+        "totalPrice": 0.29,
+        "perUnit": 0.001
+      },
+      {
+        "quantity": 400,
+        "totalPrice": 0.25,
+        "perUnit": 0.0006
+      },
+      {
+        "quantity": 500,
+        "totalPrice": 0.22,
+        "perUnit": 0.0004
+      },
+      {
+        "quantity": 1000,
+        "totalPrice": 0.16,
+        "perUnit": 0.0002
+      },
+      {
+        "quantity": 1500,
+        "totalPrice": 0.13,
+        "perUnit": 0.0001
+      },
+      {
+        "quantity": 2000,
+        "totalPrice": 0.11,
+        "perUnit": 0.0001
+      },
+      {
+        "quantity": 2500,
+        "totalPrice": 0.11,
+        "perUnit": 0
+      },
+      {
+        "quantity": 3000,
+        "totalPrice": 0.11,
+        "perUnit": 0
+      },
+      {
+        "quantity": 4000,
+        "totalPrice": 0.11,
+        "perUnit": 0
+      },
+      {
+        "quantity": 5000,
+        "totalPrice": 0.1,
+        "perUnit": 0
+      }
+    ],
+    "surface": {
+      "unit": "in",
+      "width": null,
+      "height": null,
+      "bleed": null,
+      "safety": null,
+      "fold": null,
+      "noPrint": null,
+      "folded": false,
+      "noPrintNote": null
+    },
+    "material": null,
+    "specsText": "Select all options to see design specs and generate a template.",
+    "surfaceSvg": null,
+    "domOptionCount": 3,
+    "screenshots": [
+      "083-custom-laptop-stickers-buy.png",
+      "083-custom-laptop-stickers-specs.png"
     ]
   }
 ]

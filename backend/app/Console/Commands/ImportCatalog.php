@@ -65,6 +65,9 @@ class ImportCatalog extends Command
 
         $dry = (bool) $this->option('dry');
         $records = array_values(array_filter($records, fn ($r) => ($r['isProduct'] ?? true) && ! empty($r['quantities'])));
+        // out-of-scope product types (user: no packaging) — belt & braces on top of the crawler filter
+        $exclude = '/packaging|pizza box|deli paper|tissue paper|\bribbon\b|wrapping paper|crinkle|mailer box|shipping box|sos bag|clamshell|product box|\bpouch|butcher paper|take-?out|paper bag|to-?go bag|plastic cup/i';
+        $records = array_values(array_filter($records, fn ($r) => ! preg_match($exclude, (string) ($r['title'] ?? ''))));
         $this->info(($dry ? '[DRY] ' : '').'Importing '.count($records).' products from '.basename($file));
 
         if ($this->option('fresh') && ! $dry) {
