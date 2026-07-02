@@ -20,6 +20,12 @@ export default defineConfig({
         }),
         tailwindcss(),
     ],
+    build: {
+        // Keep previous hashed assets across deploys: a browser/edge that still holds
+        // the old HTML (or an open tab) must not 404 on its JS/CSS — that's a blank
+        // white page. Old files accumulate harmlessly; prune occasionally if needed.
+        emptyOutDir: false,
+    },
     server: {
         host: '0.0.0.0',
         port: 5173,
