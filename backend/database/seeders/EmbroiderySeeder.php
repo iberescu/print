@@ -87,6 +87,7 @@ class EmbroiderySeeder extends Seeder
                 'is_active'       => true,
                 'surface_id'      => $surfaceIds[$p['surface']],
                 'sort_order'      => 200 + $i,
+                'image_path'      => \Illuminate\Support\Facades\Storage::disk('public')->exists("products/{$p['slug']}.webp") ? "products/{$p['slug']}.webp" : null,
             ]);
 
             $product->options()->delete();
