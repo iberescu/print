@@ -178,6 +178,7 @@ class ImportCatalog extends Command
 
         if (! $dry) {
             $this->markFeatured();
+            $this->refineShapedSurfaces();
         }
 
         $this->newLine();
@@ -231,10 +232,15 @@ class ImportCatalog extends Command
         }
 
         $folded = (bool) ($s['folded'] ?? false) || ! empty($s['fold']);
+        $cut = is_string($s['cut'] ?? null) && strlen($s['cut']) > 10 ? $s['cut'] : null;
         $trim = fn ($n) => rtrim(rtrim(number_format($n, 2, '.', ''), '0'), '.');
         $tw = $trim($w);
         $th = $trim($h);
-        $slug = 's-'.$tw.'x'.$th.$unit.($folded ? '-fold' : '');
+        // dimension surfaces are SHARED across products — a die-cut outline makes the
+        // surface product-specific, so give it a dedicated slug (oval and plain cards
+        // share 88.9x50.8 but must not share a cut path)
+        $slug = 's-'.$tw.'x'.$th.$unit.($folded ? '-fold' : '')
+            .($cut ? '-cut-'.Str::slug(Str::limit($context, 28, '')) : '');
 
         // Prefer real geometry read from the spec template SVG; else print-standard / heuristic.
         $bleed = is_numeric($s['bleed'] ?? null) && $s['bleed'] > 0 ? (float) $s['bleed'] : (self::BLEED[$unit] ?? 0);
@@ -278,6 +284,10 @@ class ImportCatalog extends Command
 
         $existing = Surface::where('slug', $slug)->first();
         if ($existing) {
+            if ($cut && ! $existing->cut_path) {
+                $existing->update(['cut_path' => $cut]);
+            }
+
             return $existing;
         }
         $stats['surfaces']++;
@@ -292,6 +302,7 @@ class ImportCatalog extends Command
             'safety'         => $safety,
             'no_print_areas' => $noPrint,
             'fold_lines'     => $foldLines,
+            'cut_path'       => $cut,
             'is_active'      => true,
         ]);
     }
@@ -346,6 +357,84 @@ class ImportCatalog extends Command
                 ->orderBy('sort_order')->first()?->update(['featured' => true]);
         }
         $this->line('  featured '.Product::where('featured', true)->count().' products for the home Most Popular row.');
+    }
+
+    /**
+     * Shaped products (feather flags, die-cut cards) aren't plain rectangles — the
+     * crawl can't capture their outline, so apply known real-world geometry: a die-cut
+     * `cut_path` (normalized 0–100 vs the trim box) and no-print zones (pole sleeve).
+     * Each product gets a DEDICATED surface — never mutate a shared dimension surface
+     * (s-88.9x50.8mm is also used by standard rectangular cards).
+     */
+    private function refineShapedSurfaces(): void
+    {
+        // Feather / quill outline: straight pole edge left, sweeping curve right, tapered tail.
+        $feather = 'M 0 100 L 0 6 Q 0 0 10 0 Q 55 0 78 8 Q 100 18 99 42 Q 97 68 84 84 Q 72 96 58 100 Z';
+        // Full ellipse (non-uniform trim box turns it into the oval automatically).
+        $ellipse = 'M 50 0 A 50 50 0 1 0 50 100 A 50 50 0 1 0 50 0 Z';
+        // Leaf: opposite rounded corners.
+        $leaf = 'M 0 45 Q 0 0 45 0 L 100 0 L 100 55 Q 100 100 55 100 L 0 100 Z';
+
+        $shapes = [
+            ['match' => 'feather flag', 'slug' => 'feather-flag', 'name' => 'Feather Flag 2.4 × 7.5 ft', 'unit' => 'ft',
+                'width' => 2.4, 'height' => 7.5, 'bleed' => 0.05, 'safety' => 0.15, 'cut' => $feather,
+                'no_print' => [
+                    ['label' => 'Pole sleeve', 'x' => 0, 'y' => 0, 'w' => 0.3, 'h' => 7.5],
+                    ['label' => 'Bottom hem', 'x' => 0.3, 'y' => 7.35, 'w' => 1.1, 'h' => 0.15],
+                ]],
+            ['match' => 'circle business card', 'slug' => 'circle-business-card', 'name' => 'Circle Card Ø 63.5 mm', 'unit' => 'mm',
+                'width' => 63.5, 'height' => 63.5, 'bleed' => 3.18, 'safety' => 3, 'cut' => $ellipse, 'no_print' => []],
+            ['match' => 'oval business card', 'slug' => 'oval-business-card', 'name' => 'Oval Card 88.9 × 50.8 mm', 'unit' => 'mm',
+                'width' => 88.9, 'height' => 50.8, 'bleed' => 3.18, 'safety' => 3, 'cut' => $ellipse, 'no_print' => []],
+            ['match' => 'leaf business card', 'slug' => 'leaf-business-card', 'name' => 'Leaf Card 88.9 × 50.8 mm', 'unit' => 'mm',
+                'width' => 88.9, 'height' => 50.8, 'bleed' => 3.18, 'safety' => 3, 'cut' => $leaf, 'no_print' => []],
+            // rectangular, but the graphic clamps into a top bar and rolls into the base cassette
+            ['match' => 'retractable banner', 'slug' => 'retractable-banner-596', 'name' => 'Retractable Banner 596 × 1575 mm', 'unit' => 'mm',
+                'width' => 596, 'height' => 1575, 'bleed' => 3, 'safety' => 15, 'cut' => null,
+                'no_print' => [
+                    ['label' => 'Top clamp bar', 'x' => 0, 'y' => 0, 'w' => 596, 'h' => 30],
+                    ['label' => 'Rolls into base', 'x' => 0, 'y' => 1475, 'w' => 596, 'h' => 100],
+                ]],
+        ];
+
+        foreach ($shapes as $s) {
+            $product = Product::with('surface')->where('name', 'like', "%{$s['match']}%")->first();
+            if (! $product) {
+                continue;
+            }
+            // the crawler-extracted outline (from Vistaprint's own template) always wins;
+            // this curated geometry is only a fallback when Vistaprint provided nothing.
+            // Curated NO-PRINT zones (pole sleeves…) still merge in — templates don't carry them.
+            if ($product->surface?->cut_path) {
+                if (empty($product->surface->no_print_areas) && ! empty($s['no_print'])) {
+                    $product->surface->update(['no_print_areas' => $s['no_print'], 'name' => $s['name']]);
+                    $this->line("  shaped surface: {$product->name} -> crawler outline + curated no-print zones");
+                } else {
+                    $this->line("  shaped surface: {$product->name} -> crawler template outline (fallback skipped)");
+                }
+
+                continue;
+            }
+            $surface = Surface::updateOrCreate(['slug' => $s['slug']], [
+                'name'           => $s['name'],
+                'unit'           => $s['unit'],
+                'width'          => $s['width'],
+                'height'         => $s['height'],
+                'bleed'          => $s['bleed'],
+                'safety'         => $s['safety'],
+                'no_print_areas' => $s['no_print'],
+                'fold_lines'     => [],
+                'cut_path'       => $s['cut'],
+                'is_active'      => true,
+            ]);
+            $product->update(['surface_id' => $surface->id]);
+            // the designer prefers the default option value's surface — clear value-level
+            // links so the refined product surface (with its cut/no-print) actually applies
+            foreach ($product->options as $o) {
+                $o->values()->update(['surface_id' => null]);
+            }
+            $this->line("  shaped surface: {$product->name} -> {$surface->name}");
+        }
     }
 
     private function uniqueSlug(string $title, array $taken): string

@@ -16,6 +16,7 @@ const form = useForm({
     isActive: props.surface.isActive,
     noPrint: props.surface.noPrint.map((a) => ({ label: a.label ?? 'No print', x: a.x ?? 0, y: a.y ?? 0, w: a.w ?? 0, h: a.h ?? 0 })),
     fold: props.surface.fold.map((f) => ({ label: f.label ?? 'Fold', orientation: f.orientation ?? 'vertical', position: f.position ?? 0 })),
+    cutPath: props.surface.cutPath ?? '',
 });
 
 const addNoPrint = () => form.noPrint.push({ label: 'No print', x: 0, y: 0, w: Number(form.width) || 0, h: 5 });
@@ -55,7 +56,7 @@ const foldPos = (f) => geo.value.bleed + (Number(f.position) || 0) * geo.value.p
                     <h2 class="mb-4 font-display text-base font-semibold text-ink">Dimensions</h2>
                     <div class="grid gap-4 sm:grid-cols-4">
                         <div class="sm:col-span-3"><label class="mb-1 block text-xs font-medium text-ink/55">Name</label><input v-model="form.name" class="w-full border border-ink/20 px-3 py-2 text-sm focus:border-brand-600 focus:outline-none" /></div>
-                        <div><label class="mb-1 block text-xs font-medium text-ink/55">Unit</label><select v-model="form.unit" class="w-full border border-ink/20 bg-white px-3 py-2 text-sm focus:border-brand-600 focus:outline-none"><option value="mm">mm</option><option value="in">in</option></select></div>
+                        <div><label class="mb-1 block text-xs font-medium text-ink/55">Unit</label><select v-model="form.unit" class="w-full border border-ink/20 bg-white px-3 py-2 text-sm focus:border-brand-600 focus:outline-none"><option value="mm">mm</option><option value="cm">cm</option><option value="in">in</option><option value="ft">ft</option></select></div>
                         <div><label class="mb-1 block text-xs font-medium text-ink/55">Width</label><input v-model.number="form.width" type="number" step="0.01" min="1" class="w-full border border-ink/20 px-3 py-2 text-sm focus:border-brand-600 focus:outline-none" /></div>
                         <div><label class="mb-1 block text-xs font-medium text-ink/55">Height</label><input v-model.number="form.height" type="number" step="0.01" min="1" class="w-full border border-ink/20 px-3 py-2 text-sm focus:border-brand-600 focus:outline-none" /></div>
                         <div><label class="mb-1 block text-xs font-medium text-ink/55">Bleed</label><input v-model.number="form.bleed" type="number" step="0.01" min="0" class="w-full border border-ink/20 px-3 py-2 text-sm focus:border-brand-600 focus:outline-none" /></div>
@@ -85,6 +86,14 @@ const foldPos = (f) => geo.value.bleed + (Number(f.position) || 0) * geo.value.p
                     <p v-else class="text-sm text-ink/45">None.</p>
                 </section>
 
+                <!-- die-cut -->
+                <section class="rounded-2xl border border-paper-300 bg-white p-6 shadow-sm">
+                    <h2 class="font-display text-base font-semibold text-ink">Die-cut / sewn edge</h2>
+                    <p class="mb-3 text-sm text-ink/50">For shaped products (feather flags, circle/oval cards): an SVG path in <strong>normalized coordinates 0–100</strong> on both axes, relative to the trim box. Leave empty for rectangular products.</p>
+                    <textarea v-model="form.cutPath" rows="3" spellcheck="false" placeholder="e.g. M 50 0 A 50 50 0 1 0 50 100 A 50 50 0 1 0 50 0 Z" class="w-full border border-ink/20 px-3 py-2 font-mono text-xs focus:border-brand-600 focus:outline-none"></textarea>
+                    <p v-if="form.errors.cutPath" class="mt-1 text-xs text-red-600">{{ form.errors.cutPath }}</p>
+                </section>
+
                 <!-- folds -->
                 <section class="rounded-2xl border border-paper-300 bg-white p-6 shadow-sm">
                     <div class="mb-3 flex items-center justify-between">
@@ -110,8 +119,16 @@ const foldPos = (f) => geo.value.bleed + (Number(f.position) || 0) * geo.value.p
                     <div class="grid min-h-[320px] place-items-center rounded-xl bg-paper-200 p-4">
                         <svg :width="geo.cw" :height="geo.ch" :viewBox="`0 0 ${geo.cw} ${geo.ch}`" class="max-w-full bg-white shadow ring-1 ring-paper-300">
                             <path v-if="geo.bleed" :d="`M0 0H${geo.cw}V${geo.ch}H0Z M${geo.bleed} ${geo.bleed}h${geo.tw}v${geo.th}h${-geo.tw}Z`" fill="rgba(225,29,72,0.12)" fill-rule="evenodd" />
-                            <rect :x="geo.bleed" :y="geo.bleed" :width="geo.tw" :height="geo.th" fill="none" stroke="#e11d48" stroke-width="1" />
-                            <rect :x="geo.bleed + geo.safety" :y="geo.bleed + geo.safety" :width="geo.safeW" :height="geo.safeH" fill="none" stroke="#0ea5e9" stroke-width="1" stroke-dasharray="5 4" />
+                            <template v-if="form.cutPath && form.cutPath.trim()">
+                                <svg :x="geo.bleed" :y="geo.bleed" :width="geo.tw" :height="geo.th" viewBox="0 0 100 100" preserveAspectRatio="none" class="overflow-visible">
+                                    <path :d="form.cutPath" fill="rgba(225,29,72,0.05)" stroke="#e11d48" stroke-width="1" vector-effect="non-scaling-stroke" />
+                                    <path v-if="geo.safety" :d="form.cutPath" fill="none" stroke="#0ea5e9" stroke-width="1" stroke-dasharray="4 3" vector-effect="non-scaling-stroke" transform="translate(50 50) scale(0.9) translate(-50 -50)" />
+                                </svg>
+                            </template>
+                            <template v-else>
+                                <rect :x="geo.bleed" :y="geo.bleed" :width="geo.tw" :height="geo.th" fill="none" stroke="#e11d48" stroke-width="1" />
+                                <rect :x="geo.bleed + geo.safety" :y="geo.bleed + geo.safety" :width="geo.safeW" :height="geo.safeH" fill="none" stroke="#0ea5e9" stroke-width="1" stroke-dasharray="5 4" />
+                            </template>
                             <g v-for="(a, i) in form.noPrint" :key="'np' + i"><rect :x="npRect(a).x" :y="npRect(a).y" :width="npRect(a).w" :height="npRect(a).h" fill="rgba(15,23,42,0.42)" stroke="#0f172a" stroke-width="0.8" /></g>
                             <g v-for="(f, i) in form.fold" :key="'f' + i">
                                 <line v-if="f.orientation === 'vertical'" :x1="foldPos(f)" :y1="geo.bleed" :x2="foldPos(f)" :y2="geo.bleed + geo.th" stroke="#9333ea" stroke-width="1" stroke-dasharray="2 3" />

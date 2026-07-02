@@ -374,7 +374,8 @@
       "fold": null,
       "noPrint": null,
       "folded": false,
-      "noPrintNote": null
+      "noPrintNote": null,
+      "cut": "M 0 11.81 C 0 5.26 3.01 0 6.75 0 L 93.25 0 C 96.99 0 100 5.26 100 11.81 L 100 88.19 C 100 94.74 96.99 100 93.25 100 L 6.75 100 C 3.01 100 0 94.74 0 88.19 Z"
     },
     "material": null,
     "specsText": "Bleed: 2.12\" x 3.62\" (53.8 mm x 91.9 mm); Trim: 2\" x 3.5\" (50.8 mm x 88.9 mm); Safety: 1.88\" x 3.38\" (47.8 mm x 85.9 mm)",
@@ -383,7 +384,8 @@
       "width": 88.9,
       "height": 50.8,
       "bleed": 1.5,
-      "safety": 1.5
+      "safety": 1.5,
+      "cutPath": "M 0 11.81 C 0 5.26 3.01 0 6.75 0 L 93.25 0 C 96.99 0 100 5.26 100 11.81 L 100 88.19 C 100 94.74 96.99 100 93.25 100 L 6.75 100 C 3.01 100 0 94.74 0 88.19 Z"
     },
     "domOptionCount": 1,
     "screenshots": [
@@ -451,7 +453,8 @@
       "fold": null,
       "noPrint": null,
       "folded": false,
-      "noPrintNote": null
+      "noPrintNote": null,
+      "cut": "M 50 100 C 22.43 100 0 77.57 0 50 C 0 22.43 22.43 0 50 0 C 77.57 0 100 22.43 100 50 C 100 77.57 77.57 100 50 100 L 50 100 L 50 100 Z"
     },
     "material": "14pt paper stock",
     "specsText": "Bleed: 2.75\" x 2.75\" (69.85 mm). Trim: 2.5\" x 2.5\" (63.5 mm). Safety: 2.25\" x 2.25\" (57.15 mm).",
@@ -460,7 +463,8 @@
       "width": 63.5,
       "height": 63.5,
       "bleed": 3.18,
-      "safety": 3.18
+      "safety": 3.18,
+      "cutPath": "M 50 100 C 22.43 100 0 77.57 0 50 C 0 22.43 22.43 0 50 0 C 77.57 0 100 22.43 100 50 C 100 77.57 77.57 100 50 100 L 50 100 L 50 100 Z"
     },
     "domOptionCount": 0,
     "screenshots": [
@@ -556,7 +560,8 @@
       "fold": null,
       "noPrint": null,
       "folded": false,
-      "noPrintNote": null
+      "noPrintNote": null,
+      "cut": "M 100 50 C 100 77.61 77.61 100 50 100 C 22.39 100 0 77.61 0 50 C 0 22.39 22.39 0 50 0 C 77.61 0 100 22.39 100 50 L 100 50 L 100 50 Z"
     },
     "material": "14pt glossy or uncoated paper stock",
     "specsText": "Bleed: 2.25\" x 3.75\" (57.15 mm x 95.25 mm), Trim: 2\" x 3.5\" (50.8 mm x 88.9 mm), Safety: 1.75\" x 3.25\" (44.45 mm x 82.55 mm)",
@@ -565,7 +570,8 @@
       "width": 88.9,
       "height": 50.8,
       "bleed": 3.17,
-      "safety": 3.17
+      "safety": 3.17,
+      "cutPath": "M 100 50 C 100 77.61 77.61 100 50 100 C 22.39 100 0 77.61 0 50 C 0 22.39 22.39 0 50 0 C 77.61 0 100 22.39 100 50 L 100 50 L 100 50 Z"
     },
     "domOptionCount": 0,
     "screenshots": [
@@ -2855,7 +2861,8 @@
       "fold": null,
       "noPrint": null,
       "folded": false,
-      "noPrintNote": null
+      "noPrintNote": null,
+      "cut": "M 0 50 C 0 22.39 22.39 0 50 0 C 77.61 0 100 22.39 100 50 C 100 77.61 77.61 100 50 100 C 22.39 100 0 77.61 0 50 L 0 50 Z"
     },
     "material": null,
     "specsText": "Bleed: 4.25\" x 4.25\" (107.95 mm)\nTrim: 4\" x 4\" (101.6 mm)\nSafety: 3.75\" x 3.75\" (95.25 mm)",
@@ -2864,7 +2871,8 @@
       "width": 101.6,
       "height": 101.6,
       "bleed": 3.18,
-      "safety": 3.18
+      "safety": 3.18,
+      "cutPath": "M 0 50 C 0 22.39 22.39 0 50 0 C 77.61 0 100 22.39 100 50 C 100 77.61 77.61 100 50 100 C 22.39 100 0 77.61 0 50 L 0 50 Z"
     },
     "domOptionCount": 4,
     "screenshots": [
@@ -4941,7 +4949,8 @@
       "fold": null,
       "noPrint": null,
       "folded": false,
-      "noPrintNote": null
+      "noPrintNote": null,
+      "cut": "M 0 0 L 0 100 L 100 100 L 100 19.4 C 98.14 18.79 96.16 18.25 94.06 17.77 C 90.72 16.96 87.24 16.4 83.45 16.03 C 82.09 15.9 80.73 15.84 79.36 15.78 C 78 15.71 76.63 15.71 75.27 15.78 C 71.94 15.9 69.06 16.59 66.94 17.59 C 66.48 17.9 65.88 18.21 65.27 18.52 C 64.82 18.84 64.21 19.15 63.61 19.4 C 61.48 20.58 58.61 21.46 55.12 21.89 C 51.79 22.33 48.15 22.33 44.82 21.89 C 41.34 21.46 38.46 20.52 36.33 19.34 C 34.21 18.15 33.15 16.78 33.15 15.28 C 33.15 13.84 34.21 12.41 36.33 11.22 C 38.46 10.03 41.33 9.16 44.82 8.66 C 48.15 8.22 51.79 8.22 55.12 8.66 C 58.61 9.1 61.48 9.97 63.61 11.16 C 64.21 11.47 64.82 11.72 65.27 12.03 C 65.88 12.35 66.48 12.66 66.94 12.97 C 69.06 14.03 71.94 14.65 75.27 14.84 C 76.63 14.84 78 14.84 79.36 14.78 C 80.73 14.78 82.09 14.65 83.45 14.59 C 87.24 14.22 90.72 13.59 94.06 12.84 C 96.16 12.37 98.14 11.8 100 11.18 L 100 0 Z"
     },
     "material": null,
     "specsText": "Bleed: Height 8.73\" (221.65 mm), Width 3.73\" (94.65 mm). Trim: Height 8.49\" (215.66 mm), Width 3.49\" (88.67 mm). Safety: Height 8.25\" (209.67 mm), Width 3.26\" (82.69 mm).",
@@ -4950,7 +4959,8 @@
       "width": 88.67,
       "height": 215.66,
       "bleed": 2.98,
-      "safety": 2.98
+      "safety": 2.98,
+      "cutPath": "M 0 0 L 0 100 L 100 100 L 100 19.4 C 98.14 18.79 96.16 18.25 94.06 17.77 C 90.72 16.96 87.24 16.4 83.45 16.03 C 82.09 15.9 80.73 15.84 79.36 15.78 C 78 15.71 76.63 15.71 75.27 15.78 C 71.94 15.9 69.06 16.59 66.94 17.59 C 66.48 17.9 65.88 18.21 65.27 18.52 C 64.82 18.84 64.21 19.15 63.61 19.4 C 61.48 20.58 58.61 21.46 55.12 21.89 C 51.79 22.33 48.15 22.33 44.82 21.89 C 41.34 21.46 38.46 20.52 36.33 19.34 C 34.21 18.15 33.15 16.78 33.15 15.28 C 33.15 13.84 34.21 12.41 36.33 11.22 C 38.46 10.03 41.33 9.16 44.82 8.66 C 48.15 8.22 51.79 8.22 55.12 8.66 C 58.61 9.1 61.48 9.97 63.61 11.16 C 64.21 11.47 64.82 11.72 65.27 12.03 C 65.88 12.35 66.48 12.66 66.94 12.97 C 69.06 14.03 71.94 14.65 75.27 14.84 C 76.63 14.84 78 14.84 79.36 14.78 C 80.73 14.78 82.09 14.65 83.45 14.59 C 87.24 14.22 90.72 13.59 94.06 12.84 C 96.16 12.37 98.14 11.8 100 11.18 L 100 0 Z"
     },
     "domOptionCount": 4,
     "screenshots": [
@@ -6117,7 +6127,8 @@
       ],
       "noPrint": null,
       "folded": true,
-      "noPrintNote": null
+      "noPrintNote": null,
+      "cut": "M 42.97 100 C 42.84 100 42.71 100 42.56 99.99 C 42.49 99.99 42.42 99.99 42.35 99.99 C 42.29 99.99 42.24 99.99 42.18 99.99 L 0 99.99 L 0 0 L 99.99 0 L 100 99.98 L 56.81 99.98 C 55.24 99.98 53.92 98.78 53.67 97.13 L 50.27 76.64 C 50.24 76.44 50.11 76.33 50.02 76.33 C 49.91 76.33 49.79 76.45 49.76 76.64 L 46.44 96.53 C 46.43 96.59 46.43 96.66 46.4 96.74 L 46.4 96.74 C 46.34 97.15 46.28 97.59 46.1 97.97 C 46.09 97.99 46.08 98.01 46.08 98.03 L 46.03 98.12 L 46.03 98.12 C 45.66 98.89 44.99 99.51 44.21 99.78 C 43.77 99.98 43.34 100 42.97 100 L 42.97 100 Z"
     },
     "material": null,
     "specsText": "Bleed: 12.25\" x 12.25\" (311.19 mm), Trim: 12.1\" x 12.1\" (307.38 mm), Safety: 11.85\" x 11.85\" (300.99 mm)",
@@ -6126,7 +6137,8 @@
       "width": 307.38,
       "height": 307.38,
       "bleed": 1.91,
-      "safety": 3.21
+      "safety": 3.21,
+      "cutPath": "M 42.97 100 C 42.84 100 42.71 100 42.56 99.99 C 42.49 99.99 42.42 99.99 42.35 99.99 C 42.29 99.99 42.24 99.99 42.18 99.99 L 0 99.99 L 0 0 L 99.99 0 L 100 99.98 L 56.81 99.98 C 55.24 99.98 53.92 98.78 53.67 97.13 L 50.27 76.64 C 50.24 76.44 50.11 76.33 50.02 76.33 C 49.91 76.33 49.79 76.45 49.76 76.64 L 46.44 96.53 C 46.43 96.59 46.43 96.66 46.4 96.74 L 46.4 96.74 C 46.34 97.15 46.28 97.59 46.1 97.97 C 46.09 97.99 46.08 98.01 46.08 98.03 L 46.03 98.12 L 46.03 98.12 C 45.66 98.89 44.99 99.51 44.21 99.78 C 43.77 99.98 43.34 100 42.97 100 L 42.97 100 Z"
     },
     "domOptionCount": 3,
     "screenshots": [
@@ -8731,7 +8743,8 @@
       "fold": null,
       "noPrint": null,
       "folded": false,
-      "noPrintNote": null
+      "noPrintNote": null,
+      "cut": "M 0 3.94 C 0 1.75 1.75 0 3.94 0 L 96.06 0 C 98.25 0 100 1.75 100 3.94 L 100 96.06 C 100 98.25 98.25 100 96.06 100 L 3.94 100 C 1.75 100 0 98.25 0 96.06 Z"
     },
     "material": "PVC-free magnetic car signs",
     "specsText": "Bleed: 3.25\" x 3.25\" (82.55 mm), Trim: 3\" x 3\" (76.2 mm), Safety: 2.75\" x 2.75\" (69.85 mm)",
@@ -8740,7 +8753,8 @@
       "width": 76.2,
       "height": 76.2,
       "bleed": 3.18,
-      "safety": 3.18
+      "safety": 3.18,
+      "cutPath": "M 0 3.94 C 0 1.75 1.75 0 3.94 0 L 96.06 0 C 98.25 0 100 1.75 100 3.94 L 100 96.06 C 100 98.25 98.25 100 96.06 100 L 3.94 100 C 1.75 100 0 98.25 0 96.06 Z"
     },
     "domOptionCount": 2,
     "screenshots": [
@@ -9157,12 +9171,13 @@
       "unit": "ft",
       "width": 2.4,
       "height": 7.5,
-      "bleed": null,
-      "safety": null,
+      "bleed": 0.173,
+      "safety": 0.124,
       "fold": null,
       "noPrint": null,
       "folded": false,
-      "noPrintNote": null
+      "noPrintNote": null,
+      "cut": "M 100 100 C 100 100 50.9 98.3 25 83.16 C 25 83.16 12.59 76.49 7.55 67.34 C 7.55 67.34 0 55.74 1.44 49.5 L 1.26 0 C 1.26 0 32.2 1.54 55.94 8.47 C 55.94 8.47 79.86 14.56 91.55 28.85 C 91.55 28.85 98.2 36.9 100 46.64 L 100 100 L 100 100"
     },
     "material": "Durable polyester material",
     "specsText": "4 size options: 7.5', 10.3', 13.5', 16'. Durable polyester material. Standard or premium options. Single- & double-sided.",
@@ -9171,7 +9186,12 @@
     "screenshots": [
       "046-feather-flags-buy.png",
       "046-feather-flags-specs.png"
-    ]
+    ],
+    "surfacePdf": {
+      "bleedFrac": 0.072,
+      "safetyFrac": 0.0516,
+      "scaleUnreliable": true
+    }
   },
   {
     "ourCategory": "marketing-materials",
@@ -11262,7 +11282,8 @@
       "fold": null,
       "noPrint": null,
       "folded": false,
-      "noPrintNote": null
+      "noPrintNote": null,
+      "cut": "M 50 0 C 77.72 0 100 22.29 100 50 C 100 77.72 77.72 100 50 100 C 22.29 100 0 77.72 0 50 C 0 22.29 22.29 0 50 0 Z"
     },
     "material": null,
     "specsText": "Trim: 1\" x 1\" (25.4 mm). Bleed: 1.12\" x 1.12\" (28.4 mm). Safety: 0.88\" x 0.88\" (22.4 mm).",
@@ -11271,7 +11292,8 @@
       "width": 25.4,
       "height": 25.4,
       "bleed": 1.5,
-      "safety": 1.5
+      "safety": 1.5,
+      "cutPath": "M 50 0 C 77.72 0 100 22.29 100 50 C 100 77.72 77.72 100 50 100 C 22.29 100 0 77.72 0 50 C 0 22.29 22.29 0 50 0 Z"
     },
     "domOptionCount": 2,
     "screenshots": [
@@ -14267,7 +14289,8 @@
       "fold": null,
       "noPrint": null,
       "folded": false,
-      "noPrintNote": null
+      "noPrintNote": null,
+      "cut": "M 0 1.61 C 0 0.72 0.97 0 2.17 0 L 97.83 0 C 99.03 0 100 0.72 100 1.61 L 100 98.39 C 100 99.28 99.03 100 97.83 100 L 2.17 100 C 0.97 100 0 99.28 0 98.39 Z"
     },
     "material": "Aluminum composite board",
     "specsText": "Bleed: 31.5\" x 23.5\" (800.1 mm x 596.9 mm), Trim: 31\" x 23\" (787.4 mm x 584.2 mm), Safety: 30.5\" x 22.5\" (774.7 mm x 571.5 mm)",
@@ -14276,7 +14299,8 @@
       "width": 584.2,
       "height": 787.4,
       "bleed": 6.35,
-      "safety": 6.35
+      "safety": 6.35,
+      "cutPath": "M 0 1.61 C 0 0.72 0.97 0 2.17 0 L 97.83 0 C 99.03 0 100 0.72 100 1.61 L 100 98.39 C 100 99.28 99.03 100 97.83 100 L 2.17 100 C 0.97 100 0 99.28 0 98.39 Z"
     },
     "domOptionCount": 0,
     "screenshots": [
@@ -14519,6 +14543,1737 @@
     "screenshots": [
       "072-car-door-decals-buy.png",
       "072-car-door-decals-specs.png"
+    ]
+  },
+  {
+    "ourCategory": "business-cards",
+    "url": "https://www.vistaprint.com/business-cards/square",
+    "isProduct": true,
+    "title": "Square Business Cards",
+    "category": "Business Cards",
+    "price": 26.99,
+    "options": [
+      {
+        "name": "Size",
+        "values": [
+          {
+            "label": "2.5\" x 2.5\"",
+            "priceDelta": 0,
+            "dimensions": {
+              "width": 2.5,
+              "height": 2.5,
+              "unit": "in"
+            }
+          }
+        ]
+      },
+      {
+        "name": "Corners",
+        "values": []
+      }
+    ],
+    "quantities": [
+      {
+        "quantity": 100,
+        "totalPrice": 26.99,
+        "perUnit": 0.27
+      }
+    ],
+    "surface": {
+      "unit": "in",
+      "width": 2.5,
+      "height": 2.5,
+      "bleed": null,
+      "safety": null,
+      "fold": null,
+      "noPrint": null,
+      "folded": false,
+      "noPrintNote": null
+    },
+    "material": null,
+    "specsText": "2.5\" x 2.5\" business cards",
+    "surfaceSvg": null,
+    "domOptionCount": 0,
+    "screenshots": [
+      "073-square-buy.png",
+      "073-square-specs.png"
+    ]
+  },
+  {
+    "ourCategory": "business-cards",
+    "url": "https://www.vistaprint.com/business-cards/qr-code",
+    "isProduct": true,
+    "title": "QR Code Business Cards",
+    "category": "Business Cards",
+    "price": 15.99,
+    "options": [
+      {
+        "name": "Shapes",
+        "values": [
+          {
+            "label": "Standard",
+            "priceDelta": 0,
+            "dimensions": {
+              "width": 3.5,
+              "height": 2,
+              "unit": "in"
+            }
+          },
+          {
+            "label": "Square",
+            "priceDelta": 11,
+            "dimensions": {
+              "width": 2.5,
+              "height": 2.5,
+              "unit": "in"
+            }
+          }
+        ]
+      }
+    ],
+    "quantities": [
+      {
+        "quantity": 50,
+        "totalPrice": 10,
+        "perUnit": 0.2
+      },
+      {
+        "quantity": 100,
+        "totalPrice": 14.99,
+        "perUnit": 0.15
+      },
+      {
+        "quantity": 250,
+        "totalPrice": 19.99,
+        "perUnit": 0.08
+      },
+      {
+        "quantity": 500,
+        "totalPrice": 24.99,
+        "perUnit": 0.05
+      },
+      {
+        "quantity": 1000,
+        "totalPrice": 39.99,
+        "perUnit": 0.04
+      },
+      {
+        "quantity": 1500,
+        "totalPrice": 58.99,
+        "perUnit": 0.04
+      },
+      {
+        "quantity": 2000,
+        "totalPrice": 72.99,
+        "perUnit": 0.04
+      },
+      {
+        "quantity": 2500,
+        "totalPrice": 89.99,
+        "perUnit": 0.04
+      },
+      {
+        "quantity": 5000,
+        "totalPrice": 159.99,
+        "perUnit": 0.04
+      },
+      {
+        "quantity": 10000,
+        "totalPrice": 279.99,
+        "perUnit": 0.03
+      }
+    ],
+    "surface": {
+      "unit": "in",
+      "width": 3.5,
+      "height": 2,
+      "bleed": null,
+      "safety": null,
+      "fold": null,
+      "noPrint": null,
+      "folded": false,
+      "noPrintNote": null
+    },
+    "material": null,
+    "specsText": "Shapes: Standard, Square; Corners; Orientation",
+    "surfaceSvg": null,
+    "domOptionCount": 0,
+    "screenshots": [
+      "074-qr-code-buy.png",
+      "074-qr-code-specs.png"
+    ]
+  },
+  {
+    "ourCategory": "business-cards",
+    "url": "https://www.vistaprint.com/business-cards/fast-delivery/next-day",
+    "isProduct": true,
+    "title": "Next-Day Business Cards",
+    "category": "Business Cards",
+    "price": 20.99,
+    "options": [
+      {
+        "name": "Orientation",
+        "values": [
+          {
+            "label": "Horizontal",
+            "priceDelta": 0,
+            "dimensions": {
+              "width": 3.5,
+              "height": 2,
+              "unit": "in"
+            }
+          }
+        ]
+      }
+    ],
+    "quantities": [
+      {
+        "quantity": 50,
+        "totalPrice": 17.99,
+        "perUnit": 0.36
+      },
+      {
+        "quantity": 100,
+        "totalPrice": 20.99,
+        "perUnit": 0.21
+      },
+      {
+        "quantity": 250,
+        "totalPrice": 28.99,
+        "perUnit": 0.12
+      }
+    ],
+    "surface": {
+      "unit": "mm",
+      "width": 88.9,
+      "height": 50.8,
+      "bleed": 1.41,
+      "safety": 1.5,
+      "fold": null,
+      "noPrint": null,
+      "folded": false,
+      "noPrintNote": null
+    },
+    "material": null,
+    "specsText": "Bleed: 3.61\" x 2.11\" (91.72 mm x 53.62 mm) | Trim: 3.5\" x 2\" (88.9 mm x 50.8 mm) | Safety: 3.38\" x 1.88\" (85.9 mm x 47.8 mm)",
+    "surfaceSvg": {
+      "unit": "mm",
+      "width": 88.9,
+      "height": 50.8,
+      "bleed": 1.41,
+      "safety": 1.5
+    },
+    "domOptionCount": 0,
+    "screenshots": [
+      "075-next-day-buy.png",
+      "075-next-day-specs.png"
+    ]
+  },
+  {
+    "ourCategory": "business-cards",
+    "url": "https://www.vistaprint.com/business-cards/fast-delivery/two-day",
+    "isProduct": true,
+    "title": "2-Day Business Cards",
+    "category": "Business Cards",
+    "price": 14.99,
+    "options": [
+      {
+        "name": "Paper Thickness",
+        "values": [
+          {
+            "label": "Standard",
+            "priceDelta": 0
+          },
+          {
+            "label": "Premium",
+            "priceDelta": 0
+          },
+          {
+            "label": "Premium Plus",
+            "priceDelta": 0
+          }
+        ]
+      },
+      {
+        "name": "Paper Stock",
+        "values": [
+          {
+            "label": "Matte",
+            "priceDelta": 0
+          },
+          {
+            "label": "Glossy",
+            "priceDelta": 0
+          },
+          {
+            "label": "Uncoated",
+            "priceDelta": 0
+          }
+        ]
+      },
+      {
+        "name": "Corners",
+        "values": [
+          {
+            "label": "Standard",
+            "priceDelta": 0
+          },
+          {
+            "label": "Rounded",
+            "priceDelta": 0
+          }
+        ]
+      }
+    ],
+    "quantities": [
+      {
+        "quantity": 50,
+        "totalPrice": 9.99,
+        "perUnit": 0.2
+      },
+      {
+        "quantity": 100,
+        "totalPrice": 14.99,
+        "perUnit": 0.15
+      },
+      {
+        "quantity": 250,
+        "totalPrice": 19.99,
+        "perUnit": 0.08
+      },
+      {
+        "quantity": 500,
+        "totalPrice": 24.99,
+        "perUnit": 0.05
+      },
+      {
+        "quantity": 1000,
+        "totalPrice": 39.99,
+        "perUnit": 0.04
+      }
+    ],
+    "surface": {
+      "unit": "in",
+      "width": 3.5,
+      "height": 2,
+      "bleed": null,
+      "safety": null,
+      "fold": null,
+      "noPrint": null,
+      "folded": false,
+      "noPrintNote": null
+    },
+    "material": "Matte Paper",
+    "specsText": "Standard Business Cards: 3.5\" x 2.0\"",
+    "surfaceSvg": null,
+    "domOptionCount": 3,
+    "screenshots": [
+      "076-two-day-buy.png",
+      "076-two-day-specs.png"
+    ]
+  },
+  {
+    "ourCategory": "business-cards",
+    "url": "https://www.vistaprint.com/business-cards/magnetic-business-cards",
+    "isProduct": true,
+    "title": "Magnetic Business Cards",
+    "category": "Business Cards",
+    "price": 17.99,
+    "options": [
+      {
+        "name": "Thickness",
+        "values": [
+          {
+            "label": "Select...",
+            "priceDelta": 0,
+            "dimensions": null
+          }
+        ]
+      },
+      {
+        "name": "Material",
+        "values": [
+          {
+            "label": "Select...",
+            "priceDelta": 0,
+            "dimensions": null
+          }
+        ]
+      },
+      {
+        "name": "Finish",
+        "values": [
+          {
+            "label": "Select...",
+            "priceDelta": 0,
+            "dimensions": null
+          }
+        ]
+      },
+      {
+        "name": "Option 4",
+        "values": [
+          {
+            "label": "Standard - 0.4 mm",
+            "priceDelta": 0
+          },
+          {
+            "label": "Premium - 0.6 mmRecommended",
+            "priceDelta": 0
+          }
+        ]
+      },
+      {
+        "name": "Option 5",
+        "values": [
+          {
+            "label": "Glossy",
+            "priceDelta": 0
+          },
+          {
+            "label": "Soft TouchNew",
+            "priceDelta": 0
+          }
+        ]
+      },
+      {
+        "name": "Option 6",
+        "values": [
+          {
+            "label": "Embossed GlossNew",
+            "priceDelta": 0
+          },
+          {
+            "label": "None",
+            "priceDelta": 0
+          }
+        ]
+      }
+    ],
+    "quantities": [
+      {
+        "quantity": 25,
+        "totalPrice": 17.99,
+        "perUnit": 0.72
+      },
+      {
+        "quantity": 50,
+        "totalPrice": 24.99,
+        "perUnit": 0.5
+      },
+      {
+        "quantity": 100,
+        "totalPrice": 36.99,
+        "perUnit": 0.37
+      },
+      {
+        "quantity": 200,
+        "totalPrice": 59.99,
+        "perUnit": 0.3
+      },
+      {
+        "quantity": 500,
+        "totalPrice": 124.99,
+        "perUnit": 0.25
+      }
+    ],
+    "surface": {
+      "unit": "in",
+      "width": 3.43,
+      "height": 1.93,
+      "bleed": null,
+      "safety": null,
+      "fold": null,
+      "noPrint": null,
+      "folded": false,
+      "noPrintNote": null
+    },
+    "material": "Magnetic",
+    "specsText": "3.43\" x 1.93\" size\n0.4 mm standard & 0.6 mm premium thickness\nGlossy or soft touch finish\nEmbossed gloss finish",
+    "surfaceSvg": null,
+    "domOptionCount": 3,
+    "screenshots": [
+      "077-magnetic-business-cards-buy.png",
+      "077-magnetic-business-cards-specs.png"
+    ]
+  },
+  {
+    "ourCategory": "business-cards",
+    "url": "https://www.vistaprint.com/business-cards/business-card-stickers",
+    "isProduct": true,
+    "title": "Business Card Stickers",
+    "category": "Business Cards",
+    "price": 6.99,
+    "options": [
+      {
+        "name": "Orientation",
+        "values": [
+          {
+            "label": "Horizontal",
+            "priceDelta": 0,
+            "dimensions": {
+              "width": 3.5,
+              "height": 2,
+              "unit": "in"
+            }
+          },
+          {
+            "label": "Vertical",
+            "priceDelta": 0,
+            "dimensions": {
+              "width": 2,
+              "height": 3.5,
+              "unit": "in"
+            }
+          }
+        ]
+      }
+    ],
+    "quantities": [
+      {
+        "quantity": 10,
+        "totalPrice": 6.99,
+        "perUnit": 0.7
+      }
+    ],
+    "surface": {
+      "unit": "in",
+      "width": 3.5,
+      "height": 2,
+      "bleed": null,
+      "safety": null,
+      "fold": null,
+      "noPrint": null,
+      "folded": false,
+      "noPrintNote": null
+    },
+    "material": "Self-adhesive paper",
+    "specsText": "Standard Business Card size: 3.5\" x 2.0\". Select all options to see design specs and generate a template.",
+    "surfaceSvg": null,
+    "domOptionCount": 0,
+    "screenshots": [
+      "078-business-card-stickers-buy.png",
+      "078-business-card-stickers-specs.png"
+    ]
+  },
+  {
+    "ourCategory": "business-cards",
+    "url": "https://www.vistaprint.com/business-cards/loyalty-cards",
+    "isProduct": true,
+    "title": "Loyalty Business Cards",
+    "category": "Business Cards",
+    "price": 15.99,
+    "options": [
+      {
+        "name": "Shape",
+        "values": [
+          {
+            "label": "Standard",
+            "priceDelta": 0,
+            "dimensions": {
+              "width": 3.5,
+              "height": 2,
+              "unit": "in"
+            }
+          }
+        ]
+      },
+      {
+        "name": "Corners",
+        "values": [
+          {
+            "label": "Standard",
+            "priceDelta": 0,
+            "dimensions": null
+          }
+        ]
+      },
+      {
+        "name": "Orientation",
+        "values": [
+          {
+            "label": "Horizontal",
+            "priceDelta": 0,
+            "dimensions": null
+          }
+        ]
+      }
+    ],
+    "quantities": [
+      {
+        "quantity": 50,
+        "totalPrice": 10,
+        "perUnit": 0.2
+      },
+      {
+        "quantity": 100,
+        "totalPrice": 15.99,
+        "perUnit": 0.16
+      },
+      {
+        "quantity": 250,
+        "totalPrice": 21.99,
+        "perUnit": 0.09
+      },
+      {
+        "quantity": 500,
+        "totalPrice": 27.99,
+        "perUnit": 0.06
+      },
+      {
+        "quantity": 1000,
+        "totalPrice": 45.99,
+        "perUnit": 0.05
+      }
+    ],
+    "surface": {
+      "unit": "mm",
+      "width": 88.9,
+      "height": 50.8,
+      "bleed": 1.41,
+      "safety": 1.5,
+      "fold": null,
+      "noPrint": null,
+      "folded": false,
+      "noPrintNote": null
+    },
+    "material": null,
+    "specsText": "Bleed: 2.11\" x 3.61\" (53.62 mm x 91.72 mm)\nTrim: 2\" x 3.5\" (50.8 mm x 88.9 mm)\nSafety: 1.88\" x 3.38\" (47.8 mm x 85.9 mm)",
+    "surfaceSvg": {
+      "unit": "mm",
+      "width": 88.9,
+      "height": 50.8,
+      "bleed": 1.41,
+      "safety": 1.5
+    },
+    "domOptionCount": 0,
+    "screenshots": [
+      "079-loyalty-cards-buy.png",
+      "079-loyalty-cards-specs.png"
+    ]
+  },
+  {
+    "ourCategory": "business-cards",
+    "url": "https://www.vistaprint.com/business-cards/appointment-cards",
+    "isProduct": true,
+    "title": "Appointment Cards",
+    "category": "Business Cards",
+    "price": 18.99,
+    "options": [
+      {
+        "name": "Shapes",
+        "values": []
+      },
+      {
+        "name": "Corners",
+        "values": []
+      },
+      {
+        "name": "Paper Stock",
+        "values": []
+      },
+      {
+        "name": "Option 4",
+        "values": [
+          {
+            "label": "Rounded",
+            "priceDelta": 0
+          },
+          {
+            "label": "Standard",
+            "priceDelta": 0
+          }
+        ]
+      },
+      {
+        "name": "Option 5",
+        "values": [
+          {
+            "label": "Matte",
+            "priceDelta": 0
+          },
+          {
+            "label": "Linen",
+            "priceDelta": 0
+          },
+          {
+            "label": "Natural Textured",
+            "priceDelta": 0
+          },
+          {
+            "label": "Recycled Matte",
+            "priceDelta": 0
+          },
+          {
+            "label": "Uncoated",
+            "priceDelta": 0
+          },
+          {
+            "label": "Cotton",
+            "priceDelta": 0
+          },
+          {
+            "label": "Bamboo",
+            "priceDelta": 0
+          }
+        ]
+      }
+    ],
+    "quantities": [
+      {
+        "quantity": 50,
+        "totalPrice": 0.28,
+        "perUnit": 0.0056
+      },
+      {
+        "quantity": 100,
+        "totalPrice": 0.19,
+        "perUnit": 0.0019
+      },
+      {
+        "quantity": 200,
+        "totalPrice": 0.12,
+        "perUnit": 0.0006
+      },
+      {
+        "quantity": 250,
+        "totalPrice": 0.1,
+        "perUnit": 0.0004
+      },
+      {
+        "quantity": 300,
+        "totalPrice": 0.09,
+        "perUnit": 0.0003
+      },
+      {
+        "quantity": 400,
+        "totalPrice": 0.07,
+        "perUnit": 0.0002
+      },
+      {
+        "quantity": 500,
+        "totalPrice": 0.06,
+        "perUnit": 0.0001
+      },
+      {
+        "quantity": 600,
+        "totalPrice": 0.06,
+        "perUnit": 0.0001
+      },
+      {
+        "quantity": 700,
+        "totalPrice": 0.06,
+        "perUnit": 0.0001
+      },
+      {
+        "quantity": 750,
+        "totalPrice": 0.05,
+        "perUnit": 0.0001
+      },
+      {
+        "quantity": 800,
+        "totalPrice": 0.05,
+        "perUnit": 0.0001
+      },
+      {
+        "quantity": 900,
+        "totalPrice": 0.05,
+        "perUnit": 0.0001
+      },
+      {
+        "quantity": 1000,
+        "totalPrice": 0.05,
+        "perUnit": 0.0001
+      },
+      {
+        "quantity": 1500,
+        "totalPrice": 0.05,
+        "perUnit": 0
+      },
+      {
+        "quantity": 2000,
+        "totalPrice": 0.04,
+        "perUnit": 0
+      },
+      {
+        "quantity": 2500,
+        "totalPrice": 0.04,
+        "perUnit": 0
+      },
+      {
+        "quantity": 3000,
+        "totalPrice": 0.04,
+        "perUnit": 0
+      },
+      {
+        "quantity": 4000,
+        "totalPrice": 0.04,
+        "perUnit": 0
+      },
+      {
+        "quantity": 5000,
+        "totalPrice": 0.04,
+        "perUnit": 0
+      },
+      {
+        "quantity": 10000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 15000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 20000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 25000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 30000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 35000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 40000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 45000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 50000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 55000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 60000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 65000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 70000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 75000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 80000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 85000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 90000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 95000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 100000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 105000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 110000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 115000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 120000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 125000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 130000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 135000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 140000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 145000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 150000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 155000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 160000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 165000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 170000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 175000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 180000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 185000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 190000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 195000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 200000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 205000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 210000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 215000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 220000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 225000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 230000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 235000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 240000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 245000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 250000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 255000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 260000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 265000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 270000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 275000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 280000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 285000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 290000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 295000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 300000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 305000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 310000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 315000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 320000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 325000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 330000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 335000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 340000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 345000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 350000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 355000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 360000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 365000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 370000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 375000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 380000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 385000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 390000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 395000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 400000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 405000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 410000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 415000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 420000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 425000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 430000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 435000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 440000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 445000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 450000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 455000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 460000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 465000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 470000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 475000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 480000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 485000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 490000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 495000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 500000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 505000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 510000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 515000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 520000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 525000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 530000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 535000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 540000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 545000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 550000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 555000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 560000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 565000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 570000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 575000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 580000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 585000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 590000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 595000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 600000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 605000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 610000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 615000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 620000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 625000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 630000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 635000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 640000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 645000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 650000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 655000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 660000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 665000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 670000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 675000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 680000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 685000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 690000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 695000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 700000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 705000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 710000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 715000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 720000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 725000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 730000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 735000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 740000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 745000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 750000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 755000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 760000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 765000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 770000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 775000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 780000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 785000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 790000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 795000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 800000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 805000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 810000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 815000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 820000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 825000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 830000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 835000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 840000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 845000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 850000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 855000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 860000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 865000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 870000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 875000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 880000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 885000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 890000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 895000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 900000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 905000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      },
+      {
+        "quantity": 910000,
+        "totalPrice": 0.03,
+        "perUnit": 0
+      }
+    ],
+    "surface": {
+      "unit": "in",
+      "width": 3.5,
+      "height": 2,
+      "bleed": 0.05,
+      "safety": 0.125,
+      "fold": null,
+      "noPrint": null,
+      "folded": false,
+      "noPrintNote": null
+    },
+    "material": null,
+    "specsText": "7 paper stock options\nEasy to write on\nSquare shape upgrade\nRounded corners upgrade\nSpecial finish options\nSingle- & double-sided",
+    "surfaceSvg": null,
+    "domOptionCount": 3,
+    "screenshots": [
+      "080-appointment-cards-buy.png",
+      "080-appointment-cards-specs.png"
+    ]
+  },
+  {
+    "ourCategory": "business-cards",
+    "url": "https://www.vistaprint.com/sample-kits/free-business-card-sample-kit",
+    "isProduct": true,
+    "title": "Free Business Card Sample Kit",
+    "category": "Sample Kits",
+    "price": 0,
+    "options": [],
+    "quantities": [
+      {
+        "quantity": 1,
+        "totalPrice": 0,
+        "perUnit": 0
+      }
+    ],
+    "surface": {
+      "unit": "in",
+      "width": 3.5,
+      "height": 2,
+      "bleed": null,
+      "safety": null,
+      "fold": null,
+      "noPrint": null,
+      "folded": false,
+      "noPrintNote": null
+    },
+    "material": null,
+    "specsText": "Standard cards are 3.5\" x 2\", while square cards are 2.5\" x 2.5\".",
+    "surfaceSvg": null,
+    "domOptionCount": 0,
+    "screenshots": [
+      "081-free-business-card-sample-kit-buy.png",
+      "081-free-business-card-sample-kit-specs.png"
     ]
   }
 ]

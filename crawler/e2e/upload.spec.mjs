@@ -6,7 +6,7 @@ const artwork = fileURLToPath(new URL('./fixtures/artwork.png', import.meta.url)
 
 // Upload-your-artwork workflow (req 9).
 test('upload workflow: place artwork → upsell → cart', async ({ page }) => {
-    await page.goto('/product/standard-business-cards');
+    await page.goto('/product/matte-business-cards');
     await page.getByRole('button', { name: /upload your design/i }).first().click();
     await page.waitForURL('**/design/**');
 

@@ -3,7 +3,7 @@ import { completeUpsell, clickContinue, reviewAndAdd } from './helpers.mjs';
 
 // Forced multi-step upsell before the cart (req 3) + related-product step (req 4).
 async function addBusinessCard(page) {
-    await page.goto('/product/standard-business-cards');
+    await page.goto('/product/matte-business-cards');
     await page.getByRole('button', { name: /design online/i }).first().click();
     await page.waitForURL('**/design/**');
     await reviewAndAdd(page); // design → review → approve → add

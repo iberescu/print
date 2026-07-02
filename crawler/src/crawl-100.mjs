@@ -14,7 +14,7 @@
 // Tune:  MAX_PRODUCTS=100 PER_CAT=25 TARGET_HOURS=4.5 HEADLESS=false node src/crawl-100.mjs
 import { chromium } from 'playwright';
 import { mkdir, writeFile, readFile } from 'node:fs/promises';
-import { unzipSync } from 'fflate';
+import { svgFromDownload, parseSvgTemplate, pdfFromDownload, parsePdfTemplate } from './svg-template.mjs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -303,71 +303,29 @@ async function grabTemplateSvg(page) {
     return null;
 }
 
-// The download is usually a .zip (guidelines PDF + template SVG). Pull the SVG text out.
-function svgFromDownload(buf) {
-    if (!buf || !buf.length) return null;
-    if (buf[0] === 0x50 && buf[1] === 0x4b) { // 'PK' -> zip
-        try {
-            const files = unzipSync(new Uint8Array(buf));
-            const key = Object.keys(files).find((k) => /\.svg$/i.test(k));
-            if (key) return new TextDecoder().decode(files[key]);
-        } catch {}
-        return null;
-    }
-    const text = buf.toString('utf8');
-    return /<svg[\s>]/i.test(text) ? text : null;
-}
 
-// Parse a Vistaprint SVG print template into precise surface geometry (mm). The
-// template has semantic layers (<g id="Bleed|Trim|Safety|Fold|Cut">) whose <path>s
-// are rectangles/lines; viewBox is in points, physical size in the width/height attrs.
-function parseSvgTemplate(svg) {
-    if (!svg || svg.length > 4_000_000) return null;
-    const vbm = svg.match(/viewBox=["']([^"']+)["']/);
-    if (!vbm) return null;
-    const vbW = vbm[1].trim().split(/[\s,]+/).map(Number)[2];
-    if (!vbW) return null;
-    const toMm = (v, u) => (u === 'cm' ? v * 10 : u === 'in' ? v * 25.4 : u === 'pt' ? (v * 25.4) / 72 : v);
-    const pm = svg.match(/\bwidth=["']([\d.]+)\s*(cm|mm|in|pt)["']/i);
-    const mmPerUnit = pm ? toMm(parseFloat(pm[1]), pm[2].toLowerCase()) / vbW : 25.4 / 72; // fallback: viewBox in pt
-    const mm = (n) => +(n * mmPerUnit).toFixed(2);
-
-    // bounding box of the coordinate pairs inside a named <g> layer
-    const box = (name) => {
-        const m = svg.match(new RegExp(`<g[^>]*(?:id|class)=["'][^"']*\\b${name}\\b[^"']*["'][^>]*>([\\s\\S]*?)</g>`, 'i'));
-        if (!m) return null;
-        // coordinates come ONLY from path d="…" attrs (avoid stroke-dasharray/stroke-width numbers)
-        const ds = [...m[1].matchAll(/\bd=["']([^"']+)["']/g)].map((x) => x[1]).join(' ');
-        const pts = [...ds.matchAll(/([-\d.]+)\s*[, ]\s*([-\d.]+)/g)].map((x) => [+x[1], +x[2]]).filter((p) => isFinite(p[0]) && isFinite(p[1]));
-        if (!pts.length) return null;
-        const xs = pts.map((p) => p[0]); const ys = pts.map((p) => p[1]);
-        return { minX: Math.min(...xs), maxX: Math.max(...xs), minY: Math.min(...ys), maxY: Math.max(...ys) };
-    };
-
-    const trim = box('Trim');
-    if (!trim) return null;
-    const bleed = box('Bleed'); const safe = box('Safety') || box('Safe'); const fold = box('Fold'); const cut = box('Cut');
-    const geo = { unit: 'mm', width: mm(trim.maxX - trim.minX), height: mm(trim.maxY - trim.minY) };
-    if (bleed) geo.bleed = Math.max(0, mm(trim.minX - bleed.minX));
-    if (safe) geo.safety = Math.max(0, mm(safe.minX - trim.minX));
-    if (fold) {
-        const vertical = (fold.maxX - fold.minX) <= (fold.maxY - fold.minY);
-        geo.fold = [{ orientation: vertical ? 'vertical' : 'horizontal', position: mm((vertical ? (fold.minX + fold.maxX) / 2 : (fold.minY + fold.maxY) / 2) - (vertical ? trim.minX : trim.minY)) }];
-    }
-    if (cut) geo.hasCut = true; // die-cut / custom shape present
-    return geo;
-}
 
 // Overwrite the product's surface geometry with the precise SVG-derived values (mm).
 function applySvgGeometry(parsed, geo) {
     if (!geo) return;
     const s = (parsed.surface = parsed.surface || {});
+    if (geo.scaleUnreliable) {
+        // PDF template at unknown reduced scale: keep Gemini's physical dims and take
+        // only the SHAPE + relative margins from the template.
+        const w = s.width || geo.width;
+        if (geo.bleedFrac) s.bleed = +(geo.bleedFrac * w).toFixed(3);
+        if (geo.safetyFrac) s.safety = +(geo.safetyFrac * w).toFixed(3);
+        if (geo.cutPath) s.cut = geo.cutPath;
+        if (!s.width) { s.unit = 'mm'; s.width = geo.width; s.height = geo.height; }
+        return;
+    }
     s.unit = 'mm';
     s.width = geo.width;
     s.height = geo.height;
     if (geo.bleed != null) s.bleed = geo.bleed;
     if (geo.safety != null) s.safety = geo.safety;
     if (geo.fold) { s.fold = geo.fold; s.folded = true; }
+    if (geo.cutPath) s.cut = geo.cutPath;   // real die-cut outline from the template
 }
 
 // DOM option values are authoritative (complete). Match each DOM value-list to the
@@ -475,7 +433,11 @@ async function main() {
             shots.push(await page.screenshot({ path: path.join(SHOTS, `${n}-${slug}-specs.png`), fullPage: false }));
             let svgText = null, rawDl = null;
             try { rawDl = await grabTemplateSvg(page); if (rawDl?.buf) svgText = svgFromDownload(rawDl.buf); } catch {}
-            const geo = svgText ? parseSvgTemplate(svgText) : null;  // precise bleed/trim/safe/fold (mm), deterministic
+            let geo = svgText ? parseSvgTemplate(svgText) : null;    // precise bleed/trim/safe/fold (mm), deterministic
+            if (!geo && rawDl?.buf) {                                 // sewn goods ship PDF-only templates
+                const pdf = pdfFromDownload(rawDl.buf);
+                if (pdf) geo = parsePdfTemplate(pdf);
+            }
 
             const parsed = await parseWithGemini(shots, '');         // prices/tiers/dims/option names from the screenshots
             // dropdown-quantity products only show one tier in the screenshot — use the fuller DOM tier list

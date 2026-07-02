@@ -17,7 +17,7 @@ test('category page shows a product grid', async ({ page }) => {
 });
 
 test('product page: CTAs, free-shipping note and live price by quantity', async ({ page }) => {
-    await page.goto('/product/standard-business-cards');
+    await page.goto('/product/matte-business-cards');
 
     await expect(page.getByRole('button', { name: /design online/i })).toBeVisible();
     await expect(page.getByRole('button', { name: /upload your design/i })).toBeVisible();

@@ -29,8 +29,8 @@ class PrintSpec
         'DL' => [99, 210], 'C4' => [229, 324], 'C5' => [162, 229],
     ];
 
-    private const LANDSCAPE = ['vinyl-banner', 'yard-signs'];
-    private const PORTRAIT  = ['roll-up-banner'];
+    private const LANDSCAPE = ['vinyl-banner', 'vinyl-banners', 'yard-signs'];
+    private const PORTRAIT  = ['roll-up-banner', 'retractable-banners'];
 
     /**
      * @param  int[]  $optionValueIds
@@ -56,6 +56,7 @@ class PrintSpec
             'label'   => $label,
             'noPrint' => [],
             'fold'    => [],
+            'cut'     => null,
         ];
     }
 
@@ -101,6 +102,8 @@ class PrintSpec
             'label'   => $surface->name,
             'noPrint' => $noPrint,
             'fold'    => $fold,
+            // die-cut edge, normalized 0–100 relative to the trim box (editor scales it)
+            'cut'     => $surface->cut_path ?: null,
         ];
     }
 
@@ -120,13 +123,19 @@ class PrintSpec
         return self::fallback($product);
     }
 
+    /** True when an option-value label carries printable dimensions ("8.5\" x 11\"", "A4"…). */
+    public static function parsesAsSize(string $label, Product $product): bool
+    {
+        return self::parse($label, $product) !== null;
+    }
+
     /** @return array{0:float,1:float,2:string,3:string}|null */
     private static function parse(string $label, Product $product): ?array
     {
         $slug = $product->slug;
 
-        // "W × H" (inches or feet): "3.5×2\"", "Square 2.5×2.5\"", "2×4 ft", "33×79\""
-        if (preg_match('/(\d+(?:\.\d+)?)\s*[×x]\s*(\d+(?:\.\d+)?)/u', $label, $m)) {
+        // "W × H" (inches or feet): "3.5×2\"", "8.5\" x 11\"", "2×4 ft", "33×79\""
+        if (preg_match('/(\d+(?:\.\d+)?)\s*(?:"|″|in\b)?\s*[×x]\s*(\d+(?:\.\d+)?)/ui', $label, $m)) {
             $w = (float) $m[1];
             $h = (float) $m[2];
             $unit = stripos($label, 'ft') !== false ? 'ft' : 'in';
@@ -168,7 +177,9 @@ class PrintSpec
             'letterhead', 'sheet-labels' => [8.5, 11, 'US Letter', 'in'],   // portrait
             'brochures'                  => [297, 210, 'A4', 'mm'],          // flat sheet, landscape
             'custom-t-shirts'            => [12, 16, 'Print area', 'in'],    // front print area
-            'tote-bags'                  => [14, 16, 'Print area', 'in'],
+            'tote-bags', 'to-go-bags'    => [14, 16, 'Print area', 'in'],
+            'vinyl-banners'              => [72, 36, '6 × 3 ft', 'ft'],      // banners hang landscape
+            'yard-signs'                 => [24, 18, '24 × 18 in', 'in'],
             default                      => $product->category->slug === 'business-cards'
                 ? [3.5, 2, '3.5 × 2 in', 'in']                              // business card, landscape
                 : [210, 297, 'A4', 'mm'],                                   // safe portrait default

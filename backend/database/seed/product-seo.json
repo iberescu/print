@@ -809,6 +809,107 @@
             }
         ]
     },
+    "embroidered-beanies": {
+        "description": "Keep your team comfortable and your brand visible through the colder months with custom Embroidered Beanies from RunMyPrint. Featuring a snug rib-knit design and a classic fold-over cuff, these high-quality beanies offer the perfect canvas for your custom logo. They are an ideal choice for outdoor staff uniforms, promotional winter giveaways, or branded merchandise that people will genuinely enjoy wearing day after day.\n\nAt RunMyPrint, we focus on durability and clean execution to ensure your branding looks professional. Your design is meticulously stitched directly onto the cuff using vibrant, high-quality threads that resist fading and wear. With a selection of classic fabric colors and flexible thread options, we make it simple to create cohesive cold-weather gear that represents your business with distinction.",
+        "details": [
+            "Snug rib-knit beanie design",
+            "Classic fold-over cuff style",
+            "Generous 110×50 mm embroidery area",
+            "Four classic color options available",
+            "Choose up to four thread colors",
+            "Choose up to six thread colors",
+            "Prices starting from $16.99"
+        ],
+        "faq": [
+            {
+                "q": "What is the maximum size allowed for my embroidered logo?",
+                "a": "Your custom logo or artwork can be embroidered within a maximum area of 110×50 mm on the fold-over cuff of the beanie."
+            },
+            {
+                "q": "How many colors can I include in my embroidered design?",
+                "a": "We offer customization options using either up to 4 thread colors or up to 6 thread colors to accurately represent your brand's logo."
+            },
+            {
+                "q": "What beanie colors are available to choose from?",
+                "a": "You can select from four classic, professional colors for your beanies: Black, Charcoal, Forest, and Burgundy."
+            },
+            {
+                "q": "Will I see a digital proof of my beanie before production begins?",
+                "a": "Yes, RunMyPrint provides a digital proof for your review and approval to ensure your embroidery placement and colors are correct before we begin stitching."
+            },
+            {
+                "q": "What is the starting price for these custom beanies?",
+                "a": "Our custom Embroidered Beanies start at $16.99, offering a cost-effective solution for professional cold-weather branding."
+            }
+        ]
+    },
+    "embroidered-hats": {
+        "description": "Elevate your brand or team identity with premium Embroidered Hats from RunMyPrint. These classic, structured six-panel caps feature your custom logo stitched front and center. Unlike standard printed headwear, our high-quality embroidery delivers a textured, professional finish with durable stitching that will not crack, peel, or fade over time. It is an exceptional way to ensure your brand message remains sharp and visible through daily wear.\n\nPerfect for corporate team apparel, promotional giveaways, or retail merchandise, these custom caps offer a professional look that builds trust. At RunMyPrint, we combine precise production standards with hassle-free online ordering to deliver retail-quality results. Choose from classic cap colors and vibrant thread options to perfectly match your brand aesthetic.",
+        "details": [
+            "Classic structured six-panel cap design",
+            "Generous 120×60 mm front embroidery area",
+            "Five cap colors: Black, Navy, Khaki, Red, White",
+            "Thread options supporting up to 6 colors",
+            "Durable stitching that will not crack or fade",
+            "Premium personalized apparel starting at $18.99"
+        ],
+        "faq": [
+            {
+                "q": "What file format should I upload for my embroidery design?",
+                "a": "For the best embroidery results, please upload high-resolution vector files such as PDF, EPS, or AI. Our team will digitize your artwork into a stitch-ready format to ensure clean, precise edges."
+            },
+            {
+                "q": "Will I see a proof of my design before production begins?",
+                "a": "Yes, we provide a digital proof of your customized layout for your review and approval. Production on your embroidered hats only starts once you are completely satisfied with the setup."
+            },
+            {
+                "q": "How many colors can I include in my embroidered logo?",
+                "a": "You can select customization options that accommodate up to 4 thread colors or up to 6 thread colors, allowing you to accurately represent your brand's official color palette."
+            },
+            {
+                "q": "How durable is the embroidery compared to standard custom printing?",
+                "a": "Our embroidery is exceptionally durable. Unlike printed alternatives, the stitched design is woven directly into the fabric, meaning it will not crack, peel, or fade over time."
+            },
+            {
+                "q": "What is the starting price, and can I choose different cap colors?",
+                "a": "Prices start at $18.99. You can choose from five classic cap colors, including Black, Navy, Khaki, Red, and White, to suit your specific promotion or team identity."
+            }
+        ]
+    },
+    "embroidered-polo-shirts": {
+        "description": "Elevate your team's professional appearance with premium Embroidered Polo Shirts from RunMyPrint. Crafted from comfortable piqué fabric, these versatile shirts feature your custom logo stitched directly onto the left chest, creating a polished and cohesive look. They serve as the ideal uniform staple for customer-facing crews, front-of-house staff, and promotional events, helping your business build trust and brand recognition with every interaction.\n\nOrdering your custom apparel is simple and reliable. We offer a selection of classic shirt colors and multiple sizes to comfortably fit your entire team, along with flexible thread color options to accurately replicate your branding. Partner with RunMyPrint to secure high-quality, durable garments that withstand daily wear while keeping your staff looking sharp and professional.",
+        "details": [
+            "Comfortable piqué fabric construction",
+            "Standard 100×100 mm left-chest embroidery size",
+            "Four fabric colors Black Navy Heather Grey and White",
+            "Available in sizes S to 2XL",
+            "Up to 4 or 6 thread colors",
+            "Professional uniforms for crews and events",
+            "Affordable custom branding starting at $24.99"
+        ],
+        "faq": [
+            {
+                "q": "What file format should I upload for my embroidery logo?",
+                "a": "For the best results on your left-chest logo, we recommend uploading high-resolution vector files such as PDF, EPS, or AI. This ensures our embroidery machines can precisely replicate your design within the 100×100 mm area."
+            },
+            {
+                "q": "Can I see how my polo shirt design will look before production begins?",
+                "a": "Yes, RunMyPrint provides a digital proof for your review and approval before we begin stitching. This ensures your chosen garment color, size distribution, and thread options are exactly correct."
+            },
+            {
+                "q": "What customization options are available for the embroidery thread?",
+                "a": "You can customize your 100×100 mm logo design using either up to 4 thread colors or up to 6 thread colors. This flexibility allows us to accurately match your corporate branding on your choice of black, navy, heather grey, or white polo shirts."
+            },
+            {
+                "q": "Can I order a mix of sizes and colors for my team?",
+                "a": "Yes, you can select from our available sizes ranging from S to 2XL and choose from our four classic garment colors to accommodate your entire team. Pricing starts from $24.99 per shirt."
+            },
+            {
+                "q": "How durable is the embroidery on these polo shirts?",
+                "a": "Our embroidered polo shirts are finished with high-quality, durable stitching designed to withstand regular washing and daily wear. The sturdy piqué fabric ensures your custom apparel maintains its professional look over time."
+            }
+        ]
+    },
     "envelopes": {
         "description": "First impressions matter before your correspondence is even opened. With custom envelopes from RunMyPrint, your business mailings, billing statements, and promotional materials carry your professional branding from the very moment they arrive in the mailbox. Ideal for daily corporate correspondence, marketing campaigns, and official stationery sets, these high-quality envelopes ensure your brand identity remains consistent and highly visible to every recipient.\n\nAvailable in standard DL, C5, and C4 sizes, our custom-printed solutions are tailored to fit your specific document requirements. Choose between clean front-only printing or complete front and back designs to maximize your branding real estate. RunMyPrint delivers precise, professional printing that makes your mail stand out, helping you project a polished, trustworthy image with every send.",
         "details": [
@@ -2527,6 +2628,39 @@
             {
                 "q": "What is the RunMyPrint quality guarantee for this soft touch finish?",
                 "a": "We guarantee that your cards will arrive free of manufacturing defects and feature our signature velvety soft-touch texture. If your order does not match your approved proof, contact us immediately and we will make it right."
+            }
+        ]
+    },
+    "square-business-cards": {
+        "description": "Make an instant statement at your next networking event or client meeting with premium Square Business Cards from RunMyPrint. Breaking away from the traditional rectangular format, the unique 2.5\" x 2.5\" dimensions offer a modern, balanced layout that immediately catches the eye. Perfect for creative professionals, photographers, and modern brands, this symmetrical shape provides a distinct canvas to showcase your logos, social handles, or portfolio highlights.\n\nWhen you choose RunMyPrint, you are investing in precise cuts, vibrant color reproduction, and premium materials that reflect your professional standards. Starting at just $26.99, our Square Business Cards are designed to leave a memorable, tactile impression on everyone you meet. Benefit from a seamless ordering process and high-quality proofs that ensure your branding looks exactly as envisioned before we go to press.",
+        "details": [
+            "Unique symmetrical 2.5\" x 2.5\" layout",
+            "Starting at an affordable $26.99",
+            "Perfect size for modern, creative branding",
+            "Fully customizable layout and design options",
+            "High-definition color printing for sharp details",
+            "Easy online ordering through RunMyPrint"
+        ],
+        "faq": [
+            {
+                "q": "What file format should I use for my square business card artwork?",
+                "a": "We recommend submitting high-resolution PDF, JPEG, or TIFF files. For best results, design your artwork to the exact 2.5\" x 2.5\" dimensions with a 0.125-inch bleed around all edges."
+            },
+            {
+                "q": "Will I receive a proof of my Square Business Cards before printing?",
+                "a": "Yes, we generate a digital proof for your review and approval after checkout. Production will only begin once you confirm the layout and text are correct."
+            },
+            {
+                "q": "How long does it take to print and ship my cards?",
+                "a": "Standard production begins immediately after your proof approval. Shipping timelines and options are calculated during checkout based on your delivery address."
+            },
+            {
+                "q": "Can I easily reorder my custom business cards in the future?",
+                "a": "Absolutely. RunMyPrint securely saves your approved 2.5\" x 2.5\" designs within your account, making future reorders quick and seamless."
+            },
+            {
+                "q": "What is the quality guarantee on these business cards?",
+                "a": "We back every order with a professional print quality guarantee. If your cards arrive damaged or display manufacturing defects, please contact us immediately to make it right."
             }
         ]
     },

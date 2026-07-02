@@ -76,6 +76,7 @@ class ProductController extends Controller
                 'supportsUpload' => (bool) $product->supports_upload,
                 'isActive'       => (bool) $product->is_active,
                 'featured'       => (bool) $product->featured,
+                'decoration'     => $product->decoration ?? 'print',
                 'surfaceId'      => $product->surface_id,
                 'image'          => Img::url($product->image_path),
                 'seo'            => [
@@ -127,6 +128,7 @@ class ProductController extends Controller
                 'supports_upload' => $data['supportsUpload'] ?? false,
                 'is_active'       => $data['isActive'] ?? false,
                 'featured'        => $data['featured'] ?? false,
+                'decoration'      => $data['decoration'] ?? 'print',
                 'surface_id'      => $data['surfaceId'] ?? null,
                 'seo'             => $this->cleanSeo($data['seo'] ?? null),
             ]);
@@ -194,6 +196,7 @@ class ProductController extends Controller
             'supportsUpload'                => ['boolean'],
             'isActive'                      => ['boolean'],
             'featured'                      => ['boolean'],
+            'decoration'                    => ['nullable', 'in:print,embroidery'],
             'surfaceId'                     => ['nullable', 'integer', 'exists:surfaces,id'],
             'seo'                           => ['nullable', 'array'],
             'seo.description'               => ['nullable', 'string', 'max:4000'],

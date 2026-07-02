@@ -56,6 +56,7 @@ class SurfaceController extends Controller
                 'safety'   => (float) $surface->safety,
                 'noPrint'  => $surface->no_print_areas ?? [],
                 'fold'     => $surface->fold_lines ?? [],
+                'cutPath'  => $surface->cut_path ?? '',
                 'isActive' => (bool) $surface->is_active,
             ],
         ]);
@@ -66,7 +67,8 @@ class SurfaceController extends Controller
         $data = $request->validate([
             'name'                => ['required', 'string', 'max:120'],
             'slug'                => ['required', 'string', 'max:120', Rule::unique('surfaces', 'slug')->ignore($surface->id)],
-            'unit'                => ['required', 'in:mm,in'],
+            'unit'                => ['required', 'in:mm,cm,in,ft'],
+            'cutPath'             => ['nullable', 'string', 'max:4000', 'regex:/^[MmLlHhVvCcSsQqTtAaZz0-9,.\s-]*$/'],
             'width'               => ['required', 'numeric', 'min:1'],
             'height'              => ['required', 'numeric', 'min:1'],
             'bleed'               => ['nullable', 'numeric', 'min:0'],
@@ -95,6 +97,7 @@ class SurfaceController extends Controller
             'is_active'      => $data['isActive'] ?? true,
             'no_print_areas' => array_values($data['noPrint'] ?? []),
             'fold_lines'     => array_values($data['fold'] ?? []),
+            'cut_path'       => trim((string) ($data['cutPath'] ?? '')) ?: null,
         ]);
 
         return redirect()->route('admin.surfaces.edit', $surface)->with('success', 'Surface saved.');

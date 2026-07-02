@@ -29,6 +29,10 @@ const safeH = Math.max(0, trimH - 2 * safety);
 const guidePath = `M0 0H${W}V${H}H0Z M${bleed} ${bleed}h${trimW}v${trimH}h${-trimW}Z`;
 const noPrint = props.canvas?.noPrint || []; // [{x,y,w,h,label}] (canvas px)
 const fold = props.canvas?.fold || [];       // [{orientation,pos,label}] (canvas px)
+// Die-cut / sewn edge: SVG path in normalized 0–100 coords relative to the trim box.
+// Rendered via a nested <svg viewBox="0 0 100 100"> so no path math is needed.
+const cutPath = props.canvas?.cut || null;
+const isEmbroidery = props.product?.decoration === 'embroidery';
 const isBusinessCard = props.category?.slug === 'business-cards';
 
 const canvasEl = ref(null);
@@ -188,7 +192,9 @@ onMounted(() => {
     canvas.on('selection:cleared', () => { hasSel.value = false; isText.value = false; });
 
     if (props.template) applyTemplate(props.template);
-    else if (props.mode === 'design') (isBusinessCard ? seedTemplate : seedGeneric)();
+    // shaped (die-cut) products get the CENTERED generic seed — the rectangular
+    // business-card layout would fall outside the cut edge (e.g. circle cards)
+    else if (props.mode === 'design') (isBusinessCard && !cutPath ? seedTemplate : seedGeneric)();
     else { canvas.backgroundColor = '#ffffff'; canvas.renderAll(); }
 
     fitCanvas();
@@ -404,7 +410,7 @@ function goToReview() {
             <button class="rounded-md px-3 py-1.5 text-sm font-medium hover:bg-white/10" @click="fileInput.click()">↑ Upload image</button>
             <button v-if="templates.length" class="rounded-md px-3 py-1.5 text-sm font-medium hover:bg-white/10" @click="showTemplates = true">▦ Templates</button>
             <button class="rounded-md px-3 py-1.5 text-sm font-medium hover:bg-white/10 disabled:opacity-30" :disabled="!hasSel" @click="removeSel">🗑 Delete</button>
-            <button v-if="bleed" class="rounded-md px-3 py-1.5 text-sm font-medium hover:bg-white/10" :class="showGuides ? 'bg-white/15' : ''" @click="showGuides = !showGuides" title="Show print bleed &amp; safe-area guides">▣ Guides</button>
+            <button v-if="bleed || safety || cutPath" class="rounded-md px-3 py-1.5 text-sm font-medium hover:bg-white/10" :class="showGuides ? 'bg-white/15' : ''" @click="showGuides = !showGuides" title="Show print bleed &amp; safe-area guides">▣ Guides</button>
             <input ref="fileInput" type="file" accept="image/*" class="hidden" @change="onFile" />
 
             <div class="mx-1 h-6 w-px bg-white/15"></div>
@@ -438,9 +444,14 @@ function goToReview() {
                 <p class="text-sm font-medium text-ink/50">
                     {{ side === 'front' ? 'Front' : 'Back' }} design<span class="hidden text-ink/40 sm:inline"> · every copy will print exactly like this</span>
                 </p>
-                <div v-if="(bleed || noPrint.length || fold.length) && showGuides" class="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-[11px] text-ink/60 sm:gap-x-4 sm:text-xs">
+                <p v-if="isEmbroidery" class="rounded-full bg-amber-100 px-4 py-1.5 text-[11px] font-medium text-amber-900 sm:text-xs">
+                    🧵 Embroidery — bold shapes stitch best · up to 6 thread colours · avoid fine text under ~5&nbsp;mm
+                </p>
+                <div v-if="(bleed || safety || noPrint.length || fold.length || cutPath) && showGuides" class="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-[11px] text-ink/60 sm:gap-x-4 sm:text-xs">
                     <span v-if="bleed" class="flex items-center gap-1.5"><span class="inline-block h-3 w-4 bg-rose-500/15 ring-1 ring-rose-500/60"></span>Bleed<span class="hidden sm:inline"> — trimmed off</span></span>
-                    <span class="flex items-center gap-1.5"><span class="inline-block h-0 w-5 border-t-2 border-rose-500"></span>Trim<span class="hidden sm:inline"> / cut line</span></span>
+                    <span v-if="cutPath" class="flex items-center gap-1.5"><span class="inline-block h-0 w-5 border-t-2 border-rose-500"></span>Die-cut<span class="hidden sm:inline"> / sewn edge — finished shape</span></span>
+                    <span v-else-if="isEmbroidery" class="flex items-center gap-1.5"><span class="inline-block h-0 w-5 border-t-2 border-rose-500"></span>Embroidery area<span class="hidden sm:inline"> — max stitch zone</span></span>
+                    <span v-else class="flex items-center gap-1.5"><span class="inline-block h-0 w-5 border-t-2 border-rose-500"></span>Trim<span class="hidden sm:inline"> / cut line</span></span>
                     <span class="flex items-center gap-1.5"><span class="inline-block h-0 w-5 border-t-2 border-dashed border-sky-500"></span>Safe<span class="hidden sm:inline"> area — keep text &amp; logos inside</span></span>
                     <span v-if="noPrint.length" class="flex items-center gap-1.5"><span class="inline-block h-3 w-4 bg-slate-800/40 ring-1 ring-slate-800"></span>No-print<span class="hidden sm:inline"> area</span></span>
                     <span v-if="fold.length" class="flex items-center gap-1.5"><span class="inline-block h-0 w-5 border-t-2 border-dashed border-purple-600"></span>Fold<span class="hidden sm:inline"> line</span></span>
@@ -451,10 +462,20 @@ function goToReview() {
                     <canvas ref="canvasEl"></canvas>
                 </div>
                 <!-- print guides: bleed band (red tint) · trim/cut line (solid) · safe area (dashed) -->
-                <svg v-if="(bleed || noPrint.length || fold.length) && showGuides" class="pointer-events-none absolute inset-0 h-full w-full" :viewBox="`0 0 ${W} ${H}`" preserveAspectRatio="none">
+                <svg v-if="(bleed || safety || noPrint.length || fold.length || cutPath) && showGuides" class="pointer-events-none absolute inset-0 h-full w-full" :viewBox="`0 0 ${W} ${H}`" preserveAspectRatio="none">
                     <path v-if="bleed" :d="guidePath" fill="rgba(225,29,72,0.12)" fill-rule="evenodd" />
-                    <rect :x="bleed" :y="bleed" :width="trimW" :height="trimH" fill="none" stroke="#e11d48" stroke-width="1.5" />
-                    <rect :x="bleed + safety" :y="bleed + safety" :width="safeW" :height="safeH" fill="none" stroke="#0ea5e9" stroke-width="1.5" stroke-dasharray="7 5" />
+                    <template v-if="cutPath">
+                        <!-- die-cut / sewn edge (normalized 0–100 path scaled onto the trim box);
+                             inner scaled clone approximates the safe/stitch margin -->
+                        <svg :x="bleed" :y="bleed" :width="trimW" :height="trimH" viewBox="0 0 100 100" preserveAspectRatio="none" class="overflow-visible">
+                            <path :d="cutPath" fill="rgba(225,29,72,0.05)" stroke="#e11d48" stroke-width="1.5" vector-effect="non-scaling-stroke" />
+                            <path v-if="safety" :d="cutPath" fill="none" stroke="#0ea5e9" stroke-width="1.5" stroke-dasharray="4 3" vector-effect="non-scaling-stroke" transform="translate(50 50) scale(0.9) translate(-50 -50)" />
+                        </svg>
+                    </template>
+                    <template v-else>
+                        <rect :x="bleed" :y="bleed" :width="trimW" :height="trimH" fill="none" stroke="#e11d48" stroke-width="1.5" />
+                        <rect v-if="safety" :x="bleed + safety" :y="bleed + safety" :width="safeW" :height="safeH" fill="none" stroke="#0ea5e9" stroke-width="1.5" stroke-dasharray="7 5" />
+                    </template>
                     <!-- no-print zones -->
                     <g v-for="(z, i) in noPrint" :key="'np' + i">
                         <rect :x="z.x" :y="z.y" :width="z.w" :height="z.h" fill="rgba(15,23,42,0.42)" stroke="#0f172a" stroke-width="1" stroke-dasharray="4 3" />

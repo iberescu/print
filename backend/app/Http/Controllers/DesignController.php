@@ -22,7 +22,7 @@ class DesignController extends Controller
         $opts = $this->optionIds($request);
 
         return Inertia::render('Editor', [
-            'product'   => $product->only('id', 'name', 'slug'),
+            'product'   => $product->only('id', 'name', 'slug', 'decoration'),
             'category'  => ['name' => $product->category->name, 'slug' => $product->category->slug],
             'mode'      => $request->query('mode') === 'upload' ? 'upload' : 'design',
             'templates' => $this->templatesFor($product),
@@ -74,6 +74,21 @@ class DesignController extends Controller
                 if ($def) {
                     $surface = $def->surface;
                     break;
+                }
+            }
+        }
+
+        // A selected size WITHOUT its own surface (crawled sizes often have none) must
+        // still change the canvas — parse its label instead of silently keeping the
+        // product's default surface.
+        if (! $surface && $opts) {
+            foreach ($product->options as $opt) {
+                if (! preg_match('/size|format|dimension/i', $opt->name)) {
+                    continue;
+                }
+                $val = $opt->values->first(fn ($v) => in_array($v->id, $opts, true));
+                if ($val && PrintSpec::parsesAsSize($val->label, $product)) {
+                    return PrintSpec::canvas($product, $opts);
                 }
             }
         }

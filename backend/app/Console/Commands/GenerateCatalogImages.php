@@ -22,6 +22,38 @@ class GenerateCatalogImages extends Command
         .'lighting, crisp focus, rich saturated colour, clean soft white-to-light-grey gradient background, subtle '
         .'realistic shadows, generous negative space, editorial e-commerce style. No text, no logo, no watermark.';
 
+    /** Product shots show a realistic B2B design ON the printed piece (unlike hero/category shots). */
+    private const PRODUCT_STYLE = 'Vibrant modern commercial product photography for a premium print brand. Bright even '
+        .'studio lighting, crisp focus, clean soft white-to-light-grey gradient background, subtle realistic shadows, '
+        .'generous negative space, editorial e-commerce style. The photo itself has NO watermarks, captions or UI '
+        .'overlays — but the printed product faces MUST display the described brand design with a clearly visible '
+        .'logo and readable text.';
+
+    /** Fictional B2B brands / palettes / motifs — picked deterministically per product slug. */
+    private const BRANDS = [
+        ['Northwind Consulting', 'navy blue and lime green on white'],
+        ['Vertex Studio', 'deep teal and warm sand'],
+        ['Harbor & Co.', 'forest green and cream'],
+        ['Atlas Advisory', 'cobalt blue and amber yellow'],
+        ['Summit Legal', 'charcoal and burgundy with gold accents'],
+        ['Bloom Dental', 'soft aqua and coral on white'],
+        ['Forge Engineering', 'ink black and safety orange'],
+        ['Solstice Café', 'terracotta and olive with cream'],
+        ['Meridian Realty', 'slate blue and copper'],
+        ['Pixel & Pine', 'emerald and off-white with black type'],
+    ];
+
+    private const MOTIFS = [
+        'a bold geometric line pattern',
+        'subtle topographic contour lines',
+        'sweeping abstract colour arcs',
+        'a clean dot-grid texture',
+        'strong diagonal colour blocks',
+        'a duotone architectural photo accent',
+        'minimal leaf/nature line illustrations',
+        'layered rounded shapes',
+    ];
+
     public function handle(GeminiClient $gemini): int
     {
         $only  = $this->option('only');
@@ -71,12 +103,23 @@ class GenerateCatalogImages extends Command
 
         if (in_array($only, ['all', 'products'], true)) {
             foreach (Product::with('category')->orderBy('sort_order')->get() as $product) {
+                // deterministic per-slug pick → every product looks different, regens stay stable
+                $seed = crc32($product->slug);
+                [$brand, $palette] = self::BRANDS[$seed % count(self::BRANDS)];
+                $motif = self::MOTIFS[($seed >> 3) % count(self::MOTIFS)];
+                $stitched = ($product->decoration ?? 'print') === 'embroidery';
+
                 $tasks[] = [
                     'path'   => "products/{$product->slug}",
                     'maxw'   => 1000,
                     'prompt' => "{$product->name} ({$product->category->name}) — {$product->tagline} "
-                        .'A single vibrant hero product shot of this printed item, styled and colourful, '
-                        .'filling the frame. '.self::STYLE,
+                        .'A single vibrant hero product shot of this item, styled and filling the frame. '
+                        .'The product carries a professional B2B brand design for the fictional company '
+                        ."\"{$brand}\": a simple geometric logo mark, the company name in clean modern type, "
+                        .'a short supporting text line (tagline or contact details), in a '.$palette
+                        .' colour scheme, decorated with '.$motif.' appropriate to this product type. '
+                        .($stitched ? 'The design is EMBROIDERED — visible stitched threads, not printed. ' : '')
+                        .self::PRODUCT_STYLE,
                     'save'   => fn (string $p) => tap($product)->update(['image_path' => $p]),
                 ];
             }

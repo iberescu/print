@@ -23,6 +23,7 @@ const form = useForm({
     supportsUpload: props.product.supportsUpload,
     isActive: props.product.isActive,
     featured: props.product.featured,
+    decoration: props.product.decoration ?? 'print',
     surfaceId: props.product.surfaceId ?? null,
     seo: {
         description: props.product.seo?.description ?? '',
@@ -142,6 +143,12 @@ const destroy = () => {
                     <label class="flex items-center gap-2"><input v-model="form.supportsDesign" type="checkbox" class="h-4 w-4" /> Online designer</label>
                     <label class="flex items-center gap-2"><input v-model="form.supportsUpload" type="checkbox" class="h-4 w-4" /> Upload artwork</label>
                     <label class="flex items-center gap-2"><input v-model="form.featured" type="checkbox" class="h-4 w-4" /> Featured (home "Most Popular")</label>
+                    <label class="flex items-center gap-2">Decoration
+                        <select v-model="form.decoration" class="border border-ink/20 bg-white px-2 py-1 text-sm focus:border-brand-600 focus:outline-none">
+                            <option value="print">Print</option>
+                            <option value="embroidery">Embroidery</option>
+                        </select>
+                    </label>
                 </div>
             </section>
 

@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 
 // Exercise modifying a design in the online editor (req: designer must work).
 test('designer: add/edit text, change font+size+bold, delete, apply template, flip', async ({ page }) => {
-    await page.goto('/product/standard-business-cards');
+    await page.goto('/product/matte-business-cards');
     await page.getByRole('button', { name: /design online/i }).first().click();
     await page.waitForURL('**/design/**');
     await expect(page.locator('canvas')).toHaveCount(2);
