@@ -144,6 +144,11 @@ class ImportCatalog extends Command
                     if ($name === '' || empty($opt['values'])) {
                         continue;
                     }
+                    // "Option N" placeholders (a dropdown Gemini couldn't label) get a
+                    // proper name derived from what their values actually are
+                    if (preg_match('/^Option \d+$/i', $name)) {
+                        $name = $this->deriveOptionName(array_map(fn ($v) => (string) ($v['label'] ?? ''), $opt['values'])) ?? $name;
+                    }
                     $isColour = (bool) preg_match('/colou?r/i', $name);
                     $option = $product->options()->create([
                         'name'       => $name,
@@ -186,6 +191,7 @@ class ImportCatalog extends Command
         if (! $dry) {
             $this->markFeatured();
             $this->refineShapedSurfaces();
+            $this->wireCornerSurfaces();
         }
 
         $this->newLine();
@@ -444,6 +450,103 @@ class ImportCatalog extends Command
             }
             $this->line("  shaped surface: {$product->name} -> {$surface->name}");
         }
+    }
+
+    /**
+     * A "Corners: Rounded" option value changes the finished SHAPE — give the value
+     * its own surface with a rounded-rect cut so the designer shows it. Reuses the
+     * real crawled rounded-corner template when the dims match a standard card,
+     * otherwise synthesizes the arcs. (Selected-value surfaces with a cut win in
+     * DesignController::geometry.)
+     */
+    private function wireCornerSurfaces(): void
+    {
+        $template = Surface::where('slug', 'like', '%-cut-rounded-corner%')->whereNotNull('cut_path')->first();
+        $wired = 0;
+
+        foreach (Product::with('surface', 'options.values')->get() as $p) {
+            $s = $p->surface;
+            if (! $s || $s->cut_path) {
+                continue; // no dims to work from / already a die-cut shape
+            }
+            foreach ($p->options as $o) {
+                if (! preg_match('/corner/i', $o->name)) {
+                    continue;
+                }
+                foreach ($o->values as $v) {
+                    if (! preg_match('/round/i', $v->label) || $v->surface_id) {
+                        continue;
+                    }
+                    $w = (float) $s->width;
+                    $h = (float) $s->height;
+                    $r = match ($s->unit) { 'cm' => 0.35, 'in' => 0.14, 'ft' => 0.012, default => 3.5 }; // ≈3.5 mm radius
+                    $rx = round(100 * $r / max($w, 0.01), 2);
+                    $ry = round(100 * $r / max($h, 0.01), 2);
+                    $cut = ($template && abs($w - 88.9) < 0.6 && abs($h - 50.8) < 0.6)
+                        ? $template->cut_path
+                        : 'M '.$rx.' 0 L '.(100 - $rx).' 0 A '.$rx.' '.$ry.' 0 0 1 100 '.$ry
+                          .' L 100 '.(100 - $ry).' A '.$rx.' '.$ry.' 0 0 1 '.(100 - $rx).' 100'
+                          .' L '.$rx.' 100 A '.$rx.' '.$ry.' 0 0 1 0 '.(100 - $ry)
+                          .' L 0 '.$ry.' A '.$rx.' '.$ry.' 0 0 1 '.$rx.' 0 Z';
+
+                    $rounded = Surface::updateOrCreate(['slug' => Str::limit($s->slug, 90, '').'-rounded'], [
+                        'name'           => $s->name.' (rounded corners)',
+                        'unit'           => $s->unit,
+                        'width'          => $w,
+                        'height'         => $h,
+                        'bleed'          => $s->bleed,
+                        'safety'         => $s->safety,
+                        'no_print_areas' => $s->no_print_areas ?? [],
+                        'fold_lines'     => $s->fold_lines ?? [],
+                        'cut_path'       => $cut,
+                        'is_active'      => true,
+                    ]);
+                    $v->update(['surface_id' => $rounded->id]);
+                    $wired++;
+                }
+            }
+        }
+        if ($wired) {
+            $this->line("  corner surfaces: wired {$wired} \"Rounded\" values to rounded-cut surfaces.");
+        }
+    }
+
+    /**
+     * Derive a human option name from its VALUES ("Horizontal/Vertical" → Orientation,
+     * dimension lists → Size, "Glossy/Matte/…" → Finish, …). Returns null when no rule
+     * fits (the placeholder name is kept and reported).
+     */
+    private function deriveOptionName(array $labels): ?string
+    {
+        $clean = array_map(fn ($l) => strtolower(trim(preg_replace('/(recommended|new|out of stock)\s*$/i', '', $l))), $labels);
+        $all = implode(' | ', $clean);
+        $every = fn (string $re) => count($clean) > 0 && count(array_filter($clean, fn ($l) => preg_match($re, $l))) === count($clean);
+        $most = fn (string $re) => count(array_filter($clean, fn ($l) => preg_match($re, $l))) >= max(1, (int) ceil(count($clean) * 0.6));
+
+        return match (true) {
+            $every('/^(horizontal|vertical|portrait|landscape)$/')                                     => 'Orientation',
+            $most('/\d\s*(?:"|”|″|in\b|ft\b|cm\b|mm\b)?\s*x\s*\d/')                                    => 'Size',
+            $every('/^(standard|rounded|square)(\s+corners?)?$/')                                      => 'Corners',
+            $most('/^(rectangle|square|circle|oval|arrow|hexagon|shield|heart|star)([\/ ].*)?$/')      => 'Shape',
+            $every('/recipients?$/')                                                                   => 'Recipients',
+            $every('/^(none|perforated)$/')                                                            => 'Perforation',
+            $every('/^(indoor|outdoor)$/')                                                             => 'Usage',
+            $most('/\d\s*(mm|mil|pt|gsm)\b/')                                                          => 'Thickness',
+            $every('/^\d+(\.\d+)?\s*[\'′]$/u')                                                         => 'Size',
+            $every('/^(standard|premium|elite)( plus)?$/')                                             => 'Quality',
+            (bool) preg_match('/\bframe\b/', $all)                                                     => 'Frame',
+            (bool) preg_match('/bopp|plastic|vinyl|polyester|kraft\b/', $all)                          => 'Material',
+            (bool) preg_match('/oz\.|cans?\b|bottles?\b|growlers?\b/', $all)                           => 'Container',
+            (bool) preg_match('/foil|embossed/', $all) && $most('/gold|silver|rose|copper|none|gloss/') => 'Foil',
+            $every('/^(gold|silver|rose gold|copper|none)$/')                                          => 'Foil',
+            $most('/glossy|matte|uncoated|recycled|soft touch|satin|linen|pearl|cotton|fine grit|synthetic/') => 'Finish',
+            $every('/^(budget|standard|premium(\s+plus)?|deluxe|economy)(\s+\w+)?$/')                  => 'Paper Stock',
+            (bool) preg_match('/-?column|roll\b/', $all)                                               => 'Roll Format',
+            (bool) preg_match('/fold/', $all)                                                          => 'Fold Type',
+            $every('/^(black|white|walnut|natural|navy|grey|gray|brown|oak|clear)$/')                  => 'Colour',
+            $every('/^(single|double)[- ]sided$|^front|^back/')                                        => 'Printed Sides',
+            default => null,
+        };
     }
 
     private function uniqueSlug(string $title, array $taken): string

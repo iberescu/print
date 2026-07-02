@@ -59,16 +59,21 @@ class DesignController extends Controller
      *  product's default surface, then the size-option derived geometry. */
     private function geometry(Product $product, array $opts): array
     {
+        $productCut = (bool) $product->surface?->cut_path;
+
         $surface = null;
         foreach ($product->options as $opt) {
             $match = $opt->values->first(fn ($v) => in_array($v->id, $opts, true) && $v->surface);
-            if ($match) {
+            // a PLAIN value surface must not flatten a die-cut product (door hangers,
+            // die-cut postcards…) — only a value surface with its own cut (e.g. a
+            // "Rounded" corners mapping) may replace the product's shape
+            if ($match && ($match->surface->cut_path || ! $productCut)) {
                 $surface = $match->surface;
                 break;
             }
         }
         // no explicit selection → fall back to the default value's surface, then the product's
-        if (! $surface && empty($opts)) {
+        if (! $surface && empty($opts) && ! $productCut) {
             foreach ($product->options as $opt) {
                 $def = $opt->values->first(fn ($v) => $v->is_default && $v->surface);
                 if ($def) {
@@ -80,8 +85,8 @@ class DesignController extends Controller
 
         // A selected size WITHOUT its own surface (crawled sizes often have none) must
         // still change the canvas — parse its label instead of silently keeping the
-        // product's default surface.
-        if (! $surface && $opts) {
+        // product's default surface. Never flatten a die-cut product this way.
+        if (! $surface && $opts && ! $productCut) {
             foreach ($product->options as $opt) {
                 if (! preg_match('/size|format|dimension/i', $opt->name)) {
                     continue;
