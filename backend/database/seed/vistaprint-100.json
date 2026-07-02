@@ -16,7 +16,7 @@
           },
           {
             "label": "Square",
-            "priceDelta": 0
+            "priceDelta": 11
           }
         ]
       },
@@ -29,7 +29,7 @@
           },
           {
             "label": "Rounded",
-            "priceDelta": 0
+            "priceDelta": 7
           }
         ]
       },
@@ -95,7 +95,8 @@
     "screenshots": [
       "001-matte-buy.png",
       "001-matte-specs.png"
-    ]
+    ],
+    "deltasDone": true
   },
   {
     "ourCategory": "business-cards",
@@ -114,7 +115,7 @@
           },
           {
             "label": "Square",
-            "priceDelta": 0
+            "priceDelta": 11
           }
         ]
       },
@@ -127,7 +128,7 @@
           },
           {
             "label": "Rounded",
-            "priceDelta": 0
+            "priceDelta": 7
           }
         ]
       },
@@ -193,7 +194,8 @@
     "screenshots": [
       "002-glossy-buy.png",
       "002-glossy-specs.png"
-    ]
+    ],
+    "deltasDone": true
   },
   {
     "ourCategory": "business-cards",
@@ -314,7 +316,8 @@
     "screenshots": [
       "003-uncoated-buy.png",
       "003-uncoated-specs.png"
-    ]
+    ],
+    "deltasDone": true
   },
   {
     "ourCategory": "business-cards",
@@ -333,7 +336,7 @@
           },
           {
             "label": "Square",
-            "priceDelta": 0
+            "priceDelta": 11
           }
         ]
       }
@@ -391,7 +394,8 @@
     "screenshots": [
       "004-rounded-corner-buy.png",
       "004-rounded-corner-specs.png"
-    ]
+    ],
+    "deltasDone": true
   },
   {
     "ourCategory": "business-cards",
@@ -470,7 +474,8 @@
     "screenshots": [
       "005-circle-buy.png",
       "005-circle-specs.png"
-    ]
+    ],
+    "deltasDone": true
   },
   {
     "ourCategory": "business-cards",
@@ -577,7 +582,8 @@
     "screenshots": [
       "006-oval-buy.png",
       "006-oval-specs.png"
-    ]
+    ],
+    "deltasDone": true
   },
   {
     "ourCategory": "business-cards",
@@ -662,7 +668,8 @@
     "screenshots": [
       "007-leaf-buy.png",
       "007-leaf-specs.png"
-    ]
+    ],
+    "deltasDone": true
   },
   {
     "ourCategory": "business-cards",
@@ -781,7 +788,8 @@
     "screenshots": [
       "008-natural-textured-buy.png",
       "008-natural-textured-specs.png"
-    ]
+    ],
+    "deltasDone": true
   },
   {
     "ourCategory": "business-cards",
@@ -902,7 +910,8 @@
     "screenshots": [
       "009-soft-touch-buy.png",
       "009-soft-touch-specs.png"
-    ]
+    ],
+    "deltasDone": true
   },
   {
     "ourCategory": "business-cards",
@@ -1016,7 +1025,8 @@
     "screenshots": [
       "010-cotton-buy.png",
       "010-cotton-specs.png"
-    ]
+    ],
+    "deltasDone": true
   },
   {
     "ourCategory": "business-cards",
@@ -1267,7 +1277,8 @@
     "screenshots": [
       "012-kraft-buy.png",
       "012-kraft-specs.png"
-    ]
+    ],
+    "deltasDone": true
   },
   {
     "ourCategory": "business-cards",
@@ -1296,7 +1307,7 @@
           },
           {
             "label": "Square",
-            "priceDelta": 0
+            "priceDelta": 11
           }
         ]
       },
@@ -1309,7 +1320,7 @@
           },
           {
             "label": "Rounded",
-            "priceDelta": 0
+            "priceDelta": 8
           }
         ]
       },
@@ -1332,7 +1343,7 @@
           },
           {
             "label": "Glossy",
-            "priceDelta": 0
+            "priceDelta": 3
           }
         ]
       }
@@ -1388,7 +1399,8 @@
     "screenshots": [
       "013-premium-plus-buy.png",
       "013-premium-plus-specs.png"
-    ]
+    ],
+    "deltasDone": true
   },
   {
     "ourCategory": "business-cards",
@@ -1514,7 +1526,8 @@
     "screenshots": [
       "014-painted-edge-buy.png",
       "014-painted-edge-specs.png"
-    ]
+    ],
+    "deltasDone": true
   },
   {
     "ourCategory": "business-cards",
@@ -1593,7 +1606,8 @@
     "screenshots": [
       "015-ultra-thick-buy.png",
       "015-ultra-thick-specs.png"
-    ]
+    ],
+    "deltasDone": true
   },
   {
     "ourCategory": "business-cards",
@@ -1642,7 +1656,7 @@
           },
           {
             "label": "Glossy",
-            "priceDelta": 0
+            "priceDelta": 1
           }
         ]
       },
@@ -1655,7 +1669,7 @@
           },
           {
             "label": "Rounded",
-            "priceDelta": 0
+            "priceDelta": 7
           }
         ]
       }
@@ -1705,7 +1719,8 @@
     "screenshots": [
       "016-metallic-buy.png",
       "016-metallic-specs.png"
-    ]
+    ],
+    "deltasDone": true
   },
   {
     "ourCategory": "business-cards",
@@ -1832,7 +1847,8 @@
     "screenshots": [
       "017-raised-print-buy.png",
       "017-raised-print-specs.png"
-    ]
+    ],
+    "deltasDone": true
   },
   {
     "ourCategory": "business-cards",
@@ -1943,7 +1959,8 @@
     "screenshots": [
       "018-raised-foil-buy.png",
       "018-raised-foil-specs.png"
-    ]
+    ],
+    "deltasDone": true
   },
   {
     "ourCategory": "marketing-materials",
@@ -1977,31 +1994,31 @@
           },
           {
             "label": "4.2\" x 5.5\"",
-            "priceDelta": 0
+            "priceDelta": 0.02
           },
           {
             "label": "4\" x 6\"",
-            "priceDelta": 0
+            "priceDelta": 0.02
           },
           {
             "label": "5\" x 7\"",
-            "priceDelta": 0
+            "priceDelta": 0.22
           },
           {
             "label": "5.5\" x 8.5\"",
-            "priceDelta": 0
+            "priceDelta": 0.28
           },
           {
             "label": "6\" x 6\"",
-            "priceDelta": 0
+            "priceDelta": 0.25
           },
           {
             "label": "6\" x 9\"",
-            "priceDelta": 0
+            "priceDelta": 0.3
           },
           {
             "label": "6\" x 11\"",
-            "priceDelta": 0
+            "priceDelta": 0.45
           }
         ]
       },
@@ -2026,39 +2043,39 @@
           },
           {
             "label": "Matte",
-            "priceDelta": 0
+            "priceDelta": 0.02
           },
           {
             "label": "Recycled",
-            "priceDelta": 0
+            "priceDelta": 0.1
           },
           {
             "label": "Soft Touch",
-            "priceDelta": 0
+            "priceDelta": 0.15
           },
           {
             "label": "Fine Grit",
-            "priceDelta": 0
+            "priceDelta": 0.12
           },
           {
             "label": "Uncoated",
-            "priceDelta": 0
+            "priceDelta": 0.02
           },
           {
             "label": "Linen",
-            "priceDelta": 0
+            "priceDelta": 0.17
           },
           {
             "label": "Pearl",
-            "priceDelta": 0
+            "priceDelta": 0.25
           },
           {
             "label": "Bamboo",
-            "priceDelta": 0
+            "priceDelta": 0.59
           },
           {
             "label": "Hemp-Blend",
-            "priceDelta": 0
+            "priceDelta": 0.59
           },
           {
             "label": "Cotton",
@@ -2066,11 +2083,11 @@
           },
           {
             "label": "Kraft",
-            "priceDelta": 0
+            "priceDelta": 0.27
           },
           {
             "label": "Natural Textured",
-            "priceDelta": 0
+            "priceDelta": 0.17
           }
         ]
       },
@@ -2214,7 +2231,8 @@
     "screenshots": [
       "020-standard-postcards-buy.png",
       "020-standard-postcards-specs.png"
-    ]
+    ],
+    "deltasDone": true
   },
   {
     "ourCategory": "marketing-materials",
@@ -2247,11 +2265,11 @@
           },
           {
             "label": "5\" x 7\"",
-            "priceDelta": 0
+            "priceDelta": 0.16
           },
           {
             "label": "5.5\" x 8.5\"",
-            "priceDelta": 0
+            "priceDelta": 0.25
           }
         ]
       },
@@ -2297,11 +2315,11 @@
           },
           {
             "label": "Premium",
-            "priceDelta": 0
+            "priceDelta": 0.07
           },
           {
             "label": "Premium Plus",
-            "priceDelta": 0
+            "priceDelta": 0.28
           }
         ]
       },
@@ -2318,7 +2336,7 @@
           },
           {
             "label": "Recycled",
-            "priceDelta": 0
+            "priceDelta": 0.1
           },
           {
             "label": "Soft Touch",
@@ -2467,7 +2485,8 @@
     "screenshots": [
       "021-rounded-corner-postcards-buy.png",
       "021-rounded-corner-postcards-specs.png"
-    ]
+    ],
+    "deltasDone": true
   },
   {
     "ourCategory": "marketing-materials",
@@ -2542,7 +2561,7 @@
           },
           {
             "label": "Premium",
-            "priceDelta": 0
+            "priceDelta": 0.25
           }
         ]
       },
@@ -2555,7 +2574,7 @@
           },
           {
             "label": "Glossy",
-            "priceDelta": 0
+            "priceDelta": -0.07
           }
         ]
       }
@@ -2688,7 +2707,8 @@
     "screenshots": [
       "022-die-cut-postcards-buy.png",
       "022-die-cut-postcards-specs.png"
-    ]
+    ],
+    "deltasDone": true
   },
   {
     "ourCategory": "marketing-materials",
@@ -2707,7 +2727,7 @@
           },
           {
             "label": "5.5\" x 8.5\"",
-            "priceDelta": 0
+            "priceDelta": 19
           },
           {
             "label": "4\" x 6\"",
@@ -2715,11 +2735,11 @@
           },
           {
             "label": "5\" x 7\"",
-            "priceDelta": 0
+            "priceDelta": 15
           },
           {
             "label": "6\" x 9\"",
-            "priceDelta": 0
+            "priceDelta": 21
           }
         ]
       },
@@ -2732,79 +2752,79 @@
           },
           {
             "label": "50 Recipients",
-            "priceDelta": 0
+            "priceDelta": 45.43
           },
           {
             "label": "100 Recipients",
-            "priceDelta": 0
+            "priceDelta": 84.43
           },
           {
             "label": "250 Recipients",
-            "priceDelta": 0
+            "priceDelta": 186.43
           },
           {
             "label": "500 Recipients",
-            "priceDelta": 0
+            "priceDelta": 350.43
           },
           {
             "label": "750 Recipients",
-            "priceDelta": 0
+            "priceDelta": 528.43
           },
           {
             "label": "1000 Recipients",
-            "priceDelta": 0
+            "priceDelta": 674.43
           },
           {
             "label": "1500 Recipients",
-            "priceDelta": 0
+            "priceDelta": 1011.43
           },
           {
             "label": "2000 Recipients",
-            "priceDelta": 0
+            "priceDelta": 1399.43
           },
           {
             "label": "2500 Recipients",
-            "priceDelta": 0
+            "priceDelta": 1739.43
           },
           {
             "label": "3000 Recipients",
-            "priceDelta": 0
+            "priceDelta": 2099.43
           },
           {
             "label": "4000 Recipients",
-            "priceDelta": 0
+            "priceDelta": 2687.43
           },
           {
             "label": "5000 Recipients",
-            "priceDelta": 0
+            "priceDelta": 3258.44
           },
           {
             "label": "6000 Recipients",
-            "priceDelta": 0
+            "priceDelta": 4118.44
           },
           {
             "label": "7000 Recipients",
-            "priceDelta": 0
+            "priceDelta": 4718.44
           },
           {
             "label": "8000 Recipients",
-            "priceDelta": 0
+            "priceDelta": 5318.44
           },
           {
             "label": "9000 Recipients",
-            "priceDelta": 0
+            "priceDelta": 5918.44
           },
           {
             "label": "10000 Recipients",
-            "priceDelta": 0
+            "priceDelta": 6488.44
           },
           {
             "label": "15000 Recipients",
-            "priceDelta": 0
+            "priceDelta": 9882.44
           },
           {
             "label": "20000 Recipients",
-            "priceDelta": 0
+            "priceDelta": 12842.44
           }
         ]
       }
@@ -2840,7 +2860,8 @@
     "screenshots": [
       "023-mailing-services-postcards-buy.png",
       "023-mailing-services-postcards-specs.png"
-    ]
+    ],
+    "deltasDone": true
   },
   {
     "ourCategory": "marketing-materials",
@@ -2871,15 +2892,15 @@
           },
           {
             "label": "6.5\" x 9\"",
-            "priceDelta": 0
+            "priceDelta": 0.11
           },
           {
             "label": "6\" x 11\"",
-            "priceDelta": 0
+            "priceDelta": 0.16
           },
           {
             "label": "8.5\" x 11\"",
-            "priceDelta": 0
+            "priceDelta": 0.5
           }
         ]
       },
@@ -2892,7 +2913,7 @@
           },
           {
             "label": "Premium",
-            "priceDelta": 0
+            "priceDelta": 0.09
           }
         ]
       },
@@ -3020,7 +3041,8 @@
     "screenshots": [
       "024-every-door-direct-mail-postcards-buy.png",
       "024-every-door-direct-mail-postcards-specs.png"
-    ]
+    ],
+    "deltasDone": true
   },
   {
     "ourCategory": "other",
@@ -3066,71 +3088,71 @@
           },
           {
             "label": "12p (cover + 8 inside)",
-            "priceDelta": 0
+            "priceDelta": 1
           },
           {
             "label": "16p (cover + 12 inside)",
-            "priceDelta": 0
+            "priceDelta": 2
           },
           {
             "label": "20p (cover + 16 inside)",
-            "priceDelta": 0
+            "priceDelta": 3
           },
           {
             "label": "24p (cover + 20 inside)",
-            "priceDelta": 0
+            "priceDelta": 4
           },
           {
             "label": "28p (cover + 24 inside)",
-            "priceDelta": 0
+            "priceDelta": 5
           },
           {
             "label": "32p (cover + 28 inside)",
-            "priceDelta": 0
+            "priceDelta": 6
           },
           {
             "label": "36p (cover + 32 inside)",
-            "priceDelta": 0
+            "priceDelta": 8
           },
           {
             "label": "40p (cover + 36 inside)",
-            "priceDelta": 0
+            "priceDelta": 10
           },
           {
             "label": "44p (cover + 40 inside)",
-            "priceDelta": 0
+            "priceDelta": 12
           },
           {
             "label": "48p (cover + 44 inside)",
-            "priceDelta": 0
+            "priceDelta": 14
           },
           {
             "label": "52p (cover + 48 inside)",
-            "priceDelta": 0
+            "priceDelta": 16
           },
           {
             "label": "56p (cover + 52 inside)",
-            "priceDelta": 0
+            "priceDelta": 19
           },
           {
             "label": "60p (cover + 56 inside)",
-            "priceDelta": 0
+            "priceDelta": 21
           },
           {
             "label": "64p (cover + 60 inside)",
-            "priceDelta": 0
+            "priceDelta": 23
           },
           {
             "label": "68p (cover + 64 inside)",
-            "priceDelta": 0
+            "priceDelta": 26
           },
           {
             "label": "72p (cover + 68 inside)",
-            "priceDelta": 0
+            "priceDelta": 30
           },
           {
             "label": "76p (cover + 72 inside)",
-            "priceDelta": 0
+            "priceDelta": 34
           }
         ]
       },
@@ -3176,7 +3198,7 @@
           },
           {
             "label": "5.5\" x 8.5\"",
-            "priceDelta": 0
+            "priceDelta": 1
           },
           {
             "label": "6\" x 6\"",
@@ -3184,31 +3206,31 @@
           },
           {
             "label": "6\" x 8\"New",
-            "priceDelta": 0
+            "priceDelta": 2
           },
           {
             "label": "8\" x 10\"New",
-            "priceDelta": 0
+            "priceDelta": 3
           },
           {
             "label": "6\" x 9\"",
-            "priceDelta": 0
+            "priceDelta": 2
           },
           {
             "label": "6.625\" x 10.25\"New",
-            "priceDelta": 0
+            "priceDelta": 3
           },
           {
             "label": "8\" x 8\"",
-            "priceDelta": 0
+            "priceDelta": 3
           },
           {
             "label": "8.5\" x 8.5\"New",
-            "priceDelta": 0
+            "priceDelta": 3
           },
           {
             "label": "8.5\" x 11\"",
-            "priceDelta": 0
+            "priceDelta": 4
           }
         ]
       },
@@ -3225,7 +3247,7 @@
           },
           {
             "label": "Budget Glossy (70lb Text)New",
-            "priceDelta": 0
+            "priceDelta": -0.9
           },
           {
             "label": "Standard Matte (80lb Text)",
@@ -3233,35 +3255,35 @@
           },
           {
             "label": "Standard Glossy (80lb Text)",
-            "priceDelta": 0
+            "priceDelta": -0.9
           },
           {
             "label": "Standard Uncoated (80lb Text)New",
-            "priceDelta": 0
+            "priceDelta": 4.1
           },
           {
             "label": "Standard Recycled (80lb Text)New",
-            "priceDelta": 0
+            "priceDelta": 4.1
           },
           {
             "label": "Standard Plus Matte (100lb Text)New",
-            "priceDelta": 0
+            "priceDelta": 4.4
           },
           {
             "label": "Standard Plus Glossy (100lb Text)New",
-            "priceDelta": 0
+            "priceDelta": 4.1
           },
           {
             "label": "Standard Plus Uncoated (100lb Text)New",
-            "priceDelta": 0
+            "priceDelta": 4.4
           },
           {
             "label": "Premium Matte (80lb Cover)",
-            "priceDelta": 0
+            "priceDelta": 4.4
           },
           {
             "label": "Premium Glossy (80lb Cover)",
-            "priceDelta": 0
+            "priceDelta": 7.4
           },
           {
             "label": "Premium Uncoated (80lb Cover)Out of stock",
@@ -3399,7 +3421,8 @@
     "screenshots": [
       "025-saddle-stitch-buy.png",
       "025-saddle-stitch-specs.png"
-    ]
+    ],
+    "deltasDone": true
   },
   {
     "ourCategory": "other",
@@ -3473,19 +3496,19 @@
           },
           {
             "label": "Premium Matte (80lb Cover)",
-            "priceDelta": 0
+            "priceDelta": 8
           },
           {
             "label": "Premium Glossy (80lb Cover)",
-            "priceDelta": 0
+            "priceDelta": 8
           },
           {
             "label": "Premium Plus Matte (100lb Cover)",
-            "priceDelta": 0
+            "priceDelta": 17
           },
           {
             "label": "Premium Plus Glossy (100lb Cover)",
-            "priceDelta": 0
+            "priceDelta": 17
           }
         ]
       },
@@ -3659,7 +3682,8 @@
     "screenshots": [
       "026-wire-bound-buy.png",
       "026-wire-bound-specs.png"
-    ]
+    ],
+    "deltasDone": true
   },
   {
     "ourCategory": "other",
@@ -3678,19 +3702,19 @@
           },
           {
             "label": "5.5\" x 8.5\"",
-            "priceDelta": 0
+            "priceDelta": -1
           },
           {
             "label": "6\" x 9\"",
-            "priceDelta": 0
+            "priceDelta": -1
           },
           {
             "label": "6\" x 6\"",
-            "priceDelta": 0
+            "priceDelta": -1
           },
           {
             "label": "8\" x 8\"",
-            "priceDelta": 0
+            "priceDelta": -1
           },
           {
             "label": "8\" x 10\"New",
@@ -3698,15 +3722,15 @@
           },
           {
             "label": "6\" x 8\"New",
-            "priceDelta": 0
+            "priceDelta": -1
           },
           {
             "label": "6.625\" x 10.25\"New",
-            "priceDelta": 0
+            "priceDelta": -1
           },
           {
             "label": "5\" x 7\"New",
-            "priceDelta": 0
+            "priceDelta": -1
           },
           {
             "label": "8.5\" x 8.5\"New",
@@ -3714,7 +3738,7 @@
           },
           {
             "label": "4.25\" x 11\"New",
-            "priceDelta": 0
+            "priceDelta": -1
           }
         ]
       },
@@ -3787,11 +3811,11 @@
           },
           {
             "label": "Budget Glossy (70lb Text)New",
-            "priceDelta": 0
+            "priceDelta": -0.75
           },
           {
             "label": "Standard Glossy (80lb Text)",
-            "priceDelta": 0
+            "priceDelta": -0.75
           },
           {
             "label": "Standard Matte (80lb Text)",
@@ -3803,19 +3827,19 @@
           },
           {
             "label": "Standard Recycled (80lb Text)New",
-            "priceDelta": 0
+            "priceDelta": 2.25
           },
           {
             "label": "Standard Plus Matte (100lb Text)New",
-            "priceDelta": 0
+            "priceDelta": 2.4
           },
           {
             "label": "Standard Plus Glossy (100lb Text)New",
-            "priceDelta": 0
+            "priceDelta": 0.75
           },
           {
             "label": "Standard Plus Uncoated (100lb Text)New",
-            "priceDelta": 0
+            "priceDelta": 2.4
           }
         ]
       },
@@ -3828,7 +3852,7 @@
           },
           {
             "label": "Premium Matte (80lb Cover)",
-            "priceDelta": 0
+            "priceDelta": 1.5
           },
           {
             "label": "Premium Uncoated (80lb Cover)Out of stock",
@@ -4061,7 +4085,8 @@
     "screenshots": [
       "027-perfect-bound-booklets-buy.png",
       "027-perfect-bound-booklets-specs.png"
-    ]
+    ],
+    "deltasDone": true
   },
   {
     "ourCategory": "other",
@@ -4107,71 +4132,71 @@
           },
           {
             "label": "12p (cover + 8 inside)",
-            "priceDelta": 0
+            "priceDelta": 1
           },
           {
             "label": "16p (cover + 12 inside)",
-            "priceDelta": 0
+            "priceDelta": 2
           },
           {
             "label": "20p (cover + 16 inside)",
-            "priceDelta": 0
+            "priceDelta": 3
           },
           {
             "label": "24p (cover + 20 inside)",
-            "priceDelta": 0
+            "priceDelta": 4
           },
           {
             "label": "28p (cover + 24 inside)",
-            "priceDelta": 0
+            "priceDelta": 5
           },
           {
             "label": "32p (cover + 28 inside)",
-            "priceDelta": 0
+            "priceDelta": 6
           },
           {
             "label": "36p (cover + 32 inside)",
-            "priceDelta": 0
+            "priceDelta": 8
           },
           {
             "label": "40p (cover + 36 inside)",
-            "priceDelta": 0
+            "priceDelta": 10
           },
           {
             "label": "44p (cover + 40 inside)",
-            "priceDelta": 0
+            "priceDelta": 12
           },
           {
             "label": "48p (cover + 44 inside)",
-            "priceDelta": 0
+            "priceDelta": 14
           },
           {
             "label": "52p (cover + 48 inside)",
-            "priceDelta": 0
+            "priceDelta": 16
           },
           {
             "label": "56p (cover + 52 inside)",
-            "priceDelta": 0
+            "priceDelta": 19
           },
           {
             "label": "60p (cover + 56 inside)",
-            "priceDelta": 0
+            "priceDelta": 21
           },
           {
             "label": "64p (cover + 60 inside)",
-            "priceDelta": 0
+            "priceDelta": 23
           },
           {
             "label": "68p (cover + 64 inside)",
-            "priceDelta": 0
+            "priceDelta": 26
           },
           {
             "label": "72p (cover + 68 inside)",
-            "priceDelta": 0
+            "priceDelta": 30
           },
           {
             "label": "76p (cover + 72 inside)",
-            "priceDelta": 0
+            "priceDelta": 34
           }
         ]
       },
@@ -4207,27 +4232,27 @@
           },
           {
             "label": "5.5\" x 8.5\"",
-            "priceDelta": 0
+            "priceDelta": 1
           },
           {
             "label": "8\" x 10\"New",
-            "priceDelta": 0
+            "priceDelta": 3
           },
           {
             "label": "8.5\" x 11\"",
-            "priceDelta": 0
+            "priceDelta": 4
           },
           {
             "label": "6\" x 8\"New",
-            "priceDelta": 0
+            "priceDelta": 2
           },
           {
             "label": "6\" x 9\"",
-            "priceDelta": 0
+            "priceDelta": 2
           },
           {
             "label": "6.625\" x 10.25\"New",
-            "priceDelta": 0
+            "priceDelta": 3
           },
           {
             "label": "6\" x 6\"",
@@ -4235,11 +4260,11 @@
           },
           {
             "label": "8\" x 8\"",
-            "priceDelta": 0
+            "priceDelta": 3
           },
           {
             "label": "8.5\" x 8.5\"New",
-            "priceDelta": 0
+            "priceDelta": 3
           }
         ]
       },
@@ -4256,7 +4281,7 @@
           },
           {
             "label": "Budget Glossy (70lb Text)New",
-            "priceDelta": 0
+            "priceDelta": -0.9
           },
           {
             "label": "Standard Matte (80lb Text)",
@@ -4264,27 +4289,27 @@
           },
           {
             "label": "Standard Glossy (80lb Text)",
-            "priceDelta": 0
+            "priceDelta": -0.9
           },
           {
             "label": "Standard Uncoated (80lb Text)New",
-            "priceDelta": 0
+            "priceDelta": 5.1
           },
           {
             "label": "Standard Recycled (80lb Text)New",
-            "priceDelta": 0
+            "priceDelta": 5.1
           },
           {
             "label": "Standard Plus Matte (100lb Text)New",
-            "priceDelta": 0
+            "priceDelta": 5.4
           },
           {
             "label": "Standard Plus Glossy (100lb Text)New",
-            "priceDelta": 0
+            "priceDelta": 4.1
           },
           {
             "label": "Standard Plus Uncoated (100lb Text)New",
-            "priceDelta": 0
+            "priceDelta": 6
           }
         ]
       }
@@ -4394,7 +4419,8 @@
     "screenshots": [
       "028-self-cover-booklets-buy.png",
       "028-self-cover-booklets-specs.png"
-    ]
+    ],
+    "deltasDone": true
   },
   {
     "ourCategory": "marketing-materials",
@@ -4413,43 +4439,43 @@
           },
           {
             "label": "8.5\" x 14\"",
-            "priceDelta": 0
+            "priceDelta": -0.22
           },
           {
             "label": "8.5\" x 11\"",
-            "priceDelta": 0
+            "priceDelta": -0.25
           },
           {
             "label": "8\" x 8\"",
-            "priceDelta": 0
+            "priceDelta": -0.28
           },
           {
             "label": "5.5\" x 8.5\"",
-            "priceDelta": 0
+            "priceDelta": -0.37
           },
           {
             "label": "5\" x 7\"",
-            "priceDelta": 0
+            "priceDelta": -0.4
           },
           {
             "label": "6\" x 6\"",
-            "priceDelta": 0
+            "priceDelta": -0.38
           },
           {
             "label": "3.75\" x 8.25\"",
-            "priceDelta": 0
+            "priceDelta": -0.4
           },
           {
             "label": "4\" x 6\"",
-            "priceDelta": 0
+            "priceDelta": -0.42
           },
           {
             "label": "4.2\" x 5.5\"",
-            "priceDelta": 0
+            "priceDelta": -0.42
           },
           {
             "label": "2.5\" x 4\"",
-            "priceDelta": 0
+            "priceDelta": -0.43
           }
         ]
       },
@@ -4487,19 +4513,19 @@
           },
           {
             "label": "Standard",
-            "priceDelta": 0
+            "priceDelta": 0.03
           },
           {
             "label": "PremiumRecommended",
-            "priceDelta": 0
+            "priceDelta": 0.19
           },
           {
             "label": "Premium Plus",
-            "priceDelta": 0
+            "priceDelta": 0.19
           },
           {
             "label": "Deluxe",
-            "priceDelta": 0
+            "priceDelta": 0.5
           }
         ]
       },
@@ -4512,11 +4538,11 @@
           },
           {
             "label": "Matte",
-            "priceDelta": 0
+            "priceDelta": 0.06
           },
           {
             "label": "Uncoated",
-            "priceDelta": 0
+            "priceDelta": 0.06
           },
           {
             "label": "Recycled",
@@ -4636,7 +4662,8 @@
     "screenshots": [
       "029-flyers-buy.png",
       "029-flyers-specs.png"
-    ]
+    ],
+    "deltasDone": true
   },
   {
     "ourCategory": "marketing-materials",
@@ -4655,7 +4682,7 @@
           },
           {
             "label": "4.5\"x11\"",
-            "priceDelta": 0
+            "priceDelta": 45
           }
         ]
       },
@@ -4680,7 +4707,7 @@
           },
           {
             "label": "Paper",
-            "priceDelta": 0
+            "priceDelta": -210
           }
         ]
       },
@@ -4701,11 +4728,11 @@
           },
           {
             "label": "Clear Plastic",
-            "priceDelta": 0
+            "priceDelta": 170
           },
           {
             "label": "Frosted Plastic",
-            "priceDelta": 0
+            "priceDelta": 170
           }
         ]
       },
@@ -4776,7 +4803,8 @@
     "screenshots": [
       "030-door-hangers-buy.png",
       "030-door-hangers-specs.png"
-    ]
+    ],
+    "deltasDone": true
   },
   {
     "ourCategory": "other",
@@ -4822,7 +4850,7 @@
           },
           {
             "label": "No",
-            "priceDelta": 0
+            "priceDelta": -0.08
           }
         ]
       },
@@ -4839,7 +4867,7 @@
           },
           {
             "label": "3.74\" x 8.27\"",
-            "priceDelta": 0
+            "priceDelta": 0.1
           }
         ]
       },
@@ -4852,7 +4880,7 @@
           },
           {
             "label": "Matte",
-            "priceDelta": 0
+            "priceDelta": 0.04
           },
           {
             "label": "SyntheticNew",
@@ -4987,7 +5015,8 @@
     "screenshots": [
       "031-custom-tickets-buy.png",
       "031-custom-tickets-specs.png"
-    ]
+    ],
+    "deltasDone": true
   },
   {
     "ourCategory": "stationery",
@@ -5018,27 +5047,27 @@
           },
           {
             "label": "Matte",
-            "priceDelta": 0
+            "priceDelta": -0.05
           },
           {
             "label": "Premium Matte",
-            "priceDelta": 0
+            "priceDelta": 0.05
           },
           {
             "label": "Pearl",
-            "priceDelta": 0
+            "priceDelta": 0.15
           },
           {
             "label": "Kraft",
-            "priceDelta": 0
+            "priceDelta": 0.15
           },
           {
             "label": "Hemp",
-            "priceDelta": 0
+            "priceDelta": 0.05
           },
           {
             "label": "Bamboo",
-            "priceDelta": 0
+            "priceDelta": 0.2
           }
         ]
       },
@@ -5051,7 +5080,7 @@
           },
           {
             "label": "Rounded",
-            "priceDelta": 0
+            "priceDelta": 0.1
           }
         ]
       },
@@ -5188,7 +5217,8 @@
     "screenshots": [
       "032-gift-certificates-buy.png",
       "032-gift-certificates-specs.png"
-    ]
+    ],
+    "deltasDone": true
   },
   {
     "ourCategory": "other",
@@ -5572,7 +5602,8 @@
     "screenshots": [
       "036-brochure-flyer-holders-buy.png",
       "036-brochure-flyer-holders-specs.png"
-    ]
+    ],
+    "deltasDone": true
   },
   {
     "ourCategory": "stationery",
@@ -5720,7 +5751,8 @@
     "screenshots": [
       "037-self-inking-stamps-buy.png",
       "037-self-inking-stamps-specs.png"
-    ]
+    ],
+    "deltasDone": true
   },
   {
     "ourCategory": "stationery",
@@ -5739,11 +5771,11 @@
           },
           {
             "label": "9.5\" x 12\" Reinforced",
-            "priceDelta": 0
+            "priceDelta": 1.33
           },
           {
             "label": "9\" x 12\"Recommended",
-            "priceDelta": 0
+            "priceDelta": 0.85
           }
         ]
       },
@@ -5764,7 +5796,7 @@
           },
           {
             "label": "Premium",
-            "priceDelta": 0
+            "priceDelta": 0.77
           }
         ]
       },
@@ -5777,7 +5809,7 @@
           },
           {
             "label": "Matte",
-            "priceDelta": 0
+            "priceDelta": 0.31
           }
         ]
       }
@@ -5954,7 +5986,8 @@
     "screenshots": [
       "038-presentation-folders-buy.png",
       "038-presentation-folders-specs.png"
-    ]
+    ],
+    "deltasDone": true
   },
   {
     "ourCategory": "marketing-materials",
@@ -5988,31 +6021,31 @@
           },
           {
             "label": "11\" X 17\"",
-            "priceDelta": 0
+            "priceDelta": 7
           },
           {
             "label": "16\" X 20\"",
-            "priceDelta": 0
+            "priceDelta": 8
           },
           {
             "label": "18\" X 24\"",
-            "priceDelta": 0
+            "priceDelta": 12
           },
           {
             "label": "22\" X 28\"",
-            "priceDelta": 0
+            "priceDelta": 25
           },
           {
             "label": "24\" X 36\"",
-            "priceDelta": 0
+            "priceDelta": 31
           },
           {
             "label": "28\" X 40\"",
-            "priceDelta": 0
+            "priceDelta": 39
           },
           {
             "label": "36\" X 48\"",
-            "priceDelta": 0
+            "priceDelta": 57
           }
         ]
       },
@@ -6025,19 +6058,19 @@
           },
           {
             "label": "Semi-Gloss Lamination",
-            "priceDelta": 0
+            "priceDelta": 0.99
           },
           {
             "label": "Premium Matte",
-            "priceDelta": 0
+            "priceDelta": 0.99
           },
           {
             "label": "Premium Glossy",
-            "priceDelta": 0
+            "priceDelta": 0.99
           },
           {
             "label": "Outdoor",
-            "priceDelta": 0
+            "priceDelta": 1.99
           },
           {
             "label": "Foam Board",
@@ -6045,11 +6078,11 @@
           },
           {
             "label": "Budget Glossy",
-            "priceDelta": 0
+            "priceDelta": -4.3
           },
           {
             "label": "Budget Matte",
-            "priceDelta": 0
+            "priceDelta": -4.3
           }
         ]
       }
@@ -6200,7 +6233,8 @@
     "screenshots": [
       "039-posters-buy.png",
       "039-posters-specs.png"
-    ]
+    ],
+    "deltasDone": true
   },
   {
     "ourCategory": "marketing-materials",
@@ -6257,39 +6291,39 @@
           },
           {
             "label": "Circle",
-            "priceDelta": 0
+            "priceDelta": 4
           },
           {
             "label": "Arrow",
-            "priceDelta": 0
+            "priceDelta": 6
           },
           {
             "label": "Hexagon",
-            "priceDelta": 0
+            "priceDelta": 10
           },
           {
             "label": "Oval",
-            "priceDelta": 0
+            "priceDelta": 10
           },
           {
             "label": "Shield",
-            "priceDelta": 0
+            "priceDelta": 10
           },
           {
             "label": "Graduation Cap",
-            "priceDelta": 0
+            "priceDelta": 6
           },
           {
             "label": "House",
-            "priceDelta": 0
+            "priceDelta": 5
           },
           {
             "label": "Football",
-            "priceDelta": 0
+            "priceDelta": 6
           },
           {
             "label": "Football Helmet",
-            "priceDelta": 0
+            "priceDelta": 6
           }
         ]
       },
@@ -6302,27 +6336,27 @@
           },
           {
             "label": "6\" x 24\"",
-            "priceDelta": 0
+            "priceDelta": 1
           },
           {
             "label": "6\" x 18\"",
-            "priceDelta": 0
+            "priceDelta": 1
           },
           {
             "label": "6\" x 30\"",
-            "priceDelta": 0
+            "priceDelta": 2
           },
           {
             "label": "9\" x 12\"",
-            "priceDelta": 0
+            "priceDelta": 1
           },
           {
             "label": "9\" x 24\"",
-            "priceDelta": 0
+            "priceDelta": 2
           },
           {
             "label": "12\" x 18\"",
-            "priceDelta": 0
+            "priceDelta": 2
           },
           {
             "label": "17\" x 17\"",
@@ -6338,39 +6372,39 @@
           },
           {
             "label": "18\" x 24\"Recommended",
-            "priceDelta": 0
+            "priceDelta": 10
           },
           {
             "label": "18\" x 27\"",
-            "priceDelta": 0
+            "priceDelta": 12
           },
           {
             "label": "18\" x 30\"",
-            "priceDelta": 0
+            "priceDelta": 15
           },
           {
             "label": "24\" x 24\"",
-            "priceDelta": 0
+            "priceDelta": 16
           },
           {
             "label": "24\" x 30\"",
-            "priceDelta": 0
+            "priceDelta": 17
           },
           {
             "label": "24\" x 36\"",
-            "priceDelta": 0
+            "priceDelta": 22
           },
           {
             "label": "48\" x 48\"",
-            "priceDelta": 0
+            "priceDelta": 92
           },
           {
             "label": "48\" x 72\"",
-            "priceDelta": 0
+            "priceDelta": 142
           },
           {
             "label": "48\" x 96\"",
-            "priceDelta": 0
+            "priceDelta": 192
           }
         ]
       }
@@ -7395,7 +7429,8 @@
     "screenshots": [
       "040-yard-signs-buy.png",
       "040-yard-signs-specs.png"
-    ]
+    ],
+    "deltasDone": true
   },
   {
     "ourCategory": "marketing-materials",
@@ -7433,111 +7468,111 @@
           },
           {
             "label": "1.7' x 3'",
-            "priceDelta": 0
+            "priceDelta": 8
           },
           {
             "label": "2.5' x 4'",
-            "priceDelta": 0
+            "priceDelta": 13
           },
           {
             "label": "2.5' x 6'",
-            "priceDelta": 0
+            "priceDelta": 23
           },
           {
             "label": "2.5' x 8'",
-            "priceDelta": 0
+            "priceDelta": 33
           },
           {
             "label": "2.5' x 10'",
-            "priceDelta": 0
+            "priceDelta": 43
           },
           {
             "label": "2.5' x 12'",
-            "priceDelta": 0
+            "priceDelta": 48
           },
           {
             "label": "4' x 4'",
-            "priceDelta": 0
+            "priceDelta": 28
           },
           {
             "label": "4' x 6'",
-            "priceDelta": 0
+            "priceDelta": 38
           },
           {
             "label": "4' x 8'",
-            "priceDelta": 0
+            "priceDelta": 58
           },
           {
             "label": "4' x 10'",
-            "priceDelta": 0
+            "priceDelta": 83
           },
           {
             "label": "4' x 12'",
-            "priceDelta": 0
+            "priceDelta": 88
           },
           {
             "label": "4' x 16'New",
-            "priceDelta": 0
+            "priceDelta": 123
           },
           {
             "label": "4' x 20'New",
-            "priceDelta": 0
+            "priceDelta": 143
           },
           {
             "label": "4' x 25'New",
-            "priceDelta": 0
+            "priceDelta": 173
           },
           {
             "label": "4' x 30'New",
-            "priceDelta": 0
+            "priceDelta": 193
           },
           {
             "label": "6' x 10'",
-            "priceDelta": 0
+            "priceDelta": 113
           },
           {
             "label": "6' x 12'",
-            "priceDelta": 0
+            "priceDelta": 138
           },
           {
             "label": "6' x 15'New",
-            "priceDelta": 0
+            "priceDelta": 163
           },
           {
             "label": "6' x 20'New",
-            "priceDelta": 0
+            "priceDelta": 193
           },
           {
             "label": "6' x 25'New",
-            "priceDelta": 0
+            "priceDelta": 218
           },
           {
             "label": "6' x 30'New",
-            "priceDelta": 0
+            "priceDelta": 268
           },
           {
             "label": "8' x 10'",
-            "priceDelta": 0
+            "priceDelta": 143
           },
           {
             "label": "8' x 12'",
-            "priceDelta": 0
+            "priceDelta": 168
           },
           {
             "label": "8' x 15'New",
-            "priceDelta": 0
+            "priceDelta": 193
           },
           {
             "label": "8' x 20'New",
-            "priceDelta": 0
+            "priceDelta": 243
           },
           {
             "label": "8' x 25'New",
-            "priceDelta": 0
+            "priceDelta": 293
           },
           {
             "label": "8' x 30'New",
-            "priceDelta": 0
+            "priceDelta": 343
           }
         ]
       },
@@ -7590,7 +7625,7 @@
           },
           {
             "label": "Outdoor",
-            "priceDelta": 0
+            "priceDelta": 3
           }
         ]
       }
@@ -7730,7 +7765,8 @@
     "screenshots": [
       "041-vinyl-banners-buy.png",
       "041-vinyl-banners-specs.png"
-    ]
+    ],
+    "deltasDone": true
   },
   {
     "ourCategory": "marketing-materials",
@@ -7825,19 +7861,19 @@
           },
           {
             "label": "Standard Plus",
-            "priceDelta": 0
+            "priceDelta": 45
           },
           {
             "label": "Premium",
-            "priceDelta": 0
+            "priceDelta": 60
           },
           {
             "label": "Premium PlusRecommended",
-            "priceDelta": 0
+            "priceDelta": 80
           },
           {
             "label": "Elite",
-            "priceDelta": 0
+            "priceDelta": 125
           }
         ]
       },
@@ -7850,11 +7886,11 @@
           },
           {
             "label": "Polyester Fabric",
-            "priceDelta": 0
+            "priceDelta": 20
           },
           {
             "label": "PVC-Free Vinyl",
-            "priceDelta": 0
+            "priceDelta": 16
           }
         ]
       }
@@ -8065,7 +8101,8 @@
     "screenshots": [
       "042-retractable-banners-buy.png",
       "042-retractable-banners-specs.png"
-    ]
+    ],
+    "deltasDone": true
   },
   {
     "ourCategory": "marketing-materials",
@@ -8084,15 +8121,15 @@
           },
           {
             "label": "Premium",
-            "priceDelta": 0
+            "priceDelta": 30
           },
           {
             "label": "100% Post-Consumer Recycled",
-            "priceDelta": 0
+            "priceDelta": 200
           },
           {
             "label": "Wrinkle Resistant",
-            "priceDelta": 0
+            "priceDelta": 130
           }
         ]
       },
@@ -8143,11 +8180,11 @@
           },
           {
             "label": "6'",
-            "priceDelta": 0
+            "priceDelta": 60
           },
           {
             "label": "8'",
-            "priceDelta": 0
+            "priceDelta": 90
           }
         ]
       }
@@ -8197,7 +8234,8 @@
     "screenshots": [
       "043-tablecloths-buy.png",
       "043-tablecloths-specs.png"
-    ]
+    ],
+    "deltasDone": true
   },
   {
     "ourCategory": "marketing-materials",
@@ -8237,47 +8275,47 @@
           },
           {
             "label": "4” x 4”",
-            "priceDelta": 0
+            "priceDelta": 4
           },
           {
             "label": "5” x 3”",
-            "priceDelta": 0
+            "priceDelta": 3
           },
           {
             "label": "11” x 3”",
-            "priceDelta": 0
+            "priceDelta": 8
           },
           {
             "label": "11.5\" x 8.7\"",
-            "priceDelta": 0
+            "priceDelta": 12
           },
           {
             "label": "20\" x 10\"",
-            "priceDelta": 0
+            "priceDelta": 20
           },
           {
             "label": "12” x 12”",
-            "priceDelta": 0
+            "priceDelta": 16
           },
           {
             "label": "17.6\" x 11.5\"",
-            "priceDelta": 0
+            "priceDelta": 24
           },
           {
             "label": "24\" x 12\"",
-            "priceDelta": 0
+            "priceDelta": 28
           },
           {
             "label": "24\" x 18\"",
-            "priceDelta": 0
+            "priceDelta": 36
           },
           {
             "label": "24” x 24”",
-            "priceDelta": 0
+            "priceDelta": 40
           },
           {
             "label": "36” x 24”",
-            "priceDelta": 0
+            "priceDelta": 56
           }
         ]
       }
@@ -8570,7 +8608,8 @@
     "screenshots": [
       "044-car-door-magnets-buy.png",
       "044-car-door-magnets-specs.png"
-    ]
+    ],
+    "deltasDone": true
   },
   {
     "ourCategory": "marketing-materials",
@@ -8593,23 +8632,23 @@
           },
           {
             "label": "16\" x 20\"",
-            "priceDelta": 0
+            "priceDelta": 11
           },
           {
             "label": "18\" x 24\"",
-            "priceDelta": 0
+            "priceDelta": 12
           },
           {
             "label": "22\" x 28\"",
-            "priceDelta": 0
+            "priceDelta": 35
           },
           {
             "label": "24\" x 36\"",
-            "priceDelta": 0
+            "priceDelta": 36
           },
           {
             "label": "24\" x 48\"",
-            "priceDelta": 0
+            "priceDelta": 63
           }
         ]
       },
@@ -8763,7 +8802,8 @@
     "screenshots": [
       "045-foam-board-signs-buy.png",
       "045-foam-board-signs-specs.png"
-    ]
+    ],
+    "deltasDone": true
   },
   {
     "ourCategory": "marketing-materials",
@@ -8782,15 +8822,15 @@
           },
           {
             "label": "10'",
-            "priceDelta": 0
+            "priceDelta": 25
           },
           {
             "label": "13'",
-            "priceDelta": 0
+            "priceDelta": 50
           },
           {
             "label": "15.5'",
-            "priceDelta": 0
+            "priceDelta": 75
           }
         ]
       },
@@ -9001,7 +9041,8 @@
       "bleedFrac": 0.072,
       "safetyFrac": 0.0516,
       "scaleUnreliable": true
-    }
+    },
+    "deltasDone": true
   },
   {
     "ourCategory": "marketing-materials",
@@ -9054,7 +9095,7 @@
           },
           {
             "label": "3.75\" x 7.5\"",
-            "priceDelta": 0
+            "priceDelta": -0.5
           }
         ]
       }
@@ -9189,7 +9230,8 @@
     "screenshots": [
       "047-bumper-stickers-buy.png",
       "047-bumper-stickers-specs.png"
-    ]
+    ],
+    "deltasDone": true
   },
   {
     "ourCategory": "marketing-materials",
@@ -9208,7 +9250,7 @@
           },
           {
             "label": "PVC-Free Board",
-            "priceDelta": 0
+            "priceDelta": 100
           }
         ]
       }
@@ -9258,7 +9300,8 @@
     "screenshots": [
       "048-triangular-point-of-sale-displays-buy.png",
       "048-triangular-point-of-sale-displays-specs.png"
-    ]
+    ],
+    "deltasDone": true
   },
   {
     "ourCategory": "stickers-labels",
@@ -9334,19 +9377,19 @@
           },
           {
             "label": "2\" x 2\"",
-            "priceDelta": 0
+            "priceDelta": 0.15
           },
           {
             "label": "2.5\" x 2.5\"",
-            "priceDelta": 0
+            "priceDelta": 0.22
           },
           {
             "label": "3\" x 3\"",
-            "priceDelta": 0
+            "priceDelta": 0.28
           },
           {
             "label": "4\" x 4\"",
-            "priceDelta": 0
+            "priceDelta": 0.51
           }
         ]
       },
@@ -9379,19 +9422,19 @@
           },
           {
             "label": "White Paper",
-            "priceDelta": 0
+            "priceDelta": -0.03
           },
           {
             "label": "Clear Plastic (BOPP)",
-            "priceDelta": 0
+            "priceDelta": 0.06
           },
           {
             "label": "Gold Foil (BOPP)",
-            "priceDelta": 0
+            "priceDelta": 0.12
           },
           {
             "label": "Silver Foil (BOPP)",
-            "priceDelta": 0
+            "priceDelta": 0.12
           },
           {
             "label": "Holographic Plastic (BOPP)",
@@ -9514,7 +9557,8 @@
     "screenshots": [
       "049-single-stickers-buy.png",
       "049-single-stickers-specs.png"
-    ]
+    ],
+    "deltasDone": true
   },
   {
     "ourCategory": "stickers-labels",
@@ -9723,7 +9767,8 @@
     "screenshots": [
       "050-die-cut-sticker-singles-buy.png",
       "050-die-cut-sticker-singles-specs.png"
-    ]
+    ],
+    "deltasDone": true
   },
   {
     "ourCategory": "stickers-labels",
@@ -9899,7 +9944,8 @@
     "screenshots": [
       "051-kiss-cut-stickers-buy.png",
       "051-kiss-cut-stickers-specs.png"
-    ]
+    ],
+    "deltasDone": true
   },
   {
     "ourCategory": "stickers-labels",
@@ -9960,71 +10006,71 @@
           },
           {
             "label": "1\"x2\"",
-            "priceDelta": 0
+            "priceDelta": 0.16
           },
           {
             "label": "1\"x3\"",
-            "priceDelta": 0
+            "priceDelta": 0.38
           },
           {
             "label": "1.5\" x 1.5\"",
-            "priceDelta": 0
+            "priceDelta": 0.24
           },
           {
             "label": "2\"x2\"",
-            "priceDelta": 0
+            "priceDelta": 0.62
           },
           {
             "label": "2.5\"x2.5\"",
-            "priceDelta": 0
+            "priceDelta": 0.62
           },
           {
             "label": "2\" x 3\"",
-            "priceDelta": 0
+            "priceDelta": 0.82
           },
           {
             "label": "2\" x 3.5\"",
-            "priceDelta": 0
+            "priceDelta": 0.82
           },
           {
             "label": "2\"x4\"",
-            "priceDelta": 0
+            "priceDelta": 1.49
           },
           {
             "label": "2.5\"x3\"",
-            "priceDelta": 0
+            "priceDelta": 0.93
           },
           {
             "label": "3\" x 3\"",
-            "priceDelta": 0
+            "priceDelta": 1.49
           },
           {
             "label": "3.5\"x3.5\"",
-            "priceDelta": 0
+            "priceDelta": 1.49
           },
           {
             "label": "3\" x 4\"",
-            "priceDelta": 0
+            "priceDelta": 2.32
           },
           {
             "label": "3\" x 5\"",
-            "priceDelta": 0
+            "priceDelta": 2.32
           },
           {
             "label": "3.75\"x5\"",
-            "priceDelta": 0
+            "priceDelta": 2.32
           },
           {
             "label": "4\"x4\"",
-            "priceDelta": 0
+            "priceDelta": 4.57
           },
           {
             "label": "4\"x6\"",
-            "priceDelta": 0
+            "priceDelta": 4.57
           },
           {
             "label": "5\"x5\"",
-            "priceDelta": 0
+            "priceDelta": 4.57
           }
         ]
       },
@@ -10050,23 +10096,23 @@
           },
           {
             "label": "White Plastic (BOPP)",
-            "priceDelta": 0
+            "priceDelta": 0.04
           },
           {
             "label": "Clear Plastic (BOPP)",
-            "priceDelta": 0
+            "priceDelta": 0.07
           },
           {
             "label": "Gold Foil (BOPP)",
-            "priceDelta": 0
+            "priceDelta": 0.07
           },
           {
             "label": "Silver Foil (BOPP)",
-            "priceDelta": 0
+            "priceDelta": 0.07
           },
           {
             "label": "Holographic Plastic (BOPP)",
-            "priceDelta": 0
+            "priceDelta": 0.13
           }
         ]
       }
@@ -10386,7 +10432,8 @@
     "screenshots": [
       "052-sheet-stickers-buy.png",
       "052-sheet-stickers-specs.png"
-    ]
+    ],
+    "deltasDone": true
   },
   {
     "ourCategory": "stickers-labels",
@@ -10478,19 +10525,19 @@
           },
           {
             "label": "Clear Plastic",
-            "priceDelta": 0
+            "priceDelta": 0.08
           },
           {
             "label": "Gold Foil",
-            "priceDelta": 0
+            "priceDelta": 0.11
           },
           {
             "label": "Silver Foil",
-            "priceDelta": 0
+            "priceDelta": 0.11
           },
           {
             "label": "Holographic",
-            "priceDelta": 0
+            "priceDelta": 0.14
           }
         ]
       }
@@ -10645,7 +10692,8 @@
     "screenshots": [
       "053-die-cut-sticker-sheets-buy.png",
       "053-die-cut-sticker-sheets-specs.png"
-    ]
+    ],
+    "deltasDone": true
   },
   {
     "ourCategory": "stickers-labels",
@@ -10694,71 +10742,71 @@
           },
           {
             "label": "1\"x2\"",
-            "priceDelta": 0
+            "priceDelta": 0.16
           },
           {
             "label": "1\"x3\"",
-            "priceDelta": 0
+            "priceDelta": 0.38
           },
           {
             "label": "1.5\" x 1.5\"",
-            "priceDelta": 0
+            "priceDelta": 0.24
           },
           {
             "label": "2\"x2\"",
-            "priceDelta": 0
+            "priceDelta": 0.62
           },
           {
             "label": "2.5\"x2.5\"",
-            "priceDelta": 0
+            "priceDelta": 0.62
           },
           {
             "label": "2\" x 3\"",
-            "priceDelta": 0
+            "priceDelta": 0.82
           },
           {
             "label": "2\"x4\"",
-            "priceDelta": 0
+            "priceDelta": 1.49
           },
           {
             "label": "2\" x 3.5\"",
-            "priceDelta": 0
+            "priceDelta": 0.82
           },
           {
             "label": "2.5\"x3\"",
-            "priceDelta": 0
+            "priceDelta": 0.93
           },
           {
             "label": "3\" x 3\"",
-            "priceDelta": 0
+            "priceDelta": 1.49
           },
           {
             "label": "3.5\"x3.5\"",
-            "priceDelta": 0
+            "priceDelta": 1.49
           },
           {
             "label": "3\"x4\"",
-            "priceDelta": 0
+            "priceDelta": 2.32
           },
           {
             "label": "3\" x 5\"",
-            "priceDelta": 0
+            "priceDelta": 2.32
           },
           {
             "label": "3.75\"x5\"",
-            "priceDelta": 0
+            "priceDelta": 2.32
           },
           {
             "label": "4\"x4\"",
-            "priceDelta": 0
+            "priceDelta": 4.57
           },
           {
             "label": "4\"x6\"",
-            "priceDelta": 0
+            "priceDelta": 4.57
           },
           {
             "label": "5\"x5\"",
-            "priceDelta": 0
+            "priceDelta": 4.57
           }
         ]
       },
@@ -10775,23 +10823,23 @@
           },
           {
             "label": "White Plastic (BOPP)",
-            "priceDelta": 0
+            "priceDelta": 0.04
           },
           {
             "label": "Silver Foil (BOPP)",
-            "priceDelta": 0
+            "priceDelta": 0.07
           },
           {
             "label": "Gold Foil (BOPP)",
-            "priceDelta": 0
+            "priceDelta": 0.07
           },
           {
             "label": "Clear Plastic (BOPP)",
-            "priceDelta": 0
+            "priceDelta": 0.07
           },
           {
             "label": "Holographic Plastic (BOPP)",
-            "priceDelta": 0
+            "priceDelta": 0.13
           }
         ]
       }
@@ -11109,7 +11157,8 @@
     "screenshots": [
       "054-product-labels-on-sheets-buy.png",
       "054-product-labels-on-sheets-specs.png"
-    ]
+    ],
+    "deltasDone": true
   },
   {
     "ourCategory": "stickers-labels",
@@ -11157,15 +11206,15 @@
           },
           {
             "label": "Clear Plastic (BOPP)",
-            "priceDelta": 0
+            "priceDelta": 0.04
           },
           {
             "label": "Gold Foil (BOPP)",
-            "priceDelta": 0
+            "priceDelta": 0.04
           },
           {
             "label": "Silver Foil (BOPP)",
-            "priceDelta": 0
+            "priceDelta": 0.04
           }
         ]
       }
@@ -11240,7 +11289,8 @@
     "screenshots": [
       "055-return-address-labels-buy.png",
       "055-return-address-labels-specs.png"
-    ]
+    ],
+    "deltasDone": true
   },
   {
     "ourCategory": "stickers-labels",
@@ -11388,11 +11438,11 @@
           },
           {
             "label": "Clear Plastic (BOPP)",
-            "priceDelta": 0
+            "priceDelta": 0.01
           },
           {
             "label": "Silver Foil (BOPP)",
-            "priceDelta": 0
+            "priceDelta": 0.01
           },
           {
             "label": "Gold Foil (BOPP)Out of stock",
@@ -11417,7 +11467,7 @@
           },
           {
             "label": "Multi-Column RollNew",
-            "priceDelta": 0
+            "priceDelta": -0.03
           }
         ]
       }
@@ -11517,7 +11567,8 @@
     "screenshots": [
       "056-roll-labels-buy.png",
       "056-roll-labels-specs.png"
-    ]
+    ],
+    "deltasDone": true
   },
   {
     "ourCategory": "stickers-labels",
@@ -11730,7 +11781,8 @@
     "screenshots": [
       "057-die-cut-roll-labels-buy.png",
       "057-die-cut-roll-labels-specs.png"
-    ]
+    ],
+    "deltasDone": true
   },
   {
     "ourCategory": "stickers-labels",
@@ -11926,7 +11978,8 @@
     "screenshots": [
       "059-circle-buy.png",
       "059-circle-specs.png"
-    ]
+    ],
+    "deltasDone": true
   },
   {
     "ourCategory": "stickers-labels",
@@ -11965,19 +12018,19 @@
           },
           {
             "label": "Clear Plastic (BOPP)",
-            "priceDelta": 0
+            "priceDelta": 0.06
           },
           {
             "label": "White Paper",
-            "priceDelta": 0
+            "priceDelta": -0.03
           },
           {
             "label": "Silver Foil (BOPP)",
-            "priceDelta": 0
+            "priceDelta": 0.11
           },
           {
             "label": "Gold Foil (BOPP)",
-            "priceDelta": 0
+            "priceDelta": 0.11
           }
         ]
       },
@@ -11990,15 +12043,15 @@
           },
           {
             "label": "2\" x 3\"",
-            "priceDelta": 0
+            "priceDelta": 0.19
           },
           {
             "label": "3\" x 4\"",
-            "priceDelta": 0
+            "priceDelta": 0.33
           },
           {
             "label": "3\" x 5\"",
-            "priceDelta": 0
+            "priceDelta": 0.39
           }
         ]
       },
@@ -12121,7 +12174,8 @@
     "screenshots": [
       "060-rectangle-buy.png",
       "060-rectangle-specs.png"
-    ]
+    ],
+    "deltasDone": true
   },
   {
     "ourCategory": "stickers-labels",
@@ -12144,19 +12198,19 @@
           },
           {
             "label": "White Paper",
-            "priceDelta": 0
+            "priceDelta": -0.03
           },
           {
             "label": "Clear Plastic (BOPP)",
-            "priceDelta": 0
+            "priceDelta": 0.06
           },
           {
             "label": "Gold Foil (BOPP)",
-            "priceDelta": 0
+            "priceDelta": 0.12
           },
           {
             "label": "Silver Foil (BOPP)",
-            "priceDelta": 0
+            "priceDelta": 0.12
           }
         ]
       },
@@ -12169,19 +12223,19 @@
           },
           {
             "label": "2\" x 2\"",
-            "priceDelta": 0
+            "priceDelta": 0.15
           },
           {
             "label": "2.5\" x 2.5\"",
-            "priceDelta": 0
+            "priceDelta": 0.22
           },
           {
             "label": "3\" x 3\"",
-            "priceDelta": 0
+            "priceDelta": 0.28
           },
           {
             "label": "4\" x 4\"",
-            "priceDelta": 0
+            "priceDelta": 0.51
           }
         ]
       }
@@ -12291,7 +12345,8 @@
     "screenshots": [
       "061-square-buy.png",
       "061-square-specs.png"
-    ]
+    ],
+    "deltasDone": true
   },
   {
     "ourCategory": "stickers-labels",
@@ -12361,19 +12416,19 @@
           },
           {
             "label": "White Paper",
-            "priceDelta": 0
+            "priceDelta": -0.03
           },
           {
             "label": "Clear Plastic (BOPP)",
-            "priceDelta": 0
+            "priceDelta": 0.06
           },
           {
             "label": "Gold Foil (BOPP)",
-            "priceDelta": 0
+            "priceDelta": 0.11
           },
           {
             "label": "Silver Foil (BOPP)",
-            "priceDelta": 0
+            "priceDelta": 0.11
           }
         ]
       },
@@ -12386,15 +12441,15 @@
           },
           {
             "label": "2\" x 3\"",
-            "priceDelta": 0
+            "priceDelta": 0.19
           },
           {
             "label": "3\" x 4\"",
-            "priceDelta": 0
+            "priceDelta": 0.33
           },
           {
             "label": "3\" x 5\"",
-            "priceDelta": 0
+            "priceDelta": 0.39
           }
         ]
       },
@@ -12517,7 +12572,8 @@
     "screenshots": [
       "062-oval-buy.png",
       "062-oval-specs.png"
-    ]
+    ],
+    "deltasDone": true
   },
   {
     "ourCategory": "stickers-labels",
@@ -12696,7 +12752,8 @@
     "screenshots": [
       "063-face-stickers-buy.png",
       "063-face-stickers-specs.png"
-    ]
+    ],
+    "deltasDone": true
   },
   {
     "ourCategory": "stickers-labels",
@@ -12745,43 +12802,43 @@
           },
           {
             "label": "2\" x 2\"",
-            "priceDelta": 0
+            "priceDelta": 0.16
           },
           {
             "label": "2\" x 3\"",
-            "priceDelta": 0
+            "priceDelta": 0.19
           },
           {
             "label": "2.5\" x 2.5\"",
-            "priceDelta": 0
+            "priceDelta": 0.23
           },
           {
             "label": "3\" x 3\"",
-            "priceDelta": 0
+            "priceDelta": 0.29
           },
           {
             "label": "3.5\" x 3.5\"",
-            "priceDelta": 0
+            "priceDelta": 0.41
           },
           {
             "label": "3\" x 4\"",
-            "priceDelta": 0
+            "priceDelta": 0.33
           },
           {
             "label": "3\" x 5\"",
-            "priceDelta": 0
+            "priceDelta": 0.39
           },
           {
             "label": "4\" x 4\"",
-            "priceDelta": 0
+            "priceDelta": 0.52
           },
           {
             "label": "4.5\" x 4.5\"",
-            "priceDelta": 0
+            "priceDelta": 0.6
           },
           {
             "label": "5\" x 5\"",
-            "priceDelta": 0
+            "priceDelta": 0.67
           }
         ]
       },
@@ -12904,7 +12961,8 @@
     "screenshots": [
       "064-party-stickers-buy.png",
       "064-party-stickers-specs.png"
-    ]
+    ],
+    "deltasDone": true
   },
   {
     "ourCategory": "stickers-labels",
@@ -12951,23 +13009,23 @@
           },
           {
             "label": "2”x3”",
-            "priceDelta": 0
+            "priceDelta": 0.09
           },
           {
             "label": "3”x3”",
-            "priceDelta": 0
+            "priceDelta": 0.18
           },
           {
             "label": "3”x4”",
-            "priceDelta": 0
+            "priceDelta": 0.3
           },
           {
             "label": "3”x5”",
-            "priceDelta": 0
+            "priceDelta": 0.31
           },
           {
             "label": "4”x4”",
-            "priceDelta": 0
+            "priceDelta": 0.38
           }
         ]
       },
@@ -12980,7 +13038,7 @@
           },
           {
             "label": "Reusable Clear Plastic (BOPP)",
-            "priceDelta": 0
+            "priceDelta": 0.07
           }
         ]
       }
@@ -13085,7 +13143,8 @@
     "screenshots": [
       "065-qr-code-stickers-buy.png",
       "065-qr-code-stickers-specs.png"
-    ]
+    ],
+    "deltasDone": true
   },
   {
     "ourCategory": "stickers-labels",
@@ -13162,67 +13221,67 @@
           },
           {
             "label": "2\"x4\"",
-            "priceDelta": 0
+            "priceDelta": 0.28
           },
           {
             "label": "3.75\"x5\"",
-            "priceDelta": 0
+            "priceDelta": 0.51
           },
           {
             "label": "4\"x6\"",
-            "priceDelta": 0
+            "priceDelta": 0.58
           },
           {
             "label": "1.5\"x1.5\"",
-            "priceDelta": 0
+            "priceDelta": 0.08
           },
           {
             "label": "1\"x2\"",
-            "priceDelta": 0
+            "priceDelta": 0.07
           },
           {
             "label": "2\"x2\"",
-            "priceDelta": 0
+            "priceDelta": 0.12
           },
           {
             "label": "2.5\"x2.5\"",
-            "priceDelta": 0
+            "priceDelta": 0.21
           },
           {
             "label": "2\"x3\"",
-            "priceDelta": 0
+            "priceDelta": 0.19
           },
           {
             "label": "3\"x3\"",
-            "priceDelta": 0
+            "priceDelta": 0.3
           },
           {
             "label": "3\"x4\"",
-            "priceDelta": 0
+            "priceDelta": 0.37
           },
           {
             "label": "4\"x4\"",
-            "priceDelta": 0
+            "priceDelta": 0.49
           },
           {
             "label": "3\"x5\"",
-            "priceDelta": 0
+            "priceDelta": 0.42
           },
           {
             "label": "2\"x3.5\"",
-            "priceDelta": 0
+            "priceDelta": 42.52
           },
           {
             "label": "3.5\"x3.5\"",
-            "priceDelta": 0
+            "priceDelta": 0.39
           },
           {
             "label": "4.5\"x4.5\"",
-            "priceDelta": 0
+            "priceDelta": 0.52
           },
           {
             "label": "5\"x5\"",
-            "priceDelta": 0
+            "priceDelta": 0.56
           }
         ]
       },
@@ -13336,7 +13395,8 @@
     "screenshots": [
       "066-holographic-stickers-buy.png",
       "066-holographic-stickers-specs.png"
-    ]
+    ],
+    "deltasDone": true
   },
   {
     "ourCategory": "signs-banners",
@@ -13445,7 +13505,8 @@
     "screenshots": [
       "069-tower-displays-buy.png",
       "069-tower-displays-specs.png"
-    ]
+    ],
+    "deltasDone": true
   },
   {
     "ourCategory": "signs-banners",
@@ -13577,7 +13638,8 @@
     "screenshots": [
       "070-menu-boards-buy.png",
       "070-menu-boards-specs.png"
-    ]
+    ],
+    "deltasDone": true
   },
   {
     "ourCategory": "signs-banners",
@@ -13677,7 +13739,8 @@
     "screenshots": [
       "071-bounce-up-counters-buy.png",
       "071-bounce-up-counters-specs.png"
-    ]
+    ],
+    "deltasDone": true
   },
   {
     "ourCategory": "signs-banners",
@@ -13696,43 +13759,43 @@
           },
           {
             "label": "3\" x 11\"",
-            "priceDelta": 0
+            "priceDelta": 1
           },
           {
             "label": "5\" x 5\"",
-            "priceDelta": 0
+            "priceDelta": 0.6
           },
           {
             "label": "8\" x 8\"",
-            "priceDelta": 0
+            "priceDelta": 2.6
           },
           {
             "label": "8\" x 40\"",
-            "priceDelta": 0
+            "priceDelta": 15.9
           },
           {
             "label": "12\" x 12\"",
-            "priceDelta": 0
+            "priceDelta": 6.7
           },
           {
             "label": "12\" x 18\"",
-            "priceDelta": 0
+            "priceDelta": 10.5
           },
           {
             "label": "18\" x 24\"",
-            "priceDelta": 0
+            "priceDelta": 21.7
           },
           {
             "label": "20\" x 30\"",
-            "priceDelta": 0
+            "priceDelta": 30.4
           },
           {
             "label": "24\" x 24\"",
-            "priceDelta": 0
+            "priceDelta": 29.2
           },
           {
             "label": "24\" x 36\"",
-            "priceDelta": 0
+            "priceDelta": 44.1
           }
         ]
       },
@@ -13814,7 +13877,8 @@
     "screenshots": [
       "072-car-door-decals-buy.png",
       "072-car-door-decals-specs.png"
-    ]
+    ],
+    "deltasDone": true
   },
   {
     "ourCategory": "business-cards",
@@ -13972,7 +14036,8 @@
     "screenshots": [
       "074-qr-code-buy.png",
       "074-qr-code-specs.png"
-    ]
+    ],
+    "deltasDone": true
   },
   {
     "ourCategory": "business-cards",
@@ -14057,11 +14122,11 @@
           },
           {
             "label": "Premium",
-            "priceDelta": 0
+            "priceDelta": 3
           },
           {
             "label": "Premium Plus",
-            "priceDelta": 0
+            "priceDelta": 12
           }
         ]
       },
@@ -14074,11 +14139,11 @@
           },
           {
             "label": "Glossy",
-            "priceDelta": 0
+            "priceDelta": 1
           },
           {
             "label": "Uncoated",
-            "priceDelta": 0
+            "priceDelta": 1
           }
         ]
       },
@@ -14091,7 +14156,7 @@
           },
           {
             "label": "Rounded",
-            "priceDelta": 0
+            "priceDelta": 7
           }
         ]
       }
@@ -14141,7 +14206,8 @@
     "screenshots": [
       "076-two-day-buy.png",
       "076-two-day-specs.png"
-    ]
+    ],
+    "deltasDone": true
   },
   {
     "ourCategory": "business-cards",
@@ -14190,7 +14256,7 @@
           },
           {
             "label": "Premium - 0.6 mmRecommended",
-            "priceDelta": 0
+            "priceDelta": 9
           }
         ]
       },
@@ -14266,7 +14332,8 @@
     "screenshots": [
       "077-magnetic-business-cards-buy.png",
       "077-magnetic-business-cards-specs.png"
-    ]
+    ],
+    "deltasDone": true
   },
   {
     "ourCategory": "business-cards",
@@ -14325,7 +14392,8 @@
     "screenshots": [
       "078-business-card-stickers-buy.png",
       "078-business-card-stickers-specs.png"
-    ]
+    ],
+    "deltasDone": true
   },
   {
     "ourCategory": "business-cards",
@@ -14452,7 +14520,7 @@
           },
           {
             "label": "Standard",
-            "priceDelta": 0
+            "priceDelta": -0.06
           }
         ]
       },
@@ -14465,15 +14533,15 @@
           },
           {
             "label": "Linen",
-            "priceDelta": 0
+            "priceDelta": 0.16
           },
           {
             "label": "Natural Textured",
-            "priceDelta": 0
+            "priceDelta": 0.12
           },
           {
             "label": "Recycled Matte",
-            "priceDelta": 0
+            "priceDelta": 0.07
           },
           {
             "label": "Uncoated",
@@ -15510,7 +15578,8 @@
     "screenshots": [
       "080-appointment-cards-buy.png",
       "080-appointment-cards-specs.png"
-    ]
+    ],
+    "deltasDone": true
   },
   {
     "ourCategory": "business-cards",
@@ -15690,7 +15759,7 @@
           },
           {
             "label": "Multi-Column RollNew",
-            "priceDelta": 0
+            "priceDelta": -0.02
           }
         ]
       },
@@ -15703,7 +15772,7 @@
           },
           {
             "label": "Clear Plastic (BOPP)",
-            "priceDelta": 0
+            "priceDelta": 0.01
           }
         ]
       }
@@ -15803,7 +15872,8 @@
     "screenshots": [
       "082-waterproof-buy.png",
       "082-waterproof-specs.png"
-    ]
+    ],
+    "deltasDone": true
   },
   {
     "ourCategory": "stickers-labels",
@@ -15899,47 +15969,47 @@
           },
           {
             "label": "1.5\" x 1.5\"",
-            "priceDelta": 0
+            "priceDelta": 0.01
           },
           {
             "label": "2\" x 2\"",
-            "priceDelta": 0
+            "priceDelta": 0.15
           },
           {
             "label": "2\" x 3\"",
-            "priceDelta": 0
+            "priceDelta": 0.18
           },
           {
             "label": "2.5\" x 2.5\"",
-            "priceDelta": 0
+            "priceDelta": 0.21
           },
           {
             "label": "3\" x 3\"",
-            "priceDelta": 0
+            "priceDelta": 0.27
           },
           {
             "label": "3\" x 4\"",
-            "priceDelta": 0
+            "priceDelta": 0.31
           },
           {
             "label": "3\" x 5\"",
-            "priceDelta": 0
+            "priceDelta": 0.36
           },
           {
             "label": "4\" x 4\"",
-            "priceDelta": 0
+            "priceDelta": 0.48
           },
           {
             "label": "3.5\" x 3.5\"",
-            "priceDelta": 0
+            "priceDelta": 0.38
           },
           {
             "label": "4.5\"x 4.5\"",
-            "priceDelta": 0
+            "priceDelta": 0.55
           },
           {
             "label": "5\"x 5\"",
-            "priceDelta": 0
+            "priceDelta": 0.62
           }
         ]
       },
@@ -15965,19 +16035,19 @@
           },
           {
             "label": "Clear Plastic (BOPP)",
-            "priceDelta": 0
+            "priceDelta": 0.06
           },
           {
             "label": "White Paper",
-            "priceDelta": 0
+            "priceDelta": -0.03
           },
           {
             "label": "Gold Foil (BOPP)",
-            "priceDelta": 0
+            "priceDelta": 0.11
           },
           {
             "label": "Silver Foil (BOPP)",
-            "priceDelta": 0
+            "priceDelta": 0.11
           },
           {
             "label": "Holographic Plastic (BOPP)",
@@ -16091,7 +16161,8 @@
     "screenshots": [
       "083-custom-laptop-stickers-buy.png",
       "083-custom-laptop-stickers-specs.png"
-    ]
+    ],
+    "deltasDone": true
   },
   {
     "ourCategory": "stationery",
@@ -16400,7 +16471,8 @@
     "screenshots": [
       "080-thank-you-cards-buy.png",
       "080-thank-you-cards-specs.png"
-    ]
+    ],
+    "deltasDone": true
   },
   {
     "ourCategory": "stationery",
@@ -16445,7 +16517,7 @@
           },
           {
             "label": "6\" x 9\"",
-            "priceDelta": 0
+            "priceDelta": 0.1
           },
           {
             "label": "4.75\" x 7.5\"",
@@ -16664,7 +16736,8 @@
     "screenshots": [
       "081-custom-envelopes-buy.png",
       "081-custom-envelopes-specs.png"
-    ]
+    ],
+    "deltasDone": true
   },
   {
     "ourCategory": "other",
@@ -16683,7 +16756,7 @@
           },
           {
             "label": "Medium Landscape (8\" x 6\")",
-            "priceDelta": 0
+            "priceDelta": -10
           },
           {
             "label": "Large Portrait (8.5\" x 11\")",
@@ -16691,7 +16764,7 @@
           },
           {
             "label": "Small Landscape (5.5\" x 4\")",
-            "priceDelta": 0
+            "priceDelta": -17
           },
           {
             "label": "Large Square (8\" x 8\")",
@@ -16699,11 +16772,11 @@
           },
           {
             "label": "XL Square (12\" x 12\")",
-            "priceDelta": 0
+            "priceDelta": 20
           },
           {
             "label": "Medium Square (5.5\" x 5.5\")",
-            "priceDelta": 0
+            "priceDelta": -10
           },
           {
             "label": "XL LandscapeOut of stock",
@@ -16837,7 +16910,8 @@
     "screenshots": [
       "082-photo-books-buy.png",
       "082-photo-books-specs.png"
-    ]
+    ],
+    "deltasDone": true
   },
   {
     "ourCategory": "stationery",
@@ -16971,11 +17045,11 @@
           },
           {
             "label": "10.5\" x 8.25” Landscape",
-            "priceDelta": 0
+            "priceDelta": 10
           },
           {
             "label": "12\" x 12” Square",
-            "priceDelta": 0
+            "priceDelta": 20
           }
         ]
       },
@@ -16988,15 +17062,15 @@
           },
           {
             "label": "Gold",
-            "priceDelta": 0
+            "priceDelta": 4
           },
           {
             "label": "Rose Gold",
-            "priceDelta": 0
+            "priceDelta": 4
           },
           {
             "label": "Silver",
-            "priceDelta": 0
+            "priceDelta": 4
           }
         ]
       }
@@ -17111,7 +17185,8 @@
     "screenshots": [
       "084-guest-books-buy.png",
       "084-guest-books-specs.png"
-    ]
+    ],
+    "deltasDone": true
   },
   {
     "ourCategory": "other",
@@ -17899,7 +17974,8 @@
     "screenshots": [
       "086-personalized-mugs-buy.png",
       "086-personalized-mugs-specs.png"
-    ]
+    ],
+    "deltasDone": true
   },
   {
     "ourCategory": "other",
@@ -17922,27 +17998,27 @@
           },
           {
             "label": "16\" x 24\"",
-            "priceDelta": 0
+            "priceDelta": -2
           },
           {
             "label": "16\" x 20\"Recommended",
-            "priceDelta": 0
+            "priceDelta": -2
           },
           {
             "label": "12\" x 16\"",
-            "priceDelta": 0
+            "priceDelta": -2
           },
           {
             "label": "12\" x 12\"",
-            "priceDelta": 0
+            "priceDelta": -12
           },
           {
             "label": "8\" x 12\"",
-            "priceDelta": 0
+            "priceDelta": -16
           },
           {
             "label": "8\" x 8\"",
-            "priceDelta": 0
+            "priceDelta": -22
           }
         ]
       },
@@ -17970,7 +18046,7 @@
           },
           {
             "label": "0.75\" Wood Frame",
-            "priceDelta": 0
+            "priceDelta": -5
           }
         ]
       }
@@ -18020,7 +18096,8 @@
     "screenshots": [
       "087-canvas-prints-buy.png",
       "087-canvas-prints-specs.png"
-    ]
+    ],
+    "deltasDone": true
   },
   {
     "ourCategory": "stationery",
@@ -18365,7 +18442,8 @@
     "screenshots": [
       "088-note-cards-buy.png",
       "088-note-cards-specs.png"
-    ]
+    ],
+    "deltasDone": true
   },
   {
     "ourCategory": "other",
@@ -18479,7 +18557,8 @@
     "screenshots": [
       "089-personalized-beach-towel-buy.png",
       "089-personalized-beach-towel-specs.png"
-    ]
+    ],
+    "deltasDone": true
   },
   {
     "ourCategory": "apparel-bags",
@@ -18635,7 +18714,8 @@
     "screenshots": [
       "090-20-oz-tumbler-buy.png",
       "090-20-oz-tumbler-specs.png"
-    ]
+    ],
+    "deltasDone": true
   },
   {
     "ourCategory": "apparel-bags",
@@ -18785,7 +18865,8 @@
     "screenshots": [
       "091-custom-canvas-bags-buy.png",
       "091-custom-canvas-bags-specs.png"
-    ]
+    ],
+    "deltasDone": true
   },
   {
     "ourCategory": "other",
@@ -18864,7 +18945,8 @@
     "screenshots": [
       "092-custom-yoga-mats-buy.png",
       "092-custom-yoga-mats-specs.png"
-    ]
+    ],
+    "deltasDone": true
   },
   {
     "ourCategory": "marketing-materials",
@@ -19045,7 +19127,8 @@
     "screenshots": [
       "093-wall-calendars-buy.png",
       "093-wall-calendars-specs.png"
-    ]
+    ],
+    "deltasDone": true
   },
   {
     "ourCategory": "stationery",
@@ -19389,7 +19472,8 @@
     "screenshots": [
       "094-painted-edge-invitations-buy.png",
       "094-painted-edge-invitations-specs.png"
-    ]
+    ],
+    "deltasDone": true
   },
   {
     "ourCategory": "marketing-materials",
@@ -19464,19 +19548,19 @@
           },
           {
             "label": "Premium Plus UncoatedRecommended",
-            "priceDelta": 0
+            "priceDelta": 0.16
           },
           {
             "label": "Premium Glossy",
-            "priceDelta": 0
+            "priceDelta": 0.16
           },
           {
             "label": "Linen",
-            "priceDelta": 0
+            "priceDelta": 0.16
           },
           {
             "label": "Pearl",
-            "priceDelta": 0
+            "priceDelta": 1.25
           }
         ]
       }
@@ -19747,7 +19831,8 @@
     "screenshots": [
       "095-menus-buy.png",
       "095-menus-specs.png"
-    ]
+    ],
+    "deltasDone": true
   },
   {
     "ourCategory": "stationery",
@@ -19871,7 +19956,8 @@
     "screenshots": [
       "096-circle-stamps-buy.png",
       "096-circle-stamps-specs.png"
-    ]
+    ],
+    "deltasDone": true
   },
   {
     "ourCategory": "stationery",
@@ -20017,7 +20103,8 @@
     "screenshots": [
       "097-wax-seals-buy.png",
       "097-wax-seals-specs.png"
-    ]
+    ],
+    "deltasDone": true
   },
   {
     "ourCategory": "stationery",
@@ -20279,7 +20366,8 @@
     "screenshots": [
       "099-acrylic-table-signs-buy.png",
       "099-acrylic-table-signs-specs.png"
-    ]
+    ],
+    "deltasDone": true
   },
   {
     "ourCategory": "signs-banners",
@@ -20696,7 +20784,8 @@
     "screenshots": [
       "101-wedding-thank-you-cards-buy.png",
       "101-wedding-thank-you-cards-specs.png"
-    ]
+    ],
+    "deltasDone": true
   },
   {
     "ourCategory": "other",
@@ -20843,7 +20932,8 @@
     "screenshots": [
       "102-acrylic-photo-blocks-buy.png",
       "102-acrylic-photo-blocks-specs.png"
-    ]
+    ],
+    "deltasDone": true
   },
   {
     "ourCategory": "stationery",
@@ -20866,19 +20956,19 @@
           },
           {
             "label": "Premium 100% Cotton - Fluorescent White",
-            "priceDelta": 0
+            "priceDelta": 1.5
           },
           {
             "label": "Premium 100% Cotton - Pearl White",
-            "priceDelta": 0
+            "priceDelta": 1.5
           },
           {
             "label": "Uncoated - Ecru",
-            "priceDelta": 0
+            "priceDelta": -0.92
           },
           {
             "label": "Uncoated - White",
-            "priceDelta": 0
+            "priceDelta": -0.92
           }
         ]
       },
@@ -21103,7 +21193,8 @@
     "screenshots": [
       "103-letterpress-wedding-invitations-buy.png",
       "103-letterpress-wedding-invitations-specs.png"
-    ]
+    ],
+    "deltasDone": true
   },
   {
     "ourCategory": "other",
@@ -21287,7 +21378,8 @@
     "screenshots": [
       "104-tabletop-photo-tiles-buy.png",
       "104-tabletop-photo-tiles-specs.png"
-    ]
+    ],
+    "deltasDone": true
   },
   {
     "ourCategory": "stationery",
@@ -21341,51 +21433,51 @@
           },
           {
             "label": "Glossy",
-            "priceDelta": 0
+            "priceDelta": 0.01
           },
           {
             "label": "Uncoated",
-            "priceDelta": 0
+            "priceDelta": 0.01
           },
           {
             "label": "Pearl",
-            "priceDelta": 0
+            "priceDelta": 0.19
           },
           {
             "label": "Ultra Thick",
-            "priceDelta": 0
+            "priceDelta": 0.23
           },
           {
             "label": "Linen",
-            "priceDelta": 0
+            "priceDelta": 0.19
           },
           {
             "label": "Natural Textured",
-            "priceDelta": 0
+            "priceDelta": 0.15
           },
           {
             "label": "Recycled Matte",
-            "priceDelta": 0
+            "priceDelta": 0.19
           },
           {
             "label": "Soft Touch",
-            "priceDelta": 0
+            "priceDelta": 0.19
           },
           {
             "label": "Kraft",
-            "priceDelta": 0
+            "priceDelta": 0.19
           },
           {
             "label": "Bamboo",
-            "priceDelta": 0
+            "priceDelta": 0.19
           },
           {
             "label": "Hemp-blend",
-            "priceDelta": 0
+            "priceDelta": 0.14
           },
           {
             "label": "Fine Grit",
-            "priceDelta": 0
+            "priceDelta": 0.19
           }
         ]
       },
@@ -21398,7 +21490,7 @@
           },
           {
             "label": "Rounded",
-            "priceDelta": 0
+            "priceDelta": 0.07
           }
         ]
       },
@@ -21513,7 +21605,8 @@
     "screenshots": [
       "106-standard-buy.png",
       "106-standard-specs.png"
-    ]
+    ],
+    "deltasDone": true
   },
   {
     "ourCategory": "business-cards",
@@ -21632,7 +21725,8 @@
     "screenshots": [
       "107-pearl-buy.png",
       "107-pearl-specs.png"
-    ]
+    ],
+    "deltasDone": true
   },
   {
     "ourCategory": "business-cards",
@@ -21743,7 +21837,8 @@
     "screenshots": [
       "108-acrylic-business-card-holders-buy.png",
       "108-acrylic-business-card-holders-specs.png"
-    ]
+    ],
+    "deltasDone": true
   },
   {
     "ourCategory": "business-cards",
@@ -22212,19 +22307,19 @@
           },
           {
             "label": "5\" x 7\"",
-            "priceDelta": 0
+            "priceDelta": 0.26
           },
           {
             "label": "5.5\" x 8.5\"",
-            "priceDelta": 0
+            "priceDelta": 0.38
           },
           {
             "label": "6\" x 9\"",
-            "priceDelta": 0
+            "priceDelta": 0.51
           },
           {
             "label": "6\" x 11\"",
-            "priceDelta": 0
+            "priceDelta": 0.74
           }
         ]
       }
@@ -22319,7 +22414,8 @@
     "screenshots": [
       "114-embossed-foil-postcards-buy.png",
       "114-embossed-foil-postcards-specs.png"
-    ]
+    ],
+    "deltasDone": true
   },
   {
     "ourCategory": "marketing-materials",
@@ -22497,19 +22593,19 @@
           },
           {
             "label": "5\" x 7\"",
-            "priceDelta": 0
+            "priceDelta": 40
           },
           {
             "label": "5.5\" x 8.5\"",
-            "priceDelta": 0
+            "priceDelta": 55
           },
           {
             "label": "6\" x 9\"",
-            "priceDelta": 0
+            "priceDelta": 70
           },
           {
             "label": "6\" x 11\"",
-            "priceDelta": 0
+            "priceDelta": 103
           }
         ]
       }
@@ -22559,7 +22655,8 @@
     "screenshots": [
       "116-foil-accent-postcards-buy.png",
       "116-foil-accent-postcards-specs.png"
-    ]
+    ],
+    "deltasDone": true
   },
   {
     "ourCategory": "marketing-materials",
@@ -22644,7 +22741,8 @@
     "screenshots": [
       "117-postcards-buy.png",
       "117-postcards-specs.png"
-    ]
+    ],
+    "deltasDone": true
   },
   {
     "ourCategory": "marketing-materials",
@@ -22811,7 +22909,8 @@
     "screenshots": [
       "118-perforated-flyers-buy.png",
       "118-perforated-flyers-specs.png"
-    ]
+    ],
+    "deltasDone": true
   },
   {
     "ourCategory": "marketing-materials",
@@ -22830,11 +22929,11 @@
           },
           {
             "label": "8.5\" x 11\"",
-            "priceDelta": 0
+            "priceDelta": 0.4
           },
           {
             "label": "11\" x 17\"",
-            "priceDelta": 0
+            "priceDelta": 0.8
           }
         ]
       },
@@ -22855,7 +22954,7 @@
           },
           {
             "label": "Premium",
-            "priceDelta": 0
+            "priceDelta": 0.2
           }
         ]
       },
@@ -22868,15 +22967,15 @@
           },
           {
             "label": "Matte",
-            "priceDelta": 0
+            "priceDelta": 0.12
           },
           {
             "label": "Uncoated",
-            "priceDelta": 0
+            "priceDelta": 0.36
           },
           {
             "label": "Recycled",
-            "priceDelta": 0
+            "priceDelta": 0.68
           }
         ]
       }
@@ -23012,7 +23111,8 @@
     "screenshots": [
       "119-bi-fold-buy.png",
       "119-bi-fold-specs.png"
-    ]
+    ],
+    "deltasDone": true
   },
   {
     "ourCategory": "marketing-materials",
@@ -23043,11 +23143,11 @@
           },
           {
             "label": "8.5\" x 14\"",
-            "priceDelta": 0
+            "priceDelta": 0.12
           },
           {
             "label": "9\" x 16\"",
-            "priceDelta": 0
+            "priceDelta": 0.24
           }
         ]
       },
@@ -23060,7 +23160,7 @@
           },
           {
             "label": "Premium",
-            "priceDelta": 0
+            "priceDelta": 0.28
           }
         ]
       },
@@ -23073,15 +23173,15 @@
           },
           {
             "label": "Matte",
-            "priceDelta": 0
+            "priceDelta": 0.16
           },
           {
             "label": "Uncoated",
-            "priceDelta": 0
+            "priceDelta": 0.52
           },
           {
             "label": "Recycled",
-            "priceDelta": 0
+            "priceDelta": 1
           }
         ]
       }
@@ -23206,7 +23306,8 @@
     "screenshots": [
       "120-tri-fold-buy.png",
       "120-tri-fold-specs.png"
-    ]
+    ],
+    "deltasDone": true
   },
   {
     "ourCategory": "marketing-materials",
@@ -23257,7 +23358,7 @@
           },
           {
             "label": "Premium",
-            "priceDelta": 0
+            "priceDelta": 0.28
           }
         ]
       },
@@ -23270,15 +23371,15 @@
           },
           {
             "label": "Matte",
-            "priceDelta": 0
+            "priceDelta": 0.16
           },
           {
             "label": "Uncoated",
-            "priceDelta": 0
+            "priceDelta": 0.52
           },
           {
             "label": "Recycled",
-            "priceDelta": 0
+            "priceDelta": 1
           }
         ]
       }
@@ -23418,7 +23519,8 @@
     "screenshots": [
       "121-z-fold-buy.png",
       "121-z-fold-specs.png"
-    ]
+    ],
+    "deltasDone": true
   },
   {
     "ourCategory": "other",
@@ -23541,7 +23643,8 @@
     "screenshots": [
       "122-table-tents-buy.png",
       "122-table-tents-specs.png"
-    ]
+    ],
+    "deltasDone": true
   },
   {
     "ourCategory": "other",
@@ -23695,7 +23798,8 @@
     "screenshots": [
       "123-placemats-buy.png",
       "123-placemats-specs.png"
-    ]
+    ],
+    "deltasDone": true
   },
   {
     "ourCategory": "stationery",
@@ -23726,7 +23830,7 @@
           },
           {
             "label": "Premium",
-            "priceDelta": 0
+            "priceDelta": 77
           }
         ]
       },
@@ -23739,7 +23843,7 @@
           },
           {
             "label": "Matte",
-            "priceDelta": 0
+            "priceDelta": 40
           }
         ]
       }
@@ -23789,7 +23893,8 @@
     "screenshots": [
       "124-foil-accent-presentation-folders-buy.png",
       "124-foil-accent-presentation-folders-specs.png"
-    ]
+    ],
+    "deltasDone": true
   },
   {
     "ourCategory": "other",
@@ -23812,7 +23917,7 @@
           },
           {
             "label": "Soft Touch",
-            "priceDelta": 0
+            "priceDelta": 25
           }
         ]
       }
@@ -23871,7 +23976,8 @@
     "screenshots": [
       "125-key-card-holders-buy.png",
       "125-key-card-holders-specs.png"
-    ]
+    ],
+    "deltasDone": true
   },
   {
     "ourCategory": "other",
@@ -23898,11 +24004,11 @@
           },
           {
             "label": "Glossy",
-            "priceDelta": 0
+            "priceDelta": -6
           },
           {
             "label": "Soft Touch",
-            "priceDelta": 0
+            "priceDelta": 28
           }
         ]
       }
@@ -23952,7 +24058,8 @@
     "screenshots": [
       "126-gift-card-holders-buy.png",
       "126-gift-card-holders-specs.png"
-    ]
+    ],
+    "deltasDone": true
   },
   {
     "ourCategory": "other",
@@ -23971,7 +24078,7 @@
           },
           {
             "label": "Oval",
-            "priceDelta": 0
+            "priceDelta": 0.2
           },
           {
             "label": "Square",
@@ -23979,7 +24086,7 @@
           },
           {
             "label": "Rectangle",
-            "priceDelta": 0
+            "priceDelta": 0.2
           }
         ]
       },
@@ -23996,7 +24103,7 @@
           },
           {
             "label": "3\" x 3\"",
-            "priceDelta": 0
+            "priceDelta": 0.8
           },
           {
             "label": "3\" x 4\"",
@@ -24012,7 +24119,7 @@
           },
           {
             "label": "4\" x 4\"",
-            "priceDelta": 0
+            "priceDelta": 2
           },
           {
             "label": "4\" x 7\"",
@@ -24058,7 +24165,7 @@
           },
           {
             "label": "None",
-            "priceDelta": 0
+            "priceDelta": -0.4
           }
         ]
       }
@@ -24181,7 +24288,8 @@
     "screenshots": [
       "127-refrigerator-magnets-buy.png",
       "127-refrigerator-magnets-specs.png"
-    ]
+    ],
+    "deltasDone": true
   },
   {
     "ourCategory": "marketing-materials",
@@ -24344,7 +24452,7 @@
           },
           {
             "label": "Rounded",
-            "priceDelta": 0
+            "priceDelta": 30
           }
         ]
       },
@@ -24357,7 +24465,7 @@
           },
           {
             "label": "Matte",
-            "priceDelta": 0
+            "priceDelta": 8
           },
           {
             "label": "Recycled Matte",
@@ -24365,7 +24473,7 @@
           },
           {
             "label": "Uncoated",
-            "priceDelta": 0
+            "priceDelta": 8
           },
           {
             "label": "Soft Touch",
@@ -24451,7 +24559,8 @@
     "screenshots": [
       "129-rack-cards-buy.png",
       "129-rack-cards-specs.png"
-    ]
+    ],
+    "deltasDone": true
   },
   {
     "ourCategory": "other",
@@ -24488,7 +24597,7 @@
           },
           {
             "label": "Premium",
-            "priceDelta": 0
+            "priceDelta": 16
           }
         ]
       },
@@ -24501,7 +24610,7 @@
           },
           {
             "label": "Matte",
-            "priceDelta": 0
+            "priceDelta": 3
           },
           {
             "label": "Recycled Matte",
@@ -24564,7 +24673,8 @@
     "screenshots": [
       "130-rip-cards-buy.png",
       "130-rip-cards-specs.png"
-    ]
+    ],
+    "deltasDone": true
   },
   {
     "ourCategory": "other",
@@ -24818,7 +24928,7 @@
           },
           {
             "label": "Rounded",
-            "priceDelta": 0
+            "priceDelta": 30
           }
         ]
       }
@@ -24868,7 +24978,8 @@
     "screenshots": [
       "133-embossed-foil-rack-cards-buy.png",
       "133-embossed-foil-rack-cards-specs.png"
-    ]
+    ],
+    "deltasDone": true
   },
   {
     "ourCategory": "marketing-materials",
@@ -24953,7 +25064,8 @@
     "screenshots": [
       "134-custom-postcards-buy.png",
       "134-custom-postcards-specs.png"
-    ]
+    ],
+    "deltasDone": true
   },
   {
     "ourCategory": "signs-banners",
@@ -25083,7 +25195,8 @@
     "screenshots": [
       "135-signicade-buy.png",
       "135-signicade-specs.png"
-    ]
+    ],
+    "deltasDone": true
   },
   {
     "ourCategory": "signs-banners",
@@ -25357,7 +25470,8 @@
     "screenshots": [
       "137-u-channel-posts-buy.png",
       "137-u-channel-posts-specs.png"
-    ]
+    ],
+    "deltasDone": true
   },
   {
     "ourCategory": "signs-banners",
@@ -25506,7 +25620,8 @@
     "screenshots": [
       "138-x-banner-frames-buy.png",
       "138-x-banner-frames-specs.png"
-    ]
+    ],
+    "deltasDone": true
   },
   {
     "ourCategory": "signs-banners",
@@ -25715,7 +25830,8 @@
     "screenshots": [
       "140-triangle-zipper-banners-buy.png",
       "140-triangle-zipper-banners-specs.png"
-    ]
+    ],
+    "deltasDone": true
   },
   {
     "ourCategory": "signs-banners",
@@ -25800,7 +25916,8 @@
     "screenshots": [
       "141-round-podium-counters-buy.png",
       "141-round-podium-counters-specs.png"
-    ]
+    ],
+    "deltasDone": true
   },
   {
     "ourCategory": "signs-banners",
@@ -26860,7 +26977,8 @@
     "screenshots": [
       "142-fabric-pop-up-counter-displays-buy.png",
       "142-fabric-pop-up-counter-displays-specs.png"
-    ]
+    ],
+    "deltasDone": true
   },
   {
     "ourCategory": "signs-banners",
@@ -26931,7 +27049,8 @@
     "screenshots": [
       "143-tabletop-a-frames-buy.png",
       "143-tabletop-a-frames-specs.png"
-    ]
+    ],
+    "deltasDone": true
   },
   {
     "ourCategory": "signs-banners",
@@ -27143,19 +27262,19 @@
           },
           {
             "label": "2” x 3.5”",
-            "priceDelta": 0
+            "priceDelta": 0.04
           },
           {
             "label": "3.5” x 4”",
-            "priceDelta": 0
+            "priceDelta": 0.09
           },
           {
             "label": "4” x 4”",
-            "priceDelta": 0
+            "priceDelta": 0.11
           },
           {
             "label": "4” x 6”",
-            "priceDelta": 0
+            "priceDelta": 0.17
           }
         ]
       },
@@ -27181,7 +27300,7 @@
           },
           {
             "label": "White Plastic (BOPP)",
-            "priceDelta": 0
+            "priceDelta": 0.03
           }
         ]
       }
@@ -27276,7 +27395,8 @@
     "screenshots": [
       "145-wine-labels-buy.png",
       "145-wine-labels-specs.png"
-    ]
+    ],
+    "deltasDone": true
   },
   {
     "ourCategory": "stickers-labels",
@@ -27375,15 +27495,15 @@
           },
           {
             "label": "16 oz. Cans",
-            "priceDelta": 0
+            "priceDelta": 30
           },
           {
             "label": "12 oz. Bottles",
-            "priceDelta": 0
+            "priceDelta": 7
           },
           {
             "label": "32 oz. Growlers",
-            "priceDelta": 0
+            "priceDelta": 517
           }
         ]
       },
@@ -27459,7 +27579,8 @@
     "screenshots": [
       "146-beer-labels-buy.png",
       "146-beer-labels-specs.png"
-    ]
+    ],
+    "deltasDone": true
   },
   {
     "ourCategory": "stickers-labels",
@@ -27607,11 +27728,11 @@
           },
           {
             "label": "Clear Plastic (BOPP)",
-            "priceDelta": 0
+            "priceDelta": 0.02
           },
           {
             "label": "Silver Foil (BOPP)",
-            "priceDelta": 0
+            "priceDelta": 0.02
           },
           {
             "label": "Gold Foil (BOPP)Out of stock",
@@ -27736,7 +27857,8 @@
     "screenshots": [
       "147-cosmetic-labels-buy.png",
       "147-cosmetic-labels-specs.png"
-    ]
+    ],
+    "deltasDone": true
   },
   {
     "ourCategory": "stickers-labels",
@@ -27778,7 +27900,7 @@
           },
           {
             "label": "2\" x 3\"",
-            "priceDelta": 0
+            "priceDelta": 0.03
           }
         ]
       },
@@ -27901,7 +28023,8 @@
     "screenshots": [
       "148-campaign-stickers-buy.png",
       "148-campaign-stickers-specs.png"
-    ]
+    ],
+    "deltasDone": true
   },
   {
     "ourCategory": "stickers-labels",
@@ -27958,27 +28081,27 @@
           },
           {
             "label": "3\" x 3\"",
-            "priceDelta": 0
+            "priceDelta": 0.11
           },
           {
             "label": "3\"x 4\"",
-            "priceDelta": 0
+            "priceDelta": 0.24
           },
           {
             "label": "4\"x 4\"",
-            "priceDelta": 0
+            "priceDelta": 0.34
           },
           {
             "label": "3\"x 5\"",
-            "priceDelta": 0
+            "priceDelta": 0.27
           },
           {
             "label": "5\"x 5\"",
-            "priceDelta": 0
+            "priceDelta": 0.57
           },
           {
             "label": "6\"x 6\"",
-            "priceDelta": 0
+            "priceDelta": 0.63
           }
         ]
       },
@@ -28096,7 +28219,8 @@
     "screenshots": [
       "149-front-adhesive-stickers-buy.png",
       "149-front-adhesive-stickers-specs.png"
-    ]
+    ],
+    "deltasDone": true
   },
   {
     "ourCategory": "stationery",
@@ -28230,7 +28354,8 @@
     "screenshots": [
       "150-envelope-seals-buy.png",
       "150-envelope-seals-specs.png"
-    ]
+    ],
+    "deltasDone": true
   },
   {
     "ourCategory": "stickers-labels",
@@ -28360,7 +28485,8 @@
     "screenshots": [
       "151-mailing-labels-buy.png",
       "151-mailing-labels-specs.png"
-    ]
+    ],
+    "deltasDone": true
   },
   {
     "ourCategory": "stationery",
@@ -28379,7 +28505,7 @@
           },
           {
             "label": "8.5” x 11”",
-            "priceDelta": 0
+            "priceDelta": 2
           }
         ]
       },
@@ -28431,7 +28557,7 @@
           },
           {
             "label": "Glossy",
-            "priceDelta": 0
+            "priceDelta": -1
           },
           {
             "label": "Fine Grit",
@@ -28545,7 +28671,8 @@
     "screenshots": [
       "152-notebooks-buy.png",
       "152-notebooks-specs.png"
-    ]
+    ],
+    "deltasDone": true
   },
   {
     "ourCategory": "stationery",
@@ -28702,7 +28829,8 @@
     "screenshots": [
       "153-notepads-buy.png",
       "153-notepads-specs.png"
-    ]
+    ],
+    "deltasDone": true
   },
   {
     "ourCategory": "stationery",
@@ -28729,7 +28857,7 @@
           },
           {
             "label": "6\" x 9\"",
-            "priceDelta": 0
+            "priceDelta": 0.1
           },
           {
             "label": "5.2\"x 7.24\" (A7 Envelope)",
@@ -29003,7 +29131,8 @@
     "screenshots": [
       "154-colored-envelopes-buy.png",
       "154-colored-envelopes-specs.png"
-    ]
+    ],
+    "deltasDone": true
   },
   {
     "ourCategory": "stationery",
@@ -29155,7 +29284,8 @@
     "screenshots": [
       "155-sticky-notes-buy.png",
       "155-sticky-notes-specs.png"
-    ]
+    ],
+    "deltasDone": true
   },
   {
     "ourCategory": "stationery",
@@ -29330,7 +29460,8 @@
     "screenshots": [
       "156-faux-leather-journals-buy.png",
       "156-faux-leather-journals-specs.png"
-    ]
+    ],
+    "deltasDone": true
   },
   {
     "ourCategory": "apparel-bags",
@@ -29463,7 +29594,8 @@
     "screenshots": [
       "157-jerzees-r-nublend-r-hooded-sweatshirt-buy.png",
       "157-jerzees-r-nublend-r-hooded-sweatshirt-specs.png"
-    ]
+    ],
+    "deltasDone": true
   },
   {
     "ourCategory": "marketing-materials",
@@ -29617,7 +29749,8 @@
     "screenshots": [
       "158-desk-calendars-buy.png",
       "158-desk-calendars-specs.png"
-    ]
+    ],
+    "deltasDone": true
   },
   {
     "ourCategory": "other",
@@ -29764,7 +29897,8 @@
     "screenshots": [
       "159-pillows-buy.png",
       "159-pillows-specs.png"
-    ]
+    ],
+    "deltasDone": true
   },
   {
     "ourCategory": "other",
@@ -29821,19 +29955,19 @@
           },
           {
             "label": "11\" x 14\"",
-            "priceDelta": 0
+            "priceDelta": 5
           },
           {
             "label": "16\" x 16\"",
-            "priceDelta": 0
+            "priceDelta": 10
           },
           {
             "label": "16\" x 20\"Recommended",
-            "priceDelta": 0
+            "priceDelta": 20
           },
           {
             "label": "24\" x 36\"",
-            "priceDelta": 0
+            "priceDelta": 60
           }
         ]
       },
@@ -29900,7 +30034,8 @@
     "screenshots": [
       "160-framed-prints-buy.png",
       "160-framed-prints-specs.png"
-    ]
+    ],
+    "deltasDone": true
   },
   {
     "ourCategory": "other",
@@ -30053,7 +30188,8 @@
     "screenshots": [
       "161-fleece-blankets-buy.png",
       "161-fleece-blankets-specs.png"
-    ]
+    ],
+    "deltasDone": true
   },
   {
     "ourCategory": "apparel-bags",
@@ -30189,7 +30325,8 @@
     "screenshots": [
       "162-40-oz-tumblers-buy.png",
       "162-40-oz-tumblers-specs.png"
-    ]
+    ],
+    "deltasDone": true
   },
   {
     "ourCategory": "other",
@@ -30315,7 +30452,8 @@
     "screenshots": [
       "163-pet-face-pillows-buy.png",
       "163-pet-face-pillows-specs.png"
-    ]
+    ],
+    "deltasDone": true
   },
   {
     "ourCategory": "other",
@@ -30330,27 +30468,27 @@
         "values": [
           {
             "label": "24\" x 36\"",
-            "priceDelta": 99
+            "priceDelta": 0
           },
           {
             "label": "16\" x 24\"Recommended",
-            "priceDelta": 0
+            "priceDelta": -29
           },
           {
             "label": "12\" x 16\"",
-            "priceDelta": 0
+            "priceDelta": -46
           },
           {
             "label": "12\" x 12\"",
-            "priceDelta": 0
+            "priceDelta": -66
           },
           {
             "label": "8\" x 12\"",
-            "priceDelta": 0
+            "priceDelta": -89
           },
           {
             "label": "8\" x 8\"",
-            "priceDelta": 0
+            "priceDelta": -99
           }
         ]
       },
@@ -30430,7 +30568,8 @@
     "screenshots": [
       "164-framed-canvas-prints-buy.png",
       "164-framed-canvas-prints-specs.png"
-    ]
+    ],
+    "deltasDone": true
   },
   {
     "ourCategory": "apparel-bags",
@@ -30565,7 +30704,8 @@
     "screenshots": [
       "165-gildan-r-softstyle-r-unisex-t-shirt-buy.png",
       "165-gildan-r-softstyle-r-unisex-t-shirt-specs.png"
-    ]
+    ],
+    "deltasDone": true
   },
   {
     "ourCategory": "other",
@@ -30709,7 +30849,8 @@
     "screenshots": [
       "166-puzzles-buy.png",
       "166-puzzles-specs.png"
-    ]
+    ],
+    "deltasDone": true
   },
   {
     "ourCategory": "other",
@@ -30837,7 +30978,8 @@
     "screenshots": [
       "167-carbonless-forms-buy.png",
       "167-carbonless-forms-specs.png"
-    ]
+    ],
+    "deltasDone": true
   },
   {
     "ourCategory": "marketing-materials",
@@ -30957,7 +31099,8 @@
     "screenshots": [
       "168-magnetic-calendars-buy.png",
       "168-magnetic-calendars-specs.png"
-    ]
+    ],
+    "deltasDone": true
   },
   {
     "ourCategory": "signs-banners",
@@ -31077,7 +31220,8 @@
     "screenshots": [
       "169-tabletop-retractables-buy.png",
       "169-tabletop-retractables-specs.png"
-    ]
+    ],
+    "deltasDone": true
   },
   {
     "ourCategory": "signs-banners",
@@ -31226,7 +31370,8 @@
     "screenshots": [
       "170-metal-table-signs-buy.png",
       "170-metal-table-signs-specs.png"
-    ]
+    ],
+    "deltasDone": true
   },
   {
     "ourCategory": "other",
@@ -31268,7 +31413,7 @@
           },
           {
             "label": "8\" x 8\"",
-            "priceDelta": 0
+            "priceDelta": -2
           }
         ]
       }
@@ -32293,7 +32438,8 @@
     "screenshots": [
       "171-easel-back-canvas-prints-buy.png",
       "171-easel-back-canvas-prints-specs.png"
-    ]
+    ],
+    "deltasDone": true
   },
   {
     "ourCategory": "marketing-materials",
@@ -32312,11 +32458,11 @@
           },
           {
             "label": "11\" x 17\"",
-            "priceDelta": 0
+            "priceDelta": 0.4
           },
           {
             "label": "3.75\" x 8.25\"",
-            "priceDelta": 0
+            "priceDelta": -0.4
           }
         ]
       },
@@ -32337,15 +32483,15 @@
           },
           {
             "label": "Recycled",
-            "priceDelta": 0
+            "priceDelta": 0.26
           },
           {
             "label": "Synthetic",
-            "priceDelta": 0
+            "priceDelta": 0.78
           },
           {
             "label": "Fine Grit",
-            "priceDelta": 0
+            "priceDelta": 0.74
           }
         ]
       }
@@ -32476,6 +32622,7 @@
     "screenshots": [
       "172-flat-menus-buy.png",
       "172-flat-menus-specs.png"
-    ]
+    ],
+    "deltasDone": true
   }
 ]
