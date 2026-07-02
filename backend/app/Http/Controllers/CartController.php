@@ -37,10 +37,19 @@ class CartController extends Controller
             'quantityId'       => ['nullable', 'integer'],
             'optionValueIds'   => ['nullable', 'array'],
             'optionValueIds.*' => ['integer'],
-            'preview'          => ['nullable', 'string'],
-            'mode'             => ['nullable', 'string'],
+            'preview'          => ['nullable', 'string', 'max:4000000'],
+            'mode'             => ['nullable', 'string', 'max:20'],
             'brand'            => ['nullable', 'array'],
+            'brand.logo'       => ['nullable', 'string', 'max:4000000'],
         ]);
+
+        // Normally the Review step already swapped these for stored URLs; convert
+        // defensively so a raw data-URL can never reach the session/orders.
+        $data['preview'] = \App\Support\PreviewStore::persist($data['preview'] ?? null);
+        $brand = $request->input('brand') ?: null;
+        if (is_array($brand) && isset($brand['logo'])) {
+            $brand['logo'] = \App\Support\PreviewStore::persist($brand['logo']);
+        }
 
         $quote = $pricing->quote($product, $data['quantityId'] ?? null, $data['optionValueIds'] ?? []);
 
@@ -56,7 +65,7 @@ class CartController extends Controller
             'design'     => ! empty($data['preview'])
                 ? ['preview' => $data['preview'], 'mode' => $data['mode'] ?? 'design']
                 : null,
-            'brand'      => $request->input('brand') ?: null,
+            'brand'      => $brand,
         ]);
 
         $product->loadMissing('category');

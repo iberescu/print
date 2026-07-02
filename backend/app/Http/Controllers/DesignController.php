@@ -113,13 +113,21 @@ class DesignController extends Controller
         abort_unless($product->is_active, 404);
 
         $data = $request->validate([
-            'preview'          => ['nullable', 'string'],
+            'preview'          => ['nullable', 'string', 'max:4000000'],
             'brand'            => ['nullable', 'array'],
-            'mode'             => ['nullable', 'string'],
+            'brand.logo'       => ['nullable', 'string', 'max:4000000'],
+            'mode'             => ['nullable', 'string', 'max:20'],
             'quantityId'       => ['nullable', 'integer'],
             'optionValueIds'   => ['nullable', 'array'],
             'optionValueIds.*' => ['integer'],
         ]);
+
+        // Persist the big base64 blobs to disk and keep only URLs in the session —
+        // otherwise every request drags megabytes through the DB session store.
+        $data['preview'] = \App\Support\PreviewStore::persist($data['preview'] ?? null);
+        if (isset($data['brand']['logo'])) {
+            $data['brand']['logo'] = \App\Support\PreviewStore::persist($data['brand']['logo']);
+        }
 
         session(['design.review' => $data + ['product' => $product->slug]]);
 

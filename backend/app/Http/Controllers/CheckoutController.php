@@ -128,6 +128,13 @@ class CheckoutController extends Controller
     {
         try {
             $secret = config('shop.stripe.webhook_secret');
+
+            // In production an unsigned webhook is an attack surface (anyone could mark
+            // orders paid) — reject outright. The unsigned fallback exists for local dev only.
+            if (! $secret && app()->isProduction()) {
+                return response('webhook secret not configured', 400);
+            }
+
             $payload = $request->getContent();
             $event = $secret
                 ? \Stripe\Webhook::constructEvent($payload, (string) $request->header('Stripe-Signature'), $secret)

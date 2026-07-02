@@ -12,7 +12,7 @@ APP_NAME=RunMyPrint
 APP_ENV=production
 APP_KEY=${APP_KEY:-}
 APP_DEBUG=false
-APP_URL=http://174.138.35.202
+APP_URL=${APP_URL:-https://runmyprint.com}
 APP_LOCALE=en
 APP_FALLBACK_LOCALE=en
 APP_FAKER_LOCALE=en_US
@@ -26,9 +26,10 @@ DB_HOST=db
 DB_PORT=3306
 DB_DATABASE=runmyprint
 DB_USERNAME=rmp
-DB_PASSWORD=rmp
+DB_PASSWORD=${DB_PASSWORD:-rmp}
 SESSION_DRIVER=database
 SESSION_LIFETIME=120
+SESSION_ENCRYPT=true
 BROADCAST_CONNECTION=log
 FILESYSTEM_DISK=local
 QUEUE_CONNECTION=redis
@@ -63,16 +64,21 @@ docker compose exec -T app sh -c "grep -q '^APP_KEY=base64:' .env || php artisan
 echo "=== frontend build ==="
 docker run --rm -v /root/print/backend:/app -w /app node:22-alpine sh -c "npm install && npm run build"
 
-echo "=== migrate + seed + link ==="
+echo "=== migrate + catalogue (from committed bundles — no API calls needed) ==="
 for i in $(seq 1 6); do docker compose exec -T app php artisan migrate --force && break; sleep 4; done
-docker compose exec -T app php artisan db:seed --class=CatalogSeeder --force
+docker compose exec -T app php artisan catalog:import --fresh
+docker compose exec -T app php artisan db:seed --class=EmbroiderySeeder --force
+docker compose exec -T app php artisan db:seed --class=AccessorySeeder --force
+docker compose exec -T app php artisan products:seo
+docker compose exec -T app php artisan templates:import
 docker compose exec -T app php artisan storage:link
 docker compose exec -T app php artisan optimize:clear
 
 echo "=== restart web ==="
 docker compose -f docker-compose.yml -f docker-compose.prod.yml restart web
 
-echo "=== generate images (background) ==="
-nohup docker compose exec -T app php artisan images:generate --only=all > /root/images.log 2>&1 &
+# Hero/category images aren't committed — generate once (products/logo ARE committed).
+echo "=== generate hero+category images (background) ==="
+nohup docker compose exec -T app php artisan images:generate --only=hero > /root/images.log 2>&1 &
 
-echo "DEPLOY_DONE"
+echo "DEPLOY_DONE — point DNS/Cloudflare here, set APP_URL=https://<domain>, purge CF."

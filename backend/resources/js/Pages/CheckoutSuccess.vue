@@ -1,9 +1,9 @@
 <script setup>
 import { Head, Link } from '@inertiajs/vue3';
 import StoreLayout from '../Layouts/StoreLayout.vue';
+import { money } from '../lib/format';
 
 defineProps({ order: { type: Object, default: () => ({}) } });
-const money = (n) => '$' + Number(n || 0).toFixed(2);
 </script>
 
 <template>

@@ -1,6 +1,7 @@
 <script setup>
 import { Head, Link, useForm } from '@inertiajs/vue3';
 import StoreLayout from '../Layouts/StoreLayout.vue';
+import { money } from '../lib/format';
 
 const props = defineProps({
     items: { type: Array, default: () => [] },
@@ -8,7 +9,6 @@ const props = defineProps({
     customer: { type: Object, default: () => ({}) },
 });
 
-const money = (n) => '$' + Number(n || 0).toFixed(2);
 const form = useForm({ email: props.customer.email ?? '', name: props.customer.name ?? '', address: '', city: '', postal: '', country: 'United States' });
 const submit = () => form.post('/checkout');
 const field = 'mt-1 w-full rounded-lg border border-paper-300 px-3 py-2.5 text-ink focus:border-brand-600 focus:outline-none focus:ring-2 focus:ring-brand-600/15';

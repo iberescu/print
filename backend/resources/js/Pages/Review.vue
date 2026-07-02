@@ -2,6 +2,7 @@
 import { ref, computed } from 'vue';
 import { Head, Link, router } from '@inertiajs/vue3';
 import StoreLayout from '../Layouts/StoreLayout.vue';
+import { money } from '../lib/format';
 
 const props = defineProps({
     product: { type: Object, required: true },
@@ -12,7 +13,6 @@ const props = defineProps({
     quote: { type: Object, default: () => ({}) },
 });
 
-const money = (n) => '$' + Number(n || 0).toFixed(2);
 const approved = ref(false);
 const busy = ref(false);
 

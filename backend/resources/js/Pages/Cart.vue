@@ -2,6 +2,7 @@
 import { Head, Link, router } from '@inertiajs/vue3';
 import StoreLayout from '../Layouts/StoreLayout.vue';
 import FreeShippingBar from '../Components/FreeShippingBar.vue';
+import { money } from '../lib/format';
 
 defineProps({
     items: { type: Array, default: () => [] },
@@ -9,7 +10,6 @@ defineProps({
     recommended: { type: Array, default: () => [] },
 });
 
-const money = (n) => '$' + Number(n || 0).toFixed(2);
 const remove = (id) => router.post(`/cart/remove/${id}`, {}, { preserveScroll: true });
 </script>
 

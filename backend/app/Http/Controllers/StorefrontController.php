@@ -131,9 +131,10 @@ class StorefrontController extends Controller
 
     private function nav()
     {
-        return Category::where('is_active', true)
+        // cached briefly (admin product saves forget this key; imports just wait out the TTL)
+        return \Illuminate\Support\Facades\Cache::remember('nav.categories', 600, fn () => Category::where('is_active', true)
             ->whereHas('products', fn ($q) => $q->where('is_active', true))
-            ->orderBy('sort_order')->get(['name', 'slug']);
+            ->orderBy('sort_order')->get(['name', 'slug']));
     }
 
     private function categoryCard(Category $c): array

@@ -35,3 +35,12 @@ templates/index.json
 Thumbs.db
 .idea/
 .vscode/
+
+# === Local research / crawl artifacts ===
+research/
+vistaprint_screens/
+.userdata/
+crawler/*-shots/
+crawler/designer-audit.mjs
+backend/test-results/
+backend/storage/app/public/previews/

@@ -2,11 +2,11 @@
 import { computed } from 'vue';
 import { Head, Link, router, usePage } from '@inertiajs/vue3';
 import StoreLayout from '../Layouts/StoreLayout.vue';
+import { money } from '../lib/format';
 
 defineProps({ orders: { type: Array, default: () => [] } });
 
 const user = computed(() => usePage().props.auth?.user ?? {});
-const money = (n) => '$' + Number(n).toFixed(2);
 const statusClass = (s) => ({ paid: 'bg-emerald-100 text-emerald-700', pending: 'bg-amber-100 text-amber-700', failed: 'bg-red-100 text-red-700' }[s] || 'bg-paper-300 text-ink/60');
 const logout = () => router.post('/logout');
 </script>

@@ -5,6 +5,7 @@ import StoreLayout from '../Layouts/StoreLayout.vue';
 import BrandMockup from '../Components/BrandMockup.vue';
 import SmartImage from '../Components/SmartImage.vue';
 import FreeShippingBar from '../Components/FreeShippingBar.vue';
+import { money } from '../lib/format';
 
 const props = defineProps({
     step: { type: String, required: true },
@@ -14,7 +15,6 @@ const props = defineProps({
     summary: { type: Object, default: () => ({}) },
 });
 
-const money = (n) => '$' + Number(n || 0).toFixed(2);
 const added = ref({});
 const busy = ref(null);
 const isLast = computed(() => props.stepIndex >= props.stepCount);

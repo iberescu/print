@@ -3,6 +3,7 @@ import { Head, Link, router } from '@inertiajs/vue3';
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue';
 import StoreLayout from '../Layouts/StoreLayout.vue';
 import SmartImage from '../Components/SmartImage.vue';
+import { money } from '../lib/format';
 
 const props = defineProps({
     product: { type: Object, required: true },
@@ -10,7 +11,6 @@ const props = defineProps({
     freeShippingThreshold: { type: Number, default: 50 },
 });
 
-const money = (n) => '$' + Number(n).toFixed(2);
 
 // SEO copy (generated, original) — description paragraphs, spec details, FAQ.
 const seo = computed(() => props.product.seo || {});

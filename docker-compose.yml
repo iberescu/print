@@ -25,6 +25,11 @@ services:
     depends_on:
       - app
     networks: [rmp]
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q --spider http://localhost/ || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
 
   db:
     image: mysql:8.0
@@ -51,6 +56,11 @@ services:
     ports:
       - "63790:6379"
     networks: [rmp]
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
 
   # Frontend dev server (Vite). Start explicitly: docker compose --profile dev up node
   node:
