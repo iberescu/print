@@ -39,6 +39,7 @@ class ImportCatalog extends Command
         'stickers-labels'     => 'Stickers & Labels',
         'stationery'          => 'Stationery',
         'apparel-bags'        => 'Apparel & Bags',
+        'accessories'         => 'Accessories',
         'other'               => 'More Products',
     ];
 
@@ -121,7 +122,10 @@ class ImportCatalog extends Command
 
                 $productSurface = $this->surfaceFor($rec['surface'] ?? null, $title, $stats);
 
-                $product = $category->products()->updateOrCreate(['slug' => $slug], [
+                // upsert GLOBALLY by slug (slugs are unique) so a product whose category
+                // mapping changed MOVES category instead of colliding on insert
+                $product = Product::updateOrCreate(['slug' => $slug], [
+                    'category_id'     => $category->id,
                     'name'            => $title,
                     'tagline'         => Str::limit((string) ($rec['category'] ?? $category->name), 120, ''),
                     'from_price'      => $fromPrice,
@@ -334,6 +338,8 @@ class ImportCatalog extends Command
         $s = strtolower($title.' '.$vpCategory);
 
         return match (true) {
+            // non-printable accessories (card holders/cases/stands) join the upsell pool
+            (bool) preg_match('/\b(holder|case|stand)s?\b/', $s)                                                             => 'accessories',
             (bool) preg_match('/business.?card/', $s)                                                                        => 'business-cards',
             (bool) preg_match('/sticker|\blabel/', $s)                                                                       => 'stickers-labels',
             (bool) preg_match('/banner|poster|yard.?sign|lawn.?sign|a.?frame|\bsign|decal|cling|feather|flag|tablecloth|backdrop|foam|car.?magnet|point of sale/', $s) => 'signs-banners',
