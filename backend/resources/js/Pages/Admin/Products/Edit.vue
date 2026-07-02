@@ -22,6 +22,7 @@ const form = useForm({
     supportsDesign: props.product.supportsDesign,
     supportsUpload: props.product.supportsUpload,
     isActive: props.product.isActive,
+    featured: props.product.featured,
     surfaceId: props.product.surfaceId ?? null,
     seo: {
         description: props.product.seo?.description ?? '',
@@ -140,6 +141,7 @@ const destroy = () => {
                     <label class="flex items-center gap-2"><input v-model="form.isActive" type="checkbox" class="h-4 w-4" /> Active (visible in store)</label>
                     <label class="flex items-center gap-2"><input v-model="form.supportsDesign" type="checkbox" class="h-4 w-4" /> Online designer</label>
                     <label class="flex items-center gap-2"><input v-model="form.supportsUpload" type="checkbox" class="h-4 w-4" /> Upload artwork</label>
+                    <label class="flex items-center gap-2"><input v-model="form.featured" type="checkbox" class="h-4 w-4" /> Featured (home "Most Popular")</label>
                 </div>
             </section>
 

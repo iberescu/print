@@ -75,6 +75,7 @@ class ProductController extends Controller
                 'supportsDesign' => (bool) $product->supports_design,
                 'supportsUpload' => (bool) $product->supports_upload,
                 'isActive'       => (bool) $product->is_active,
+                'featured'       => (bool) $product->featured,
                 'surfaceId'      => $product->surface_id,
                 'image'          => Img::url($product->image_path),
                 'seo'            => [
@@ -125,6 +126,7 @@ class ProductController extends Controller
                 'supports_design' => $data['supportsDesign'] ?? false,
                 'supports_upload' => $data['supportsUpload'] ?? false,
                 'is_active'       => $data['isActive'] ?? false,
+                'featured'        => $data['featured'] ?? false,
                 'surface_id'      => $data['surfaceId'] ?? null,
                 'seo'             => $this->cleanSeo($data['seo'] ?? null),
             ]);
@@ -191,6 +193,7 @@ class ProductController extends Controller
             'supportsDesign'                => ['boolean'],
             'supportsUpload'                => ['boolean'],
             'isActive'                      => ['boolean'],
+            'featured'                      => ['boolean'],
             'surfaceId'                     => ['nullable', 'integer', 'exists:surfaces,id'],
             'seo'                           => ['nullable', 'array'],
             'seo.description'               => ['nullable', 'string', 'max:4000'],

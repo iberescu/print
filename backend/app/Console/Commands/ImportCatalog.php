@@ -176,6 +176,10 @@ class ImportCatalog extends Command
             $this->line($summary);
         }
 
+        if (! $dry) {
+            $this->markFeatured();
+        }
+
         $this->newLine();
         $this->info(($dry ? '[DRY] would import: ' : 'Imported: ')
             ."{$stats['products']} products, {$stats['options']} options, {$stats['values']} values, {$stats['tiers']} tiers, {$stats['surfaces']} surfaces.");
@@ -186,25 +190,31 @@ class ImportCatalog extends Command
         return self::SUCCESS;
     }
 
-    /** Normalise + sort quantity tiers to the DB shape. */
+    /** Normalise + sort quantity tiers to the DB shape, correcting a common crawl
+     *  error: Gemini sometimes captured the PER-UNIT price as the tier total. Real
+     *  totals rise with quantity; if the captured values fall (25=$0.36, 50=$0.26…)
+     *  they're per-unit, so multiply back by quantity. */
     private function tiers(array $quantities): array
     {
         $out = [];
         foreach ($quantities as $q) {
             $qty = (int) ($q['quantity'] ?? 0);
-            $total = (float) ($q['totalPrice'] ?? 0);
-            if ($qty < 1 || $total <= 0) {
+            $val = (float) ($q['totalPrice'] ?? 0);
+            if ($qty < 1 || $val <= 0) {
                 continue;
             }
-            $out[$qty] = [
-                'quantity'    => $qty,
-                'total_price' => round($total, 2),
-                'unit_price'  => round(($q['perUnit'] ?? ($total / $qty)), 4),
-            ];
+            $out[$qty] = ['quantity' => $qty, 'value' => $val];
         }
         ksort($out);
+        $rows = array_values($out);
 
-        return array_values($out);
+        $perUnit = count($rows) >= 2 && $rows[0]['value'] > $rows[count($rows) - 1]['value'];
+
+        return array_map(function ($r) use ($perUnit) {
+            $total = $perUnit ? $r['value'] * $r['quantity'] : $r['value'];
+
+            return ['quantity' => $r['quantity'], 'total_price' => round($total, 2), 'unit_price' => round($total / $r['quantity'], 4)];
+        }, $rows);
     }
 
     /** Get-or-create a surface from crawled dimensions; null when there are none. */
@@ -318,6 +328,24 @@ class ImportCatalog extends Command
             (bool) preg_match('/t.?shirt|shirt|tote|\bbag|hoodie|\bhat|\bcap|apparel|clothing|polo|mug|drinkware|\bpen/', $s) => 'apparel-bags',
             default => in_array($fallback, array_keys(self::CATEGORIES), true) ? $fallback : 'other',
         };
+    }
+
+    /**
+     * Curate the home "Most Popular" row: one representative product per type
+     * (Business Cards, Flyers, Postcards, Door Hangers, Posters, Banners, Flags,
+     * Stickers). Only seeds when nothing is featured yet, so it won't clobber
+     * admin curation on a re-import.
+     */
+    private function markFeatured(): void
+    {
+        if (Product::where('featured', true)->exists()) {
+            return;
+        }
+        foreach (['business card', 'flyer', 'postcard', 'door hanger', 'poster', 'banner', 'flag', 'sticker'] as $kw) {
+            Product::where('is_active', true)->where('name', 'like', "%{$kw}%")
+                ->orderBy('sort_order')->first()?->update(['featured' => true]);
+        }
+        $this->line('  featured '.Product::where('featured', true)->count().' products for the home Most Popular row.');
     }
 
     private function uniqueSlug(string $title, array $taken): string

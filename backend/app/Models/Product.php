@@ -17,6 +17,7 @@ class Product extends Model
         'supports_design'  => 'boolean',
         'supports_upload'  => 'boolean',
         'is_active'        => 'boolean',
+        'featured'         => 'boolean',
     ];
 
     public function getRouteKeyName(): string

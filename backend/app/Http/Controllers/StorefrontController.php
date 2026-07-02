@@ -17,12 +17,15 @@ class StorefrontController extends Controller
             ->orderBy('sort_order')->get()
             ->map(fn (Category $c) => $this->categoryCard($c));
 
-        $featured = Product::with('category')
-            ->where('is_active', true)
-            ->orderByRaw('badge IS NULL')   // badged products first
-            ->orderBy('sort_order')
-            ->take(8)->get()
-            ->map(fn (Product $p) => $this->productCard($p));
+        // "Most Popular" = the curated featured products (one master per type);
+        // fall back to badged/first products if nothing is featured yet.
+        $featured = Product::with('category')->where('is_active', true)->where('featured', true)
+            ->orderBy('sort_order')->take(8)->get();
+        if ($featured->isEmpty()) {
+            $featured = Product::with('category')->where('is_active', true)
+                ->orderByRaw('badge IS NULL')->orderBy('sort_order')->take(8)->get();
+        }
+        $featured = $featured->map(fn (Product $p) => $this->productCard($p));
 
         return Inertia::render('Home', [
             'categories'            => $categories,
