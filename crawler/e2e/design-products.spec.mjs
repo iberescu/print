@@ -33,7 +33,7 @@ const PRODUCTS = [
     ['company-letterhead', 'portrait'],
     ['embroidered-hats', 'landscape'],
     ['embroidered-polo-shirts', 'square'],
-    ['to-go-bags', 'portrait'],
+    ['custom-notebooks', 'portrait'],
     ['circle-business-cards', 'square'],
     ['feather-flags', 'portrait'],
 ];

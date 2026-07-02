@@ -27,13 +27,15 @@ test('business-card upsell offers a non-personalised card holder', async ({ page
     await expect(page.getByText(/card holder/i).first()).toBeVisible();
     await expect(page.getByText(/not personalised/i).first()).toBeVisible();
 
-    // adding the holder works, then continue through to the cart. Wait for the
-    // add to finish before continuing — otherwise the next visit cancels it.
+    // adding the holder works, then continue through to the cart. The accessory
+    // pool has many products now — add the CARD HOLDER's card specifically. Wait
+    // for the add to finish before continuing — otherwise the next visit cancels it.
+    const holderCard = page.locator('div.rounded-2xl').filter({ hasText: /card holder/i }).first();
     await Promise.all([
         page.waitForResponse((r) => /\/upsell\/add\//.test(r.url())),
-        page.getByRole('button', { name: /add to order/i }).first().click(),
+        holderCard.getByRole('button', { name: /add to order/i }).click(),
     ]);
-    await expect(page.getByRole('button', { name: /added/i }).first()).toBeVisible();
+    await expect(holderCard.getByRole('button', { name: /added/i })).toBeVisible();
     await completeUpsell(page);
     await page.waitForURL('**/cart');
     await expect(page.getByText(/card holder/i).first()).toBeVisible(); // it's in the cart
