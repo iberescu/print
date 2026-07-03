@@ -113,13 +113,21 @@ class DesignController extends Controller
         abort_unless($product->is_active, 404);
 
         $data = $request->validate([
-            'preview'          => ['nullable', 'string', 'max:4000000'],
-            'brand'            => ['nullable', 'array'],
-            'brand.logo'       => ['nullable', 'string', 'max:4000000'],
-            'mode'             => ['nullable', 'string', 'max:20'],
-            'quantityId'       => ['nullable', 'integer'],
-            'optionValueIds'   => ['nullable', 'array'],
-            'optionValueIds.*' => ['integer'],
+            'preview'           => ['nullable', 'string', 'max:4000000'],
+            'brand'             => ['nullable', 'array'],
+            // NOTE: once one nested rule exists, validated() drops un-ruled siblings —
+            // every brand field the funnel uses must be listed here.
+            'brand.logo'        => ['nullable', 'string', 'max:4000000'],
+            'brand.companyName' => ['nullable', 'string', 'max:300'],
+            'brand.name'        => ['nullable', 'string', 'max:300'],
+            'brand.title'       => ['nullable', 'string', 'max:300'],
+            'brand.email'       => ['nullable', 'string', 'max:300'],
+            'brand.phone'       => ['nullable', 'string', 'max:300'],
+            'brand.url'         => ['nullable', 'string', 'max:300'],
+            'mode'              => ['nullable', 'string', 'max:20'],
+            'quantityId'        => ['nullable', 'integer'],
+            'optionValueIds'    => ['nullable', 'array'],
+            'optionValueIds.*'  => ['integer'],
         ]);
 
         // Persist the big base64 blobs to disk and keep only URLs in the session —
@@ -128,6 +136,10 @@ class DesignController extends Controller
         if (isset($data['brand']['logo'])) {
             $data['brand']['logo'] = \App\Support\PreviewStore::persist($data['brand']['logo']);
         }
+
+        // Register the design with the pqSmartGenerator upsell engine — async,
+        // after this response is sent, so the shopper never waits on it.
+        $data['pqsgKey'] = $this->dispatchPqsgCapture($data['brand'] ?? null);
 
         session(['design.review' => $data + ['product' => $product->slug]]);
 
@@ -151,6 +163,11 @@ class DesignController extends Controller
             'category' => ['name' => $product->category->name, 'slug' => $product->category->slug],
             'preview'  => $d['preview'] ?? null,
             'mode'     => $d['mode'] ?? 'design',
+            'pqsg'     => config('shop.pqsg.enabled') && ! empty($d['pqsgKey']) ? [
+                'key'       => $d['pqsgKey'],
+                'apiBase'   => config('shop.pqsg.api_base'),
+                'widgetSrc' => config('shop.pqsg.widget_src'),
+            ] : null,
             'design'   => [
                 'brand'          => $d['brand'] ?? null,
                 'quantityId'     => $d['quantityId'] ?? null,
@@ -158,6 +175,57 @@ class DesignController extends Controller
             ],
             'quote'    => $quote,
         ]);
+    }
+
+    /**
+     * Queue a pqSmartGenerator capture from the designer's brand fields (the logo
+     * placeholder image and the company-website text). Seed placeholders are
+     * skipped — the engine only gets real customer data. Returns our correlation
+     * key (reused across upload + designer flows within the session), or null
+     * when there is nothing worth sending.
+     */
+    private function dispatchPqsgCapture(?array $brand): ?string
+    {
+        if (! config('shop.pqsg.enabled')) {
+            return null;
+        }
+
+        $logo = $brand['logo'] ?? null;
+        // the seeded "YOUR LOGO HERE" placeholder is not a customer logo
+        if ($logo && str_contains($logo, 'logo-placeholder')) {
+            $logo = null;
+        }
+        if ($logo && ! str_starts_with($logo, 'http')) {
+            $logo = url($logo);
+        }
+
+        $website = trim((string) ($brand['url'] ?? ''));
+        // the seeded placeholder URL is not a customer website
+        if (preg_match('/^(www\.)?yourcompany\.com$/i', $website)) {
+            $website = '';
+        }
+        if ($website !== '' && ! preg_match('#^https?://#i', $website)) {
+            $website = 'https://'.$website;
+        }
+
+        $key = session('pqsg.key');   // set earlier if the upload flow already captured
+        if (! $logo && $website === '' && ! $key) {
+            return null;              // nothing to send, nothing already in flight
+        }
+
+        $key ??= (string) \Illuminate\Support\Str::uuid();
+        session(['pqsg.key' => $key]);
+
+        if ($logo || $website !== '') {
+            \App\Jobs\SendPqsgCapture::dispatchAfterResponse(
+                key: $key,
+                source: 'runmyprint-designer',
+                logoUrl: $logo,
+                website: $website !== '' ? $website : null,
+            );
+        }
+
+        return $key;
     }
 
     /** @return int[] */

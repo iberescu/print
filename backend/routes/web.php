@@ -61,6 +61,10 @@ Route::post('/stripe/webhook', [CheckoutController::class, 'webhook'])->name('st
 Route::get('/feed/google.xml', [FeedController::class, 'google'])->name('feed.google');
 Route::get('/feed/rtbhouse.xml', [FeedController::class, 'rtbhouse'])->name('feed.rtbhouse');
 
+// pqSmartGenerator upsell engine (async capture + widget status)
+Route::post('/pqsg/upload', [\App\Http\Controllers\PqsgController::class, 'upload'])->name('pqsg.upload');
+Route::get('/pqsg/status/{key}', [\App\Http\Controllers\PqsgController::class, 'status'])->name('pqsg.status');
+
 // Legal / info pages
 Route::get('/faq', fn () => Inertia::render('Legal/Faq'))->name('faq');
 Route::get('/terms', fn () => Inertia::render('Legal/Terms'))->name('terms');

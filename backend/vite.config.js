@@ -16,6 +16,10 @@ export default defineConfig({
         vue({
             template: {
                 transformAssetUrls: { base: null, includeAbsolute: false },
+                compilerOptions: {
+                    // third-party web component (pqSmartGenerator upsell gallery)
+                    isCustomElement: (tag) => tag === 'pq-smart-generator-widget',
+                },
             },
         }),
         tailwindcss(),

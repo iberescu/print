@@ -34,4 +34,18 @@ return [
         'secret'         => env('STRIPE_SECRET'),
         'webhook_secret' => env('STRIPE_WEBHOOK_SECRET'),
     ],
+
+    /*
+    | pqSmartGenerator — third-party upsell engine. We POST a capture (logo/pdf/
+    | website) server-side AFTER the response is sent, then the Review page's
+    | widget polls their API with the returned capture UUID and shows a gallery
+    | of generated product mockups. The default client UUID is their manual-test
+    | one — set PQSG_CLIENT_UUID to the real per-source UUID for production.
+    */
+    'pqsg' => [
+        'enabled'     => (bool) env('PQSG_ENABLED', true),
+        'api_base'    => rtrim(env('PQSG_API_BASE', 'https://printbrothers-kickoff-clone.cloudlab-internal.com/api/pqsmartgenerator'), '/'),
+        'widget_src'  => env('PQSG_WIDGET_SRC', 'https://printbrothers-kickoff-clone.cloudlab-internal.com/modules/pqsmartgenerator/widget/pqsmartgenerator-widget.js'),
+        'client_uuid' => env('PQSG_CLIENT_UUID', 'b7c44ff2-1eaa-4ef4-9d52-0cfd44c7a111'),
+    ],
 ];

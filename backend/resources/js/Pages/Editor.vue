@@ -313,9 +313,42 @@ function removeSel() {
     if (o) { canvas.remove(o); canvas.discardActiveObject(); canvas.requestRenderAll(); }
 }
 
+// Fire-and-forget: hand uploaded artwork to the backend so the upsell engine can
+// generate branded mockups from it (pdf_url / logo_url). Never blocks the editor.
+function sendArtworkToUpsell(file) {
+    if (props.mode !== 'upload') return;
+    try {
+        const token = decodeURIComponent((document.cookie.match(/XSRF-TOKEN=([^;]+)/) || [])[1] || '');
+        const form = new FormData();
+        form.append('file', file);
+        fetch('/pqsg/upload', {
+            method: 'POST',
+            body: form,
+            credentials: 'same-origin',
+            headers: { 'X-XSRF-TOKEN': token, Accept: 'application/json' },
+        }).catch(() => {});
+    } catch (e) { /* best-effort only */ }
+}
+
 async function onFile(e) {
     const file = e.target.files?.[0];
     if (!file) return;
+    sendArtworkToUpsell(file);
+
+    // PDFs can't render on the canvas — mark the artwork received and move on.
+    if (/pdf$/i.test(file.type) || /\.pdf$/i.test(file.name)) {
+        if (props.mode === 'upload') {
+            uploaded.value = true;
+            const note = addText(`PDF artwork attached:\n${file.name}\nWe print from your original file.`, {
+                left: W / 2, top: H / 2, originX: 'center', originY: 'center',
+                textAlign: 'center', fontSize: Math.max(16, Math.round(W * 0.03)), fill: '#647ba0',
+            });
+            canvas.setActiveObject(note); canvas.requestRenderAll();
+        }
+        e.target.value = '';
+        return;
+    }
+
     const url = await new Promise((res) => { const r = new FileReader(); r.onload = (ev) => res(ev.target.result); r.readAsDataURL(file); });
     const img = await fabric.FabricImage.fromURL(url, { crossOrigin: 'anonymous' });
     if (props.mode === 'upload' && !uploaded.value) {
@@ -360,7 +393,11 @@ function extractBrand() {
             b[o.rmpRole] = o.text;
         }
         if (o.rmpRole === 'logo' && o.type === 'image') {
-            try { b.logo = o.toDataURL({ format: 'png' }); } catch (e) { /* tainted/none */ }
+            // the seeded "YOUR LOGO HERE" placeholder is not the customer's logo
+            const src = o.getSrc?.() || o._originalElement?.src || '';
+            if (!src.includes('logo-placeholder')) {
+                try { b.logo = o.toDataURL({ format: 'png' }); } catch (e) { /* tainted/none */ }
+            }
         }
     });
     if (!b.logo) {
@@ -411,7 +448,7 @@ function goToReview() {
             <button v-if="templates.length" class="rounded-md px-3 py-1.5 text-sm font-medium hover:bg-white/10" @click="showTemplates = true">▦ Templates</button>
             <button class="rounded-md px-3 py-1.5 text-sm font-medium hover:bg-white/10 disabled:opacity-30" :disabled="!hasSel" @click="removeSel">🗑 Delete</button>
             <button v-if="bleed || safety || cutPath" class="rounded-md px-3 py-1.5 text-sm font-medium hover:bg-white/10" :class="showGuides ? 'bg-white/15' : ''" @click="showGuides = !showGuides" title="Show print bleed &amp; safe-area guides">▣ Guides</button>
-            <input ref="fileInput" type="file" accept="image/*" class="hidden" @change="onFile" />
+            <input ref="fileInput" type="file" :accept="mode === 'upload' ? 'image/*,application/pdf' : 'image/*'" class="hidden" @change="onFile" />
 
             <div class="mx-1 h-6 w-px bg-white/15"></div>
 
