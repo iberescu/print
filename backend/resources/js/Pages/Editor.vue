@@ -444,7 +444,9 @@ async function onFile(e) {
     if (props.mode === 'upload' && !uploaded.value) {
         img.scaleToWidth(W); img.set({ left: 0, top: 0, selectable: true }); uploaded.value = true;
     } else {
-        img.scaleToWidth(160); img.set({ left: 560, top: 60, rmpRole: 'logo', hoverCursor: 'pointer' });
+        // same box as the seeded placeholder — inside the safe area (560,60 sat
+        // above the safe guide and could cross the trim line once bleed > 0)
+        img.scaleToWidth(150); img.set({ left: bleed + 560, top: bleed + 52, rmpRole: 'logo', hoverCursor: 'pointer' });
     }
     canvas.add(img); canvas.setActiveObject(img); canvas.requestRenderAll();
     e.target.value = '';
