@@ -22,8 +22,17 @@ class PqsgController extends Controller
     public function upload(Request $request): JsonResponse
     {
         $request->validate([
-            'file' => ['required', 'file', 'mimes:pdf,png,jpg,jpeg,webp', 'max:20480'], // 20 MB
+            'file'    => ['required', 'file', 'mimes:pdf,png,jpg,jpeg,webp', 'max:20480'], // 20 MB
+            'website' => ['nullable', 'string', 'max:300'],
         ]);
+
+        $website = trim((string) $request->input('website', ''));
+        if (preg_match('/^(www\.)?yourcompany\.com$/i', $website)) {
+            $website = ''; // seed placeholder, not a customer site
+        }
+        if ($website !== '' && ! preg_match('#^https?://#i', $website)) {
+            $website = 'https://'.$website;
+        }
 
         $file = $request->file('file');
         $isPdf = strtolower($file->getClientOriginalExtension()) === 'pdf';
@@ -44,6 +53,7 @@ class PqsgController extends Controller
             source: 'runmyprint-upload',
             logoUrl: $isPdf ? null : $url,
             pdfUrl: $isPdf ? $url : null,
+            website: $website !== '' ? $website : null,
         );
 
         return response()->json(['key' => $key, 'pages' => $pages]);

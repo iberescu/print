@@ -377,14 +377,24 @@ function removeLogo() {
 }
 // -----------------------------------------------------------------------------
 
-// Hand uploaded artwork to the backend: the upsell engine gets it (pdf_url /
-// logo_url), and PDFs come back as rendered page images for the canvas.
+// The customer's website from the canvas (seed placeholder doesn't count).
+function canvasWebsite() {
+    const o = canvas?.getObjects().find((x) => x.rmpRole === 'url' && (x.type === 'i-text' || x.type === 'textbox'));
+    const t = (o?.text || '').trim();
+    return /^(www\.)?yourcompany\.com$/i.test(t) ? '' : t;
+}
+
+// Hand uploaded artwork to the backend the moment it's chosen — the upsell
+// engine needs ~50s to generate its mockups, so every second of head start
+// before the customer reaches the gallery step counts. PDFs also come back
+// as rendered page images for the canvas.
 function uploadArtwork(file) {
-    if (props.mode !== 'upload') return Promise.resolve(null);
     try {
         const token = decodeURIComponent((document.cookie.match(/XSRF-TOKEN=([^;]+)/) || [])[1] || '');
         const form = new FormData();
         form.append('file', file);
+        const site = canvasWebsite();
+        if (site) form.append('website', site);
         return fetch('/pqsg/upload', {
             method: 'POST',
             body: form,

@@ -211,6 +211,14 @@ class DesignController extends Controller
         $key ??= (string) \Illuminate\Support\Str::uuid();
         session(['pqsg.key' => $key]);
 
+        // The editor already registers the capture the moment a logo is uploaded
+        // (head start for the ~50s generation). Re-posting the same key would at
+        // best be deduped by their idempotency and at worst restart the work —
+        // only dispatch here if the engine doesn't know this session yet.
+        if (\Illuminate\Support\Facades\Cache::get("pqsg:{$key}")) {
+            return $key;
+        }
+
         if ($logo || $website !== '') {
             \App\Jobs\SendPqsgCapture::dispatchAfterResponse(
                 key: $key,

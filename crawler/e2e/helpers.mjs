@@ -2,11 +2,19 @@
 // main "Continue" CTA and wait for the server round-trip so the next step (or
 // the cart) has actually rendered before the test continues.
 export async function clickContinue(page) {
+    // Centre the CTA first: late-loading product images shift the layout and can
+    // push the button under the sticky header, which then swallows the click.
+    const btn = page.getByRole('button', { name: /continue/i }).last(); // bottom main CTA
+    await btn.evaluate((el) => el.scrollIntoView({ block: 'center' }));
+    await page.waitForTimeout(250);
     await Promise.all([
         page.waitForResponse((r) => /\/upsell\/next\b/.test(r.url()) || /\/cart\b/.test(r.url())),
-        page.getByRole('button', { name: /continue/i }).last().click(), // bottom main CTA
+        btn.click(),
     ]);
-    await page.waitForLoadState('networkidle');
+    // Let Inertia commit the redirect's follow-up GET. networkidle is unusable
+    // here: the gallery widget polls continuously, and the idle gap between the
+    // POST response and the GET used to let callers advance on a stale page.
+    await page.waitForTimeout(800);
 }
 
 // Editor → Review step → approve → add to cart.
