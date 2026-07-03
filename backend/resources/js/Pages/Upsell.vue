@@ -1,6 +1,6 @@
 <script setup>
 import { Head, router } from '@inertiajs/vue3';
-import { ref, computed, onMounted, onBeforeUnmount } from 'vue';
+import { ref, computed, onMounted, onBeforeUnmount, watch } from 'vue';
 import StoreLayout from '../Layouts/StoreLayout.vue';
 import BrandMockup from '../Components/BrandMockup.vue';
 import SmartImage from '../Components/SmartImage.vue';
@@ -35,9 +35,15 @@ const sub = computed(() => ({
 // widget take over. The widget stays invisible until its first images arrive.
 const pqsgWaiting = ref(true);
 let pqsgTimer = null;
+let pqsgStarted = false;
 
-onMounted(() => {
-    if (props.step !== 'pqsg' || !props.payload?.key) return;
+// NOTE: advancing related → pqsg re-renders this SAME component with new props
+// (Inertia reuses the page instance), so onMounted alone never fires on the
+// gallery step unless it happens to be the first one. Init on mount AND on the
+// step changing; the post-flush watcher runs after the widget element exists.
+function initPqsg() {
+    if (pqsgStarted || props.step !== 'pqsg' || !props.payload?.key) return;
+    pqsgStarted = true;
 
     if (!document.querySelector('script[data-pqsg]')) {
         const s = document.createElement('script');
@@ -65,7 +71,10 @@ onMounted(() => {
         if (++tries < 15) pqsgTimer = setTimeout(poll, 2000);
     };
     poll();
-});
+}
+
+onMounted(initPqsg);
+watch(() => props.step, () => initPqsg(), { flush: 'post' });
 
 onBeforeUnmount(() => { if (pqsgTimer) clearTimeout(pqsgTimer); });
 // ----------------------------------------------------------------------------
