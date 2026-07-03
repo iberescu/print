@@ -18,19 +18,19 @@ docker run --rm -v /root/print/backend:/app -w /app node:22-alpine \
     sh -c "npm install --no-audit --no-fund && npm run build" 2>&1 | tail -2
 
 echo "=== migrate ==="
-docker compose exec -T app php artisan migrate --force
+docker compose exec -T app php artisan migrate --force < /dev/null
 
 if [ "${FRESH:-0}" = "1" ]; then
     echo "=== catalogue: fresh import from committed bundles ==="
-    docker compose exec -T app php artisan catalog:import --fresh
-    docker compose exec -T app php artisan db:seed --class=EmbroiderySeeder --force
-    docker compose exec -T app php artisan db:seed --class=AccessorySeeder --force
-    docker compose exec -T app php artisan products:seo
-    docker compose exec -T app php artisan templates:import
+    docker compose exec -T app php artisan catalog:import --fresh < /dev/null
+    docker compose exec -T app php artisan db:seed --class=EmbroiderySeeder --force < /dev/null
+    docker compose exec -T app php artisan db:seed --class=AccessorySeeder --force < /dev/null
+    docker compose exec -T app php artisan products:seo < /dev/null
+    docker compose exec -T app php artisan templates:import < /dev/null
 fi
 
 echo "=== clear + restart ==="
-docker compose exec -T app php artisan optimize:clear
+docker compose exec -T app php artisan optimize:clear < /dev/null
 docker compose -f docker-compose.yml -f docker-compose.prod.yml restart web
 
 echo "DEPLOY_DONE — now purge the Cloudflare cache."
