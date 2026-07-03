@@ -313,41 +313,67 @@ function removeSel() {
     if (o) { canvas.remove(o); canvas.discardActiveObject(); canvas.requestRenderAll(); }
 }
 
-// Fire-and-forget: hand uploaded artwork to the backend so the upsell engine can
-// generate branded mockups from it (pdf_url / logo_url). Never blocks the editor.
-function sendArtworkToUpsell(file) {
-    if (props.mode !== 'upload') return;
+// Hand uploaded artwork to the backend: the upsell engine gets it (pdf_url /
+// logo_url), and PDFs come back as rendered page images for the canvas.
+function uploadArtwork(file) {
+    if (props.mode !== 'upload') return Promise.resolve(null);
     try {
         const token = decodeURIComponent((document.cookie.match(/XSRF-TOKEN=([^;]+)/) || [])[1] || '');
         const form = new FormData();
         form.append('file', file);
-        fetch('/pqsg/upload', {
+        return fetch('/pqsg/upload', {
             method: 'POST',
             body: form,
             credentials: 'same-origin',
             headers: { 'X-XSRF-TOKEN': token, Accept: 'application/json' },
-        }).catch(() => {});
-    } catch (e) { /* best-effort only */ }
+        }).then((r) => (r.ok ? r.json() : null)).catch(() => null);
+    } catch (e) { return Promise.resolve(null); }
+}
+
+// Place rendered PDF pages: page 1 full-bleed, the rest cascaded smaller — all
+// normal fabric objects the customer can drag, scale or delete into position.
+async function placePdfPages(pages) {
+    for (let i = 0; i < pages.length; i++) {
+        try {
+            const img = await fabric.FabricImage.fromURL(pages[i], { crossOrigin: 'anonymous' });
+            if (i === 0) {
+                img.scaleToWidth(W);
+                img.set({ left: 0, top: 0, selectable: true });
+            } else {
+                img.scaleToWidth(Math.round(W * 0.38));
+                img.set({ left: bleed + 24 + (i - 1) * 32, top: bleed + 24 + (i - 1) * 32 });
+            }
+            canvas.add(img);
+        } catch (e) { /* skip unloadable page */ }
+    }
+    canvas.requestRenderAll();
 }
 
 async function onFile(e) {
     const file = e.target.files?.[0];
     if (!file) return;
-    sendArtworkToUpsell(file);
 
-    // PDFs can't render on the canvas — mark the artwork received and move on.
+    // PDFs: the backend renders pages with MuPDF; we place them for positioning.
     if (/pdf$/i.test(file.type) || /\.pdf$/i.test(file.name)) {
         if (props.mode === 'upload') {
             uploaded.value = true;
-            const note = addText(`PDF artwork attached:\n${file.name}\nWe print from your original file.`, {
-                left: W / 2, top: H / 2, originX: 'center', originY: 'center',
-                textAlign: 'center', fontSize: Math.max(16, Math.round(W * 0.03)), fill: '#647ba0',
-            });
-            canvas.setActiveObject(note); canvas.requestRenderAll();
+            const resp = await uploadArtwork(file);
+            const pages = resp?.pages || [];
+            if (pages.length) {
+                await placePdfPages(pages);
+            } else {
+                const note = addText(`PDF artwork attached:\n${file.name}\nWe print from your original file.`, {
+                    left: W / 2, top: H / 2, originX: 'center', originY: 'center',
+                    textAlign: 'center', fontSize: Math.max(16, Math.round(W * 0.03)), fill: '#647ba0',
+                });
+                canvas.setActiveObject(note); canvas.requestRenderAll();
+            }
         }
         e.target.value = '';
         return;
     }
+
+    uploadArtwork(file); // images: fire-and-forget (canvas uses the local file below)
 
     const url = await new Promise((res) => { const r = new FileReader(); r.onload = (ev) => res(ev.target.result); r.readAsDataURL(file); });
     const img = await fabric.FabricImage.fromURL(url, { crossOrigin: 'anonymous' });

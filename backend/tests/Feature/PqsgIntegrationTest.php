@@ -76,6 +76,32 @@ class PqsgIntegrationTest extends TestCase
         $this->assertSame('cap-pdf', Cache::get("pqsg:{$key}"));
     }
 
+    public function test_pdf_uploads_render_page_previews_with_mupdf(): void
+    {
+        Http::fake(['*/capture' => Http::response(['uuid' => 'cap-x'])]);
+        Storage::fake('public');
+
+        // minimal but real 2-page PDF (mutool repairs the missing xref quietly)
+        $pdf = "%PDF-1.4\n"
+            ."1 0 obj << /Type /Catalog /Pages 2 0 R >> endobj\n"
+            ."2 0 obj << /Type /Pages /Kids [3 0 R 4 0 R] /Count 2 >> endobj\n"
+            ."3 0 obj << /Type /Page /Parent 2 0 R /MediaBox [0 0 200 100] >> endobj\n"
+            ."4 0 obj << /Type /Page /Parent 2 0 R /MediaBox [0 0 200 100] >> endobj\n"
+            ."trailer << /Root 1 0 R >>\n%%EOF";
+
+        $resp = $this->post('/pqsg/upload', [
+            'file' => UploadedFile::fake()->createWithContent('two-pages.pdf', $pdf),
+        ])->assertOk();
+
+        $pages = $resp->json('pages');
+        $this->assertCount(2, $pages);
+        foreach ($pages as $url) {
+            $this->assertStringEndsWith('.webp', $url);
+            $rel = str_replace('/storage/', '', parse_url($url, PHP_URL_PATH));
+            Storage::disk('public')->assertExists($rel);
+        }
+    }
+
     public function test_status_rejects_non_uuid_keys(): void
     {
         $this->getJson('/pqsg/status/../etc/passwd')->assertNotFound();

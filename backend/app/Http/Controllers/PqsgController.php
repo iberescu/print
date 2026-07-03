@@ -28,7 +28,12 @@ class PqsgController extends Controller
         $file = $request->file('file');
         $isPdf = strtolower($file->getClientOriginalExtension()) === 'pdf';
         $path = $file->store('uploads/artwork/'.now()->format('Ym'), 'public');
-        $url = url(\Illuminate\Support\Facades\Storage::disk('public')->url($path));
+        $disk = \Illuminate\Support\Facades\Storage::disk('public');
+        $url = url($disk->url($path));
+
+        // PDFs render to page images (MuPDF) so the editor can show a real
+        // preview and let the customer position each page on the canvas.
+        $pages = $isPdf ? \App\Support\PdfToImage::pages($disk->path($path)) : [];
 
         // one capture key per designer session; reused at Review so both flows share it
         $key = session('pqsg.key') ?? (string) Str::uuid();
@@ -41,7 +46,7 @@ class PqsgController extends Controller
             pdfUrl: $isPdf ? $url : null,
         );
 
-        return response()->json(['key' => $key]);
+        return response()->json(['key' => $key, 'pages' => $pages]);
     }
 
     public function status(string $key): JsonResponse

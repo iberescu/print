@@ -1,8 +1,10 @@
 FROM php:8.4-fpm-alpine
 
-# System deps + PHP extensions needed by Laravel + image handling
+# System deps + PHP extensions needed by Laravel + image handling.
+# mupdf-tools provides `mutool draw` — renders uploaded PDF artwork to images
+# so the editor can show a real preview and let the user position pages.
 RUN apk add --no-cache \
-        git curl bash \
+        git curl bash mupdf-tools \
         libzip-dev libpng-dev libjpeg-turbo-dev freetype-dev libwebp-dev \
         icu-dev oniguruma-dev \
     && apk add --no-cache --virtual .build-deps $PHPIZE_DEPS \

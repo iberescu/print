@@ -13,6 +13,9 @@ git fetch --depth 1 origin main
 git reset --hard origin/main
 git log --oneline -1
 
+echo "=== app image (picks up Dockerfile changes, cached otherwise) ==="
+docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build app
+
 echo "=== frontend build (old hashed assets are kept) ==="
 docker run --rm -v /root/print/backend:/app -w /app node:22-alpine \
     sh -c "npm install --no-audit --no-fund && npm run build" 2>&1 | tail -2
