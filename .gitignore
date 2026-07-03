@@ -46,3 +46,4 @@ backend/test-results/
 backend/storage/app/public/previews/
 /docker-compose.override.yml
 crawler/artifacts/
+crawler/test-results/
