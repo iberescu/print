@@ -44,6 +44,12 @@ const uploaded = ref(false);
 const saving = ref(false);
 const fileInput = ref(null);
 const showTemplates = ref(false);
+// Replace-logo popup: opens on a click (not drag) on any logo image on the canvas.
+const showLogoPopup = ref(false);
+const logoPopupSrc = ref('');
+const logoInput = ref(null);
+let logoTarget = null;        // the fabric image the popup will replace
+let logoClickCandidate = null; // pressed logo; cleared if the press turns into a drag
 const applyingTpl = ref(false);
 const showGuides = ref(true);
 
@@ -111,7 +117,7 @@ async function addLogoPlaceholder({ left, top, width, center = false }) {
     try {
         const img = await fabric.FabricImage.fromURL('/storage/brand/logo-placeholder.webp', { crossOrigin: 'anonymous' });
         img.scaleToWidth(width);
-        img.set({ left, top, originX: center ? 'center' : 'left', originY: 'top', rmpRole: 'logo' });
+        img.set({ left, top, originX: center ? 'center' : 'left', originY: 'top', rmpRole: 'logo', hoverCursor: 'pointer' });
         canvas.add(img);
         canvas.requestRenderAll();
     } catch (e) { /* placeholder is optional */ }
@@ -190,6 +196,20 @@ onMounted(() => {
     canvas.on('selection:created', syncSelection);
     canvas.on('selection:updated', syncSelection);
     canvas.on('selection:cleared', () => { hasSel.value = false; isText.value = false; });
+
+    // A plain click on a logo (placeholder or uploaded) opens the replace popup;
+    // any move/scale/rotate between press and release means the user was editing,
+    // not asking to swap the image.
+    canvas.on('mouse:down', (o) => {
+        logoClickCandidate = o.target && o.target.rmpRole === 'logo' && o.target.type === 'image' ? o.target : null;
+    });
+    canvas.on('object:moving', () => { logoClickCandidate = null; });
+    canvas.on('object:scaling', () => { logoClickCandidate = null; });
+    canvas.on('object:rotating', () => { logoClickCandidate = null; });
+    canvas.on('mouse:up', (o) => {
+        if (logoClickCandidate && o.target === logoClickCandidate) openLogoPopup(logoClickCandidate);
+        logoClickCandidate = null;
+    });
 
     if (props.template) applyTemplate(props.template);
     // shaped (die-cut) products get the CENTERED generic seed — the rectangular
@@ -313,6 +333,50 @@ function removeSel() {
     if (o) { canvas.remove(o); canvas.discardActiveObject(); canvas.requestRenderAll(); }
 }
 
+// ---- replace-logo popup -----------------------------------------------------
+const logoIsPlaceholder = () => logoPopupSrc.value.includes('logo-placeholder');
+
+function openLogoPopup(target) {
+    logoTarget = target;
+    logoPopupSrc.value = target.getSrc?.() || target._originalElement?.src || '';
+    showLogoPopup.value = true;
+}
+
+function closeLogoPopup() {
+    showLogoPopup.value = false;
+    logoTarget = null;
+}
+
+// Swap the clicked logo for the chosen file, fitted inside the old logo's box so
+// the design's layout is preserved (the customer can still resize afterwards).
+async function onLogoFile(e) {
+    const file = e.target.files?.[0];
+    e.target.value = '';
+    if (!file || !logoTarget) return;
+    uploadArtwork(file); // fire-and-forget; no-op outside upload mode
+    const url = await new Promise((res) => { const r = new FileReader(); r.onload = (ev) => res(ev.target.result); r.readAsDataURL(file); });
+    try {
+        const img = await fabric.FabricImage.fromURL(url, { crossOrigin: 'anonymous' });
+        const old = logoTarget;
+        const c = old.getCenterPoint();
+        const s = Math.min(old.getScaledWidth() / img.width, old.getScaledHeight() / img.height);
+        img.set({ left: c.x, top: c.y, originX: 'center', originY: 'center', angle: old.angle || 0, scaleX: s, scaleY: s, rmpRole: 'logo', hoverCursor: 'pointer' });
+        const idx = canvas.getObjects().indexOf(old);
+        canvas.remove(old);
+        canvas.add(img);
+        if (idx > -1 && typeof canvas.moveObjectTo === 'function') canvas.moveObjectTo(img, idx);
+        canvas.setActiveObject(img);
+        canvas.requestRenderAll();
+    } catch (err) { /* unloadable image — keep the old logo */ }
+    closeLogoPopup();
+}
+
+function removeLogo() {
+    if (logoTarget) { canvas.remove(logoTarget); canvas.discardActiveObject(); canvas.requestRenderAll(); }
+    closeLogoPopup();
+}
+// -----------------------------------------------------------------------------
+
 // Hand uploaded artwork to the backend: the upsell engine gets it (pdf_url /
 // logo_url), and PDFs come back as rendered page images for the canvas.
 function uploadArtwork(file) {
@@ -380,18 +444,24 @@ async function onFile(e) {
     if (props.mode === 'upload' && !uploaded.value) {
         img.scaleToWidth(W); img.set({ left: 0, top: 0, selectable: true }); uploaded.value = true;
     } else {
-        img.scaleToWidth(160); img.set({ left: 560, top: 60, rmpRole: 'logo' });
+        img.scaleToWidth(160); img.set({ left: 560, top: 60, rmpRole: 'logo', hoverCursor: 'pointer' });
     }
     canvas.add(img); canvas.setActiveObject(img); canvas.requestRenderAll();
     e.target.value = '';
 }
 
+// Logos keep their role (and click-to-replace cursor) across side flips and
+// template loads — toJSON() drops custom props unless they're listed explicitly.
+function markLogos() {
+    canvas.getObjects().forEach((o) => { if (o.rmpRole === 'logo' && o.type === 'image') o.hoverCursor = 'pointer'; });
+}
+
 function flip(to) {
     if (to === side.value) return;
-    store[side.value] = canvas.toJSON();
+    store[side.value] = canvas.toJSON(['rmpRole']);
     side.value = to;
     canvas.clear();
-    if (store[to]) canvas.loadFromJSON(store[to]).then(() => canvas.renderAll());
+    if (store[to]) canvas.loadFromJSON(store[to]).then(() => { markLogos(); canvas.renderAll(); });
     else { canvas.backgroundColor = '#f8f6ef'; canvas.renderAll(); }
 }
 
@@ -402,8 +472,9 @@ async function applyTemplate(ref) {
         const { data } = await res.json();
         await canvas.loadFromJSON(data);
         offsetByBleed(); // template art is authored at trim origin; nudge it inside the bleed
+        markLogos();
         canvas.requestRenderAll();
-        store[side.value] = canvas.toJSON();
+        store[side.value] = canvas.toJSON(['rmpRole']);
         showTemplates.value = false;
         // repaint once fonts settle (non-blocking, so the design shows immediately)
         loadCanvasFonts().then(() => repaintFonts());
@@ -437,7 +508,7 @@ function extractBrand() {
 
 function goToReview() {
     saving.value = true;
-    store[side.value] = canvas.toJSON();
+    store[side.value] = canvas.toJSON(['rmpRole']);
     const preview = canvas.toDataURL({ format: 'jpeg', quality: 0.82, multiplier: 0.7 });
     router.post(`/design/${props.product.slug}/review`, {
         quantityId: props.selection?.quantityId ?? null,
@@ -590,6 +661,28 @@ function goToReview() {
                     </button>
                 </div>
                 <div v-if="applyingTpl" class="border-t border-paper-300 p-3 text-center text-sm text-ink/60">Loading template…</div>
+            </div>
+        </div>
+
+        <!-- Replace-logo popup (opens on a click on any logo on the canvas) -->
+        <div v-if="showLogoPopup" class="fixed inset-0 z-50 grid place-items-center bg-ink/40 p-4" @click.self="closeLogoPopup">
+            <div class="w-full max-w-sm rounded-2xl bg-paper p-5 shadow-2xl">
+                <div class="flex items-center justify-between">
+                    <h3 class="font-display text-lg font-semibold text-ink">{{ logoIsPlaceholder() ? 'Add your logo' : 'Replace your logo' }}</h3>
+                    <button class="text-xl text-ink/50 hover:text-ink" @click="closeLogoPopup">✕</button>
+                </div>
+                <div class="mt-4 grid place-items-center rounded-xl border border-paper-300 bg-white p-4">
+                    <img v-if="logoPopupSrc" :src="logoPopupSrc" alt="Current logo" class="max-h-28 w-auto max-w-full" />
+                </div>
+                <p class="mt-3 text-sm text-ink/55">{{ logoIsPlaceholder() ? 'Upload your logo — it will be placed exactly where the placeholder sits.' : 'Upload a different image to swap it in — size and position are kept.' }}</p>
+                <button class="mt-4 w-full rounded-full bg-brand-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-brand-700" @click="logoInput.click()">
+                    ↑ {{ logoIsPlaceholder() ? 'Upload your logo' : 'Replace logo' }}
+                </button>
+                <div class="mt-2 flex items-center justify-between">
+                    <button class="text-sm font-medium text-ink/55 transition hover:text-ink" @click="removeLogo">Remove logo</button>
+                    <button class="text-sm font-medium text-ink/55 transition hover:text-ink" @click="closeLogoPopup">Keep current</button>
+                </div>
+                <input ref="logoInput" type="file" accept="image/*" class="hidden" @change="onLogoFile" />
             </div>
         </div>
     </div>
