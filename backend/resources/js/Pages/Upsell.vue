@@ -1,6 +1,6 @@
 <script setup>
 import { Head, router } from '@inertiajs/vue3';
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted, onBeforeUnmount } from 'vue';
 import StoreLayout from '../Layouts/StoreLayout.vue';
 import BrandMockup from '../Components/BrandMockup.vue';
 import SmartImage from '../Components/SmartImage.vue';
@@ -20,10 +20,55 @@ const busy = ref(null);
 const isLast = computed(() => props.stepIndex >= props.stepCount);
 const products = computed(() => props.payload.products || []);
 
-const heading = computed(() => (props.step === 'brand' ? 'Put your brand on more' : 'Complete your order'));
-const sub = computed(() => (props.step === 'brand'
-    ? 'Add your logo, name and details to matching products — laid out automatically.'
-    : 'Customers who buy business cards often add these. Not personalised — ships ready to use.'));
+const heading = computed(() => ({
+    brand: 'Put your brand on more',
+    pqsg: 'Your logo on more products',
+}[props.step] ?? 'Complete your order'));
+const sub = computed(() => ({
+    brand: 'Add your logo, name and details to matching products — laid out automatically.',
+    pqsg: 'Fresh ideas generated from your design — they appear below as they finish.',
+}[props.step] ?? 'Customers who buy business cards often add these. Not personalised — ships ready to use.'));
+
+// ---- pqSmartGenerator gallery step ----------------------------------------
+// The capture was registered asynchronously back at the Review step; here we
+// poll our status endpoint until the third-party UUID exists, then let the
+// widget take over. The widget stays invisible until its first images arrive.
+const pqsgWaiting = ref(true);
+let pqsgTimer = null;
+
+onMounted(() => {
+    if (props.step !== 'pqsg' || !props.payload?.key) return;
+
+    if (!document.querySelector('script[data-pqsg]')) {
+        const s = document.createElement('script');
+        s.src = props.payload.widgetSrc;
+        s.defer = true;
+        s.dataset.pqsg = '1';
+        document.head.appendChild(s);
+    }
+
+    document.getElementById('pqsg-widget')
+        ?.addEventListener('pqsg:ready', () => { pqsgWaiting.value = false; });
+
+    let tries = 0;
+    const poll = async () => {
+        try {
+            const r = await fetch(`/pqsg/status/${props.payload.key}`, { headers: { Accept: 'application/json' } });
+            const { uuid } = await r.json();
+            if (uuid) {
+                const el = document.getElementById('pqsg-widget');
+                el?.setAttribute('uuid', uuid);
+                if (el && typeof el.start === 'function') el.start(uuid);
+                return; // the widget polls their API from here on
+            }
+        } catch (e) { /* best-effort */ }
+        if (++tries < 15) pqsgTimer = setTimeout(poll, 2000);
+    };
+    poll();
+});
+
+onBeforeUnmount(() => { if (pqsgTimer) clearTimeout(pqsgTimer); });
+// ----------------------------------------------------------------------------
 
 function addItem(p) {
     if (added.value[p.slug] || busy.value) return;
@@ -56,8 +101,25 @@ function next() {
             <h1 class="mt-7 font-display text-3xl font-semibold tracking-tight sm:text-4xl">{{ heading }}</h1>
             <p class="mt-2 max-w-2xl text-ink/60">{{ sub }}</p>
 
+            <!-- pqSmartGenerator gallery (third-party): hidden until images arrive -->
+            <div v-if="step === 'pqsg'" class="mt-7">
+                <div v-if="pqsgWaiting" class="grid place-items-center rounded-2xl border border-dashed border-paper-300 bg-paper-200/50 py-14 text-center">
+                    <div>
+                        <div class="mx-auto h-8 w-8 animate-spin rounded-full border-2 border-brand-600 border-t-transparent"></div>
+                        <p class="mt-3 text-sm text-ink/55">Generating ideas with your logo — this takes a moment.<br />You can continue to your cart any time.</p>
+                    </div>
+                </div>
+                <pq-smart-generator-widget
+                    id="pqsg-widget"
+                    :api-base="payload.apiBase"
+                    grid="justified"
+                    insert-mode="append"
+                    class="block w-full"
+                ></pq-smart-generator-widget>
+            </div>
+
             <!-- products -->
-            <div class="mt-7 grid grid-cols-2 gap-4 sm:gap-5 md:grid-cols-3 lg:grid-cols-4">
+            <div v-else class="mt-7 grid grid-cols-2 gap-4 sm:gap-5 md:grid-cols-3 lg:grid-cols-4">
                 <div v-for="p in products" :key="p.slug" class="flex flex-col overflow-hidden rounded-2xl border border-paper-300 bg-white">
                     <div class="aspect-square overflow-hidden bg-paper-200">
                         <BrandMockup v-if="step === 'brand'" :brand="payload.brand || {}" :variant="p.mockup" />

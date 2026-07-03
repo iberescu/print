@@ -34,7 +34,11 @@ class UpsellController extends Controller
             'step'      => $step,
             'stepIndex' => $this->cart->upsellIndex() + 1,
             'stepCount' => count($this->cart->upsellSteps()),
-            'payload'   => $step === 'brand' ? $this->brandPayload() : $this->relatedPayload(),
+            'payload'   => match ($step) {
+                'brand' => $this->brandPayload(),
+                'pqsg'  => $this->pqsgPayload(),
+                default => $this->relatedPayload(),
+            },
             'summary'   => [
                 'subtotal'  => $this->cart->subtotal(),
                 'threshold' => $this->cart->threshold(),
@@ -91,6 +95,16 @@ class UpsellController extends Controller
                 'fromPrice' => (float) $p->from_price,
                 'mockup'    => self::BRAND_SURFACES[$p->slug] ?? 'flyer',
             ])->all(),
+        ];
+    }
+
+    /** Third-party gallery step: the widget polls with the capture registered at Review. */
+    private function pqsgPayload(): array
+    {
+        return [
+            'key'       => session('pqsg.key'),
+            'apiBase'   => config('shop.pqsg.api_base'),
+            'widgetSrc' => config('shop.pqsg.widget_src'),
         ];
     }
 

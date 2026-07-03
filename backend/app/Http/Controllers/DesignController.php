@@ -163,11 +163,6 @@ class DesignController extends Controller
             'category' => ['name' => $product->category->name, 'slug' => $product->category->slug],
             'preview'  => $d['preview'] ?? null,
             'mode'     => $d['mode'] ?? 'design',
-            'pqsg'     => config('shop.pqsg.enabled') && ! empty($d['pqsgKey']) ? [
-                'key'       => $d['pqsgKey'],
-                'apiBase'   => config('shop.pqsg.api_base'),
-                'widgetSrc' => config('shop.pqsg.widget_src'),
-            ] : null,
             'design'   => [
                 'brand'          => $d['brand'] ?? null,
                 'quantityId'     => $d['quantityId'] ?? null,

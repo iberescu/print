@@ -427,7 +427,9 @@ function extractBrand() {
         }
     });
     if (!b.logo) {
-        const img = objs.find((o) => o.type === 'image');
+        // any customer image can stand in for a logo — but never the seeded placeholder
+        const img = objs.find((o) => o.type === 'image'
+            && !((o.getSrc?.() || o._originalElement?.src || '').includes('logo-placeholder')));
         if (img) { try { b.logo = img.toDataURL({ format: 'png' }); } catch (e) {} }
     }
     return b;

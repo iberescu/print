@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, onMounted, onBeforeUnmount } from 'vue';
+import { ref, computed } from 'vue';
 import { Head, Link, router } from '@inertiajs/vue3';
 import StoreLayout from '../Layouts/StoreLayout.vue';
 import { money } from '../lib/format';
@@ -11,54 +11,10 @@ const props = defineProps({
     mode: { type: String, default: 'design' },
     design: { type: Object, default: () => ({}) },
     quote: { type: Object, default: () => ({}) },
-    pqsg: { type: Object, default: null }, // { key, apiBase, widgetSrc } — upsell gallery
 });
 
 const approved = ref(false);
 const busy = ref(false);
-
-// ---- pqSmartGenerator upsell gallery -------------------------------------
-// The backend registered the capture AFTER our page's response was sent, so we
-// poll our own status endpoint until the third-party UUID exists, then hand it
-// to the widget. The widget stays invisible until its first images arrive —
-// zero impact on the review flow if the engine is slow or unreachable.
-const pqsgReady = ref(false);
-let pqsgTimer = null;
-
-onMounted(() => {
-    if (!props.pqsg?.key) return;
-
-    if (!document.querySelector('script[data-pqsg]')) {
-        const s = document.createElement('script');
-        s.src = props.pqsg.widgetSrc;
-        s.defer = true;
-        s.dataset.pqsg = '1';
-        document.head.appendChild(s);
-    }
-
-    // show our heading only once the widget actually has images to show
-    document.getElementById('pqsg-widget')
-        ?.addEventListener('pqsg:ready', () => { pqsgReady.value = true; });
-
-    let tries = 0;
-    const poll = async () => {
-        try {
-            const r = await fetch(`/pqsg/status/${props.pqsg.key}`, { headers: { Accept: 'application/json' } });
-            const { uuid } = await r.json();
-            if (uuid) {
-                const el = document.getElementById('pqsg-widget');
-                el?.setAttribute('uuid', uuid);
-                if (el && typeof el.start === 'function') el.start(uuid);
-                return; // stop polling — the widget takes over from here
-            }
-        } catch (e) { /* best-effort */ }
-        if (++tries < 15) pqsgTimer = setTimeout(poll, 2000);
-    };
-    poll();
-});
-
-onBeforeUnmount(() => { if (pqsgTimer) clearTimeout(pqsgTimer); });
-// ---------------------------------------------------------------------------
 
 const backHref = computed(() => {
     const p = new URLSearchParams();
@@ -132,21 +88,6 @@ function addToCart() {
                     </button>
                     <Link :href="backHref" class="mt-3 block text-center text-sm text-ink/55 transition hover:text-ink">← Back to editor</Link>
                 </div>
-            </div>
-
-            <!-- pqSmartGenerator upsell gallery: hidden until generated mockups arrive -->
-            <div v-if="pqsg?.key" class="mt-12">
-                <div v-show="pqsgReady">
-                    <h2 class="font-display text-2xl font-semibold tracking-tight">Your brand on more products</h2>
-                    <p class="mt-1 text-sm text-ink/55">Generated from your design — tap any idea to explore it.</p>
-                </div>
-                <pq-smart-generator-widget
-                    id="pqsg-widget"
-                    :api-base="pqsg.apiBase"
-                    grid="justified"
-                    insert-mode="append"
-                    class="mt-4 block w-full"
-                ></pq-smart-generator-widget>
             </div>
         </div>
     </StoreLayout>

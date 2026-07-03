@@ -115,17 +115,24 @@ class CartController extends Controller
             ])->all();
     }
 
-    /** Which forced upsell steps apply to what was just added (req: multi-step upsell). */
+    /** Which forced upsell steps apply to what was just added (req: multi-step upsell).
+     *  Funnel order: review → accessories → third-party brand gallery → cart. */
     private function upsellSteps(Product $product, array $data): array
     {
         $steps = [];
+        $hasPqsg = session('pqsg.key') && config('shop.pqsg.enabled');
 
-        $brand = $data['brand'] ?? null;
-        if (is_array($brand) && array_filter($brand)) {
-            $steps[] = 'brand';   // lay the buyer's brand onto more products (req 11)
-        }
+        // accessories are business-card add-ons only (no accessories for other
+        // products yet); when both steps apply, accessories come first
         if (optional($product->category)->slug === 'business-cards') {
             $steps[] = 'related'; // non-personalised add-ons — card holders etc.
+        }
+
+        $brand = $data['brand'] ?? null;
+        if ($hasPqsg) {
+            $steps[] = 'pqsg';    // pqSmartGenerator: the buyer's logo on more products
+        } elseif (! config('shop.pqsg.enabled') && is_array($brand) && array_filter($brand)) {
+            $steps[] = 'brand';   // internal brand mockups — only when the engine is off
         }
 
         return $steps;

@@ -3,6 +3,7 @@ import { completeUpsell, reviewAndAdd } from './helpers.mjs';
 
 // Full funnel: design → forced upsell → cart → checkout → paid (req 3 / 14 / 15).
 test('full funnel: design → upsell → cart → checkout → paid', async ({ page }) => {
+    test.slow(); // longest funnel chain — needs headroom under full-suite parallel load
     // checkout now requires an account — register a fresh one first
     const email = `e2e${Date.now()}${Math.floor(Math.random() * 1e6)}@runmyprint.com`;
     await page.goto('/register');

@@ -36,8 +36,9 @@ test('review step shows the design and gates add-to-cart behind approval', async
     await expect(add).toBeEnabled();
 });
 
-// req 11 now lives as a forced upsell step rather than a cart section.
-test('designer → add routes into the brand upsell step, then on to the cart', async ({ page }) => {
+// Funnel: review → accessories → (third-party gallery when a real brand was
+// captured) → cart. Placeholder designs get the accessories step only.
+test('designer → add routes into the upsell flow, then on to the cart', async ({ page }) => {
     await page.goto('/product/matte-business-cards');
     await page.getByRole('button', { name: /design online/i }).first().click();
     await page.waitForURL('**/design/**');
@@ -45,9 +46,9 @@ test('designer → add routes into the brand upsell step, then on to the cart', 
 
     await reviewAndAdd(page); // design → review → approve → add
     await page.waitForURL('**/upsell');
-    await expect(page.getByRole('heading', { name: /put your brand on more/i })).toBeVisible();
+    await expect(page.getByRole('heading', { name: /complete your order/i })).toBeVisible();
 
-    // add one branded surface, then walk the steps to the cart
+    // add one accessory, then walk the steps to the cart
     await page.getByRole('button', { name: /add to order/i }).first().click();
     await completeUpsell(page);
     await page.waitForURL('**/cart');

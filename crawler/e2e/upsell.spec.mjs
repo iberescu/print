@@ -15,13 +15,13 @@ test('cart is gated until the upsell steps are completed', async ({ page }) => {
     // jumping straight to the cart bounces back into the upsell flow
     await page.goto('/cart');
     await expect(page).toHaveURL(/\/upsell/);
-    await expect(page.getByText(/step 1 of 2/i)).toBeVisible();
+    // seeded placeholder brand is never sent to the engine → accessories step only
+    await expect(page.getByText(/step 1 of 1/i)).toBeVisible();
 });
 
 test('business-card upsell offers a non-personalised card holder', async ({ page }) => {
     await addBusinessCard(page);
-    // step 1 = brand; advance to the related-products step
-    await clickContinue(page);
+    // step 1 = the related-products (accessories) step
 
     await expect(page.getByRole('heading', { name: /complete your order/i })).toBeVisible();
     await expect(page.getByText(/card holder/i).first()).toBeVisible();
@@ -39,4 +39,25 @@ test('business-card upsell offers a non-personalised card holder', async ({ page
     await completeUpsell(page);
     await page.waitForURL('**/cart');
     await expect(page.getByText(/card holder/i).first()).toBeVisible(); // it's in the cart
+});
+
+// A real brand (non-placeholder website) adds the third-party gallery step:
+// review → accessories → pqsg step (widget) → cart.
+test('designer brand adds the third-party upsell step', async ({ page }) => {
+    await page.goto('/design/matte-business-cards?test=1');
+    await page.waitForFunction(() => window.__rmpCanvas && window.__rmpCanvas.getObjects().length > 0);
+    await page.evaluate(() => {
+        const c = window.__rmpCanvas;
+        c.getObjects().find((o) => o.rmpRole === 'url')?.set('text', 'example.com');
+        c.requestRenderAll();
+    });
+    await reviewAndAdd(page);
+    await page.waitForURL('**/upsell');
+
+    await expect(page.getByText(/step 1 of 2/i)).toBeVisible();          // accessories first
+    await clickContinue(page);
+    await expect(page.getByRole('heading', { name: /your logo on more products/i })).toBeVisible();
+    await expect(page.locator('#pqsg-widget')).toHaveCount(1);            // the gallery widget step
+    await completeUpsell(page);
+    await page.waitForURL('**/cart');
 });
