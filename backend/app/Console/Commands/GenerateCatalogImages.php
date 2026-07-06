@@ -80,15 +80,15 @@ class GenerateCatalogImages extends Command
             $tasks[] = [
                 'path'   => 'promos/layout-ai-offer',
                 'maxw'   => 1200,
-                'prompt' => 'Premium digital-advertising promo visual for a print brand, landscape 16:10, deep navy '
-                    .'background (#16233b) with layered vivid blue (#398aff) geometric shapes, thin light-blue contour '
-                    .'lines and a subtle halftone dot fade. Centrepiece, with generous spacing between elements that '
-                    .'must NOT touch or overlap: a huge glossy white bold headline reading exactly "$250", directly '
-                    .'beneath it the words "AD CREDIT" in clean spaced capitals, and clearly below-right a separate '
-                    .'small rounded lime-green (#c7f23d) pill badge with dark text reading exactly "FOR $50". Around '
-                    .'the composition float tasteful 3D elements: a small megaphone, a rising bar chart and a cursor '
-                    .'arrow, all in blue glass style with soft shadows. Modern SaaS-marketing aesthetic, crisp studio '
-                    .'lighting, high contrast, no other text, no logos, no watermark.',
+                'prompt' => 'Minimalist premium partnership visual, landscape 16:10, for a high-end print brand. A deep '
+                    .'navy (#16233b) canvas with a soft dark vignette, one corner carrying faint thin concentric arc '
+                    .'lines in muted blue (#398aff, low opacity) — otherwise generous empty space. Slightly left of '
+                    .'centre: the amount "$250" set in an elegant medium-weight modern sans-serif, pure white, '
+                    .'restrained size, perfect kerning. Directly beneath it, small widely-letterspaced capitals '
+                    .'"AD CREDIT" in soft light blue (#9cc6ff). A single short, thin lime-green (#c7f23d) underline '
+                    .'accent beneath the capitals — the only warm accent in the frame. Soft diffuse light from the '
+                    .'upper right, luxury fintech aesthetic, editorial calm, absolutely no objects, no 3D icons, no '
+                    .'clutter, no other text, no logos, no watermark.',
                 'save'   => null,
             ];
         }
