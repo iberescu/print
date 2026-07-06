@@ -2,6 +2,7 @@
 import { Link, router, usePage } from '@inertiajs/vue3';
 import { computed, ref } from 'vue';
 import AppLogo from '../Components/AppLogo.vue';
+import SupportWidget from '../Components/SupportWidget.vue';
 
 const page = usePage();
 const categories = computed(() => page.props.navCategories ?? []);
@@ -212,5 +213,7 @@ const logout = () => router.post('/logout');
                 </div>
             </div>
         </footer>
+
+        <SupportWidget />
     </div>
 </template>

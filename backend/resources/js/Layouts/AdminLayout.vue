@@ -42,6 +42,10 @@ const logout = () => router.post('/admin/logout');
                     <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="3" width="18" height="18" rx="1"/><path d="M8 3v18M16 3v18M3 8h18M3 16h18" stroke-width="1.2"/></svg>
                     Surfaces
                 </Link>
+                <Link href="/admin/support" class="flex items-center gap-3 rounded-lg px-3 py-2.5 font-medium transition" :class="isActive('/admin/support') ? 'bg-white/15 text-white' : 'text-paper/70 hover:bg-white/10 hover:text-white'">
+                    <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M21 12a8 8 0 0 1-8 8H5.5L3 22V12a8 8 0 0 1 8-8h2a8 8 0 0 1 8 8z" stroke-linejoin="round"/><path d="M8.5 11h.01M12 11h.01M15.5 11h.01" stroke-linecap="round" stroke-width="2.2"/></svg>
+                    Support
+                </Link>
             </nav>
             <div class="border-t border-white/10 p-3">
                 <a href="/" target="_blank" class="mb-1 flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-paper/60 transition hover:bg-white/10 hover:text-white">
@@ -76,6 +80,7 @@ const logout = () => router.post('/admin/logout');
                 <Link href="/admin/customers" class="whitespace-nowrap rounded-md px-3 py-1.5 font-medium" :class="isActive('/admin/customers') ? 'bg-brand-50 text-brand-700' : 'text-ink/60'">Customers</Link>
                 <Link href="/admin/products" class="whitespace-nowrap rounded-md px-3 py-1.5 font-medium" :class="isActive('/admin/products') ? 'bg-brand-50 text-brand-700' : 'text-ink/60'">Products</Link>
                 <Link href="/admin/surfaces" class="whitespace-nowrap rounded-md px-3 py-1.5 font-medium" :class="isActive('/admin/surfaces') ? 'bg-brand-50 text-brand-700' : 'text-ink/60'">Surfaces</Link>
+                <Link href="/admin/support" class="whitespace-nowrap rounded-md px-3 py-1.5 font-medium" :class="isActive('/admin/support') ? 'bg-brand-50 text-brand-700' : 'text-ink/60'">Support</Link>
             </nav>
 
             <div v-if="flash" class="border-b border-emerald-200 bg-emerald-50 px-5 py-2.5 text-sm font-medium text-emerald-800 sm:px-8">✓ {{ flash }}</div>

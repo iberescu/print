@@ -66,6 +66,10 @@ Route::get('/feed/rtbhouse.xml', [FeedController::class, 'rtbhouse'])->name('fee
 Route::post('/pqsg/upload', [\App\Http\Controllers\PqsgController::class, 'upload'])->name('pqsg.upload');
 Route::get('/pqsg/status/{key}', [\App\Http\Controllers\PqsgController::class, 'status'])->name('pqsg.status');
 
+// Support chat (bubble widget: AI-first, humans answer flagged tickets in admin)
+Route::get('/support/messages', [\App\Http\Controllers\SupportController::class, 'messages'])->name('support.messages');
+Route::post('/support', [\App\Http\Controllers\SupportController::class, 'send'])->middleware('throttle:20,1')->name('support.send');
+
 // Legal / info pages
 Route::get('/faq', fn () => Inertia::render('Legal/Faq'))->name('faq');
 Route::get('/terms', fn () => Inertia::render('Legal/Terms'))->name('terms');
@@ -85,6 +89,10 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::patch('/orders/{order}', [AdminOrders::class, 'updateStatus'])->name('orders.status');
 
     Route::get('/customers', [AdminCustomers::class, 'index'])->name('customers.index');
+
+    Route::get('/support', [\App\Http\Controllers\Admin\SupportController::class, 'index'])->name('support.index');
+    Route::get('/support/{ticket}', [\App\Http\Controllers\Admin\SupportController::class, 'show'])->name('support.show');
+    Route::post('/support/{ticket}/reply', [\App\Http\Controllers\Admin\SupportController::class, 'reply'])->name('support.reply');
 
     Route::get('/products', [AdminProducts::class, 'index'])->name('products.index');
     Route::post('/products', [AdminProducts::class, 'store'])->name('products.store');
