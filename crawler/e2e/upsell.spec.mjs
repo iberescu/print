@@ -15,8 +15,9 @@ test('cart is gated until the upsell steps are completed', async ({ page }) => {
     // jumping straight to the cart bounces back into the upsell flow
     await page.goto('/cart');
     await expect(page).toHaveURL(/\/upsell/);
-    // seeded placeholder brand is never sent to the engine → final step + accessories
-    await expect(page.getByText(/step 1 of 2/i)).toBeVisible();
+    // placeholder designs now register an image_url capture (the review preview),
+    // so the gallery + ads steps join finalize + accessories
+    await expect(page.getByText(/step 1 of 4/i)).toBeVisible();
 });
 
 test('business-card upsell offers a non-personalised card holder', async ({ page }) => {

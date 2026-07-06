@@ -113,7 +113,14 @@ function initPqsg() {
                 return; // the widget polls their API from here on
             }
         } catch (e) { /* best-effort */ }
-        if (++tries < 15) pqsgTimer = setTimeout(poll, 2000);
+        if (++tries < 15) {
+            pqsgTimer = setTimeout(poll, 2000);
+        } else if (pqsgInitFor === kind) {
+            // capture never registered (engine rejected it) — show the graceful
+            // empty state instead of spinning forever
+            pqsgEmpty.value = true;
+            pqsgWaiting.value = false;
+        }
     };
     poll();
 }

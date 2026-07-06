@@ -139,7 +139,7 @@ class DesignController extends Controller
 
         // Register the design with the pqSmartGenerator upsell engine — async,
         // after this response is sent, so the shopper never waits on it.
-        $data['pqsgKey'] = $this->dispatchPqsgCapture($data['brand'] ?? null);
+        $data['pqsgKey'] = $this->dispatchPqsgCapture($data['brand'] ?? null, $data['preview'] ?? null);
 
         session(['design.review' => $data + ['product' => $product->slug]]);
 
@@ -179,7 +179,7 @@ class DesignController extends Controller
      * key (reused across upload + designer flows within the session), or null
      * when there is nothing worth sending.
      */
-    private function dispatchPqsgCapture(?array $brand): ?string
+    private function dispatchPqsgCapture(?array $brand, ?string $preview = null): ?string
     {
         if (! config('shop.pqsg.enabled')) {
             return null;
@@ -203,20 +203,26 @@ class DesignController extends Controller
             $website = 'https://'.$website;
         }
 
+        // No real logo/website? The approved design itself carries the brand —
+        // the engine extracts it from image_url (updated API), so placeholder
+        // designs get the gallery too instead of silently skipping the steps.
+        $image = $preview && str_starts_with($preview, '/') ? url($preview) : $preview;
+
         $key = session('pqsg.key');   // set earlier if the upload flow already captured
-        if (! $logo && $website === '' && ! $key) {
+        if (! $logo && $website === '' && ! $image && ! $key) {
             return null;              // nothing to send, nothing already in flight
         }
 
         $key ??= (string) \Illuminate\Support\Str::uuid();
         session(['pqsg.key' => $key]);
 
-        if ($logo || $website !== '') {
+        if ($logo || $website !== '' || $image) {
             \App\Jobs\SendPqsgCapture::dispatchAfterResponse(
                 key: $key,
                 source: 'runmyprint-designer',
                 logoUrl: $logo,
                 website: $website !== '' ? $website : null,
+                imageUrl: $logo ? null : $image, // the design preview is the fallback brand source
             );
         }
 

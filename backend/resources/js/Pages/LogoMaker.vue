@@ -115,7 +115,12 @@ function initGallery(key) {
                 return;
             }
         } catch (e) { /* retry */ }
-        if (++tries < 15) pqsgTimer = setTimeout(poll, 2000);
+        if (++tries < 15) {
+            pqsgTimer = setTimeout(poll, 2000);
+        } else {
+            galleryEmpty.value = true;
+            galleryWaiting.value = false;
+        }
     };
     poll();
 }

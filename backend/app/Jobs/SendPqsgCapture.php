@@ -19,10 +19,11 @@ class SendPqsgCapture
 
     public function __construct(
         public readonly string $key,          // our correlation + idempotency key
-        public readonly string $source,       // 'runmyprint-designer' | 'runmyprint-upload'
+        public readonly string $source,       // 'runmyprint-designer' | 'runmyprint-upload' | 'runmyprint-logo-maker'
         public readonly ?string $logoUrl = null,
         public readonly ?string $pdfUrl = null,
         public readonly ?string $website = null,
+        public readonly ?string $imageUrl = null, // e.g. the review preview — engine extracts the brand from it
     ) {
     }
 
@@ -41,6 +42,7 @@ class SendPqsgCapture
             'logo_url'           => $this->logoUrl,
             'pdf_url'            => $this->pdfUrl,
             'website'            => $this->website,
+            'image_url'          => $this->imageUrl,
         ], fn ($v) => $v !== null && $v !== '');
 
         // Capture-time generation controls (one capture feeds every gallery step):
@@ -61,7 +63,7 @@ class SendPqsgCapture
         ];
 
         // at least one content source is required by their API
-        if (! array_intersect_key($payload, array_flip(['logo_url', 'pdf_url', 'website']))) {
+        if (! array_intersect_key($payload, array_flip(['logo_url', 'pdf_url', 'website', 'image_url']))) {
             return;
         }
 
