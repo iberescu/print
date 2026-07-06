@@ -56,11 +56,18 @@ test('designer brand adds the third-party upsell step', async ({ page }) => {
     await reviewAndAdd(page);
     await page.waitForURL('**/upsell');
 
-    await expect(page.getByText(/step 1 of 3/i)).toBeVisible();          // final step first
+    await expect(page.getByText(/step 1 of 4/i)).toBeVisible();          // final step first
     await clickContinue(page);                                            // then accessories
     await clickContinue(page);
     await expect(page.getByRole('heading', { name: /your logo on more products/i })).toBeVisible();
     await expect(page.locator('#pqsg-widget')).toHaveCount(1);            // the gallery widget step
+
+    // Layout.ai ad-credit step reuses the widget for the facebook-ad creative
+    await clickContinue(page);
+    await expect(page.getByText(/runmyprint × layout\.ai/i)).toBeVisible();
+    await expect(page.getByText(/\$250/).first()).toBeVisible();
+    await expect(page.locator('#pqsg-widget')).toHaveCount(1);
+
     await completeUpsell(page);
     await page.waitForURL('**/cart');
 });

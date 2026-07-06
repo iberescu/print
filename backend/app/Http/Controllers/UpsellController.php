@@ -33,6 +33,7 @@ class UpsellController extends Controller
         $payload = match ($step) {
             'brand'    => $this->brandPayload(),
             'pqsg'     => $this->pqsgPayload(),
+            'ads'      => $this->pqsgPayload() + ['promoImage' => $this->img('promos/layout-ai-offer')],
             'finalize' => $this->finalizePayload(),
             default    => $this->relatedPayload(),
         };

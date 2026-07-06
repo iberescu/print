@@ -24,30 +24,50 @@ const products = computed(() => props.payload.products || []);
 const heading = computed(() => ({
     brand: 'Put your brand on more',
     pqsg: 'Your logo on more products',
+    ads: 'Get 3,000% the traffic for $50',
     finalize: 'Final step — make it exactly right',
 }[props.step] ?? 'Complete your order'));
 const sub = computed(() => ({
     brand: 'Add your logo, name and details to matching products — laid out automatically.',
     pqsg: 'Fresh ideas generated from your design — they appear below as they finish.',
+    ads: 'Pay $50 and get $250 of Google Display ads through our Layout.ai partnership — your first campaign, already designed.',
     finalize: 'Your design is approved and locked in. Fine-tune the quantity and material — the price updates as you go.',
 }[props.step] ?? 'Customers who buy business cards often add these. Not personalised — ships ready to use.'));
-const title = computed(() => (props.step === 'finalize' ? 'Your final step' : 'Recommended for you'));
+const title = computed(() => ({
+    finalize: 'Your final step',
+    ads: 'Runmyprint × Layout.ai',
+}[props.step] ?? 'Recommended for you'));
 
-// ---- pqSmartGenerator gallery step ----------------------------------------
-// The capture was registered asynchronously back at the Review step; here we
-// poll our status endpoint until the third-party UUID exists, then let the
-// widget take over. The widget stays invisible until its first images arrive.
+// ---- pqSmartGenerator gallery steps ----------------------------------------
+// Two steps share the engine capture (registered back at Review): 'pqsg' shows
+// the buyer's logo on the merch set, 'ads' shows only the generated facebook-ad
+// creative for the Layout.ai offer. The updated widget hides every product
+// without a link, so each step passes its allow-list via `display-products`.
+const PQSG_DISPLAY = {
+    pqsg: [
+        'business_card_qr_logo', 'roll_stickers', 'canvas', 'bottle', 'tshirt_words',
+        'bags', 'cloudlab_sortv2', 'glass_logo', 'sticker', 'cloudlab_pix',
+        'cloudlab_umbrela', 'cloudlab_usb', 'chocolate_bar', 'google_v2', 'office', 'hoodie',
+    ],
+    ads: ['pipeline_facebook_ad'],
+};
 const pqsgWaiting = ref(true);
+const pqsgEmpty = ref(false);   // capture finished without a displayable image
+let pqsgUuid = null;
 let pqsgTimer = null;
-let pqsgStarted = false;
+let pqsgInitFor = null;
 
-// NOTE: advancing related → pqsg re-renders this SAME component with new props
-// (Inertia reuses the page instance), so onMounted alone never fires on the
-// gallery step unless it happens to be the first one. Init on mount AND on the
-// step changing; the post-flush watcher runs after the widget element exists.
+// NOTE: advancing between steps re-renders this SAME component with new props
+// (Inertia reuses the page instance), so onMounted alone never fires past the
+// first step. Init on mount AND on the step changing; the post-flush watcher
+// runs after the step's own widget element exists in the DOM.
 function initPqsg() {
-    if (pqsgStarted || props.step !== 'pqsg' || !props.payload?.key) return;
-    pqsgStarted = true;
+    const kind = props.step;
+    if (!PQSG_DISPLAY[kind] || pqsgInitFor === kind || !props.payload?.key) return;
+    pqsgInitFor = kind;
+    pqsgWaiting.value = true;
+    pqsgEmpty.value = false;
+    if (pqsgTimer) { clearTimeout(pqsgTimer); pqsgTimer = null; }
 
     if (!document.querySelector('script[data-pqsg]')) {
         const s = document.createElement('script');
@@ -57,8 +77,30 @@ function initPqsg() {
         document.head.appendChild(s);
     }
 
-    document.getElementById('pqsg-widget')
-        ?.addEventListener('pqsg:ready', () => { pqsgWaiting.value = false; });
+    const el = document.getElementById('pqsg-widget');
+    if (!el) return;
+    // attribute (not property) — safe whether or not the element has upgraded yet
+    el.setAttribute('display-products', JSON.stringify(Object.fromEntries(PQSG_DISPLAY[kind].map((k) => [k, true]))));
+    el.addEventListener('pqsg:ready', () => { pqsgWaiting.value = false; });
+    // some captures (e.g. website-only) never produce this step's products —
+    // when the engine settles without one, drop the placeholder instead of
+    // spinning forever. `detail.images` is the widget's current artifact list.
+    const settled = (e) => {
+        if (pqsgInitFor !== kind) return;
+        const wanted = new Set(PQSG_DISPLAY[kind]);
+        const has = (e?.detail?.images || []).some((i) => wanted.has(i.product_key) || wanted.has(i.special_product_key));
+        if (!has) pqsgEmpty.value = true;
+        pqsgWaiting.value = false;
+    };
+    el.addEventListener('pqsg:complete', settled);
+    el.addEventListener('pqsg:timeout', settled);
+    el.addEventListener('pqsg:update', (e) => { if (e?.detail?.isComplete) settled(e); });
+
+    const begin = (uuid) => {
+        el.setAttribute('uuid', uuid);
+        if (typeof el.start === 'function') el.start(uuid);
+    };
+    if (pqsgUuid) { begin(pqsgUuid); return; } // ads step reuses the uuid pqsg resolved
 
     let tries = 0;
     const poll = async () => {
@@ -66,9 +108,8 @@ function initPqsg() {
             const r = await fetch(`/pqsg/status/${props.payload.key}`, { headers: { Accept: 'application/json' } });
             const { uuid } = await r.json();
             if (uuid) {
-                const el = document.getElementById('pqsg-widget');
-                el?.setAttribute('uuid', uuid);
-                if (el && typeof el.start === 'function') el.start(uuid);
+                pqsgUuid = uuid;
+                begin(uuid);
                 return; // the widget polls their API from here on
             }
         } catch (e) { /* best-effort */ }
@@ -122,6 +163,9 @@ function next() {
                         <p class="mt-3 text-sm text-ink/55">Generating ideas with your logo — this takes a moment.<br />You can continue to your cart any time.</p>
                     </div>
                 </div>
+                <p v-else-if="pqsgEmpty" class="rounded-2xl border border-paper-300 bg-paper-200/50 px-5 py-8 text-center text-sm text-ink/55">
+                    We couldn't generate previews from your design this time — your order isn't affected.
+                </p>
                 <pq-smart-generator-widget
                     id="pqsg-widget"
                     :api-base="payload.apiBase"
@@ -129,6 +173,63 @@ function next() {
                     insert-mode="append"
                     class="block w-full"
                 ></pq-smart-generator-widget>
+            </div>
+
+            <!-- Layout.ai ad-credit offer: promo visual + the buyer's own generated ad -->
+            <div v-else-if="step === 'ads'" class="mt-7 space-y-6">
+                <div class="relative grid overflow-hidden rounded-3xl bg-gradient-to-br from-navy via-navy to-navy-950 text-white shadow-2xl shadow-navy/20 lg:grid-cols-[1.1fr_1fr]">
+                    <!-- generated promo visual -->
+                    <div class="relative min-h-64 lg:min-h-[380px]">
+                        <img v-if="payload.promoImage" :src="payload.promoImage" alt="$250 of Google Display ads for $50" class="absolute inset-0 h-full w-full object-cover" />
+                        <div v-else class="absolute inset-0 bg-gradient-to-br from-brand-blue/50 to-navy"></div>
+                        <div class="absolute inset-0 hidden bg-gradient-to-r from-transparent via-transparent to-navy lg:block"></div>
+                        <div class="absolute inset-0 bg-gradient-to-t from-navy via-transparent to-transparent lg:hidden"></div>
+                    </div>
+                    <!-- offer copy -->
+                    <div class="relative p-8 sm:p-10 lg:-ml-10">
+                        <svg class="pointer-events-none absolute right-4 top-4 h-20 w-20 text-brand-blue opacity-20" viewBox="0 0 96 96" fill="none" aria-hidden="true">
+                            <circle cx="48" cy="48" r="29" stroke="currentColor" stroke-width="1.5" />
+                            <circle cx="48" cy="48" r="41" stroke="currentColor" stroke-dasharray="3 5" />
+                            <path d="M48 12v12M48 84V72M12 48h12M84 48H72" stroke="currentColor" stroke-width="1.5" />
+                        </svg>
+                        <span class="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3.5 py-1.5 text-xs font-semibold uppercase tracking-widest text-[#9cc6ff]">
+                            Runmyprint × Layout.ai
+                        </span>
+                        <h2 class="mt-5 font-display text-2xl font-bold leading-tight sm:text-3xl">
+                            Pay $50, get <span class="text-lime-accent">$250</span> in Google Display ads
+                        </h2>
+                        <p class="mt-3 max-w-md text-white/70">Launch your new brand with 3,000% the traffic — your campaign runs on Google's network, managed by our partner Layout.ai.</p>
+                        <ul class="mt-5 space-y-2.5 text-sm text-white/85">
+                            <li v-for="g in ['1,000 visitors — guaranteed', '100,000 impressions — guaranteed', 'Your ad creative is already designed (below)']" :key="g" class="flex items-center gap-2.5">
+                                <svg class="h-4.5 w-4.5 shrink-0" viewBox="0 0 16 16" aria-hidden="true">
+                                    <circle cx="8" cy="8" r="7" fill="none" stroke="#398aff" stroke-width="1.5" />
+                                    <path d="m5 8.2 2 2L11 6" fill="none" stroke="#9cc6ff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+                                </svg>
+                                {{ g }}
+                            </li>
+                        </ul>
+                        <p class="mt-5 text-xs text-white/45">One-time offer for new Runmyprint customers, applied through Layout.ai after checkout.</p>
+                    </div>
+                </div>
+
+                <!-- the buyer's own ad from the same engine capture; some captures
+                     never yield the ad creative — then the offer stands alone -->
+                <div v-show="!pqsgEmpty">
+                    <p class="text-sm font-semibold text-ink/70">Your first ad — generated from your design:</p>
+                    <div v-if="pqsgWaiting" class="mt-3 grid place-items-center rounded-2xl border border-dashed border-paper-300 bg-paper-200/50 py-10 text-center">
+                        <div>
+                            <div class="mx-auto h-8 w-8 animate-spin rounded-full border-2 border-brand-600 border-t-transparent"></div>
+                            <p class="mt-3 text-sm text-ink/55">Designing your ad creative — it appears here in a moment.</p>
+                        </div>
+                    </div>
+                    <pq-smart-generator-widget
+                        id="pqsg-widget"
+                        :api-base="payload.apiBase"
+                        grid="justified"
+                        insert-mode="append"
+                        class="mt-3 block w-full"
+                    ></pq-smart-generator-widget>
+                </div>
             </div>
 
             <!-- final step: adjust quantity + non-surface options of the just-added design -->

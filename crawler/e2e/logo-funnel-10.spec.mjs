@@ -60,12 +60,12 @@ for (const { n, file } of logos) {
         await page.getByRole('checkbox').first().check();
         await page.getByRole('button', { name: /add to cart/i }).click();
         await page.waitForURL('**/upsell');
-        await expect(page.getByText(/step 1 of 3/i)).toBeVisible();
+        await expect(page.getByText(/step 1 of 4/i)).toBeVisible();
         await page.screenshot({ path: `${dir}/3a-upsell-finalize.png`, fullPage: true });
         await page.getByRole('button', { name: /continue/i }).last().click();
 
         // --- step 2 (accessories), wait 10 s ----------------------------------
-        await expect(page.getByText(/step 2 of 3/i)).toBeVisible();
+        await expect(page.getByText(/step 2 of 4/i)).toBeVisible();
         await page.waitForTimeout(10000);
         await page.screenshot({ path: `${dir}/3-upsell-accessories.png`, fullPage: true });
 

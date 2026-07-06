@@ -140,6 +140,7 @@ class CartController extends Controller
         $brand = $data['brand'] ?? null;
         if ($hasPqsg) {
             $steps[] = 'pqsg';    // pqSmartGenerator: the buyer's logo on more products
+            $steps[] = 'ads';     // Layout.ai ad-credit offer — facebook-ad mockup from the same capture
         } elseif (! config('shop.pqsg.enabled') && is_array($brand) && array_filter($brand)) {
             $steps[] = 'brand';   // internal brand mockups — only when the engine is off
         }

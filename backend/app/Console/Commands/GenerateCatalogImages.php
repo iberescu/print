@@ -12,7 +12,7 @@ use Throwable;
 class GenerateCatalogImages extends Command
 {
     protected $signature = 'images:generate
-        {--only=all : all|products|categories|hero|logo}
+        {--only=all : all|products|categories|hero|logo|promo}
         {--limit=0 : max items to generate (0 = no limit)}
         {--force : regenerate even if an image already exists}';
 
@@ -72,6 +72,23 @@ class GenerateCatalogImages extends Command
                     .'Centered: a soft rounded square outline in light grey with a simple abstract emblem inside — a stylised '
                     .'mountain-and-circle mark in medium slate grey (#8a97ad) — signalling "your logo here". Minimal, flat, '
                     .'lots of padding, subtle, professional. No real brand, no photorealism, no colourful gradients.',
+                'save'   => null,
+            ];
+        }
+
+        if (in_array($only, ['all', 'promo'], true)) {
+            $tasks[] = [
+                'path'   => 'promos/layout-ai-offer',
+                'maxw'   => 1200,
+                'prompt' => 'Premium digital-advertising promo visual for a print brand, landscape 16:10, deep navy '
+                    .'background (#16233b) with layered vivid blue (#398aff) geometric shapes, thin light-blue contour '
+                    .'lines and a subtle halftone dot fade. Centrepiece, with generous spacing between elements that '
+                    .'must NOT touch or overlap: a huge glossy white bold headline reading exactly "$250", directly '
+                    .'beneath it the words "AD CREDIT" in clean spaced capitals, and clearly below-right a separate '
+                    .'small rounded lime-green (#c7f23d) pill badge with dark text reading exactly "FOR $50". Around '
+                    .'the composition float tasteful 3D elements: a small megaphone, a rising bar chart and a cursor '
+                    .'arrow, all in blue glass style with soft shadows. Modern SaaS-marketing aesthetic, crisp studio '
+                    .'lighting, high contrast, no other text, no logos, no watermark.',
                 'save'   => null,
             ];
         }
