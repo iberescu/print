@@ -42,7 +42,7 @@ class AnswerSupportTicket
         }
 
         try {
-            $out = $gemini->generateJson($this->prompt($ticket));
+            $out = $gemini->generateJson($this->prompt($ticket), config('shop.gemini.support_model'));
             $canAnswer = (bool) ($out['can_answer'] ?? false);
             $reply = trim((string) ($out['reply'] ?? ''));
         } catch (Throwable $e) {

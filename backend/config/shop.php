@@ -26,6 +26,8 @@ return [
         'image_model_fast' => env('GEMINI_IMAGE_MODEL_FAST', 'gemini-3.1-flash-image'),
         'text_model'       => env('GEMINI_TEXT_MODEL', 'gemini-3.5-flash'),
         'vision_model'     => env('GEMINI_VISION_MODEL', 'gemini-3.5-flash'),
+        // support chat answers — high volume, simple task, cheaper flash tier
+        'support_model'    => env('GEMINI_SUPPORT_MODEL', 'gemini-2.5-flash'),
         'base_url'         => 'https://generativelanguage.googleapis.com/v1beta',
     ],
 
