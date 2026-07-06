@@ -114,12 +114,20 @@ const tools = [
                     <h2 class="mt-2 font-display text-2xl font-bold tracking-tight sm:text-3xl">What will you print today?</h2>
                 </div>
             </div>
-            <div class="grid grid-cols-3 gap-3 sm:grid-cols-4 sm:gap-4 md:grid-cols-6 lg:gap-5">
-                <Link v-for="t in shopBy" :key="t.label" :href="t.href" class="group text-center">
-                    <div class="crop-corners aspect-square overflow-hidden rounded-2xl border border-paper-300 bg-paper-200 transition duration-300 group-hover:-translate-y-1 group-hover:shadow-lg group-hover:shadow-ink/10">
-                        <SmartImage :src="t.image" :alt="t.label" />
+            <div class="grid grid-cols-2 gap-4 sm:grid-cols-3 sm:gap-5 md:grid-cols-4 lg:grid-cols-6">
+                <Link
+                    v-for="t in shopBy" :key="t.label" :href="t.href"
+                    class="group flex flex-col overflow-hidden rounded-2xl border border-paper-300 bg-white shadow-sm transition duration-300 hover:-translate-y-1.5 hover:shadow-[0_28px_55px_-28px_rgba(43,59,85,0.55)]"
+                >
+                    <div class="aspect-square overflow-hidden bg-paper-200">
+                        <SmartImage :src="t.image" :alt="t.label" class="transition duration-500 group-hover:scale-105" />
                     </div>
-                    <p class="mt-2 text-xs font-medium text-ink transition group-hover:text-brand-700 sm:text-sm">{{ t.label }}</p>
+                    <div class="flex flex-1 flex-col p-3.5">
+                        <h3 class="font-display text-sm font-semibold leading-snug text-ink sm:text-base">{{ t.label }}</h3>
+                        <p class="mt-0.5 text-xs text-ink/60 sm:text-sm">
+                            From <span class="font-semibold text-brand-700">${{ Number(t.fromPrice).toFixed(2) }}</span>
+                        </p>
+                    </div>
                 </Link>
             </div>
         </section>

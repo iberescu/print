@@ -71,9 +71,10 @@ class StorefrontController extends Controller
                     ->first();
 
                 return $product ? [
-                    'label' => $label,
-                    'href'  => $category ? "/category/{$category}" : "/product/{$product->slug}",
-                    'image' => $this->img($product->image_path),
+                    'label'     => $label,
+                    'href'      => $category ? "/category/{$category}" : "/product/{$product->slug}",
+                    'image'     => $this->img($product->image_path),
+                    'fromPrice' => (float) $product->from_price,
                 ] : null;
             })->filter()->values()->all();
         });
