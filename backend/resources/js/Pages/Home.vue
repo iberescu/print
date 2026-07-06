@@ -8,6 +8,7 @@ import HeroSlider from '../Components/HeroSlider.vue';
 const props = defineProps({
     categories: { type: Array, default: () => [] },
     featured: { type: Array, default: () => [] },
+    shopBy: { type: Array, default: () => [] },
     heroImage: { type: String, default: null },
     freeShippingThreshold: { type: Number, default: 50 },
 });
@@ -104,6 +105,24 @@ const tools = [
     <Head title="Custom Printing for Business" />
     <StoreLayout>
         <HeroSlider :slides="slides" />
+
+        <!-- shop by product: one tile per popular product type -->
+        <section v-if="shopBy.length" class="mx-auto max-w-7xl px-6 py-10 sm:px-8 sm:py-14">
+            <div class="mb-6 flex items-end justify-between">
+                <div>
+                    <p class="text-sm font-semibold uppercase tracking-widest text-brand-600">Shop by product</p>
+                    <h2 class="mt-2 font-display text-2xl font-bold tracking-tight sm:text-3xl">What will you print today?</h2>
+                </div>
+            </div>
+            <div class="grid grid-cols-3 gap-3 sm:grid-cols-4 sm:gap-4 md:grid-cols-6 lg:gap-5">
+                <Link v-for="t in shopBy" :key="t.label" :href="t.href" class="group text-center">
+                    <div class="crop-corners aspect-square overflow-hidden rounded-2xl border border-paper-300 bg-paper-200 transition duration-300 group-hover:-translate-y-1 group-hover:shadow-lg group-hover:shadow-ink/10">
+                        <SmartImage :src="t.image" :alt="t.label" />
+                    </div>
+                    <p class="mt-2 text-xs font-medium text-ink transition group-hover:text-brand-700 sm:text-sm">{{ t.label }}</p>
+                </Link>
+            </div>
+        </section>
 
         <!-- bestselling products -->
         <section id="bestsellers" class="bg-paper-200">

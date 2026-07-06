@@ -10,6 +10,24 @@ use Inertia\Response;
 
 class StorefrontController extends Controller
 {
+    /** Home "shop by product" tiles: display label, name patterns to find the
+     *  product (works across seeded + crawled catalogues), optional category
+     *  link when the label maps to a whole category. */
+    private const SHOP_BY = [
+        ['Business Cards', ['%business card%'], 'business-cards'],
+        ['Flyers', ['%flyer%'], null],
+        ['Postcards', ['%postcard%'], null],
+        ['T-Shirts', ['%t-shirt%', '%tshirt%'], null],
+        ['Signs', ['%yard sign%', '%sign%'], null],
+        ['Stickers', ['%sticker%'], null],
+        ['Banners', ['%banner%'], null],
+        ['Posters', ['%poster%'], null],
+        ['Brochures', ['%brochure%'], null],
+        ['Mugs', ['%mug%'], null],
+        ['Labels', ['%label%'], null],
+        ['Tote Bags', ['%tote%'], null],
+    ];
+
     public function home(): Response
     {
         $categories = Category::where('is_active', true)
@@ -30,9 +48,35 @@ class StorefrontController extends Controller
         return Inertia::render('Home', [
             'categories'            => $categories,
             'featured'              => $featured,
+            'shopBy'                => $this->shopByTiles(),
             'heroImage'             => \App\Support\Img::url('heroes/home'),
             'freeShippingThreshold' => (float) config('shop.free_shipping_threshold'),
         ]);
+    }
+
+    /** One tile per popular product type, resolved by name so it survives
+     *  catalogue reimports (cached briefly, same policy as the nav). */
+    private function shopByTiles(): array
+    {
+        return \Illuminate\Support\Facades\Cache::remember('home.shopby', 600, function () {
+            return collect(self::SHOP_BY)->map(function ($tile) {
+                [$label, $patterns, $category] = $tile;
+                $product = Product::where('is_active', true)
+                    ->where(function ($q) use ($patterns) {
+                        foreach ($patterns as $p) {
+                            $q->orWhere('name', 'like', $p);
+                        }
+                    })
+                    ->orderByDesc('featured')->orderByRaw('badge IS NULL')->orderBy('sort_order')
+                    ->first();
+
+                return $product ? [
+                    'label' => $label,
+                    'href'  => $category ? "/category/{$category}" : "/product/{$product->slug}",
+                    'image' => $this->img($product->image_path),
+                ] : null;
+            })->filter()->values()->all();
+        });
     }
 
     public function category(Category $category): Response
