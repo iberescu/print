@@ -10,6 +10,7 @@ const props = defineProps({
     showcaseImage: { type: String, default: null },
     styles: { type: Array, default: () => [] },
     colors: { type: Array, default: () => [] },
+    samples: { type: Array, default: () => [] },
     pqsg: { type: Object, default: () => ({}) },
 });
 
@@ -26,15 +27,44 @@ const DISPLAY = ['business_card_qr_logo', 'roll_stickers', 'canvas', 'bottle', '
     'cloudlab_sortv2', 'glass_logo', 'sticker', 'cloudlab_pix', 'cloudlab_umbrela', 'cloudlab_usb',
     'chocolate_bar', 'google_v2', 'office', 'hoodie'];
 
-// Download the SVG and hand the logo to the upsell engine → gallery below.
-async function useLogo(logo) {
-    chosen.value = logo;
+// Rasterise the chosen SVG so we can also hand out a high-res PNG (like the
+// SVG/PNG bundle the big logo makers ship).
+async function svgToPngUrl(url, size = 2048) {
+    const svgText = await (await fetch(url)).text();
+    const objUrl = URL.createObjectURL(new Blob([svgText], { type: 'image/svg+xml' }));
+    try {
+        const img = await new Promise((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = rej; i.src = objUrl; });
+        const c = document.createElement('canvas');
+        c.width = size;
+        c.height = size;
+        c.getContext('2d').drawImage(img, 0, 0, size, size);
+        return c.toDataURL('image/png');
+    } finally {
+        URL.revokeObjectURL(objUrl);
+    }
+}
+
+function triggerDownload(href, name) {
     const a = document.createElement('a');
-    a.href = logo.url;
-    a.download = 'logo.svg';
+    a.href = href;
+    a.download = name;
     document.body.appendChild(a);
     a.click();
     a.remove();
+}
+
+const pngUrl = ref(null);
+async function downloadPng() {
+    if (!chosen.value) return;
+    pngUrl.value = pngUrl.value || await svgToPngUrl(chosen.value.url);
+    triggerDownload(pngUrl.value, 'logo.png');
+}
+
+// Download the SVG and hand the logo to the upsell engine → gallery below.
+async function useLogo(logo) {
+    chosen.value = logo;
+    pngUrl.value = null;
+    triggerDownload(logo.url, 'logo.svg');
 
     try {
         const r = await fetch('/logo-maker/finish', {
@@ -93,7 +123,7 @@ onBeforeUnmount(() => { if (pqsgTimer) clearTimeout(pqsgTimer); });
 
 const faq = [
     { q: 'Is the AI logo maker really free?', a: 'Yes — generating logo concepts is completely free and unlimited. You only pay if you order printed products carrying your new logo.' },
-    { q: 'What file format do I get?', a: 'A true vector SVG file. Vectors scale to any size without losing sharpness, so the same file works for a business card and a building sign.' },
+    { q: 'What file formats do I get?', a: 'A true vector SVG plus a high-resolution PNG. Vectors scale to any size without losing sharpness — the same file works for a business card and a building sign — while the PNG drops straight into websites and social profiles.' },
     { q: 'Can I use the logo commercially?', a: 'Yes. Logos you generate are yours to use for your business — on your website, social profiles, packaging and anything you print with us.' },
     { q: 'How does the AI create my logo?', a: 'You describe your company, pick a style and colour direction, and our AI designs distinctive emblem-and-wordmark concepts in seconds. Generate as many variations as you like.' },
     { q: 'Can I put the logo on business cards, shirts or mugs?', a: 'Absolutely — that is what we do best. After you download your logo we instantly preview it on real products, and our online designer places it on business cards, apparel, stickers and more.' },
@@ -103,8 +133,16 @@ const faq = [
 
 const steps = [
     { n: '1', title: 'Describe your business', text: 'Company name, industry and an optional tagline — that is all the AI needs.' },
-    { n: '2', title: 'Pick style & colours', text: 'Minimal to bold, brand blue to full colour. Generate unlimited variations free.' },
-    { n: '3', title: 'Download & print it', text: 'Get a scalable vector SVG instantly — then see your logo on cards, shirts and mugs.' },
+    { n: '2', title: 'Pick style & colours', text: 'Minimal to bold, brand blue to full colour — the AI designs around your direction.' },
+    { n: '3', title: 'Explore & refine', text: 'Generate unlimited concepts free, and hit "more like this" to iterate on a favourite.' },
+    { n: '4', title: 'Download & see it printed', text: 'Grab SVG + PNG files instantly — and watch your logo land on cards, shirts and mugs.' },
+];
+
+const stats = [
+    { big: 'SVG + PNG', small: 'free brand-ready files' },
+    { big: '~15 sec', small: 'per unique concept' },
+    { big: 'Unlimited', small: 'free generations' },
+    { big: '16 products', small: 'instant logo previews' },
 ];
 
 const features = [
@@ -186,6 +224,16 @@ onBeforeUnmount(() => {
             </div>
         </section>
 
+        <!-- stats strip -->
+        <section class="border-b border-paper-300 bg-paper-200/60">
+            <div class="mx-auto grid max-w-7xl grid-cols-2 gap-6 px-6 py-8 sm:px-8 md:grid-cols-4">
+                <div v-for="s in stats" :key="s.big" class="text-center">
+                    <p class="font-display text-2xl font-bold text-brand-700">{{ s.big }}</p>
+                    <p class="mt-0.5 text-sm text-ink/55">{{ s.small }}</p>
+                </div>
+            </div>
+        </section>
+
         <!-- builder -->
         <section id="builder" class="mx-auto max-w-7xl scroll-mt-24 px-6 py-14 sm:px-8 sm:py-16">
             <div class="mb-8 max-w-2xl">
@@ -203,6 +251,18 @@ onBeforeUnmount(() => {
             <div class="rounded-3xl border border-paper-300 bg-paper-200/50 p-6 sm:p-8">
                 <h2 class="font-display text-2xl font-bold tracking-tight sm:text-3xl">🎉 Your logo is ready — see it on real products</h2>
                 <p class="mt-2 max-w-2xl text-ink/60">Your SVG is downloading. Meanwhile we're placing your new logo on business cards, apparel, drinkware and more — every mockup below is printable today.</p>
+
+                <div v-if="chosen" class="mt-5 flex flex-wrap items-center gap-4 rounded-2xl border border-paper-300 bg-white p-4">
+                    <img :src="chosen.url" alt="Your chosen logo" class="h-16 w-16 rounded-lg border border-paper-300 bg-white object-contain p-1.5" />
+                    <div class="min-w-0 flex-1">
+                        <p class="font-semibold text-ink">Your download bundle</p>
+                        <p class="text-xs text-ink/55">Vector SVG for print · high-res PNG for web and social</p>
+                    </div>
+                    <div class="flex gap-2">
+                        <button class="rounded-full border border-brand-600 px-4 py-2 text-sm font-semibold text-brand-700 transition hover:bg-brand-50" @click="triggerDownload(chosen.url, 'logo.svg')">↓ SVG</button>
+                        <button class="rounded-full border border-brand-600 px-4 py-2 text-sm font-semibold text-brand-700 transition hover:bg-brand-50" @click="downloadPng">↓ PNG</button>
+                    </div>
+                </div>
                 <div v-if="galleryWaiting" class="mt-6 grid place-items-center rounded-2xl border border-dashed border-paper-300 bg-white py-12 text-center">
                     <div>
                         <div class="mx-auto h-8 w-8 animate-spin rounded-full border-2 border-brand-600 border-t-transparent"></div>
@@ -230,8 +290,26 @@ onBeforeUnmount(() => {
             </div>
         </section>
 
+        <!-- industry examples: real output of this generator -->
+        <section v-if="samples.length" class="mx-auto max-w-7xl px-6 py-14 sm:px-8 sm:py-16">
+            <div class="mb-8 max-w-2xl">
+                <p class="text-sm font-semibold uppercase tracking-widest text-brand-600">Made with this tool</p>
+                <h2 class="mt-2 font-display text-3xl font-bold tracking-tight sm:text-4xl">Any business. Any style. Your logo.</h2>
+                <p class="mt-2 text-ink/60">Every mark below came straight out of this generator — no retouching. From bakeries to consultancies, describe it and the AI designs for it.</p>
+            </div>
+            <div class="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+                <div v-for="s in samples" :key="s.label" class="group overflow-hidden rounded-2xl border border-paper-300 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-lg">
+                    <div class="aspect-square bg-white p-5">
+                        <img :src="s.url" :alt="`AI-generated ${s.label} logo example`" loading="lazy" class="h-full w-full object-contain transition duration-300 group-hover:scale-105" />
+                    </div>
+                    <p class="border-t border-paper-300 bg-paper-200/50 py-2 text-center text-xs font-semibold uppercase tracking-wider text-ink/55">{{ s.label }}</p>
+                </div>
+            </div>
+        </section>
+
         <!-- SEO prose + showcase -->
-        <section class="mx-auto max-w-7xl px-6 py-14 sm:px-8 sm:py-16">
+        <section class="bg-paper-200/60">
+            <div class="mx-auto max-w-7xl px-6 py-14 sm:px-8 sm:py-16">
             <div class="grid items-center gap-10 lg:grid-cols-2">
                 <div>
                     <h2 class="font-display text-3xl font-bold tracking-tight">A professional logo, without the agency price tag</h2>
@@ -254,6 +332,7 @@ onBeforeUnmount(() => {
                     </h3>
                     <p class="mt-1.5 text-sm leading-relaxed text-ink/60">{{ f.text }}</p>
                 </div>
+            </div>
             </div>
         </section>
 

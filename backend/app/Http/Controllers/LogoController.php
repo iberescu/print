@@ -42,11 +42,20 @@ class LogoController extends Controller
 
     public function show()
     {
+        // Industry example gallery — real output of this generator, committed as assets.
+        $samples = collect(Storage::disk('public')->files('logo-samples'))
+            ->filter(fn ($f) => str_ends_with($f, '.svg'))
+            ->map(fn ($f) => [
+                'label' => Str::of(basename($f, '.svg'))->replace('-', ' ')->title()->toString(),
+                'url'   => Storage::disk('public')->url($f),
+            ])->values()->all();
+
         return Inertia::render('LogoMaker', [
             'heroImage'     => \App\Support\Img::url('heroes/logo-maker'),
             'showcaseImage' => \App\Support\Img::url('promos/logo-maker-showcase'),
             'styles'        => array_keys(self::STYLES),
             'colors'        => array_keys(self::COLORS),
+            'samples'       => $samples,
             'pqsg'          => [
                 'apiBase'   => config('shop.pqsg.api_base'),
                 'widgetSrc' => config('shop.pqsg.widget_src'),

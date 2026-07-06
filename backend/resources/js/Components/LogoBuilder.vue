@@ -39,7 +39,7 @@ async function generateOne(v) {
             body: JSON.stringify({ ...form.value, variant: v }),
         });
         if (!r.ok) throw new Error((await r.json().catch(() => ({})))?.message || `generation failed (${r.status})`);
-        results.value.unshift(await r.json());
+        results.value.unshift({ ...(await r.json()), variant: v });
     } catch (e) {
         error.value = String(e.message || e);
     } finally {
@@ -52,6 +52,14 @@ function generate() {
     error.value = '';
     generateOne(variant++);
     generateOne(variant++);
+}
+
+// iterate on a concept: same lockup variant, two fresh takes
+function moreLike(r) {
+    if (pending.value) return;
+    error.value = '';
+    generateOne(r.variant ?? 0);
+    generateOne(r.variant ?? 0);
 }
 </script>
 
@@ -109,10 +117,14 @@ function generate() {
         <!-- results -->
         <div v-if="results.length || pending" class="mt-7 grid gap-4" :class="compact ? 'grid-cols-2' : 'grid-cols-2 md:grid-cols-3 lg:grid-cols-4'">
             <div v-for="i in pending" :key="`skeleton-${i}`" class="aspect-square animate-pulse rounded-2xl border border-paper-300 bg-paper-200"></div>
-            <div v-for="r in results" :key="r.path" class="group overflow-hidden rounded-2xl border border-paper-300 bg-white shadow-sm transition hover:shadow-lg">
+            <div v-for="r in results" :key="r.path" class="group relative overflow-hidden rounded-2xl border border-paper-300 bg-white shadow-sm transition hover:shadow-lg">
                 <div class="aspect-square bg-white p-4">
                     <img :src="r.url" alt="Generated logo option" class="h-full w-full object-contain" />
                 </div>
+                <button type="button" class="absolute right-2 top-2 rounded-full border border-paper-300 bg-white/95 px-2.5 py-1 text-[11px] font-semibold text-ink/60 opacity-0 transition hover:border-brand-400 hover:text-brand-700 group-hover:opacity-100"
+                        title="Generate two more takes on this concept" @click="moreLike(r)">
+                    ↻ More like this
+                </button>
                 <button type="button" class="w-full border-t border-paper-300 bg-paper-200/50 py-2.5 text-sm font-semibold text-brand-700 transition hover:bg-brand-600 hover:text-white" @click="emit('use', r)">
                     {{ useLabel }}
                 </button>
