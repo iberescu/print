@@ -177,8 +177,11 @@ class LogoController extends Controller
         $data = $request->validate(['path' => ['required', 'string', 'regex:/^logos\/[0-9a-f-]+\.svg$/']]);
         abort_unless(Storage::disk('public')->exists($data['path']), 404);
 
-        $key = session('pqsg.key') ?? (string) Str::uuid();
-        session(['pqsg.key' => $key]);
+        // Fresh key per finished logo (the key is the engine's idempotency key —
+        // reuse would replay the previous capture); marked strong so a later
+        // placeholder-design review reuses THIS capture in the funnel.
+        $key = (string) Str::uuid();
+        session(['pqsg.key' => $key, 'pqsg.strong' => $key]);
 
         if (config('shop.pqsg.enabled')) {
             \App\Jobs\SendPqsgCapture::dispatchAfterResponse(

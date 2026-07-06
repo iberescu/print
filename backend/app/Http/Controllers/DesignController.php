@@ -208,15 +208,13 @@ class DesignController extends Controller
         // designs get the gallery too instead of silently skipping the steps.
         $image = $preview && str_starts_with($preview, '/') ? url($preview) : $preview;
 
-        $key = session('pqsg.key');   // set earlier if the upload flow already captured
-        if (! $logo && $website === '' && ! $image && ! $key) {
-            return null;              // nothing to send, nothing already in flight
-        }
-
-        $key ??= (string) \Illuminate\Support\Str::uuid();
-        session(['pqsg.key' => $key]);
-
-        if ($logo || $website !== '' || $image) {
+        // Real brand data → always a FRESH capture. The key doubles as the
+        // engine's idempotency key, so reusing the session key replays the
+        // PREVIOUS capture — the funnel then shows a stale logo from an
+        // earlier design (bit a real customer on 2026-07-06).
+        if ($logo || $website !== '') {
+            $key = (string) \Illuminate\Support\Str::uuid();
+            session(['pqsg.key' => $key, 'pqsg.strong' => $key]);
             \App\Jobs\SendPqsgCapture::dispatchAfterResponse(
                 key: $key,
                 source: 'runmyprint-designer',
@@ -224,9 +222,32 @@ class DesignController extends Controller
                 website: $website !== '' ? $website : null,
                 imageUrl: $logo ? null : $image, // the design preview is the fallback brand source
             );
+
+            return $key;
         }
 
-        return $key;
+        // Placeholder design, but a strong capture from this session (uploaded
+        // artwork, logo-maker download) already carries the real brand — hand
+        // the funnel that one instead of clobbering it with the weak fallback.
+        if ($strong = session('pqsg.strong')) {
+            session(['pqsg.key' => $strong]);
+
+            return $strong;
+        }
+
+        if ($image) {
+            $key = (string) \Illuminate\Support\Str::uuid();
+            session(['pqsg.key' => $key]);
+            \App\Jobs\SendPqsgCapture::dispatchAfterResponse(
+                key: $key,
+                source: 'runmyprint-designer',
+                imageUrl: $image,
+            );
+
+            return $key;
+        }
+
+        return session('pqsg.key'); // nothing to send; maybe an older capture exists
     }
 
     /** @return int[] */

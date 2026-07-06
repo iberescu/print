@@ -35,9 +35,12 @@ class PqsgController extends Controller
         // preview and let the customer position each page on the canvas.
         $pages = $isPdf ? \App\Support\PdfToImage::pages($disk->path($path)) : [];
 
-        // one capture key per designer session; reused at Review so both flows share it
-        $key = session('pqsg.key') ?? (string) Str::uuid();
-        session(['pqsg.key' => $key]);
+        // One key PER capture — it doubles as the engine's idempotency key, so
+        // reuse replays the previous capture (stale logo in the funnel). The
+        // session carries the latest for Review/the funnel; 'strong' marks it
+        // as real artwork so Review's weak image fallback won't clobber it.
+        $key = (string) Str::uuid();
+        session(['pqsg.key' => $key, 'pqsg.strong' => $key]);
 
         SendPqsgCapture::dispatchAfterResponse(
             key: $key,
