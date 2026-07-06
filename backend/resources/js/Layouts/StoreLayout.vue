@@ -81,7 +81,7 @@ const logout = () => router.post('/logout');
                  dropped categories stay reachable via the mobile menu & tiles -->
             <nav class="hidden md:block">
                 <div class="mx-auto flex max-w-7xl items-center gap-1 overflow-x-auto px-6">
-                    <Link v-for="c in categories.filter((x) => !['accessories', 'more-products'].includes(x.slug))" :key="c.slug" :href="`/category/${c.slug}`"
+                    <Link v-for="c in categories.filter((x) => !['accessories', 'other'].includes(x.slug))" :key="c.slug" :href="`/category/${c.slug}`"
                           style="border-radius: 0 !important"
                           class="whitespace-nowrap px-3 py-3 text-sm tracking-[1px] text-ink/75 transition hover:text-brand-700 hover:shadow-[inset_0_-2px_0_0_var(--color-brand-blue)]">
                         {{ c.name }}
