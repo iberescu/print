@@ -74,6 +74,7 @@ Route::get('/logo-maker', [\App\Http\Controllers\LogoController::class, 'show'])
 Route::post('/logo-maker/generate', [\App\Http\Controllers\LogoController::class, 'generate'])->middleware('throttle:20,1,logo-gen')->name('logo.generate');
 Route::post('/logo-maker/finish', [\App\Http\Controllers\LogoController::class, 'finish'])->middleware('throttle:10,1,logo-finish')->name('logo.finish');
 Route::get('/logo-maker/download', [\App\Http\Controllers\LogoController::class, 'download'])->middleware('throttle:30,1,logo-dl')->name('logo.download');
+Route::get('/logo-maker/png', [\App\Http\Controllers\LogoController::class, 'png'])->middleware('throttle:30,1,logo-png')->name('logo.png');
 Route::get('/logo-maker/status/{id}', [\App\Http\Controllers\LogoController::class, 'status'])->middleware('throttle:120,1,logo-status')->name('logo.status');
 
 // Support chat (bubble widget: AI-first, humans answer flagged tickets in admin)

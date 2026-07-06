@@ -116,14 +116,59 @@ class LogoController extends Controller
         ]);
     }
 
-    /** Serve the SVG as an attachment: the save prompt appears and the page
-     *  stays put — anchor/blob downloads navigate away on iOS Safari. */
+    /** Serve the logo as an attachment: the save prompt appears and the page
+     *  stays put — anchor/blob downloads navigate away on iOS Safari. The PNG
+     *  variant rasterises server-side for the same reason: client-side
+     *  SVG-to-canvas fails silently on older iOS WebKit. */
     public function download(Request $request)
+    {
+        $data = $request->validate([
+            'path'   => ['required', 'string', 'regex:/^logos\/[0-9a-f-]+\.svg$/'],
+            'format' => ['nullable', 'string', 'in:svg,png'],
+        ]);
+        abort_unless(Storage::disk('public')->exists($data['path']), 404);
+
+        if (($data['format'] ?? 'svg') === 'png') {
+            return Storage::disk('public')->download($this->raster($data['path']), 'logo.png', ['Content-Type' => 'image/png']);
+        }
+
+        return Storage::disk('public')->download($data['path'], 'logo.svg', ['Content-Type' => 'image/svg+xml']);
+    }
+
+    /** Inline PNG of a generated logo — the editor places this instead of
+     *  rasterising the SVG in the browser (fails silently on old iOS WebKit). */
+    public function png(Request $request)
     {
         $data = $request->validate(['path' => ['required', 'string', 'regex:/^logos\/[0-9a-f-]+\.svg$/']]);
         abort_unless(Storage::disk('public')->exists($data['path']), 404);
 
-        return Storage::disk('public')->download($data['path'], 'logo.svg', ['Content-Type' => 'image/svg+xml']);
+        // the raster is stored publicly — hand the browser the static URL
+        return redirect(Storage::disk('public')->url($this->raster($data['path'])));
+    }
+
+    /** Rasterise a stored SVG to a transparent 2048px PNG (cached beside it) —
+     *  the download-bundle resolution; the editor scales it down anyway.
+     *  mutool (mupdf-tools, already in the image for PDF uploads) keeps the
+     *  alpha channel with -c rgba. */
+    private function raster(string $svgPath): string
+    {
+        $pngPath = preg_replace('/\.svg$/', '.png', $svgPath);
+        $disk = Storage::disk('public');
+        if ($disk->exists($pngPath)) {
+            return $pngPath;
+        }
+
+        $proc = new \Symfony\Component\Process\Process([
+            'mutool', 'draw', '-o', $disk->path($pngPath), '-w', '2048', '-h', '2048', '-c', 'rgba', $disk->path($svgPath),
+        ]);
+        $proc->run();
+
+        if (! $proc->isSuccessful() || ! $disk->exists($pngPath) || ! str_starts_with((string) $disk->get($pngPath), "\x89PNG")) {
+            $disk->delete($pngPath);
+            abort(422, 'could not rasterise the logo');
+        }
+
+        return $pngPath;
     }
 
     /** The buyer is happy: hand the logo to the upsell engine (logo on products). */

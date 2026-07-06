@@ -54,6 +54,7 @@ let logoClickCandidate = null; // pressed logo; cleared if the press turns into 
 
 // AI logo builder modal (toolbar button, or "create with AI" from the popup)
 const showLogoBuilder = ref(false);
+const builderError = ref('');
 let builderTarget = null;     // logo to replace when opened from the popup (null = insert new)
 const applyingTpl = ref(false);
 const showGuides = ref(true);
@@ -385,45 +386,37 @@ async function swapLogoWith(url, target) {
 function openLogoBuilder(fromPopup = false) {
     builderTarget = fromPopup ? logoTarget : null;
     showLogoPopup.value = false; // keep logoTarget out of closeLogoPopup's reset
+    builderError.value = '';
     showLogoBuilder.value = true;
 }
 
-// Generated SVGs rasterise to PNG so they ride the exact same pipeline as
-// uploaded logo files (fabric handles raster images most predictably).
-async function svgToPng(url, size = 1024) {
-    const svgText = await (await fetch(url)).text();
-    const objUrl = URL.createObjectURL(new Blob([svgText], { type: 'image/svg+xml' }));
-    try {
-        const img = await new Promise((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = rej; i.src = objUrl; });
-        const c = document.createElement('canvas');
-        c.width = size;
-        c.height = size;
-        c.getContext('2d').drawImage(img, 0, 0, size, size);
-        return c.toDataURL('image/png');
-    } finally {
-        URL.revokeObjectURL(objUrl);
-    }
-}
-
 async function useGeneratedLogo(logo) {
+    builderError.value = '';
     try {
-        const dataUrl = await svgToPng(logo.url);
+        // The server rasterises the SVG to a transparent PNG (mutool) — the old
+        // in-browser SVG→canvas conversion fails silently on older iOS WebKit.
+        const pngUrl = `/logo-maker/png?path=${encodeURIComponent(logo.path)}`;
         // prefer the design's logo slot: explicit popup target, else the untouched
         // placeholder — only a design with no logo slot gets a fresh insert
         const target = builderTarget
             ?? canvas.getObjects().find((o) => o.rmpRole === 'logo' && (o.getSrc?.() || '').includes('logo-placeholder'));
         if (target) {
-            await swapLogoWith(dataUrl, target);
+            await swapLogoWith(pngUrl, target);
         } else {
             // fresh insert: centred, ~30% of the canvas width, inside the design
-            const img = await fabric.FabricImage.fromURL(dataUrl, { crossOrigin: 'anonymous' });
+            const img = await fabric.FabricImage.fromURL(pngUrl, { crossOrigin: 'anonymous' });
             const s = (canvas.getWidth() * 0.3) / img.width;
             img.set({ left: canvas.getWidth() / 2, top: canvas.getHeight() / 2, originX: 'center', originY: 'center', scaleX: s, scaleY: s, rmpRole: 'logo', hoverCursor: 'pointer' });
             canvas.add(img);
             canvas.setActiveObject(img);
             canvas.requestRenderAll();
         }
-    } catch (err) { /* keep the modal open so they can retry */ return; }
+    } catch (err) {
+        // keep the modal open so they can retry — but say why, a silent
+        // nothing-happens is indistinguishable from a broken button
+        builderError.value = "We couldn't place that logo — please try again or pick another concept.";
+        return;
+    }
     builderTarget = null;
     logoTarget = null;
     showLogoBuilder.value = false;
@@ -759,6 +752,7 @@ function goToReview() {
                     <button class="text-xl text-ink/50 hover:text-ink" @click="showLogoBuilder = false">✕</button>
                 </div>
                 <p class="mt-1 text-sm text-ink/55">Describe your business — we'll design logo concepts and place your pick straight onto the design.</p>
+                <p v-if="builderError" class="mt-2 rounded-lg bg-red-50 px-3 py-2 text-sm text-red-600">{{ builderError }}</p>
                 <div class="mt-4">
                     <LogoBuilder compact use-label="Place on my design" @use="useGeneratedLogo" />
                 </div>

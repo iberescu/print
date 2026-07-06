@@ -94,14 +94,15 @@ test('designer: logo placeholder popup offers AI and swaps the placeholder', asy
     await page.getByRole('button', { name: /place on my design/i }).first().click();
     await expect(page.getByRole('heading', { name: /ai logo builder/i })).toBeHidden({ timeout: 30000 });
 
-    // the placeholder was REPLACED (same object count) by a rasterised PNG
+    // the placeholder was REPLACED (same object count) by the server-rasterised
+    // PNG (in-browser SVG→canvas died silently on old iOS WebKit)
     const state = await page.evaluate(() => {
         const c = window.__rmpCanvas;
         const logo = c.getObjects().find((o) => o.rmpRole === 'logo');
-        return { count: c.getObjects().length, src: (logo?.getSrc?.() || '').slice(0, 22) };
+        return { count: c.getObjects().length, src: logo?.getSrc?.() || '' };
     });
     expect(state.count).toBe(before);
-    expect(state.src).toContain('data:image/png');
+    expect(state.src).toContain('/logo-maker/png');
 });
 
 test('designer: toolbar AI Logo button inserts a fresh logo object', async ({ page }) => {

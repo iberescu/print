@@ -27,53 +27,23 @@ const DISPLAY = ['business_card_qr_logo', 'roll_stickers', 'canvas', 'bottle', '
     'cloudlab_sortv2', 'glass_logo', 'sticker', 'cloudlab_pix', 'cloudlab_umbrela', 'cloudlab_usb',
     'chocolate_bar', 'google_v2', 'office', 'hoodie'];
 
-// Rasterise the chosen SVG so we can also hand out a high-res PNG (like the
-// SVG/PNG bundle the big logo makers ship).
-async function svgToPngUrl(url, size = 2048) {
-    const svgText = await (await fetch(url)).text();
-    const objUrl = URL.createObjectURL(new Blob([svgText], { type: 'image/svg+xml' }));
-    try {
-        const img = await new Promise((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = rej; i.src = objUrl; });
-        const c = document.createElement('canvas');
-        c.width = size;
-        c.height = size;
-        c.getContext('2d').drawImage(img, 0, 0, size, size);
-        return c.toDataURL('image/png');
-    } finally {
-        URL.revokeObjectURL(objUrl);
-    }
-}
-
-function triggerDownload(href, name) {
-    const a = document.createElement('a');
-    a.href = href;
-    a.download = name;
-    a.target = '_blank'; // browsers that honour `download` save; the rest open a NEW tab — this page survives
-    a.rel = 'noopener';
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-}
-
 // The server sends the file as Content-Disposition: attachment — browsers
 // (including iOS Safari, which navigates away from anchor/blob downloads)
-// show the save prompt and keep the page alive.
+// show the save prompt and keep the page alive. The PNG rasterises
+// server-side too: in-browser SVG→canvas fails silently on old iOS WebKit.
 function downloadSvg(logo) {
     window.location.assign(`/logo-maker/download?path=${encodeURIComponent(logo.path)}`);
 }
 
-const pngUrl = ref(null);
-async function downloadPng() {
+function downloadPng() {
     if (!chosen.value) return;
-    pngUrl.value = pngUrl.value || await svgToPngUrl(chosen.value.url);
-    triggerDownload(pngUrl.value, 'logo.png');
+    window.location.assign(`/logo-maker/download?path=${encodeURIComponent(chosen.value.path)}&format=png`);
 }
 
 // Hand the logo to the upsell engine FIRST (so the gallery is committed even
 // if the download hijacks navigation on quirky browsers), then download.
 async function useLogo(logo) {
     chosen.value = logo;
-    pngUrl.value = null;
 
     try {
         const r = await fetch('/logo-maker/finish', {
