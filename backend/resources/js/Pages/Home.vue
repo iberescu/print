@@ -193,9 +193,9 @@ const tools = [
                     </a>
                 </div>
 
-                <div class="relative min-h-56 md:min-h-0">
+                <div class="relative aspect-[16/9] md:aspect-auto">
                     <SmartImage :src="heroImage" alt="Sample pack" />
-                    <div class="absolute inset-0 bg-gradient-to-r from-navy/70 via-navy/10 to-transparent"></div>
+                    <div class="absolute inset-0 bg-gradient-to-b from-navy/70 via-navy/15 to-transparent md:bg-gradient-to-r md:from-navy/70 md:via-navy/10 md:to-transparent"></div>
                     <!-- rotating $0 stamp on the seam -->
                     <svg class="absolute -left-8 top-1/2 hidden h-28 w-28 -translate-y-1/2 md:block" viewBox="0 0 110 110" aria-hidden="true">
                         <circle cx="55" cy="55" r="52" fill="#0e1420" fill-opacity="0.88" stroke="#398aff" stroke-width="1.5" />
