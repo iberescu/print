@@ -5,12 +5,19 @@ import { reviewAndAdd, completeUpsell } from './helpers.mjs';
 // still change quantity and the options that don't affect the design surface
 // (paper stock, finish, …). Surface-bound picks (size/corners) stay locked.
 // Catalog-agnostic: drives whatever business-card product the category lists
-// first, so it runs against both the seeded and the crawled catalogue.
+// first, so it runs against both the seeded and the crawled catalogue. Some
+// catalogues bake the material into the product (e.g. crawled "Matte Business
+// Cards") — set FINALIZE_PRODUCT=<slug> to target one with open material
+// groups, e.g. FINALIZE_PRODUCT=standard-business-cards on prod.
 
-async function addFirstBusinessCard(page) {
-    await page.goto('/category/business-cards');
-    await page.locator('a[href*="/product/"]').first().click();
-    await page.waitForURL('**/product/**');
+async function addBusinessCard(page) {
+    if (process.env.FINALIZE_PRODUCT) {
+        await page.goto(`/product/${process.env.FINALIZE_PRODUCT}`);
+    } else {
+        await page.goto('/category/business-cards');
+        await page.locator('a[href*="/product/"]').first().click();
+        await page.waitForURL('**/product/**');
+    }
     await page.getByRole('button', { name: /design online/i }).first().click();
     await page.waitForURL('**/design/**');
     await reviewAndAdd(page); // design → review → approve → add
@@ -20,7 +27,7 @@ async function addFirstBusinessCard(page) {
 const summaryTotal = (page) => page.locator('aside p.font-display').first().innerText();
 
 test('review lands on the final step: quantity + material, surface options locked', async ({ page }) => {
-    await addFirstBusinessCard(page);
+    await addBusinessCard(page);
 
     await expect(page.getByRole('heading', { name: /final step/i })).toBeVisible();
     await expect(page.getByText(/step 1 of/i)).toBeVisible();
@@ -41,7 +48,11 @@ test('review lands on the final step: quantity + material, surface options locke
 });
 
 test('changing the material re-prices and survives into the cart', async ({ page }) => {
-    await addFirstBusinessCard(page);
+    await addBusinessCard(page);
+
+    // some catalogues bake the material into the product — nothing to change
+    const groupCount = await page.locator('.grid.md\\:grid-cols-3').count();
+    test.skip(!groupCount, 'no changeable material groups on this product — set FINALIZE_PRODUCT');
 
     // pick the last value of the first changeable option group (has a +delta in
     // both catalogues); the summary echoes the new label once the server agrees
@@ -65,7 +76,7 @@ test('changing the material re-prices and survives into the cart', async ({ page
 });
 
 test('material cards carry generated previews when available', async ({ page }) => {
-    await addFirstBusinessCard(page);
+    await addBusinessCard(page);
     const previews = page.locator('img[src*="option-previews"]');
     // seeded + generated catalogues have them; if none were generated yet the
     // cards fall back to textured placeholders — only assert when present
