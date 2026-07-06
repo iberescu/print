@@ -76,6 +76,16 @@ class LogoController extends Controller
 
         $svg = $replicate->generateSvg($this->prompt($data));
 
+        // Recraft paints a full-canvas white rect first; strip it so the logo is
+        // transparent — cleaner downloads, and no white tile when it lands on a
+        // coloured design in the editor.
+        $svg = preg_replace(
+            '/<path(?=[^>]*\bd="M 0 0 L )[^>]*\bfill="rgb\(255,\s*255,\s*255\)"[^>]*>\s*<\/path>/',
+            '',
+            $svg,
+            1
+        );
+
         $path = 'logos/'.Str::uuid().'.svg';
         Storage::disk('public')->put($path, $svg);
 
@@ -114,6 +124,10 @@ class LogoController extends Controller
             .(filled($d['tagline'] ?? null) ? ' with the tagline "'.$d['tagline'].'"' : '')
             .', a '.$d['industry'].' business. '
             .ucfirst($lockup).', the wordmark reading exactly "'.$d['company'].'". '
+            .'The emblem is a simplified flat pictogram of the single most iconic, instantly '
+            .'recognisable object of the '.$d['industry'].' trade — pick it yourself (the way a pipe '
+            .'wrench says plumbing, scales say law, a whisk says bakery, a lens says photography) — '
+            .'never a generic abstract mark. '
             .'Style: '.self::STYLES[$d['style']].'. Colours: '.self::COLORS[$d['color']].' on a plain white background. '
             .'Professional brand identity design, crisp clean vector shapes, balanced composition, '
             .'no photorealism, no watermark.';

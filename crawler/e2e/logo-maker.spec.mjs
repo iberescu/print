@@ -106,6 +106,15 @@ test('designer: toolbar AI Logo button inserts a fresh logo object', async ({ pa
     await page.goto(`${BASE}/design/standard-business-cards?test=1`);
     await page.waitForFunction(() => window.__rmpCanvas && window.__rmpCanvas.getObjects().length > 0);
 
+    // no logo slot on the canvas → the toolbar path must INSERT (with a
+    // placeholder present it would replace it instead — covered above)
+    await page.evaluate(() => {
+        const c = window.__rmpCanvas;
+        const p = c.getObjects().find((o) => o.rmpRole === 'logo');
+        if (p) c.remove(p);
+        c.requestRenderAll();
+    });
+
     await page.getByRole('button', { name: /ai logo/i }).click();
     await expect(page.getByRole('heading', { name: /ai logo builder/i })).toBeVisible();
 

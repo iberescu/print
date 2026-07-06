@@ -408,8 +408,12 @@ async function svgToPng(url, size = 1024) {
 async function useGeneratedLogo(logo) {
     try {
         const dataUrl = await svgToPng(logo.url);
-        if (builderTarget) {
-            await swapLogoWith(dataUrl, builderTarget);
+        // prefer the design's logo slot: explicit popup target, else the untouched
+        // placeholder — only a design with no logo slot gets a fresh insert
+        const target = builderTarget
+            ?? canvas.getObjects().find((o) => o.rmpRole === 'logo' && (o.getSrc?.() || '').includes('logo-placeholder'));
+        if (target) {
+            await swapLogoWith(dataUrl, target);
         } else {
             // fresh insert: centred, ~30% of the canvas width, inside the design
             const img = await fabric.FabricImage.fromURL(dataUrl, { crossOrigin: 'anonymous' });

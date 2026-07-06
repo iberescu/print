@@ -53,6 +53,20 @@ function triggerDownload(href, name) {
     a.remove();
 }
 
+// Fetch → blob URL → download. A plain href to the SVG makes some browsers
+// (iOS Safari notably) NAVIGATE to the file instead of saving it, killing the
+// page before the upsell call lands; blob object-URLs always download.
+async function downloadSvg(logo) {
+    try {
+        const blob = await (await fetch(logo.url)).blob();
+        const obj = URL.createObjectURL(blob);
+        triggerDownload(obj, 'logo.svg');
+        setTimeout(() => URL.revokeObjectURL(obj), 60000);
+    } catch (e) {
+        triggerDownload(logo.url, 'logo.svg');
+    }
+}
+
 const pngUrl = ref(null);
 async function downloadPng() {
     if (!chosen.value) return;
@@ -60,11 +74,11 @@ async function downloadPng() {
     triggerDownload(pngUrl.value, 'logo.png');
 }
 
-// Download the SVG and hand the logo to the upsell engine → gallery below.
+// Hand the logo to the upsell engine FIRST (so the gallery is committed even
+// if the download hijacks navigation on quirky browsers), then download.
 async function useLogo(logo) {
     chosen.value = logo;
     pngUrl.value = null;
-    triggerDownload(logo.url, 'logo.svg');
 
     try {
         const r = await fetch('/logo-maker/finish', {
@@ -72,14 +86,17 @@ async function useLogo(logo) {
             headers: { 'Content-Type': 'application/json', Accept: 'application/json', 'X-XSRF-TOKEN': xsrf() },
             body: JSON.stringify({ path: logo.path }),
         });
-        if (!r.ok) return;
-        const { key } = await r.json();
-        galleryKey.value = key;
-        galleryWaiting.value = true;
-        galleryEmpty.value = false;
-        nextTick(() => initGallery(key));
-        setTimeout(() => document.getElementById('logo-gallery')?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 150);
-    } catch (e) { /* gallery is a bonus — downloads still worked */ }
+        if (r.ok) {
+            const { key } = await r.json();
+            galleryKey.value = key;
+            galleryWaiting.value = true;
+            galleryEmpty.value = false;
+            nextTick(() => initGallery(key));
+            setTimeout(() => document.getElementById('logo-gallery')?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 150);
+        }
+    } catch (e) { /* gallery is a bonus — the download below still works */ }
+
+    await downloadSvg(logo);
 }
 
 function initGallery(key) {
@@ -264,7 +281,7 @@ onBeforeUnmount(() => {
                         <p class="text-xs text-ink/55">Vector SVG for print · high-res PNG for web and social</p>
                     </div>
                     <div class="flex gap-2">
-                        <button class="rounded-full border border-brand-600 px-4 py-2 text-sm font-semibold text-brand-700 transition hover:bg-brand-50" @click="triggerDownload(chosen.url, 'logo.svg')">↓ SVG</button>
+                        <button class="rounded-full border border-brand-600 px-4 py-2 text-sm font-semibold text-brand-700 transition hover:bg-brand-50" @click="downloadSvg(chosen)">↓ SVG</button>
                         <button class="rounded-full border border-brand-600 px-4 py-2 text-sm font-semibold text-brand-700 transition hover:bg-brand-50" @click="downloadPng">↓ PNG</button>
                     </div>
                 </div>
