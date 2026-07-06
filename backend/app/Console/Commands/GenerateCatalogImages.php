@@ -13,6 +13,7 @@ class GenerateCatalogImages extends Command
 {
     protected $signature = 'images:generate
         {--only=all : all|products|categories|hero|logo|promo}
+        {--product= : only this product slug (implies --only=products)}
         {--limit=0 : max items to generate (0 = no limit)}
         {--force : regenerate even if an image already exists}';
 
@@ -57,6 +58,10 @@ class GenerateCatalogImages extends Command
     public function handle(GeminiClient $gemini): int
     {
         $only  = $this->option('only');
+        $slug  = $this->option('product');
+        if ($slug) {
+            $only = 'products';
+        }
         $limit = (int) $this->option('limit');
         $force = (bool) $this->option('force');
         $disk  = Storage::disk('public');
@@ -120,7 +125,28 @@ class GenerateCatalogImages extends Command
         }
 
         if (in_array($only, ['all', 'products'], true)) {
-            foreach (Product::with('category')->orderBy('sort_order')->get() as $product) {
+            $products = Product::with('category')
+                ->when($slug, fn ($q) => $q->where('slug', $slug))
+                ->orderBy('sort_order')->get();
+
+            foreach ($products as $product) {
+                // Accessories and other non-personalisable items ship as-is —
+                // their photo must be neutral, no printed brand design.
+                if (! $product->supports_design && ! $product->supports_upload) {
+                    $tasks[] = [
+                        'path'   => "products/{$product->slug}",
+                        'maxw'   => 1000,
+                        'prompt' => "{$product->name} ({$product->category->name}) — {$product->tagline} "
+                            .'A single elegant hero product shot of this item, styled and filling the frame. '
+                            .'The product is completely PLAIN and UNBRANDED — no logo, no printed design, no '
+                            .'engraving, no text anywhere on it. Showcase its material, finish and craftsmanship. '
+                            .'If it holds business cards, show a small neat stack of plain blank white cards. '
+                            .self::STYLE,
+                        'save'   => fn (string $p) => tap($product)->update(['image_path' => $p]),
+                    ];
+                    continue;
+                }
+
                 // deterministic per-slug pick → every product looks different, regens stay stable
                 $seed = crc32($product->slug);
                 [$brand, $palette] = self::BRANDS[$seed % count(self::BRANDS)];
