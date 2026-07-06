@@ -3,6 +3,7 @@ import { Head, router } from '@inertiajs/vue3';
 import { ref, computed, onMounted, onBeforeUnmount, watch } from 'vue';
 import StoreLayout from '../Layouts/StoreLayout.vue';
 import BrandMockup from '../Components/BrandMockup.vue';
+import FinalStep from '../Components/FinalStep.vue';
 import SmartImage from '../Components/SmartImage.vue';
 import FreeShippingBar from '../Components/FreeShippingBar.vue';
 import { money } from '../lib/format';
@@ -23,11 +24,14 @@ const products = computed(() => props.payload.products || []);
 const heading = computed(() => ({
     brand: 'Put your brand on more',
     pqsg: 'Your logo on more products',
+    finalize: 'Final step — make it exactly right',
 }[props.step] ?? 'Complete your order'));
 const sub = computed(() => ({
     brand: 'Add your logo, name and details to matching products — laid out automatically.',
     pqsg: 'Fresh ideas generated from your design — they appear below as they finish.',
+    finalize: 'Your design is approved and locked in. Fine-tune the quantity and material — the price updates as you go.',
 }[props.step] ?? 'Customers who buy business cards often add these. Not personalised — ships ready to use.'));
+const title = computed(() => (props.step === 'finalize' ? 'Your final step' : 'Recommended for you'));
 
 // ---- pqSmartGenerator gallery step ----------------------------------------
 // The capture was registered asynchronously back at the Review step; here we
@@ -93,7 +97,7 @@ function next() {
 </script>
 
 <template>
-    <Head title="Recommended for you" />
+    <Head :title="title" />
     <StoreLayout>
         <div class="mx-auto max-w-6xl px-4 py-8 sm:px-6 sm:py-10">
             <!-- progress -->
@@ -127,6 +131,9 @@ function next() {
                 ></pq-smart-generator-widget>
             </div>
 
+            <!-- final step: adjust quantity + non-surface options of the just-added design -->
+            <FinalStep v-else-if="step === 'finalize'" :payload="payload" :summary="summary" />
+
             <!-- products -->
             <div v-else class="mt-7 grid grid-cols-2 gap-4 sm:gap-5 md:grid-cols-3 lg:grid-cols-4">
                 <div v-for="p in products" :key="p.slug" class="flex flex-col overflow-hidden rounded-2xl border border-paper-300 bg-white">
@@ -149,8 +156,8 @@ function next() {
                 </div>
             </div>
 
-            <!-- continue -->
-            <div class="mt-10 flex flex-col-reverse items-center justify-between gap-4 border-t border-paper-300 pt-6 sm:flex-row">
+            <!-- continue (the final step carries its own CTA in the summary card) -->
+            <div v-if="step !== 'finalize'" class="mt-10 flex flex-col-reverse items-center justify-between gap-4 border-t border-paper-300 pt-6 sm:flex-row">
                 <button class="text-sm font-medium text-ink/55 transition hover:text-ink" @click="next">
                     {{ isLast ? 'No thanks, go to cart' : 'No thanks' }}
                 </button>

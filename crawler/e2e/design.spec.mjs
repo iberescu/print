@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { completeUpsell, reviewAndAdd } from './helpers.mjs';
+import { clickContinue, completeUpsell, reviewAndAdd } from './helpers.mjs';
 
 // Online designer workflow (req 8 / 9 / 17 / 18).
 test('online designer loads, opens the template picker and applies a template', async ({ page }) => {
@@ -36,8 +36,9 @@ test('review step shows the design and gates add-to-cart behind approval', async
     await expect(add).toBeEnabled();
 });
 
-// Funnel: review → accessories → (third-party gallery when a real brand was
-// captured) → cart. Placeholder designs get the accessories step only.
+// Funnel: review → final step (qty/material) → accessories → (third-party
+// gallery when a real brand was captured) → cart. Placeholder designs get the
+// final-step + accessories steps only.
 test('designer → add routes into the upsell flow, then on to the cart', async ({ page }) => {
     await page.goto('/product/matte-business-cards');
     await page.getByRole('button', { name: /design online/i }).first().click();
@@ -46,6 +47,8 @@ test('designer → add routes into the upsell flow, then on to the cart', async 
 
     await reviewAndAdd(page); // design → review → approve → add
     await page.waitForURL('**/upsell');
+    await expect(page.getByRole('heading', { name: /final step/i })).toBeVisible();
+    await clickContinue(page);
     await expect(page.getByRole('heading', { name: /complete your order/i })).toBeVisible();
 
     // add one accessory, then walk the steps to the cart

@@ -37,6 +37,7 @@ Route::post('/cart/remove/{lineId}', [CartController::class, 'remove'])->name('c
 // Forced upsell steps before the cart (multi-step upsell + card-holder cross-sell)
 Route::get('/upsell', [UpsellController::class, 'show'])->name('upsell.show');
 Route::post('/upsell/add/{product}', [UpsellController::class, 'add'])->name('upsell.add');
+Route::post('/upsell/finalize', [UpsellController::class, 'finalize'])->name('upsell.finalize');
 Route::post('/upsell/next', [UpsellController::class, 'next'])->name('upsell.next');
 
 // Customer accounts — Google + email/password (req: login before checkout)

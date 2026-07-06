@@ -136,7 +136,7 @@ class GenerateCatalogImages extends Command
 
             try {
                 $img  = $gemini->generateImage($task['prompt']);
-                $webp = $this->toWebp($img['data'], $task['maxw'] ?? 1000);
+                $webp = \App\Support\Img::webp($img['data'], $task['maxw'] ?? 1000);
                 $path = "{$task['path']}.webp";
                 $disk->put($path, $webp);
                 if ($task['save']) {
@@ -160,29 +160,5 @@ class GenerateCatalogImages extends Command
     private function existing($disk, string $base): bool
     {
         return $disk->exists("{$base}.webp") || $disk->exists("{$base}.jpg") || $disk->exists("{$base}.png");
-    }
-
-    /** Resize (cap width) and re-encode to web-ready webp. */
-    private function toWebp(string $data, int $maxW): string
-    {
-        $im = @imagecreatefromstring($data);
-        if ($im === false) {
-            return $data;
-        }
-        $w = imagesx($im);
-        $h = imagesy($im);
-        if ($w > $maxW) {
-            $scaled = imagescale($im, $maxW, (int) round($h * $maxW / $w));
-            if ($scaled !== false) {
-                imagedestroy($im);
-                $im = $scaled;
-            }
-        }
-        ob_start();
-        imagewebp($im, null, 82);
-        $out = ob_get_clean();
-        imagedestroy($im);
-
-        return $out !== false && $out !== '' ? $out : $data;
     }
 }

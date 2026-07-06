@@ -30,15 +30,25 @@ class UpsellController extends Controller
             return redirect()->route('cart');
         }
 
+        $payload = match ($step) {
+            'brand'    => $this->brandPayload(),
+            'pqsg'     => $this->pqsgPayload(),
+            'finalize' => $this->finalizePayload(),
+            default    => $this->relatedPayload(),
+        };
+
+        // The line being finalised vanished (or lost its ids) — skip the step.
+        if ($payload === null) {
+            $this->cart->advanceUpsell();
+
+            return redirect()->route('upsell.show');
+        }
+
         return Inertia::render('Upsell', [
             'step'      => $step,
             'stepIndex' => $this->cart->upsellIndex() + 1,
             'stepCount' => count($this->cart->upsellSteps()),
-            'payload'   => match ($step) {
-                'brand' => $this->brandPayload(),
-                'pqsg'  => $this->pqsgPayload(),
-                default => $this->relatedPayload(),
-            },
+            'payload'   => $payload,
             'summary'   => [
                 'subtotal'  => $this->cart->subtotal(),
                 'threshold' => $this->cart->threshold(),
@@ -46,6 +56,57 @@ class UpsellController extends Controller
                 'qualifies' => $this->cart->qualifiesFreeShipping(),
             ],
         ]);
+    }
+
+    /**
+     * Final step: re-price the just-added line with a new quantity tier and/or
+     * new values for the options that don't affect the design surface.
+     */
+    public function finalize(Request $request, Pricing $pricing)
+    {
+        $data = $request->validate([
+            'quantityId'       => ['nullable', 'integer'],
+            'optionValueIds'   => ['nullable', 'array'],
+            'optionValueIds.*' => ['integer'],
+        ]);
+
+        $lineId = $this->cart->upsellLineId();
+        $line = $lineId ? $this->cart->item($lineId) : null;
+        $product = $line ? Product::with(['options.values', 'quantities'])->find($line['product_id']) : null;
+        if (! $product) {
+            return redirect()->route('upsell.show');
+        }
+
+        // Quantity must be one of the product's tiers; otherwise keep the current one.
+        $quantityId = $product->quantities->firstWhere('id', (int) ($data['quantityId'] ?? 0))?->id
+            ?? $line['quantity_id'] ?? null;
+
+        // Surface-bound selections are locked to the approved design; changeable
+        // groups take at most one submitted value each, falling back to what the
+        // line already had. Anything not belonging to this product is dropped.
+        $submitted = collect($data['optionValueIds'] ?? []);
+        $current = collect($line['option_value_ids'] ?? []);
+        $valueIds = $product->options->flatMap(function ($option) use ($submitted, $current) {
+            $ids = $option->values->pluck('id');
+            $pick = $option->affectsSurface()
+                ? $current->first(fn ($id) => $ids->contains($id))
+                : $submitted->first(fn ($id) => $ids->contains($id)) ?? $current->first(fn ($id) => $ids->contains($id));
+
+            return $pick ? [$pick] : [];
+        })->values()->all();
+
+        $quote = $pricing->quote($product, $quantityId, $valueIds);
+
+        $this->cart->update($lineId, [
+            'quantity'         => $quote['quantity'],
+            'quantity_id'      => $quote['quantity_id'],
+            'unit_price'       => $quote['unit_price'],
+            'line_total'       => $quote['line_total'],
+            'options'          => $quote['options'],
+            'option_value_ids' => $quote['option_value_ids'],
+        ]);
+
+        return redirect()->route('upsell.show');
     }
 
     public function add(Product $product, Request $request, Pricing $pricing)
@@ -57,16 +118,18 @@ class UpsellController extends Controller
         $brand = $data['brand'] ?? null;
 
         $this->cart->add([
-            'product_id' => $product->id,
-            'name'       => $product->name,
-            'slug'       => $product->slug,
-            'image'      => $this->img($product->image_path),
-            'quantity'   => $quote['quantity'],
-            'unit_price' => $quote['unit_price'],
-            'line_total' => $quote['line_total'],
-            'options'    => $quote['options'],
-            'design'     => $brand ? ['preview' => null, 'mode' => 'design'] : null,
-            'brand'      => $brand ?: null,
+            'product_id'       => $product->id,
+            'name'             => $product->name,
+            'slug'             => $product->slug,
+            'image'            => $this->img($product->image_path),
+            'quantity'         => $quote['quantity'],
+            'quantity_id'      => $quote['quantity_id'],
+            'unit_price'       => $quote['unit_price'],
+            'line_total'       => $quote['line_total'],
+            'options'          => $quote['options'],
+            'option_value_ids' => $quote['option_value_ids'],
+            'design'           => $brand ? ['preview' => null, 'mode' => 'design'] : null,
+            'brand'            => $brand ?: null,
         ]);
 
         return redirect()->route('upsell.show')->with('success', "“{$product->name}” added.");
@@ -105,6 +168,81 @@ class UpsellController extends Controller
             'key'       => session('pqsg.key'),
             'apiBase'   => config('shop.pqsg.api_base'),
             'widgetSrc' => config('shop.pqsg.widget_src'),
+        ];
+    }
+
+    /**
+     * Final step: the just-added line plus everything the buyer may still change —
+     * quantity tiers and option groups whose values don't alter the design surface.
+     * Surface-bound picks (size, corners, …) come back as a locked summary.
+     * Null when the line can't be finalised (skips the step).
+     */
+    private function finalizePayload(): ?array
+    {
+        $lineId = $this->cart->upsellLineId();
+        $line = $lineId ? $this->cart->item($lineId) : null;
+        if (! $line || ! isset($line['quantity_id'], $line['option_value_ids'])) {
+            return null;
+        }
+
+        $product = Product::with(['options.values', 'quantities'])->find($line['product_id']);
+        if (! $product) {
+            return null;
+        }
+
+        $selected = collect($line['option_value_ids']);
+        [$lockedOptions, $groups] = $product->options->partition->affectsSurface();
+
+        $locked = $lockedOptions->map(function ($o) use ($selected) {
+            $v = $o->values->first(fn ($v) => $selected->contains($v->id))
+                ?? $o->values->firstWhere('is_default', true);
+
+            return $v ? ['name' => $o->name, 'label' => $v->label] : null;
+        })->filter()->values();
+
+        // Deltas of the locked values — part of every displayed total, so the
+        // client can price tiers/options instantly without a round trip.
+        $lockedDelta = $lockedOptions->flatMap->values
+            ->whereIn('id', $selected)->sum(fn ($v) => (float) $v->price_delta);
+
+        return [
+            'line' => [
+                'id'        => $line['id'],
+                'name'      => $line['name'],
+                'slug'      => $line['slug'],
+                'image'     => $line['image'],
+                'preview'   => $line['design']['preview'] ?? null,
+                'mode'      => $line['design']['mode'] ?? null,
+                'quantity'  => $line['quantity'],
+                'unitPrice' => (float) $line['unit_price'],
+                'lineTotal' => (float) $line['line_total'],
+                'options'   => $line['options'],
+            ],
+            'quantityId'     => $line['quantity_id'],
+            'optionValueIds' => $groups->flatMap->values->whereIn('id', $selected)->pluck('id')->values(),
+            'lockedDelta'    => round($lockedDelta, 2),
+            'locked'         => $locked,
+            'quantities'     => $product->quantities->map(fn ($q) => [
+                'id'        => $q->id,
+                'quantity'  => $q->quantity,
+                'total'     => $q->totalPrice(),
+                'isDefault' => $q->is_default,
+            ])->values(),
+            'groups' => $groups->filter(fn ($o) => $o->values->count() > 1)->map(fn ($o) => [
+                'id'     => $o->id,
+                'name'   => $o->name,
+                'type'   => $o->type,
+                'values' => $o->values->map(fn ($v) => [
+                    'id'          => $v->id,
+                    'label'       => $v->label,
+                    'priceDelta'  => (float) $v->price_delta,
+                    'description' => $v->description,
+                    'badge'       => $v->badge,
+                    'swatch'      => $v->swatch,
+                    'attributes'  => $v->attributes ?? [],
+                    'image'       => $this->img($v->image_path),
+                ])->values(),
+            ])->values(),
         ];
     }
 

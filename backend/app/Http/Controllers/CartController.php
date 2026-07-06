@@ -53,24 +53,26 @@ class CartController extends Controller
 
         $quote = $pricing->quote($product, $data['quantityId'] ?? null, $data['optionValueIds'] ?? []);
 
-        $this->cart->add([
-            'product_id' => $product->id,
-            'name'       => $product->name,
-            'slug'       => $product->slug,
-            'image'      => $this->img($product->image_path),
-            'quantity'   => $quote['quantity'],
-            'unit_price' => $quote['unit_price'],
-            'line_total' => $quote['line_total'],
-            'options'    => $quote['options'],
-            'design'     => ! empty($data['preview'])
+        $lineId = $this->cart->add([
+            'product_id'       => $product->id,
+            'name'             => $product->name,
+            'slug'             => $product->slug,
+            'image'            => $this->img($product->image_path),
+            'quantity'         => $quote['quantity'],
+            'quantity_id'      => $quote['quantity_id'],
+            'unit_price'       => $quote['unit_price'],
+            'line_total'       => $quote['line_total'],
+            'options'          => $quote['options'],
+            'option_value_ids' => $quote['option_value_ids'],
+            'design'           => ! empty($data['preview'])
                 ? ['preview' => $data['preview'], 'mode' => $data['mode'] ?? 'design']
                 : null,
-            'brand'      => $brand,
+            'brand'            => $brand,
         ]);
 
         $product->loadMissing('category');
         $steps = $this->upsellSteps($product, $data);
-        $this->cart->setUpsell($steps);
+        $this->cart->setUpsell($steps, $lineId);
 
         $flash = "“{$product->name}” added to your cart.";
 
@@ -116,11 +118,18 @@ class CartController extends Controller
     }
 
     /** Which forced upsell steps apply to what was just added (req: multi-step upsell).
-     *  Funnel order: review → accessories → third-party brand gallery → cart. */
+     *  Funnel order: review → final step (qty/material) → accessories → brand gallery → cart. */
     private function upsellSteps(Product $product, array $data): array
     {
         $steps = [];
         $hasPqsg = session('pqsg.key') && config('shop.pqsg.enabled');
+
+        // Designed items (came through the review page) get a final step first:
+        // adjust quantity and the options that don't touch the approved design
+        // surface (paper stock, finish, …) — with nothing to change it is skipped.
+        if ((! empty($data['preview']) || ! empty($data['mode'])) && $this->hasFinalizeChoices($product)) {
+            $steps[] = 'finalize';
+        }
 
         // accessories are business-card add-ons only (no accessories for other
         // products yet); when both steps apply, accessories come first
@@ -136,6 +145,15 @@ class CartController extends Controller
         }
 
         return $steps;
+    }
+
+    /** More than one quantity tier, or at least one option safe to change after design. */
+    private function hasFinalizeChoices(Product $product): bool
+    {
+        $product->loadMissing(['options.values', 'quantities']);
+
+        return $product->quantities->count() > 1
+            || $product->options->contains(fn ($o) => ! $o->affectsSurface() && $o->values->count() > 1);
     }
 
     private function img(?string $path): ?string

@@ -7,11 +7,28 @@ class Cart
     private const KEY = 'cart';
     private const UPSELL = 'cart_upsell';
     private const UPSELL_I = 'cart_upsell_i';
+    private const UPSELL_LINE = 'cart_upsell_line';
 
     /** @return array<int,array<string,mixed>> */
     public function items(): array
     {
         return array_values(session(self::KEY, []));
+    }
+
+    /** @return array<string,mixed>|null */
+    public function item(string $id): ?array
+    {
+        return session(self::KEY, [])[$id] ?? null;
+    }
+
+    /** Merge new values into an existing line (re-pricing on the final step). */
+    public function update(string $id, array $patch): void
+    {
+        $cart = session(self::KEY, []);
+        if (isset($cart[$id])) {
+            $cart[$id] = array_merge($cart[$id], $patch);
+            session([self::KEY => $cart]);
+        }
     }
 
     public function add(array $item): string
@@ -34,13 +51,20 @@ class Cart
 
     public function clear(): void
     {
-        session()->forget([self::KEY, self::UPSELL, self::UPSELL_I]);
+        session()->forget([self::KEY, self::UPSELL, self::UPSELL_I, self::UPSELL_LINE]);
     }
 
-    /** Forced upsell flow: an ordered list of step keys the buyer passes before the cart. */
-    public function setUpsell(array $steps): void
+    /** Forced upsell flow: an ordered list of step keys the buyer passes before the cart.
+     *  $lineId is the just-added line the 'finalize' step re-prices. */
+    public function setUpsell(array $steps, ?string $lineId = null): void
     {
-        session([self::UPSELL => array_values($steps), self::UPSELL_I => 0]);
+        session([self::UPSELL => array_values($steps), self::UPSELL_I => 0, self::UPSELL_LINE => $lineId]);
+    }
+
+    /** The cart line being finalised (quantity/material still editable). */
+    public function upsellLineId(): ?string
+    {
+        return session(self::UPSELL_LINE);
     }
 
     /** @return array<int,string> */
@@ -71,7 +95,7 @@ class Cart
 
     public function clearUpsell(): void
     {
-        session()->forget([self::UPSELL, self::UPSELL_I]);
+        session()->forget([self::UPSELL, self::UPSELL_I, self::UPSELL_LINE]);
     }
 
     public function count(): int

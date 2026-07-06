@@ -15,13 +15,15 @@ test('cart is gated until the upsell steps are completed', async ({ page }) => {
     // jumping straight to the cart bounces back into the upsell flow
     await page.goto('/cart');
     await expect(page).toHaveURL(/\/upsell/);
-    // seeded placeholder brand is never sent to the engine → accessories step only
-    await expect(page.getByText(/step 1 of 1/i)).toBeVisible();
+    // seeded placeholder brand is never sent to the engine → final step + accessories
+    await expect(page.getByText(/step 1 of 2/i)).toBeVisible();
 });
 
 test('business-card upsell offers a non-personalised card holder', async ({ page }) => {
     await addBusinessCard(page);
-    // step 1 = the related-products (accessories) step
+    // step 1 = the final step (quantity/material); step 2 = accessories
+    await expect(page.getByRole('heading', { name: /final step/i })).toBeVisible();
+    await clickContinue(page);
 
     await expect(page.getByRole('heading', { name: /complete your order/i })).toBeVisible();
     await expect(page.getByText(/card holder/i).first()).toBeVisible();
@@ -54,7 +56,8 @@ test('designer brand adds the third-party upsell step', async ({ page }) => {
     await reviewAndAdd(page);
     await page.waitForURL('**/upsell');
 
-    await expect(page.getByText(/step 1 of 2/i)).toBeVisible();          // accessories first
+    await expect(page.getByText(/step 1 of 3/i)).toBeVisible();          // final step first
+    await clickContinue(page);                                            // then accessories
     await clickContinue(page);
     await expect(page.getByRole('heading', { name: /your logo on more products/i })).toBeVisible();
     await expect(page.locator('#pqsg-widget')).toHaveCount(1);            // the gallery widget step
