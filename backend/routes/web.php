@@ -70,6 +70,7 @@ Route::get('/pqsg/status/{key}', [\App\Http\Controllers\PqsgController::class, '
 Route::get('/logo-maker', [\App\Http\Controllers\LogoController::class, 'show'])->name('logo.show');
 Route::post('/logo-maker/generate', [\App\Http\Controllers\LogoController::class, 'generate'])->middleware('throttle:20,1')->name('logo.generate');
 Route::post('/logo-maker/finish', [\App\Http\Controllers\LogoController::class, 'finish'])->middleware('throttle:10,1')->name('logo.finish');
+Route::get('/logo-maker/download', [\App\Http\Controllers\LogoController::class, 'download'])->middleware('throttle:30,1')->name('logo.download');
 
 // Support chat (bubble widget: AI-first, humans answer flagged tickets in admin)
 Route::get('/support/messages', [\App\Http\Controllers\SupportController::class, 'messages'])->name('support.messages');

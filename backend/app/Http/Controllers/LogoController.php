@@ -92,6 +92,16 @@ class LogoController extends Controller
         ]);
     }
 
+    /** Serve the SVG as an attachment: the save prompt appears and the page
+     *  stays put — anchor/blob downloads navigate away on iOS Safari. */
+    public function download(Request $request)
+    {
+        $data = $request->validate(['path' => ['required', 'string', 'regex:/^logos\/[0-9a-f-]+\.svg$/']]);
+        abort_unless(Storage::disk('public')->exists($data['path']), 404);
+
+        return Storage::disk('public')->download($data['path'], 'logo.svg', ['Content-Type' => 'image/svg+xml']);
+    }
+
     /** The buyer is happy: hand the logo to the upsell engine (logo on products). */
     public function finish(Request $request)
     {

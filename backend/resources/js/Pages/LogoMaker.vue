@@ -48,23 +48,18 @@ function triggerDownload(href, name) {
     const a = document.createElement('a');
     a.href = href;
     a.download = name;
+    a.target = '_blank'; // browsers that honour `download` save; the rest open a NEW tab — this page survives
+    a.rel = 'noopener';
     document.body.appendChild(a);
     a.click();
     a.remove();
 }
 
-// Fetch → blob URL → download. A plain href to the SVG makes some browsers
-// (iOS Safari notably) NAVIGATE to the file instead of saving it, killing the
-// page before the upsell call lands; blob object-URLs always download.
-async function downloadSvg(logo) {
-    try {
-        const blob = await (await fetch(logo.url)).blob();
-        const obj = URL.createObjectURL(blob);
-        triggerDownload(obj, 'logo.svg');
-        setTimeout(() => URL.revokeObjectURL(obj), 60000);
-    } catch (e) {
-        triggerDownload(logo.url, 'logo.svg');
-    }
+// The server sends the file as Content-Disposition: attachment — browsers
+// (including iOS Safari, which navigates away from anchor/blob downloads)
+// show the save prompt and keep the page alive.
+function downloadSvg(logo) {
+    window.location.assign(`/logo-maker/download?path=${encodeURIComponent(logo.path)}`);
 }
 
 const pngUrl = ref(null);
