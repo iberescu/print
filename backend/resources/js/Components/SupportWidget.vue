@@ -142,9 +142,10 @@ onBeforeUnmount(() => { if (timer) clearInterval(timer); });
         </div>
     </transition>
 
-    <!-- bubble -->
+    <!-- bubble (drop-shadow filter, not box-shadow: it must follow the circle,
+         not the button's square box, or a grey square halo shows on white) -->
     <button
-        class="fixed bottom-5 right-4 z-50 grid h-14 w-14 place-items-center text-white shadow-xl shadow-navy/40 transition hover:scale-105 sm:right-6"
+        class="fixed bottom-5 right-4 z-50 grid h-14 w-14 place-items-center bg-transparent text-white drop-shadow-[0_10px_18px_rgba(22,35,59,0.45)] transition hover:scale-105 sm:right-6"
         :aria-label="open ? 'Close support chat' : 'Open support chat'"
         @click="toggle"
     >
