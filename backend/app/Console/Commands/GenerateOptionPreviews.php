@@ -21,9 +21,14 @@ class GenerateOptionPreviews extends Command
     protected $signature = 'options:previews
         {--product= : only this product slug}
         {--limit=0 : max images to generate (0 = no limit)}
+        {--all : also cover non-material groups (colors, counts, …) — default is material-like only}
         {--force : regenerate even if an image already exists}';
 
     protected $description = 'Generate material/finish preview images for the final step with Gemini (nano banana 2)';
+
+    /** Groups that read as a material/finish — the ones a texture macro shot suits.
+     *  Colors already render as swatch tiles and counts as plain cards. */
+    private const MATERIAL_NAMES = '/paper|stock|material|finish|lamination|foil|quality|cover|substrate|coating|texture/i';
 
     /** Every value in a group shares this composition, so the material is the only thing that changes. */
     private const STYLE = 'Extreme macro close-up photograph, corner of the printed piece filling the frame at a slight '
@@ -65,6 +70,9 @@ class GenerateOptionPreviews extends Command
         foreach ($products as $product) {
             foreach ($product->options as $option) {
                 if ($option->affectsSurface() || $option->values->count() < 2) {
+                    continue;
+                }
+                if (! $this->option('all') && ! preg_match(self::MATERIAL_NAMES, $option->name)) {
                     continue;
                 }
 
