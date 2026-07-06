@@ -17,7 +17,7 @@ class StorefrontController extends Controller
         ['Business Cards', ['%business card%'], 'business-cards'],
         ['Flyers', ['%flyer%'], null],
         ['Postcards', ['%postcard%'], null],
-        ['T-Shirts', ['%t-shirt%', '%tshirt%'], null],
+        ['T-Shirts', ['%t-shirt%'], null], // NOT %tshirt% — it substring-matches "Sweatshirt"
         ['Signs', ['%yard sign%', '%sign%'], null],
         ['Stickers', ['%sticker%'], null],
         ['Banners', ['%banner%'], null],
