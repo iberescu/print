@@ -80,15 +80,16 @@ class GenerateCatalogImages extends Command
             $tasks[] = [
                 'path'   => 'promos/layout-ai-offer',
                 'maxw'   => 1200,
-                'prompt' => 'Minimalist premium partnership visual, landscape 16:10, for a high-end print brand. A deep '
-                    .'navy (#16233b) canvas with a soft dark vignette, one corner carrying faint thin concentric arc '
-                    .'lines in muted blue (#398aff, low opacity) — otherwise generous empty space. Slightly left of '
-                    .'centre: the amount "$250" set in an elegant medium-weight modern sans-serif, pure white, '
-                    .'restrained size, perfect kerning. Directly beneath it, small widely-letterspaced capitals '
-                    .'"AD CREDIT" in soft light blue (#9cc6ff). A single short, thin lime-green (#c7f23d) underline '
-                    .'accent beneath the capitals — the only warm accent in the frame. Soft diffuse light from the '
-                    .'upper right, luxury fintech aesthetic, editorial calm, absolutely no objects, no 3D icons, no '
-                    .'clutter, no other text, no logos, no watermark.',
+                'prompt' => 'Premium campaign visual for a print brand × ad-tech partnership, landscape 16:10. Deep navy '
+                    .'(#16233b) scene with sophisticated depth: two or three overlapping translucent glass panels in '
+                    .'blues (#398aff, #2b3b55) set at a slight angle with soft reflections, a fine halftone dot '
+                    .'gradient, thin concentric arc lines, and one elegant thin rising curve with small glowing nodes '
+                    .'suggesting growing traffic. Centre-left, clear of the panels: a large refined pure-white "$250" '
+                    .'in an elegant editorial typeface, beneath it "AD CREDIT" in wide letterspaced light-blue '
+                    .'(#9cc6ff) capitals with a short lime-green (#c7f23d) underline. A subtle lime edge-glow on one '
+                    .'glass panel is the only other warm accent. Cinematic soft lighting, luxury fintech-agency '
+                    .'aesthetic, balanced negative space on the right, no cartoon objects, no icons, no other text, '
+                    .'no logos, no watermark.',
                 'save'   => null,
             ];
         }
