@@ -32,13 +32,10 @@ class LogoController extends Controller
         'colorful'   => 'a vibrant multi-colour palette',
     ];
 
-    /** Different lockups per variant click, so regenerations feel fresh. */
-    private const LOCKUPS = [
-        'a simple distinctive emblem centred above the wordmark',
-        'a compact emblem left of the wordmark in a horizontal lockup',
-        'an abstract lettermark monogram built from the company initials, wordmark beneath',
-        'a badge-style emblem that encloses the company name',
-    ];
+    /** Four concept lanes — every generation round covers all of them:
+     *  0 industry pictogram · 1 name-literal motif · 2 abstract monogram ·
+     *  3 tagline-inspired (falling back to a name+industry fusion). */
+    private const CONCEPTS = 4;
 
     public function show()
     {
@@ -76,12 +73,12 @@ class LogoController extends Controller
 
         $svg = $replicate->generateSvg($this->prompt($data));
 
-        // Recraft paints a full-canvas white rect first; strip it so the logo is
-        // transparent — cleaner downloads, and no white tile when it lands on a
-        // coloured design in the editor.
-        $svg = preg_replace(
-            '/<path(?=[^>]*\bd="M 0 0 L )[^>]*\bfill="rgb\(255,\s*255,\s*255\)"[^>]*>\s*<\/path>/',
-            '',
+        // Recraft paints a full-canvas background rect first (usually white,
+        // sometimes cream); strip any near-white one so the logo is transparent —
+        // cleaner downloads, and no pale tile when it lands on a coloured design.
+        $svg = preg_replace_callback(
+            '/<path(?=[^>]*\bd="M 0 0 L )[^>]*\bfill="rgb\((\d+),\s*(\d+),\s*(\d+)\)"[^>]*>\s*<\/path>/',
+            fn ($m) => (min((int) $m[1], (int) $m[2], (int) $m[3]) >= 235) ? '' : $m[0],
             $svg,
             1
         );
@@ -118,16 +115,38 @@ class LogoController extends Controller
 
     private function prompt(array $d): string
     {
-        $lockup = self::LOCKUPS[((int) ($d['variant'] ?? 0)) % count(self::LOCKUPS)];
+        $company = $d['company'];
+        $industry = $d['industry'];
+        $tagline = trim((string) ($d['tagline'] ?? ''));
 
-        return 'Professional vector logo for "'.$d['company'].'"'
-            .(filled($d['tagline'] ?? null) ? ' with the tagline "'.$d['tagline'].'"' : '')
-            .', a '.$d['industry'].' business. '
-            .ucfirst($lockup).', the wordmark reading exactly "'.$d['company'].'". '
-            .'The emblem is a simplified flat pictogram of the single most iconic, instantly '
-            .'recognisable object of the '.$d['industry'].' trade — pick it yourself (the way a pipe '
-            .'wrench says plumbing, scales say law, a whisk says bakery, a lens says photography) — '
-            .'never a generic abstract mark. '
+        $concept = match (((int) ($d['variant'] ?? 0)) % self::CONCEPTS) {
+            // the trade's most iconic object
+            0 => 'The emblem is a simplified flat pictogram of the single most iconic, instantly '
+                .'recognisable object of the '.$industry.' trade — pick it yourself (the way a pipe '
+                .'wrench says plumbing, scales say law, a whisk says bakery, a lens says photography) — '
+                .'never a generic abstract mark.',
+            // the imagery hiding inside the name itself: CloudLab → cloud, MyPrint → print
+            1 => 'The emblem visualises the literal imagery inside the company name itself: read the '
+                .'words and roots in "'.$company.'" and turn the most visual one into a simplified flat '
+                .'pictogram (the way "CloudLab" suggests a cloud, "MyPrint" suggests a printed sheet, '
+                .'"Driftwood" suggests a wave-worn branch). Ignore the industry for the emblem.',
+            // deliberately abstract
+            2 => 'The emblem is a distinctive ABSTRACT geometric mark — interlocking shapes, negative '
+                .'space or a stylised monogram built from the initials of "'.$company.'". Deliberately '
+                .'non-literal: no recognisable objects.',
+            // the tagline's promise (or fuse name + industry when there is none)
+            default => $tagline !== ''
+                ? 'The emblem visualises the promise of the tagline "'.$tagline.'": pick its most '
+                    .'visual idea and reduce it to a simplified flat pictogram.'
+                : 'The emblem fuses the imagery of the name "'.$company.'" with the most iconic object '
+                    .'of the '.$industry.' trade into ONE clean combined pictogram.',
+        };
+
+        return 'Professional vector logo for "'.$company.'"'
+            .($tagline !== '' ? ' with the tagline "'.$tagline.'"' : '')
+            .', a '.$industry.' business. '
+            .'A simple distinctive emblem centred above the wordmark, the wordmark reading exactly "'.$company.'". '
+            .$concept.' '
             .'Style: '.self::STYLES[$d['style']].'. Colours: '.self::COLORS[$d['color']].' on a plain white background. '
             .'Professional brand identity design, crisp clean vector shapes, balanced composition, '
             .'no photorealism, no watermark.';

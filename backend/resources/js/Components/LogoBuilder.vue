@@ -14,10 +14,12 @@ const props = defineProps({
 const emit = defineEmits(['use']);
 
 const form = ref({ company: '', tagline: '', industry: '', style: 'minimal', color: 'brand-blue' });
-const results = ref([]);       // {path, url}
+const results = ref([]);       // {path, url, variant}
 const pending = ref(0);        // in-flight generations (skeleton tiles)
 const error = ref('');
-let variant = 0;
+
+// every round covers four concept lanes (matches the server's variant map)
+const conceptLabel = (v) => ['Industry', 'Your name', 'Abstract', form.value.tagline.trim() ? 'Tagline' : 'Name + industry'][(v ?? 0) % 4];
 
 const colorMeta = {
     'brand-blue': { label: 'Brand blue', chips: ['#2b3b55', '#398aff'] },
@@ -50,11 +52,11 @@ async function generateOne(v) {
 function generate() {
     if (!form.value.company.trim() || !form.value.industry.trim() || pending.value) return;
     error.value = '';
-    generateOne(variant++);
-    generateOne(variant++);
+    // one logo per concept lane: industry, name-literal, abstract, tagline/fusion
+    [0, 1, 2, 3].forEach((v) => generateOne(v));
 }
 
-// iterate on a concept: same lockup variant, two fresh takes
+// iterate on a concept: same lane, two fresh takes
 function moreLike(r) {
     if (pending.value) return;
     error.value = '';
@@ -121,6 +123,7 @@ function moreLike(r) {
                 <div class="aspect-square bg-white p-4">
                     <img :src="r.url" alt="Generated logo option" class="h-full w-full object-contain" />
                 </div>
+                <span class="absolute left-2 top-2 rounded-full bg-brand-50 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-brand-700">{{ conceptLabel(r.variant) }}</span>
                 <button type="button" class="absolute right-2 top-2 rounded-full border border-paper-300 bg-white/95 px-2.5 py-1 text-[11px] font-semibold text-ink/60 opacity-0 transition hover:border-brand-400 hover:text-brand-700 group-hover:opacity-100"
                         title="Generate two more takes on this concept" @click="moreLike(r)">
                     ↻ More like this

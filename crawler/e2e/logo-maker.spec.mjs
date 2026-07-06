@@ -38,15 +38,18 @@ test('standalone page: content, validation, generation, refine, downloads, galle
     await fillBrief(page);
     await expect(generateBtn).toBeEnabled();
 
-    // --- generate two concepts -------------------------------------------------
+    // --- one round = four labelled concept lanes ---------------------------------
     await generateBtn.click();
-    await expect(page.locator('img[src*="/storage/logos/"]')).toHaveCount(2, { timeout: 120000 });
+    await expect(page.locator('img[src*="/storage/logos/"]')).toHaveCount(4, { timeout: 180000 });
+    for (const label of ['Industry', 'Your name', 'Abstract', 'Name + industry']) {
+        await expect(page.getByText(label, { exact: true }).first()).toBeVisible();
+    }
 
     // --- "more like this" iterates on a concept ---------------------------------
     const card = page.locator('img[src*="/storage/logos/"]').first().locator('..').locator('..');
     await card.hover();
     await card.getByRole('button', { name: /more like this/i }).click({ force: true });
-    await expect(page.locator('img[src*="/storage/logos/"]')).toHaveCount(4, { timeout: 120000 });
+    await expect(page.locator('img[src*="/storage/logos/"]')).toHaveCount(6, { timeout: 120000 });
 
     // --- download bundle: SVG fires immediately, PNG on demand ------------------
     const svgDl = page.waitForEvent('download', { timeout: 15000 });
