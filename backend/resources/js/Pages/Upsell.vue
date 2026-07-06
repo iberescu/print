@@ -166,13 +166,29 @@ function next() {
                 <p v-else-if="pqsgEmpty" class="rounded-2xl border border-paper-300 bg-paper-200/50 px-5 py-8 text-center text-sm text-ink/55">
                     We couldn't generate previews from your design this time — your order isn't affected.
                 </p>
-                <pq-smart-generator-widget
-                    id="pqsg-widget"
-                    :api-base="payload.apiBase"
-                    grid="justified"
-                    insert-mode="append"
-                    class="block w-full"
-                ></pq-smart-generator-widget>
+                <!-- gallery frame: the widget itself is shadow-DOM sealed, so the
+                     polish lives on the container + layout attributes. v-show keeps
+                     the element in the DOM while hidden, so polling never stops. -->
+                <div v-show="!pqsgWaiting && !pqsgEmpty" class="overflow-hidden rounded-2xl border border-paper-300 bg-white shadow-sm">
+                    <div class="flex items-center justify-between gap-3 border-b border-paper-300 bg-paper-200/60 px-4 py-2.5">
+                        <p class="text-xs font-semibold uppercase tracking-widest text-ink/50">Fresh from your design</p>
+                        <span class="inline-flex items-center gap-1.5 text-[11px] font-medium text-brand-700">
+                            <span class="inline-block h-1.5 w-1.5 animate-pulse rounded-full bg-brand-blue"></span>
+                            generating live
+                        </span>
+                    </div>
+                    <div class="p-3 sm:p-4">
+                        <pq-smart-generator-widget
+                            id="pqsg-widget"
+                            :api-base="payload.apiBase"
+                            grid="justified"
+                            insert-mode="append"
+                            gap="14"
+                            justified-row-height="210"
+                            class="block w-full"
+                        ></pq-smart-generator-widget>
+                    </div>
+                </div>
             </div>
 
             <!-- Layout.ai ad-credit offer: promo visual + the buyer's own generated ad -->
@@ -200,7 +216,7 @@ function next() {
                         </h2>
                         <p class="mt-3 max-w-md text-white/70">Launch your new brand with 3,000% the traffic — your campaign runs on Google's network, managed by our partner Layout.ai.</p>
                         <ul class="mt-5 space-y-2.5 text-sm text-white/85">
-                            <li v-for="g in ['1,000 visitors — guaranteed', '100,000 impressions — guaranteed', 'Your ad creative is already designed (below)']" :key="g" class="flex items-center gap-2.5">
+                            <li v-for="g in ['1,000 visitors — guaranteed', '100,000 impressions — guaranteed', '8 ready-to-run ad designs (below)']" :key="g" class="flex items-center gap-2.5">
                                 <svg class="h-4.5 w-4.5 shrink-0" viewBox="0 0 16 16" aria-hidden="true">
                                     <circle cx="8" cy="8" r="7" fill="none" stroke="#398aff" stroke-width="1.5" />
                                     <path d="m5 8.2 2 2L11 6" fill="none" stroke="#9cc6ff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
@@ -215,20 +231,35 @@ function next() {
                 <!-- the buyer's own ad from the same engine capture; some captures
                      never yield the ad creative — then the offer stands alone -->
                 <div v-show="!pqsgEmpty">
-                    <p class="text-sm font-semibold text-ink/70">Your first ad — generated from your design:</p>
-                    <div v-if="pqsgWaiting" class="mt-3 grid place-items-center rounded-2xl border border-dashed border-paper-300 bg-paper-200/50 py-10 text-center">
+                    <div v-if="pqsgWaiting" class="grid place-items-center rounded-2xl border border-dashed border-paper-300 bg-paper-200/50 py-10 text-center">
                         <div>
                             <div class="mx-auto h-8 w-8 animate-spin rounded-full border-2 border-brand-600 border-t-transparent"></div>
-                            <p class="mt-3 text-sm text-ink/55">Designing your ad creative — it appears here in a moment.</p>
+                            <p class="mt-3 text-sm text-ink/55">Designing your ad creatives — the first ones appear here in a moment.</p>
                         </div>
                     </div>
-                    <pq-smart-generator-widget
-                        id="pqsg-widget"
-                        :api-base="payload.apiBase"
-                        grid="justified"
-                        insert-mode="append"
-                        class="mt-3 block w-full"
-                    ></pq-smart-generator-widget>
+                    <!-- ad studio frame: gradient hairline, navy header, sealed widget inside -->
+                    <div v-show="!pqsgWaiting" class="rounded-2xl bg-gradient-to-br from-brand-blue/50 via-paper-300 to-lime-accent/40 p-[1.5px]">
+                        <div class="overflow-hidden rounded-2xl bg-white">
+                            <div class="flex flex-wrap items-center justify-between gap-3 bg-navy px-4 py-3 text-white">
+                                <p class="flex items-center gap-2 text-xs font-semibold uppercase tracking-widest text-[#9cc6ff]">
+                                    <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 3l1.7 4.6L18 9l-4.3 1.4L12 15l-1.7-4.6L6 9l4.3-1.4z" stroke-linejoin="round"/></svg>
+                                    Ad studio · your designs
+                                </p>
+                                <span class="rounded-full bg-white/10 px-2.5 py-1 text-[11px] font-medium text-white/75">8 concepts · ready for Google Display</span>
+                            </div>
+                            <div class="bg-paper-200/40 p-3 sm:p-4">
+                                <pq-smart-generator-widget
+                                    id="pqsg-widget"
+                                    :api-base="payload.apiBase"
+                                    grid="justified"
+                                    insert-mode="append"
+                                    gap="14"
+                                    justified-row-height="240"
+                                    class="block w-full"
+                                ></pq-smart-generator-widget>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 

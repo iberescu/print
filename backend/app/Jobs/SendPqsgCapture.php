@@ -43,6 +43,23 @@ class SendPqsgCapture
             'website'            => $this->website,
         ], fn ($v) => $v !== null && $v !== '');
 
+        // Capture-time generation controls (one capture feeds every gallery step):
+        // the 16-product merch set renders WITH SVG previews ("your logo on more
+        // products" step), the Layout.ai ads step gets 8 direct LLM ad canvases
+        // (pipeline_facebook_ad has no SVG preview), and the pipeline templates
+        // we never display are skipped entirely.
+        $payload['products'] = [
+            ...collect([
+                'business_card_qr_logo', 'roll_stickers', 'canvas', 'bottle', 'tshirt_words',
+                'bags', 'cloudlab_sortv2', 'glass_logo', 'sticker', 'cloudlab_pix',
+                'cloudlab_umbrela', 'cloudlab_usb', 'chocolate_bar', 'google_v2', 'office', 'hoodie',
+            ])->mapWithKeys(fn ($k) => [$k => ['generate' => true, 'preview' => true]])->all(),
+            'pipeline_facebook_ad'              => ['generate' => true, 'preview' => false, 'template_count' => 8],
+            'pipeline_business_card_horizontal' => ['generate' => false],
+            'pipeline_poster_4x5'               => ['generate' => false],
+            'pipeline_flyer_mockup'             => ['generate' => false],
+        ];
+
         // at least one content source is required by their API
         if (! array_intersect_key($payload, array_flip(['logo_url', 'pdf_url', 'website']))) {
             return;

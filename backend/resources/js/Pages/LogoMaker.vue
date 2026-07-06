@@ -272,7 +272,18 @@ onBeforeUnmount(() => {
                 <p v-else-if="galleryEmpty" class="mt-6 rounded-2xl border border-paper-300 bg-white px-5 py-8 text-center text-sm text-ink/55">
                     We couldn't build previews this time — head to any product and upload your new logo in the designer.
                 </p>
-                <pq-smart-generator-widget id="pqsg-widget" :api-base="pqsg.apiBase" grid="justified" insert-mode="append" class="mt-6 block w-full"></pq-smart-generator-widget>
+                <div v-show="!galleryWaiting && !galleryEmpty" class="mt-6 overflow-hidden rounded-2xl border border-paper-300 bg-white shadow-sm">
+                    <div class="flex items-center justify-between gap-3 border-b border-paper-300 bg-paper-200/60 px-4 py-2.5">
+                        <p class="text-xs font-semibold uppercase tracking-widest text-ink/50">Your logo, printed</p>
+                        <span class="inline-flex items-center gap-1.5 text-[11px] font-medium text-brand-700">
+                            <span class="inline-block h-1.5 w-1.5 animate-pulse rounded-full bg-brand-blue"></span>
+                            generating live
+                        </span>
+                    </div>
+                    <div class="p-3 sm:p-4">
+                        <pq-smart-generator-widget id="pqsg-widget" :api-base="pqsg.apiBase" grid="justified" insert-mode="append" gap="14" justified-row-height="210" class="block w-full"></pq-smart-generator-widget>
+                    </div>
+                </div>
             </div>
         </section>
 
