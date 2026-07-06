@@ -68,13 +68,17 @@ Route::get('/pqsg/status/{key}', [\App\Http\Controllers\PqsgController::class, '
 
 // AI logo maker (Replicate recraft SVG; finishing hands the logo to the upsell engine)
 Route::get('/logo-maker', [\App\Http\Controllers\LogoController::class, 'show'])->name('logo.show');
-Route::post('/logo-maker/generate', [\App\Http\Controllers\LogoController::class, 'generate'])->middleware('throttle:20,1')->name('logo.generate');
-Route::post('/logo-maker/finish', [\App\Http\Controllers\LogoController::class, 'finish'])->middleware('throttle:10,1')->name('logo.finish');
-Route::get('/logo-maker/download', [\App\Http\Controllers\LogoController::class, 'download'])->middleware('throttle:30,1')->name('logo.download');
+// Inline throttles WITHOUT a prefix all share one per-IP bucket (the key is
+// sha1(domain|ip) — the route is not part of it), so the status polling would
+// starve finish/generate. The third parameter gives each route its own bucket.
+Route::post('/logo-maker/generate', [\App\Http\Controllers\LogoController::class, 'generate'])->middleware('throttle:20,1,logo-gen')->name('logo.generate');
+Route::post('/logo-maker/finish', [\App\Http\Controllers\LogoController::class, 'finish'])->middleware('throttle:10,1,logo-finish')->name('logo.finish');
+Route::get('/logo-maker/download', [\App\Http\Controllers\LogoController::class, 'download'])->middleware('throttle:30,1,logo-dl')->name('logo.download');
+Route::get('/logo-maker/status/{id}', [\App\Http\Controllers\LogoController::class, 'status'])->middleware('throttle:120,1,logo-status')->name('logo.status');
 
 // Support chat (bubble widget: AI-first, humans answer flagged tickets in admin)
 Route::get('/support/messages', [\App\Http\Controllers\SupportController::class, 'messages'])->name('support.messages');
-Route::post('/support', [\App\Http\Controllers\SupportController::class, 'send'])->middleware('throttle:20,1')->name('support.send');
+Route::post('/support', [\App\Http\Controllers\SupportController::class, 'send'])->middleware('throttle:20,1,support')->name('support.send');
 
 // Legal / info pages
 Route::get('/faq', fn () => Inertia::render('Legal/Faq'))->name('faq');

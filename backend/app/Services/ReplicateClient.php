@@ -7,41 +7,46 @@ use RuntimeException;
 
 /**
  * Thin client for Replicate — runs the recraft SVG model behind the AI logo
- * maker. Uses sync mode (Prefer: wait) and falls back to polling when a
- * prediction takes longer than the wait window.
+ * maker. Fully async: create a prediction, poll its status, download the SVG.
  */
 class ReplicateClient
 {
-    /** Generate a vector logo; returns the raw SVG markup. */
-    public function generateSvg(string $prompt, string $size = '1024x1024'): string
+    /** Start a prediction WITHOUT waiting — returns its id for status polling.
+     *  Long-poll requests die on mobile Safari (~60 s fetch cap), so the logo
+     *  maker generates asynchronously. */
+    public function createSvgPrediction(string $prompt, string $size = '1024x1024'): string
     {
-        $resp = Http::timeout(120)
+        $resp = Http::timeout(30)
             ->withToken((string) config('shop.replicate.api_token'))
-            ->withHeaders(['Prefer' => 'wait=60'])
             ->post(rtrim((string) config('shop.replicate.base_url'), '/')
                 .'/models/'.config('shop.replicate.svg_model').'/predictions', [
                     'input' => ['prompt' => $prompt, 'size' => $size],
                 ])->throw();
 
-        [$status, $url] = $this->outcome($resp->json());
-
-        // Prefer:wait can return before completion — poll the prediction.
-        $get = $resp->json('urls.get');
-        for ($i = 0; $i < 30 && $status !== 'succeeded' && $get; $i++) {
-            if (in_array($status, ['failed', 'canceled'], true)) {
-                throw new RuntimeException('Replicate prediction '.$status);
-            }
-            sleep(2);
-            [$status, $url] = $this->outcome(
-                Http::timeout(30)->withToken((string) config('shop.replicate.api_token'))
-                    ->get($get)->throw()->json()
-            );
+        $id = $resp->json('id');
+        if (! $id) {
+            throw new RuntimeException('Replicate returned no prediction id');
         }
 
-        if ($status !== 'succeeded' || ! $url) {
-            throw new RuntimeException('Replicate returned no output (status '.$status.')');
-        }
+        return $id;
+    }
 
+    /** @return array{status:?string,url:?string,error:?string} */
+    public function getPrediction(string $id): array
+    {
+        $json = Http::timeout(20)
+            ->withToken((string) config('shop.replicate.api_token'))
+            ->get(rtrim((string) config('shop.replicate.base_url'), '/').'/predictions/'.$id)
+            ->throw()->json();
+
+        [$status, $url] = $this->outcome($json);
+
+        return ['status' => $status, 'url' => $url, 'error' => $json['error'] ?? null];
+    }
+
+    /** Download a finished prediction's SVG output. */
+    public function fetchSvg(string $url): string
+    {
         $svg = Http::timeout(60)->get($url)->throw()->body();
         if (! str_contains($svg, '<svg')) {
             throw new RuntimeException('Replicate output is not an SVG');

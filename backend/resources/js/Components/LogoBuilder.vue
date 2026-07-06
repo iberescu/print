@@ -2,7 +2,7 @@
 import { ref, computed } from 'vue';
 
 // Shared AI logo builder: used by the standalone /logo-maker page and by the
-// online designer (modal). Generates two variants per click via Replicate
+// online designer (modal). Each round generates four concepts via Replicate
 // (recraft SVG) and emits the chosen logo upward — the host decides what
 // "use" means (download + upsell, or insert onto the canvas).
 const props = defineProps({
@@ -49,7 +49,49 @@ const INDUSTRIES = [
     ['Transport & logistics', 'transport and logistics company'],
     ['Travel & tourism', 'travel and tourism agency'],
     ['Wellness & spa', 'wellness spa'],
-];
+    // extended set
+    ['Architecture', 'architecture firm'],
+    ['Artist / art studio', 'art studio'],
+    ['Bar / pub', 'neighbourhood pub'],
+    ['Bookstore', 'independent bookstore'],
+    ['Butcher shop', 'butcher shop'],
+    ['Car wash & detailing', 'car wash and auto detailing service'],
+    ['Carpentry & woodworking', 'carpentry and woodworking shop'],
+    ['Childcare / daycare', 'childcare and daycare centre'],
+    ['Chiropractic & physio', 'chiropractic and physiotherapy clinic'],
+    ['Courier & delivery', 'courier and delivery service'],
+    ['Dance studio', 'dance studio'],
+    ['Dry cleaning & laundry', 'dry cleaning and laundry service'],
+    ['E-commerce brand', 'e-commerce brand'],
+    ['Farm & agriculture', 'farm and agriculture business'],
+    ['Handyman services', 'handyman services company'],
+    ['Ice cream & desserts', 'ice cream and dessert shop'],
+    ['Insurance agency', 'insurance agency'],
+    ['Interior design', 'interior design studio'],
+    ['Jewelry', 'jewellery brand'],
+    ['Juice & smoothie bar', 'juice and smoothie bar'],
+    ['Locksmith', 'locksmith service'],
+    ['Martial arts', 'martial arts academy'],
+    ['Massage therapy', 'massage therapy practice'],
+    ['Moving company', 'moving company'],
+    ['Nail salon', 'nail salon'],
+    ['Painting & decorating', 'painting and decorating company'],
+    ['Pest control', 'pest control service'],
+    ['Pizza shop', 'pizzeria'],
+    ['Pool services', 'pool cleaning and maintenance service'],
+    ['Property management', 'property management company'],
+    ['Psychology & therapy', 'psychology and therapy practice'],
+    ['Roofing', 'roofing company'],
+    ['Security services', 'security services company'],
+    ['Solar & renewables', 'solar and renewable energy company'],
+    ['Tattoo studio', 'tattoo studio'],
+    ['Veterinary clinic', 'veterinary clinic'],
+    ['Videography', 'videography studio'],
+    ['Web design', 'web design studio'],
+    ['Wedding services', 'wedding planning service'],
+    ['Wine & vineyard', 'winery and vineyard'],
+    ['Yoga studio', 'yoga studio'],
+].sort((a, b) => a[0].localeCompare(b[0]));
 const OTHER = '__other';
 const industryChoice = ref('');
 
@@ -76,6 +118,11 @@ const ready = computed(() => form.value.company.trim() && form.value.industry.tr
 
 const xsrf = () => decodeURIComponent((document.cookie.match(/(?:^|;\s*)XSRF-TOKEN=([^;]+)/) || [])[1] || '');
 
+const sleep = (ms) => new Promise((res) => setTimeout(res, ms));
+
+// Async generate: the POST returns a prediction id instantly, then we poll.
+// Long 15–60 s requests get killed by mobile Safari ("Load failed"); short
+// polls survive backgrounding — a dropped poll simply retries.
 async function generateOne(v) {
     pending.value++;
     try {
@@ -85,7 +132,25 @@ async function generateOne(v) {
             body: JSON.stringify({ ...form.value, variant: v }),
         });
         if (!r.ok) throw new Error((await r.json().catch(() => ({})))?.message || `generation failed (${r.status})`);
-        results.value.unshift({ ...(await r.json()), variant: v });
+        const { id } = await r.json();
+
+        for (let i = 0; i < 60; i++) {
+            await sleep(2500);
+            let s;
+            try {
+                s = await fetch(`/logo-maker/status/${id}`, { headers: { Accept: 'application/json' } });
+            } catch (e) {
+                continue; // transient network blip (tab backgrounded, …) — poll again
+            }
+            if (s.status === 422) throw new Error((await s.json().catch(() => ({})))?.message || 'generation failed');
+            if (!s.ok) continue;
+            const d = await s.json();
+            if (d.done) {
+                results.value.unshift({ path: d.path, url: d.url, variant: v });
+                return;
+            }
+        }
+        throw new Error('generation timed out');
     } catch (e) {
         error.value = String(e.message || e);
     } finally {

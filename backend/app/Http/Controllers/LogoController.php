@@ -71,7 +71,30 @@ class LogoController extends Controller
             'variant'  => ['nullable', 'integer', 'min:0'],
         ]);
 
-        $svg = $replicate->generateSvg($this->prompt($data));
+        // Async: hand back a prediction id immediately — a 15–60 s long-poll dies
+        // on mobile Safari (fetch cap + backgrounding), status polling doesn't.
+        return response()->json(['id' => $replicate->createSvgPrediction($this->prompt($data))]);
+    }
+
+    /** Poll a prediction; when done, store the (transparent) SVG and return it. */
+    public function status(string $id, ReplicateClient $replicate)
+    {
+        abort_unless(preg_match('/^[0-9a-z]{10,40}$/i', $id), 404);
+
+        try {
+            $p = $replicate->getPrediction($id);
+        } catch (\Illuminate\Http\Client\RequestException $e) {
+            abort_if($e->response?->status() === 404, 404); // unknown id — not our 500
+            throw $e;
+        }
+        if (in_array($p['status'], ['failed', 'canceled'], true)) {
+            return response()->json(['message' => 'generation failed'.($p['error'] ? ': '.$p['error'] : '')], 422);
+        }
+        if ($p['status'] !== 'succeeded' || ! $p['url']) {
+            return response()->json(['done' => false]);
+        }
+
+        $svg = $replicate->fetchSvg($p['url']);
 
         // Recraft paints a full-canvas background rect first (usually white,
         // sometimes cream); strip any near-white one so the logo is transparent —
@@ -87,6 +110,7 @@ class LogoController extends Controller
         Storage::disk('public')->put($path, $svg);
 
         return response()->json([
+            'done' => true,
             'path' => $path,
             'url'  => Storage::disk('public')->url($path),
         ]);
