@@ -13,7 +13,51 @@ const props = defineProps({
 });
 const emit = defineEmits(['use']);
 
+// label shown in the select → descriptive phrase fed to the prompt
+const INDUSTRIES = [
+    ['Accounting & finance', 'accounting and finance firm'],
+    ['Automotive', 'automotive repair shop'],
+    ['Bakery', 'artisan bakery'],
+    ['Barbershop / hair salon', 'barbershop and hair salon'],
+    ['Beauty & cosmetics', 'beauty and cosmetics brand'],
+    ['Brewery / distillery', 'craft brewery'],
+    ['Cleaning services', 'cleaning services company'],
+    ['Coffee shop / café', 'coffee shop'],
+    ['Construction', 'construction company'],
+    ['Consulting', 'consulting firm'],
+    ['Dental practice', 'dental practice'],
+    ['Education & tutoring', 'tutoring and education service'],
+    ['Electrician', 'electrician business'],
+    ['Event planning', 'event planning studio'],
+    ['Fashion & apparel', 'fashion and apparel brand'],
+    ['Fitness & gym', 'fitness studio'],
+    ['Florist', 'florist boutique'],
+    ['Food truck / catering', 'food truck and catering business'],
+    ['Landscaping & gardening', 'landscaping and gardening company'],
+    ['Law firm', 'law firm'],
+    ['Marketing agency', 'marketing agency'],
+    ['Medical practice', 'medical practice'],
+    ['Music & entertainment', 'music and entertainment business'],
+    ['Nonprofit / NGO', 'nonprofit organisation'],
+    ['Pet care & grooming', 'pet care and grooming salon'],
+    ['Photography', 'photography studio'],
+    ['Plumbing & HVAC', 'plumbing and HVAC company'],
+    ['Real estate', 'real estate agency'],
+    ['Restaurant & bar', 'restaurant'],
+    ['Retail store', 'retail store'],
+    ['Software & tech', 'software and technology company'],
+    ['Transport & logistics', 'transport and logistics company'],
+    ['Travel & tourism', 'travel and tourism agency'],
+    ['Wellness & spa', 'wellness spa'],
+];
+const OTHER = '__other';
+const industryChoice = ref('');
+
 const form = ref({ company: '', tagline: '', industry: '', style: 'minimal', color: 'brand-blue' });
+
+function onIndustryChange() {
+    form.value.industry = industryChoice.value === OTHER ? '' : industryChoice.value;
+}
 const results = ref([]);       // {path, url, variant}
 const pending = ref(0);        // in-flight generations (skeleton tiles)
 const error = ref('');
@@ -76,8 +120,16 @@ function moreLike(r) {
             </div>
             <div>
                 <label class="text-xs font-semibold uppercase tracking-wide text-ink/55">Industry *</label>
-                <input v-model="form.industry" type="text" maxlength="80" placeholder="e.g. coffee roastery, law firm, plumbing"
-                       class="mt-1.5 w-full rounded-xl border border-paper-300 bg-white px-3.5 py-2.5 text-sm focus:border-brand-400 focus:outline-none" />
+                <select v-model="industryChoice" @change="onIndustryChange"
+                        class="mt-1.5 w-full rounded-xl border border-paper-300 bg-white px-3 py-2.5 text-sm focus:border-brand-400 focus:outline-none"
+                        :class="industryChoice ? 'text-ink' : 'text-ink/40'">
+                    <option value="" disabled>Choose your industry…</option>
+                    <option v-for="[label, value] in INDUSTRIES" :key="value" :value="value">{{ label }}</option>
+                    <option :value="OTHER">Other…</option>
+                </select>
+                <input v-if="industryChoice === OTHER" v-model="form.industry" type="text" maxlength="80"
+                       placeholder="describe your industry, e.g. drone repair"
+                       class="mt-2 w-full rounded-xl border border-paper-300 bg-white px-3.5 py-2.5 text-sm focus:border-brand-400 focus:outline-none" />
             </div>
             <div class="sm:col-span-2">
                 <label class="text-xs font-semibold uppercase tracking-wide text-ink/55">Tagline <span class="normal-case text-ink/35">(optional)</span></label>

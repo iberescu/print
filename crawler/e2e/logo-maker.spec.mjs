@@ -15,9 +15,9 @@ test.skip(!process.env.LOGO_AI, 'set LOGO_AI=1 to run the (paid) logo generation
 const BASE = process.env.APP_URL || 'http://localhost:8080';
 const isLocal = BASE.includes('localhost');
 
-async function fillBrief(page, company = 'Atlas Coffee', industry = 'specialty coffee roastery') {
+async function fillBrief(page, company = 'Atlas Coffee', industryLabel = 'Coffee shop / café') {
     await page.getByPlaceholder(/harbor & co/i).last().fill(company);
-    await page.getByPlaceholder(/coffee roastery, law firm/i).last().fill(industry);
+    await page.locator('select').last().selectOption({ label: industryLabel });
 }
 
 test('standalone page: content, validation, generation, refine, downloads, gallery', async ({ page }) => {
@@ -86,7 +86,7 @@ test('designer: logo placeholder popup offers AI and swaps the placeholder', asy
     await page.getByRole('button', { name: /create one with ai/i }).click();
     await expect(page.getByRole('heading', { name: /ai logo builder/i })).toBeVisible();
 
-    await fillBrief(page, 'Northarc Advisory', 'management consulting');
+    await fillBrief(page, 'Northarc Advisory', 'Consulting');
     await page.getByRole('button', { name: /generate my logo/i }).click();
     await page.locator('img[src*="/storage/logos/"]').first().waitFor({ timeout: 120000 });
 
@@ -121,7 +121,7 @@ test('designer: toolbar AI Logo button inserts a fresh logo object', async ({ pa
     await page.getByRole('button', { name: /ai logo/i }).click();
     await expect(page.getByRole('heading', { name: /ai logo builder/i })).toBeVisible();
 
-    await fillBrief(page, 'Copper Kettle', 'craft brewery');
+    await fillBrief(page, 'Copper Kettle', 'Brewery / distillery');
     await page.getByRole('button', { name: /generate my logo/i }).click();
     await page.locator('img[src*="/storage/logos/"]').first().waitFor({ timeout: 120000 });
 
