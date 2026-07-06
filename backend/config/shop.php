@@ -31,6 +31,13 @@ return [
         'base_url'         => 'https://generativelanguage.googleapis.com/v1beta',
     ],
 
+    // Replicate — recraft SVG model behind the AI logo maker
+    'replicate' => [
+        'api_token' => env('REPLICATE_API_TOKEN'),
+        'svg_model' => env('REPLICATE_SVG_MODEL', 'recraft-ai/recraft-v4-svg'),
+        'base_url'  => 'https://api.replicate.com/v1',
+    ],
+
     'stripe' => [
         'key'            => env('STRIPE_KEY'),
         'secret'         => env('STRIPE_SECRET'),

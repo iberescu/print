@@ -53,6 +53,7 @@ const tools = [
     {
         title: 'Logo maker',
         text: 'Create a logo in minutes.',
+        href: '/logo-maker',
         // layered shield, inner keyline, lime star + sparkles
         icon: `${tile}
             <path d="M32 10.5 48 16.2v10.6c0 10.7-7 17.9-16 21-9-3.1-16-10.3-16-21V16.2z" fill="#2b3b55"/>
@@ -253,7 +254,7 @@ const tools = [
                 </svg>
             </div>
             <div class="grid grid-cols-2 gap-6 md:grid-cols-4">
-                <div v-for="tool in tools" :key="tool.title" class="group relative overflow-hidden rounded-2xl border border-paper-300 bg-white p-7 shadow-sm transition duration-300 hover:-translate-y-1.5 hover:border-brand-300 hover:shadow-xl">
+                <component :is="tool.href ? Link : 'div'" v-for="tool in tools" :key="tool.title" :href="tool.href" class="group relative overflow-hidden rounded-2xl border border-paper-300 bg-white p-7 shadow-sm transition duration-300 hover:-translate-y-1.5 hover:border-brand-300 hover:shadow-xl">
                     <svg class="absolute -right-5 -top-5 h-24 w-24 text-brand-600 opacity-[0.06] transition duration-500 group-hover:rotate-12 group-hover:opacity-10" viewBox="0 0 96 96" fill="none" aria-hidden="true">
                         <circle cx="48" cy="48" r="29" stroke="currentColor" stroke-width="1.5" />
                         <circle cx="48" cy="48" r="41" stroke="currentColor" stroke-dasharray="3 5" />
@@ -262,7 +263,7 @@ const tools = [
                     <svg viewBox="0 0 64 64" class="relative h-16 w-16 transition duration-300 group-hover:scale-105" aria-hidden="true" v-html="tool.icon"></svg>
                     <h3 class="relative mt-5 font-semibold text-ink">{{ tool.title }}</h3>
                     <p class="relative mt-1.5 text-sm text-ink/55">{{ tool.text }}</p>
-                </div>
+                </component>
             </div>
         </section>
 

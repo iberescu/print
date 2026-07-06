@@ -12,7 +12,7 @@ use Throwable;
 class GenerateCatalogImages extends Command
 {
     protected $signature = 'images:generate
-        {--only=all : all|products|categories|hero|logo|promo}
+        {--only=all : all|products|categories|hero|logo|promo|logo-maker}
         {--product= : only this product slug (implies --only=products)}
         {--limit=0 : max items to generate (0 = no limit)}
         {--force : regenerate even if an image already exists}';
@@ -95,6 +95,30 @@ class GenerateCatalogImages extends Command
                     .'glass panel is the only other warm accent. Cinematic soft lighting, luxury fintech-agency '
                     .'aesthetic, balanced negative space on the right, no cartoon objects, no icons, no other text, '
                     .'no logos, no watermark.',
+                'save'   => null,
+            ];
+        }
+
+        if (in_array($only, ['all', 'logo-maker'], true)) {
+            $tasks[] = [
+                'path'   => 'heroes/logo-maker',
+                'maxw'   => 1100,
+                'prompt' => 'Elegant brand-identity presentation photographed from a slight angle on a light desk: '
+                    .'a stack of business cards, a letterhead sheet and an embossed notebook, all carrying the SAME '
+                    .'simple abstract geometric emblem in deep navy (#2b3b55) and vivid blue (#398aff) — a clean '
+                    .'circular mark, no readable text. Beside them a fine liner pen and a small colour swatch card '
+                    .'with two blue chips. Soft daylight, shallow depth of field, premium design-studio aesthetic, '
+                    .'no logos of real brands, no watermark.',
+                'save'   => null,
+            ];
+            $tasks[] = [
+                'path'   => 'promos/logo-maker-showcase',
+                'maxw'   => 1100,
+                'prompt' => 'Clean flat-lay of printed merchandise all carrying the SAME simple abstract geometric '
+                    .'navy-and-blue emblem (no readable text): a white ceramic mug, folded t-shirt, business cards, '
+                    .'a canvas tote bag and a round sticker sheet, arranged with generous spacing on a soft light-grey '
+                    .'background. The one mark repeats consistently across every item. Bright even studio light, '
+                    .'editorial e-commerce style, no real brands, no watermark.',
                 'save'   => null,
             ];
         }

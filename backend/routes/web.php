@@ -66,6 +66,11 @@ Route::get('/feed/rtbhouse.xml', [FeedController::class, 'rtbhouse'])->name('fee
 Route::post('/pqsg/upload', [\App\Http\Controllers\PqsgController::class, 'upload'])->name('pqsg.upload');
 Route::get('/pqsg/status/{key}', [\App\Http\Controllers\PqsgController::class, 'status'])->name('pqsg.status');
 
+// AI logo maker (Replicate recraft SVG; finishing hands the logo to the upsell engine)
+Route::get('/logo-maker', [\App\Http\Controllers\LogoController::class, 'show'])->name('logo.show');
+Route::post('/logo-maker/generate', [\App\Http\Controllers\LogoController::class, 'generate'])->middleware('throttle:10,1')->name('logo.generate');
+Route::post('/logo-maker/finish', [\App\Http\Controllers\LogoController::class, 'finish'])->middleware('throttle:10,1')->name('logo.finish');
+
 // Support chat (bubble widget: AI-first, humans answer flagged tickets in admin)
 Route::get('/support/messages', [\App\Http\Controllers\SupportController::class, 'messages'])->name('support.messages');
 Route::post('/support', [\App\Http\Controllers\SupportController::class, 'send'])->middleware('throttle:20,1')->name('support.send');

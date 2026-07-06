@@ -85,6 +85,11 @@ const logout = () => router.post('/logout');
                           class="whitespace-nowrap px-3 py-3 text-sm tracking-[1px] text-ink/75 transition hover:text-brand-700 hover:shadow-[inset_0_-2px_0_0_var(--color-brand-blue)]">
                         {{ c.name }}
                     </Link>
+                    <Link href="/logo-maker"
+                          style="border-radius: 0 !important"
+                          class="whitespace-nowrap px-3 py-3 text-sm font-semibold tracking-[1px] text-brand-blue transition hover:text-brand-700 hover:shadow-[inset_0_-2px_0_0_var(--color-brand-blue)]">
+                        ✦ Logo Maker
+                    </Link>
                 </div>
             </nav>
         </header>
@@ -107,6 +112,10 @@ const logout = () => router.post('/logout');
                         <Link v-for="c in categories" :key="c.slug" :href="`/category/${c.slug}`" @click="mobileMenuOpen = false"
                               class="block px-5 py-3 text-[15px] font-medium text-ink/80 transition hover:bg-paper-200 hover:text-brand-700">
                             {{ c.name }}
+                        </Link>
+                        <Link href="/logo-maker" @click="mobileMenuOpen = false"
+                              class="block px-5 py-3 text-[15px] font-semibold text-brand-blue transition hover:bg-paper-200 hover:text-brand-700">
+                            ✦ Logo Maker
                         </Link>
                         <div class="my-2 border-t border-paper-300"></div>
                         <a href="#" class="block px-5 py-3 text-[15px] text-ink/70 transition hover:bg-paper-200">Help center</a>

@@ -3,6 +3,7 @@ import { ref, reactive, onMounted, onBeforeUnmount } from 'vue';
 import { Head, Link, router } from '@inertiajs/vue3';
 import * as fabric from 'fabric';
 import AppLogo from '../Components/AppLogo.vue';
+import LogoBuilder from '../Components/LogoBuilder.vue';
 
 const props = defineProps({
     product: { type: Object, required: true },
@@ -50,6 +51,10 @@ const logoPopupSrc = ref('');
 const logoInput = ref(null);
 let logoTarget = null;        // the fabric image the popup will replace
 let logoClickCandidate = null; // pressed logo; cleared if the press turns into a drag
+
+// AI logo builder modal (toolbar button, or "create with AI" from the popup)
+const showLogoBuilder = ref(false);
+let builderTarget = null;     // logo to replace when opened from the popup (null = insert new)
 const applyingTpl = ref(false);
 const showGuides = ref(true);
 
@@ -355,9 +360,15 @@ async function onLogoFile(e) {
     if (!file || !logoTarget) return;
     uploadArtwork(file); // fire-and-forget; no-op outside upload mode
     const url = await new Promise((res) => { const r = new FileReader(); r.onload = (ev) => res(ev.target.result); r.readAsDataURL(file); });
+    await swapLogoWith(url, logoTarget);
+    closeLogoPopup();
+}
+
+// Swap `target` for the image at `url`, fitted inside the old logo's box.
+async function swapLogoWith(url, target) {
     try {
         const img = await fabric.FabricImage.fromURL(url, { crossOrigin: 'anonymous' });
-        const old = logoTarget;
+        const old = target;
         const c = old.getCenterPoint();
         const s = Math.min(old.getScaledWidth() / img.width, old.getScaledHeight() / img.height);
         img.set({ left: c.x, top: c.y, originX: 'center', originY: 'center', angle: old.angle || 0, scaleX: s, scaleY: s, rmpRole: 'logo', hoverCursor: 'pointer' });
@@ -368,8 +379,52 @@ async function onLogoFile(e) {
         canvas.setActiveObject(img);
         canvas.requestRenderAll();
     } catch (err) { /* unloadable image — keep the old logo */ }
-    closeLogoPopup();
 }
+
+// ---- AI logo builder --------------------------------------------------------
+function openLogoBuilder(fromPopup = false) {
+    builderTarget = fromPopup ? logoTarget : null;
+    showLogoPopup.value = false; // keep logoTarget out of closeLogoPopup's reset
+    showLogoBuilder.value = true;
+}
+
+// Generated SVGs rasterise to PNG so they ride the exact same pipeline as
+// uploaded logo files (fabric handles raster images most predictably).
+async function svgToPng(url, size = 1024) {
+    const svgText = await (await fetch(url)).text();
+    const objUrl = URL.createObjectURL(new Blob([svgText], { type: 'image/svg+xml' }));
+    try {
+        const img = await new Promise((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = rej; i.src = objUrl; });
+        const c = document.createElement('canvas');
+        c.width = size;
+        c.height = size;
+        c.getContext('2d').drawImage(img, 0, 0, size, size);
+        return c.toDataURL('image/png');
+    } finally {
+        URL.revokeObjectURL(objUrl);
+    }
+}
+
+async function useGeneratedLogo(logo) {
+    try {
+        const dataUrl = await svgToPng(logo.url);
+        if (builderTarget) {
+            await swapLogoWith(dataUrl, builderTarget);
+        } else {
+            // fresh insert: centred, ~30% of the canvas width, inside the design
+            const img = await fabric.FabricImage.fromURL(dataUrl, { crossOrigin: 'anonymous' });
+            const s = (canvas.getWidth() * 0.3) / img.width;
+            img.set({ left: canvas.getWidth() / 2, top: canvas.getHeight() / 2, originX: 'center', originY: 'center', scaleX: s, scaleY: s, rmpRole: 'logo', hoverCursor: 'pointer' });
+            canvas.add(img);
+            canvas.setActiveObject(img);
+            canvas.requestRenderAll();
+        }
+    } catch (err) { /* keep the modal open so they can retry */ return; }
+    builderTarget = null;
+    logoTarget = null;
+    showLogoBuilder.value = false;
+}
+// -----------------------------------------------------------------------------
 
 function removeLogo() {
     if (logoTarget) { canvas.remove(logoTarget); canvas.discardActiveObject(); canvas.requestRenderAll(); }
@@ -546,6 +601,7 @@ function goToReview() {
         <div class="flex flex-wrap items-center gap-2 bg-ink px-4 py-2 text-paper">
             <button class="rounded-md px-3 py-1.5 text-sm font-medium hover:bg-white/10" @click="newText">+ Text</button>
             <button class="rounded-md px-3 py-1.5 text-sm font-medium hover:bg-white/10" @click="fileInput.click()">↑ Upload image</button>
+            <button class="rounded-md px-3 py-1.5 text-sm font-medium text-[#9cc6ff] hover:bg-white/10" @click="openLogoBuilder(false)">✦ AI Logo</button>
             <button v-if="templates.length" class="rounded-md px-3 py-1.5 text-sm font-medium hover:bg-white/10" @click="showTemplates = true">▦ Templates</button>
             <button class="rounded-md px-3 py-1.5 text-sm font-medium hover:bg-white/10 disabled:opacity-30" :disabled="!hasSel" @click="removeSel">🗑 Delete</button>
             <button v-if="bleed || safety || cutPath" class="rounded-md px-3 py-1.5 text-sm font-medium hover:bg-white/10" :class="showGuides ? 'bg-white/15' : ''" @click="showGuides = !showGuides" title="Show print bleed &amp; safe-area guides">▣ Guides</button>
@@ -680,11 +736,28 @@ function goToReview() {
                 <button class="mt-4 w-full rounded-full bg-brand-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-brand-700" @click="logoInput.click()">
                     ↑ {{ logoIsPlaceholder() ? 'Upload your logo' : 'Replace logo' }}
                 </button>
+                <button class="mt-2 w-full rounded-full border border-brand-blue px-5 py-2.5 text-sm font-semibold text-brand-blue transition hover:bg-brand-50" @click="openLogoBuilder(true)">
+                    ✦ No logo yet? Create one with AI
+                </button>
                 <div class="mt-2 flex items-center justify-between">
                     <button class="text-sm font-medium text-ink/55 transition hover:text-ink" @click="removeLogo">Remove logo</button>
                     <button class="text-sm font-medium text-ink/55 transition hover:text-ink" @click="closeLogoPopup">Keep current</button>
                 </div>
                 <input ref="logoInput" type="file" accept="image/*" class="hidden" @change="onLogoFile" />
+            </div>
+        </div>
+
+        <!-- AI logo builder modal -->
+        <div v-if="showLogoBuilder" class="fixed inset-0 z-50 grid place-items-center bg-ink/40 p-4" @click.self="showLogoBuilder = false">
+            <div class="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-2xl bg-paper p-6 shadow-2xl">
+                <div class="flex items-center justify-between">
+                    <h3 class="font-display text-lg font-semibold text-ink">✦ AI logo builder</h3>
+                    <button class="text-xl text-ink/50 hover:text-ink" @click="showLogoBuilder = false">✕</button>
+                </div>
+                <p class="mt-1 text-sm text-ink/55">Describe your business — we'll design logo concepts and place your pick straight onto the design.</p>
+                <div class="mt-4">
+                    <LogoBuilder compact use-label="Place on my design" @use="useGeneratedLogo" />
+                </div>
             </div>
         </div>
     </div>
