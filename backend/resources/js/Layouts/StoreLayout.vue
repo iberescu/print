@@ -48,9 +48,12 @@ const logout = () => router.post('/logout');
         <!-- header -->
         <header class="sticky top-0 z-40 border-b border-paper-300 bg-paper">
             <div class="mx-auto flex max-w-7xl items-center gap-3 px-4 py-4 sm:gap-8 sm:px-8 sm:py-5">
-                <button class="grid h-10 w-10 shrink-0 place-items-center text-ink/80 hover:text-ink md:hidden" aria-label="Open menu" @click="mobileMenuOpen = true">
-                    <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round" /></svg>
-                </button>
+                <!-- mobile: hamburger and the icon group are equal flex-1 wings, so the logo sits dead-centre -->
+                <div class="flex flex-1 items-center md:hidden">
+                    <button class="grid h-10 w-10 shrink-0 place-items-center text-ink/80 hover:text-ink" aria-label="Open menu" @click="mobileMenuOpen = true">
+                        <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round" /></svg>
+                    </button>
+                </div>
                 <Link href="/" class="shrink-0"><AppLogo featured /></Link>
                 <div class="hidden flex-1 items-center border border-ink/20 bg-white px-4 py-2.5 md:flex">
                     <svg class="h-5 w-5 text-ink/40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="11" cy="11" r="7" /><path d="m21 21-4.3-4.3" stroke-linecap="round" /></svg>
