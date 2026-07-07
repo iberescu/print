@@ -64,7 +64,8 @@
             box.target = '_blank';
             box.rel = 'noopener sponsored';
 
-            var grid = el('div', 'display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:#eee;');
+            var shown = Math.min(4, images.length);
+            var grid = el('div', 'display:grid;grid-template-columns:repeat(' + shown + ',1fr);gap:1px;background:#eee;');
             images.slice(0, 4).forEach(function (im) {
                 var cell = el('div', 'aspect-ratio:1/1;background:#fff;overflow:hidden;');
                 var img = el('img', 'width:100%;height:100%;object-fit:cover;display:block;');
