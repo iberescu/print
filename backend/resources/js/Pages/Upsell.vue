@@ -24,13 +24,13 @@ const products = computed(() => props.payload.products || []);
 const heading = computed(() => ({
     brand: 'Put your brand on more',
     pqsg: 'Your logo on more products',
-    ads: 'Get 3,000% the traffic for $50',
+    ads: '$250 in Google ads — for $29',
     finalize: 'Final step — make it exactly right',
 }[props.step] ?? 'Complete your order'));
 const sub = computed(() => ({
     brand: 'Add your logo, name and details to matching products — laid out automatically.',
     pqsg: 'Fresh ideas generated from your design — they appear below as they finish.',
-    ads: 'Pay $50 and get $250 of Google Display ads through our Layout.ai partnership — your first campaign, already designed.',
+    ads: 'Pay $29, get $250 of Google Display ads through our Layout.ai partnership. You approve the campaign before anything runs — 1,000 visitors guaranteed or your $29 back.',
     finalize: 'Your design is approved and locked in. Fine-tune the quantity and material — the price updates as you go.',
 }[props.step] ?? 'Customers who buy business cards often add these. Not personalised — ships ready to use.'));
 const title = computed(() => ({
@@ -203,7 +203,7 @@ function next() {
                 <div class="relative grid overflow-hidden rounded-3xl bg-gradient-to-br from-navy via-navy to-navy-950 text-white shadow-2xl shadow-navy/20 lg:grid-cols-[1.1fr_1fr]">
                     <!-- generated promo visual -->
                     <div class="relative min-h-64 lg:min-h-[380px]">
-                        <img v-if="payload.promoImage" :src="payload.promoImage" alt="$250 of Google Display ads for $50" class="absolute inset-0 h-full w-full object-cover" />
+                        <img v-if="payload.promoImage" :src="payload.promoImage" alt="$250 of Google Display ads for $29" class="absolute inset-0 h-full w-full object-cover" />
                         <div v-else class="absolute inset-0 bg-gradient-to-br from-brand-blue/50 to-navy"></div>
                         <div class="absolute inset-0 hidden bg-gradient-to-r from-transparent via-transparent to-navy lg:block"></div>
                         <div class="absolute inset-0 bg-gradient-to-t from-navy via-transparent to-transparent lg:hidden"></div>
@@ -215,15 +215,15 @@ function next() {
                             <circle cx="48" cy="48" r="41" stroke="currentColor" stroke-dasharray="3 5" />
                             <path d="M48 12v12M48 84V72M12 48h12M84 48H72" stroke="currentColor" stroke-width="1.5" />
                         </svg>
-                        <span class="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3.5 py-1.5 text-xs font-semibold uppercase tracking-widest text-[#9cc6ff]">
-                            Runmyprint × Layout.ai
-                        </span>
+                        <a href="https://layout.ai" target="_blank" rel="noopener" class="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3.5 py-1.5 text-xs font-semibold uppercase tracking-widest text-[#9cc6ff] transition hover:bg-white/15">
+                            Runmyprint × Layout.ai ↗
+                        </a>
                         <h2 class="mt-5 font-display text-2xl font-bold leading-tight sm:text-3xl">
-                            Pay $50, get <span class="text-lime-accent">$250</span> in Google Display ads
+                            Pay $29, get <span class="text-lime-accent">$250</span> in Google Display ads
                         </h2>
-                        <p class="mt-3 max-w-md text-white/70">Launch your new brand with 3,000% the traffic — your campaign runs on Google's network, managed by our partner Layout.ai.</p>
+                        <p class="mt-3 max-w-md text-white/70">Your first campaign, already designed. It runs on Google's network, managed by our partner <a href="https://layout.ai" target="_blank" rel="noopener" class="underline decoration-white/40 underline-offset-2 hover:text-white">Layout.ai</a> — and nothing goes live until you approve it.</p>
                         <ul class="mt-5 space-y-2.5 text-sm text-white/85">
-                            <li v-for="g in ['1,000 visitors — guaranteed', '100,000 impressions — guaranteed', '8 ready-to-run ad designs (below)']" :key="g" class="flex items-center gap-2.5">
+                            <li v-for="g in ['1,000 visitors guaranteed — or your $29 back', 'You approve the campaign before anything runs', 'Unused credit refunded', '8 ready-to-run ad designs (below)']" :key="g" class="flex items-center gap-2.5">
                                 <svg class="h-4.5 w-4.5 shrink-0" viewBox="0 0 16 16" aria-hidden="true">
                                     <circle cx="8" cy="8" r="7" fill="none" stroke="#398aff" stroke-width="1.5" />
                                     <path d="m5 8.2 2 2L11 6" fill="none" stroke="#9cc6ff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
@@ -231,7 +231,7 @@ function next() {
                                 {{ g }}
                             </li>
                         </ul>
-                        <p class="mt-5 text-xs text-white/45">One-time offer for new Runmyprint customers, applied through Layout.ai after checkout.</p>
+                        <p class="mt-5 text-xs text-white/45">One-time offer for new Runmyprint customers, fulfilled by Layout.ai after checkout — billed only once you approve the campaign.</p>
                     </div>
                 </div>
 
