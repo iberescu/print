@@ -78,6 +78,14 @@ Route::get('/logo-maker/download', [\App\Http\Controllers\LogoController::class,
 Route::get('/logo-maker/png', [\App\Http\Controllers\LogoController::class, 'png'])->middleware('throttle:30,1,logo-png')->name('logo.png');
 Route::get('/logo-maker/status/{id}', [\App\Http\Controllers\LogoController::class, 'status'])->middleware('throttle:120,1,logo-status')->name('logo.status');
 
+// B2B affiliate program: landing + apply + the CORS-open widget API
+Route::get('/affiliates', [\App\Http\Controllers\AffiliateController::class, 'show'])->name('affiliates');
+Route::post('/affiliates/apply', [\App\Http\Controllers\AffiliateController::class, 'apply'])->middleware('throttle:6,1,affiliate-apply')->name('affiliates.apply');
+Route::get('/affiliate/widget/capture', [\App\Http\Controllers\AffiliateController::class, 'widgetCapture'])->middleware('throttle:30,1,affiliate-capture')->name('affiliate.capture');
+Route::get('/affiliate/widget/status', [\App\Http\Controllers\AffiliateController::class, 'widgetStatus'])->middleware('throttle:240,1,affiliate-status')->name('affiliate.status');
+Route::match(['get', 'post'], '/affiliate/widget/track', [\App\Http\Controllers\AffiliateController::class, 'widgetTrack'])->middleware('throttle:120,1,affiliate-track')->name('affiliate.track');
+Route::get('/affiliate/go', [\App\Http\Controllers\AffiliateController::class, 'widgetGo'])->middleware('throttle:60,1,affiliate-go')->name('affiliate.go');
+
 // Support chat (bubble widget: AI-first, humans answer flagged tickets in admin)
 Route::get('/support/messages', [\App\Http\Controllers\SupportController::class, 'messages'])->name('support.messages');
 Route::post('/support', [\App\Http\Controllers\SupportController::class, 'send'])->middleware('throttle:20,1,support')->name('support.send');
@@ -111,6 +119,11 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::get('/products/{product}/edit', [AdminProducts::class, 'edit'])->name('products.edit');
     Route::put('/products/{product}', [AdminProducts::class, 'update'])->name('products.update');
     Route::delete('/products/{product}', [AdminProducts::class, 'destroy'])->name('products.destroy');
+
+    Route::get('/affiliates', [\App\Http\Controllers\Admin\AffiliateController::class, 'index'])->name('affiliates.index');
+    Route::post('/affiliates', [\App\Http\Controllers\Admin\AffiliateController::class, 'store'])->name('affiliates.store');
+    Route::patch('/affiliates/{affiliate}', [\App\Http\Controllers\Admin\AffiliateController::class, 'update'])->name('affiliates.update');
+    Route::post('/affiliates/{affiliate}/payout', [\App\Http\Controllers\Admin\AffiliateController::class, 'payout'])->name('affiliates.payout');
 
     Route::get('/surfaces', [AdminSurfaces::class, 'index'])->name('surfaces.index');
     Route::post('/surfaces', [AdminSurfaces::class, 'store'])->name('surfaces.store');

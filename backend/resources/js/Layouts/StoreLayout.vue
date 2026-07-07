@@ -176,7 +176,7 @@ const logout = () => router.post('/logout');
                         <li><a href="#" class="transition hover:text-lime-accent">About us</a></li>
                         <li><a href="#" class="transition hover:text-lime-accent">Sustainability</a></li>
                         <li><a href="#" class="transition hover:text-lime-accent">Careers</a></li>
-                        <li><a href="#" class="transition hover:text-lime-accent">Affiliates</a></li>
+                        <li><a href="/affiliates" class="transition hover:text-lime-accent">Affiliates</a></li>
                         <li><a href="#" class="transition hover:text-lime-accent">Blog</a></li>
                     </ul>
                 </div>
