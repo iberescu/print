@@ -56,5 +56,8 @@ return [
         'api_base'    => rtrim(env('PQSG_API_BASE', 'https://printbrothers-kickoff-clone.cloudlab-internal.com/api/pqsmartgenerator'), '/'),
         'widget_src'  => env('PQSG_WIDGET_SRC', 'https://printbrothers-kickoff-clone.cloudlab-internal.com/modules/pqsmartgenerator/widget/pqsmartgenerator-widget.js'),
         'client_uuid' => env('PQSG_CLIENT_UUID', 'b7c44ff2-1eaa-4ef4-9d52-0cfd44c7a111'),
+        // minutes a just-dispatched strong capture is trusted before its cache
+        // entry must exist (covers the dispatch→registered gap at Review time)
+        'strong_grace' => (int) env('PQSG_STRONG_GRACE', 10),
     ],
 ];

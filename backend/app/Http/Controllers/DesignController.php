@@ -214,7 +214,7 @@ class DesignController extends Controller
         // earlier design (bit a real customer on 2026-07-06).
         if ($logo || $website !== '') {
             $key = (string) \Illuminate\Support\Str::uuid();
-            session(['pqsg.key' => $key, 'pqsg.strong' => $key]);
+            session(['pqsg.key' => $key, 'pqsg.strong' => $key, 'pqsg.strong_at' => now()->toIso8601String()]);
             \App\Jobs\SendPqsgCapture::dispatchAfterResponse(
                 key: $key,
                 source: 'runmyprint-designer',
@@ -229,10 +229,20 @@ class DesignController extends Controller
         // Placeholder design, but a strong capture from this session (uploaded
         // artwork, logo-maker download) already carries the real brand — hand
         // the funnel that one instead of clobbering it with the weak fallback.
+        // ONLY if it still resolves though: the uuid cache lives 12h while a
+        // session can live longer, and a dead key means both gallery steps
+        // spin into the empty state (bit a WirMachenDruck test on 2026-07-07).
+        // A just-dispatched capture may not be cached yet — grace-period it.
         if ($strong = session('pqsg.strong')) {
-            session(['pqsg.key' => $strong]);
+            $at = session('pqsg.strong_at');
+            $inGrace = $at && \Illuminate\Support\Carbon::parse($at)
+                ->gt(now()->subMinutes(max(0, (int) config('shop.pqsg.strong_grace'))));
+            if ($inGrace || \Illuminate\Support\Facades\Cache::has("pqsg:{$strong}")) {
+                session(['pqsg.key' => $strong]);
 
-            return $strong;
+                return $strong;
+            }
+            session()->forget(['pqsg.strong', 'pqsg.strong_at']); // capture long gone — fall through to a fresh one
         }
 
         if ($image) {

@@ -40,7 +40,7 @@ class PqsgController extends Controller
         // session carries the latest for Review/the funnel; 'strong' marks it
         // as real artwork so Review's weak image fallback won't clobber it.
         $key = (string) Str::uuid();
-        session(['pqsg.key' => $key, 'pqsg.strong' => $key]);
+        session(['pqsg.key' => $key, 'pqsg.strong' => $key, 'pqsg.strong_at' => now()->toIso8601String()]);
 
         SendPqsgCapture::dispatchAfterResponse(
             key: $key,

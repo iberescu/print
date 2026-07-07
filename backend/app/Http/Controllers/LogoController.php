@@ -184,7 +184,7 @@ class LogoController extends Controller
         // reuse would replay the previous capture); marked strong so a later
         // placeholder-design review reuses THIS capture in the funnel.
         $key = (string) Str::uuid();
-        session(['pqsg.key' => $key, 'pqsg.strong' => $key]);
+        session(['pqsg.key' => $key, 'pqsg.strong' => $key, 'pqsg.strong_at' => now()->toIso8601String()]);
 
         if (config('shop.pqsg.enabled')) {
             \App\Jobs\SendPqsgCapture::dispatchAfterResponse(

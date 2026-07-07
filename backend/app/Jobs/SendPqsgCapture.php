@@ -73,7 +73,10 @@ class SendPqsgCapture
             $uuid = $body['uuid'] ?? $body['capture_uuid'] ?? ($body['data']['uuid'] ?? null);
 
             if ($resp->successful() && $uuid) {
-                Cache::put("pqsg:{$this->key}", $uuid, now()->addHours(2));
+                // 12h: shopping sessions outlive short TTLs, and a session key
+                // pointing at an evicted uuid shows dead gallery steps
+                Cache::put("pqsg:{$this->key}", $uuid, now()->addHours(12));
+                Log::info('pqsg capture registered', ['key' => $this->key, 'uuid' => $uuid, 'source' => $this->source]);
             } else {
                 Log::warning('pqsg capture rejected', ['status' => $resp->status(), 'body' => $resp->body(), 'key' => $this->key]);
             }
