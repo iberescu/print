@@ -1,9 +1,19 @@
 <script setup>
+import { onMounted } from 'vue';
 import { Head, Link } from '@inertiajs/vue3';
 import StoreLayout from '../Layouts/StoreLayout.vue';
 import { money } from '../lib/format';
+import { adsConversion } from '../lib/gads';
 
-defineProps({ order: { type: Object, default: () => ({}) } });
+const props = defineProps({ order: { type: Object, default: () => ({}) } });
+
+// Purchase conversion — Google dedupes repeats by transaction_id, so a
+// refreshed thank-you page can't double count.
+onMounted(() => {
+    if (props.order?.number) {
+        adsConversion('purchase', { value: Number(props.order.total || 0), transaction_id: props.order.number });
+    }
+});
 </script>
 
 <template>

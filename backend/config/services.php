@@ -41,4 +41,19 @@ return [
         'redirect'      => env('GOOGLE_REDIRECT_URI', '/auth/google/callback'),
     ],
 
+    // Google Ads API (campaign management via ads:setup) + the site tag.
+    // The label_* values are conversion-action labels printed by ads:setup.
+    'google_ads' => [
+        'developer_token'   => env('GOOGLE_ADS_DEVELOPER_TOKEN'),
+        'client_id'         => env('GOOGLE_ADS_CLIENT_ID'),
+        'client_secret'     => env('GOOGLE_ADS_CLIENT_SECRET'),
+        'refresh_token'     => env('GOOGLE_ADS_REFRESH_TOKEN'),
+        'customer_id'       => env('GOOGLE_ADS_CUSTOMER_ID'),
+        'login_customer_id' => env('GOOGLE_ADS_LOGIN_CUSTOMER_ID'),
+        'tag_id'            => env('GOOGLE_ADS_TAG_ID'),
+        'label_purchase'    => env('GOOGLE_ADS_LABEL_PURCHASE'),
+        'label_logo'        => env('GOOGLE_ADS_LABEL_LOGO'),
+        'label_cart'        => env('GOOGLE_ADS_LABEL_CART'),
+    ],
+
 ];

@@ -3,6 +3,7 @@ import { ref, computed } from 'vue';
 import { Head, Link, router } from '@inertiajs/vue3';
 import StoreLayout from '../Layouts/StoreLayout.vue';
 import { money } from '../lib/format';
+import { adsConversion } from '../lib/gads';
 
 const props = defineProps({
     product: { type: Object, required: true },
@@ -28,6 +29,7 @@ const backHref = computed(() => {
 function addToCart() {
     if (!approved.value || busy.value) return;
     busy.value = true;
+    adsConversion('cart', { value: Number(props.quote?.line_total || 0) });
     router.post(`/cart/add/${props.product.slug}`, {
         quantityId: props.design.quantityId ?? null,
         optionValueIds: props.design.optionValueIds ?? [],

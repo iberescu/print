@@ -4,6 +4,7 @@ import { ref, onMounted, onBeforeUnmount, nextTick } from 'vue';
 import StoreLayout from '../Layouts/StoreLayout.vue';
 import LogoBuilder from '../Components/LogoBuilder.vue';
 import SmartImage from '../Components/SmartImage.vue';
+import { adsConversion } from '../lib/gads';
 
 const props = defineProps({
     heroImage: { type: String, default: null },
@@ -43,6 +44,7 @@ function downloadPng() {
 // Hand the logo to the upsell engine FIRST (so the gallery is committed even
 // if the download hijacks navigation on quirky browsers), then download.
 async function useLogo(logo) {
+    adsConversion('logo'); // ads conversion: the free-tool funnel's key event
     chosen.value = logo;
 
     try {

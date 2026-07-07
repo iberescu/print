@@ -4,6 +4,7 @@ import { ref, computed, onMounted, onBeforeUnmount } from 'vue';
 import StoreLayout from '../Layouts/StoreLayout.vue';
 import SmartImage from '../Components/SmartImage.vue';
 import { money } from '../lib/format';
+import { adsEvent } from '../lib/gads';
 
 const props = defineProps({
     product: { type: Object, required: true },
@@ -29,6 +30,11 @@ const metaDescription = computed(() =>
 let ldEl = null;
 let prevDesc = null;
 onMounted(() => {
+    // dynamic-remarketing signal — item id matches the merchant feed's g:id
+    adsEvent('view_item', {
+        value: Number(props.product.fromPrice || 0),
+        items: [{ id: String(props.product.id), google_business_vertical: 'retail' }],
+    });
     const meta = document.querySelector('meta[name="description"]');
     if (meta) { prevDesc = meta.getAttribute('content'); meta.setAttribute('content', metaDescription.value); }
     const p = props.product;
