@@ -78,11 +78,11 @@ class SendPqsgCapture
                 Cache::put("pqsg:{$this->key}", $uuid, now()->addHours(12));
                 Log::info('pqsg capture registered', ['key' => $this->key, 'uuid' => $uuid, 'source' => $this->source]);
             } else {
-                Log::warning('pqsg capture rejected', ['status' => $resp->status(), 'body' => $resp->body(), 'key' => $this->key]);
+                Log::error('pqsg capture rejected', ['status' => $resp->status(), 'body' => $resp->body(), 'key' => $this->key]);
             }
         } catch (\Throwable $e) {
             // upsell is strictly best-effort — never surface a failure to the shopper
-            Log::warning('pqsg capture failed', ['error' => $e->getMessage(), 'key' => $this->key]);
+            Log::error('pqsg capture failed', ['error' => $e->getMessage(), 'key' => $this->key]);
         }
     }
 }
