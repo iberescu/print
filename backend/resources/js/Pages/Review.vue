@@ -31,6 +31,7 @@ function addToCart() {
     router.post(`/cart/add/${props.product.slug}`, {
         quantityId: props.design.quantityId ?? null,
         optionValueIds: props.design.optionValueIds ?? [],
+        project: props.design.project ?? null,
         preview: props.preview,
         brand: props.design.brand ?? null,
         mode: props.mode,

@@ -19,6 +19,15 @@ class AuthController extends Controller
         return ! empty(config('services.google.client_id')) && ! empty(config('services.google.client_secret'));
     }
 
+    /** Designs made before signing in belong to this account now ("My designs"). */
+    private function claimDesigns(): void
+    {
+        $ids = array_keys(session('design.projects', []));
+        if ($ids && Auth::id()) {
+            \App\Models\DesignProject::whereIn('id', $ids)->whereNull('user_id')->update(['user_id' => Auth::id()]);
+        }
+    }
+
     public function showLogin()
     {
         if (Auth::check()) {
@@ -40,6 +49,7 @@ class AuthController extends Controller
         }
 
         $request->session()->regenerate();
+        $this->claimDesigns();
 
         return redirect()->intended(route('account'));
     }
@@ -70,6 +80,7 @@ class AuthController extends Controller
 
         Auth::login($user, true);
         $request->session()->regenerate();
+        $this->claimDesigns();
 
         return redirect()->intended(route('account'));
     }
@@ -108,6 +119,7 @@ class AuthController extends Controller
 
         Auth::login($user, true);
         $request->session()->regenerate();
+        $this->claimDesigns();
 
         return redirect()->intended(route('account'));
     }

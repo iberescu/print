@@ -11,6 +11,17 @@ defineProps({
 });
 
 const remove = (id) => router.post(`/cart/remove/${id}`, {}, { preserveScroll: true });
+
+// Reopen the line's design project in the editor; re-adding after the edit
+// REPLACES this line (same project id), it doesn't duplicate it.
+const editHref = (it) => {
+    const p = new URLSearchParams();
+    p.set('mode', it.design?.mode || 'design');
+    p.set('project', it.design.project);
+    if (it.quantity_id) p.set('qty', it.quantity_id);
+    (it.option_value_ids || []).forEach((id) => p.append('opts[]', id));
+    return `/design/${it.slug}?${p.toString()}`;
+};
 </script>
 
 <template>
@@ -44,7 +55,8 @@ const remove = (id) => router.post(`/cart/remove/${id}`, {}, { preserveScroll: t
                                 <span v-for="(val, key) in it.options" :key="key" class="rounded-full bg-paper-200 px-2.5 py-0.5 text-xs text-ink/70">{{ key }}: {{ val }}</span>
                                 <span v-if="it.design" class="rounded-full bg-brand-50 px-2.5 py-0.5 text-xs font-medium text-brand-700">✎ {{ it.design.mode === 'upload' ? 'Uploaded artwork' : 'Custom design' }}</span>
                             </div>
-                            <div class="mt-auto pt-2">
+                            <div class="mt-auto flex items-center gap-4 pt-2">
+                                <Link v-if="it.design?.project" :href="editHref(it)" class="text-sm font-medium text-brand-700 transition hover:underline">✎ Edit design</Link>
                                 <button class="text-sm text-ink/45 transition hover:text-red-600" @click="remove(it.id)">Remove</button>
                             </div>
                         </div>

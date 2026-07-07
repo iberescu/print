@@ -20,6 +20,18 @@ class AccountController extends Controller
                 'date'   => $o->created_at?->toDayDateTimeString(),
             ]);
 
-        return Inertia::render('Account', ['orders' => $orders]);
+        // "My designs": projects this account owns (claimed at login or made
+        // while signed in) — each edits via /design/{slug}?project={id}.
+        $designs = \App\Models\DesignProject::where('user_id', $request->user()->id)
+            ->latest('updated_at')->take(24)->get()
+            ->map(fn ($p) => [
+                'id'      => $p->id,
+                'slug'    => $p->product_slug,
+                'product' => $p->product_name,
+                'preview' => $p->preview,
+                'date'    => $p->updated_at?->diffForHumans(),
+            ]);
+
+        return Inertia::render('Account', ['orders' => $orders, 'designs' => $designs]);
     }
 }

@@ -39,6 +39,7 @@ class CartController extends Controller
             'optionValueIds.*' => ['integer'],
             'preview'          => ['nullable', 'string', 'max:4000000'],
             'mode'             => ['nullable', 'string', 'max:20'],
+            'project'          => ['nullable', 'uuid'],
             'brand'            => ['nullable', 'array'],
             'brand.logo'       => ['nullable', 'string', 'max:4000000'],
         ]);
@@ -53,7 +54,7 @@ class CartController extends Controller
 
         $quote = $pricing->quote($product, $data['quantityId'] ?? null, $data['optionValueIds'] ?? []);
 
-        $lineId = $this->cart->add([
+        $line = [
             'product_id'       => $product->id,
             'name'             => $product->name,
             'slug'             => $product->slug,
@@ -65,10 +66,22 @@ class CartController extends Controller
             'options'          => $quote['options'],
             'option_value_ids' => $quote['option_value_ids'],
             'design'           => ! empty($data['preview'])
-                ? ['preview' => $data['preview'], 'mode' => $data['mode'] ?? 'design']
+                ? ['preview' => $data['preview'], 'mode' => $data['mode'] ?? 'design', 'project' => $data['project'] ?? null]
                 : null,
             'brand'            => $brand,
-        ]);
+        ];
+
+        // Edit-from-cart round trip: the same project is the same design —
+        // replace that line instead of piling up duplicates.
+        $existing = ! empty($data['project'])
+            ? collect($this->cart->items())->first(fn ($i) => ($i['design']['project'] ?? null) === $data['project'])
+            : null;
+        if ($existing) {
+            $this->cart->update($existing['id'], $line);
+            $lineId = $existing['id'];
+        } else {
+            $lineId = $this->cart->add($line);
+        }
 
         $product->loadMissing('category');
         $steps = $this->upsellSteps($product, $data);

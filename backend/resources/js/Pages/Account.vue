@@ -4,7 +4,10 @@ import { Head, Link, router, usePage } from '@inertiajs/vue3';
 import StoreLayout from '../Layouts/StoreLayout.vue';
 import { money } from '../lib/format';
 
-defineProps({ orders: { type: Array, default: () => [] } });
+defineProps({
+    orders: { type: Array, default: () => [] },
+    designs: { type: Array, default: () => [] },
+});
 
 const user = computed(() => usePage().props.auth?.user ?? {});
 const statusClass = (s) => ({ paid: 'bg-emerald-100 text-emerald-700', pending: 'bg-amber-100 text-amber-700', failed: 'bg-red-100 text-red-700' }[s] || 'bg-paper-300 text-ink/60');
@@ -22,6 +25,27 @@ const logout = () => router.post('/logout');
                 </div>
                 <button class="rounded-full border border-ink/20 bg-white px-5 py-2.5 text-sm font-semibold text-ink transition hover:border-ink/40" @click="logout">Sign out</button>
             </div>
+
+            <template v-if="designs.length">
+                <h2 class="mt-10 font-display text-xl font-semibold text-ink">My designs</h2>
+                <div class="mt-4 grid grid-cols-2 gap-4 sm:grid-cols-3">
+                    <div v-for="d in designs" :key="d.id" class="group overflow-hidden rounded-2xl border border-paper-300 bg-white shadow-sm transition hover:shadow-md">
+                        <Link :href="`/design/${d.slug}?project=${d.id}`" class="block">
+                            <div class="aspect-[16/10] bg-paper-200">
+                                <img v-if="d.preview" :src="d.preview" :alt="`${d.product} design`" loading="lazy" class="h-full w-full object-cover" />
+                                <div v-else class="grid h-full place-items-center text-3xl text-ink/20">✎</div>
+                            </div>
+                        </Link>
+                        <div class="flex items-center justify-between gap-2 px-3.5 py-2.5">
+                            <div class="min-w-0">
+                                <p class="truncate text-sm font-semibold text-ink">{{ d.product }}</p>
+                                <p class="text-xs text-ink/45">{{ d.date }}</p>
+                            </div>
+                            <Link :href="`/design/${d.slug}?project=${d.id}`" class="shrink-0 rounded-full border border-brand-600 px-3 py-1 text-xs font-semibold text-brand-700 transition hover:bg-brand-50">Edit</Link>
+                        </div>
+                    </div>
+                </div>
+            </template>
 
             <h2 class="mt-10 font-display text-xl font-semibold text-ink">Order history</h2>
             <div class="mt-4 overflow-hidden rounded-2xl border border-paper-300 bg-white shadow-sm">

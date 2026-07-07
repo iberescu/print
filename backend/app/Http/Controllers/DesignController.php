@@ -27,9 +27,18 @@ class DesignController extends Controller
         // session owns that project (the id→file map lives in the session).
         $projectId = (string) $request->query('project', '');
         $saved = null;
-        if ($projectId !== '' && ($path = session('design.projects')[$projectId] ?? null) && Storage::disk('public')->exists($path)) {
-            $saved = json_decode((string) Storage::disk('public')->get($path), true) ?: null;
-        } else {
+        if ($projectId !== '') {
+            // this session's map first, else a project the signed-in user owns
+            $path = session('design.projects')[$projectId] ?? null;
+            if (! $path && $request->user() && \Illuminate\Support\Str::isUuid($projectId)) {
+                $path = \App\Models\DesignProject::where('id', $projectId)
+                    ->where('user_id', $request->user()->id)->value('design_path');
+            }
+            if ($path && Storage::disk('public')->exists($path)) {
+                $saved = json_decode((string) Storage::disk('public')->get($path), true) ?: null;
+            }
+        }
+        if (! $saved) {
             $projectId = (string) \Illuminate\Support\Str::uuid();
         }
 
@@ -163,6 +172,18 @@ class DesignController extends Controller
             $projects = session('design.projects', []);
             $projects[$data['project']] = $path;
             session(['design.projects' => array_slice($projects, -10, null, true)]); // keep the last 10
+
+            // The durable record behind "My designs" + cross-session edit links.
+            // Owned by whoever is logged in; a later login claims guest projects.
+            $project = \App\Models\DesignProject::firstOrNew(['id' => $data['project']]);
+            $project->fill([
+                'product_slug' => $product->slug,
+                'product_name' => $product->name,
+                'preview'      => $data['preview'] ?: $project->preview,
+                'design_path'  => $path,
+            ]);
+            $project->user_id ??= $request->user()?->id;
+            $project->save();
         }
         unset($data['design']); // session gets the id→path map only, never the blob
 
