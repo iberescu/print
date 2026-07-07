@@ -19,6 +19,7 @@ const busy = ref(false);
 const backHref = computed(() => {
     const p = new URLSearchParams();
     p.set('mode', props.mode || 'design');
+    if (props.design.project) p.set('project', props.design.project); // resume THIS project, not a fresh seed
     if (props.design.quantityId) p.set('qty', props.design.quantityId);
     (props.design.optionValueIds || []).forEach((id) => p.append('opts[]', id));
     return `/design/${props.product.slug}?${p.toString()}`;

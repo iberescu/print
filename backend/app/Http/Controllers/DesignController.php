@@ -22,12 +22,15 @@ class DesignController extends Controller
 
         $opts = $this->optionIds($request);
 
-        // Work-in-progress saved at Review — "Back to editor" restores it
-        // instead of seeding a fresh template. An explicit ?template= choice
-        // still wins (the buyer asked for a fresh start from the gallery).
+        // Every clean entry (blank editor, template pick) is a NEW project;
+        // only an explicit ?project= resumes earlier work — and only when this
+        // session owns that project (the id→file map lives in the session).
+        $projectId = (string) $request->query('project', '');
         $saved = null;
-        if (($wip = session("design.wip.{$product->slug}")) && Storage::disk('public')->exists($wip)) {
-            $saved = json_decode((string) Storage::disk('public')->get($wip), true) ?: null;
+        if ($projectId !== '' && ($path = session('design.projects')[$projectId] ?? null) && Storage::disk('public')->exists($path)) {
+            $saved = json_decode((string) Storage::disk('public')->get($path), true) ?: null;
+        } else {
+            $projectId = (string) \Illuminate\Support\Str::uuid();
         }
 
         return Inertia::render('Editor', [
@@ -36,7 +39,8 @@ class DesignController extends Controller
             'mode'      => $request->query('mode') === 'upload' ? 'upload' : 'design',
             'templates' => $this->templatesFor($product),
             'template'  => $request->query('template'),   // pre-apply this template ref (from the gallery)
-            'savedDesign' => $request->query('template') ? null : $saved,
+            'project'   => $projectId,
+            'savedDesign' => $saved,
             'canvas'    => $this->geometry($product, $opts),
             'selection' => [
                 'quantityId'     => ((int) $request->query('qty')) ?: null,
@@ -126,6 +130,7 @@ class DesignController extends Controller
             'preview'           => ['nullable', 'string', 'max:4000000'],
             // full fabric JSON (front/back) — uploaded logos ride along as data-URLs
             'design'            => ['nullable', 'string', 'max:12000000'],
+            'project'           => ['nullable', 'uuid'],
             'brand'             => ['nullable', 'array'],
             // NOTE: once one nested rule exists, validated() drops un-ruled siblings —
             // every brand field the funnel uses must be listed here.
@@ -149,15 +154,17 @@ class DesignController extends Controller
             $data['brand']['logo'] = \App\Support\PreviewStore::persist($data['brand']['logo']);
         }
 
-        // The work-in-progress design (fabric JSON) also goes to disk: "Back to
-        // editor" used to land on a FRESH seeded canvas — the buyer's work only
-        // existed in the abandoned page's JS memory.
-        if (! empty($data['design'])) {
-            $path = 'designs/'.now()->format('Ym').'/'.\Illuminate\Support\Str::uuid().'.json';
+        // The work-in-progress design (fabric JSON) also goes to disk under its
+        // project id: "Back to editor" resumes exactly this project (a clean
+        // editor entry mints a new id and never sees other projects' work).
+        if (! empty($data['design']) && ! empty($data['project'])) {
+            $path = 'designs/'.now()->format('Ym').'/'.$data['project'].'.json'; // re-review overwrites, no pile-up
             Storage::disk('public')->put($path, $data['design']);
-            session(["design.wip.{$product->slug}" => $path]);
+            $projects = session('design.projects', []);
+            $projects[$data['project']] = $path;
+            session(['design.projects' => array_slice($projects, -10, null, true)]); // keep the last 10
         }
-        unset($data['design']); // session gets the path only, never the blob
+        unset($data['design']); // session gets the id→path map only, never the blob
 
         // Register the design with the pqSmartGenerator upsell engine — async,
         // after this response is sent, so the shopper never waits on it.
@@ -189,6 +196,7 @@ class DesignController extends Controller
                 'brand'          => $d['brand'] ?? null,
                 'quantityId'     => $d['quantityId'] ?? null,
                 'optionValueIds' => $d['optionValueIds'] ?? [],
+                'project'        => $d['project'] ?? null, // the back link resumes this project
             ],
             'quote'    => $quote,
         ]);

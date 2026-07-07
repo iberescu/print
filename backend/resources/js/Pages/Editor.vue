@@ -11,7 +11,8 @@ const props = defineProps({
     mode: { type: String, default: 'design' },
     templates: { type: Array, default: () => [] },
     template: { type: String, default: null },
-    savedDesign: { type: Object, default: null }, // work-in-progress from Review — restore instead of seeding
+    project: { type: String, default: null },     // this editing session's project id (fresh unless resuming)
+    savedDesign: { type: Object, default: null }, // the resumed project's design — restore instead of seeding
     canvas: { type: Object, default: () => ({}) },
     selection: { type: Object, default: () => ({}) },
 });
@@ -606,7 +607,8 @@ function goToReview() {
         quantityId: props.selection?.quantityId ?? null,
         optionValueIds: props.selection?.optionValueIds ?? [],
         preview,
-        design: JSON.stringify(store), // server keeps it so "Back to editor" can restore
+        design: JSON.stringify(store), // server keeps it so "Back to editor" can resume
+        project: props.project,
         brand: extractBrand(),
         mode: props.mode,
     }, { onFinish: () => (saving.value = false) });
