@@ -231,7 +231,13 @@ function next() {
                                 {{ g }}
                             </li>
                         </ul>
-                        <p class="mt-5 text-xs text-white/45">One-time offer for new Runmyprint customers, fulfilled by Layout.ai after checkout — billed only once you approve the campaign.</p>
+                        <button type="button" :disabled="busy === 'ad-credit-250' || added['ad-credit-250']"
+                                class="mt-6 rounded-full px-7 py-3 font-semibold transition disabled:opacity-80"
+                                :class="added['ad-credit-250'] ? 'bg-white/15 text-lime-accent' : 'bg-brand-blue text-white shadow-lg shadow-brand-blue/30 hover:bg-[#2f78e0]'"
+                                @click="addItem({ slug: 'ad-credit-250' })">
+                            {{ added['ad-credit-250'] ? '✓ Added to your order — $29' : 'Add to my order — $29' }}
+                        </button>
+                        <p class="mt-5 text-xs text-white/45">One-time offer for new Runmyprint customers. The $29 is charged with your order; your campaign is fulfilled by our partner Layout.ai and nothing runs until you approve it.</p>
                     </div>
                 </div>
 

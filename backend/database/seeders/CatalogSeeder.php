@@ -421,6 +421,20 @@ class CatalogSeeder extends Seeder
                 ],
             ],
             [
+                'name' => 'Services', 'slug' => 'services', 'sort_order' => 7,
+                'tagline' => 'Beyond print — services that launch your brand.',
+                'description' => 'Marketing services fulfilled with our partners.',
+                'products' => [
+                    [
+                        'name' => 'Ad Credit — $250 Google Display Ads', 'from_price' => 29.00,
+                        'tagline' => 'Your first ad campaign, designed and managed by Layout.ai.',
+                        'description' => '$250 of Google Display advertising for $29. Ready-to-run ad designs built from your brand; you approve the campaign before anything runs. 1,000 visitors guaranteed or your $29 back; unused credit refunded. Fulfilled with our partner Layout.ai.',
+                        'supports_design' => false, 'supports_upload' => false,
+                        'quantities' => [[1, 29.00, true]],
+                    ],
+                ],
+            ],
+            [
                 'name' => 'Accessories', 'slug' => 'accessories', 'sort_order' => 6,
                 'tagline' => 'Finishing touches for your cards.',
                 'description' => 'Holders, cases and stands to present and protect your business cards in style.',

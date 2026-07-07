@@ -62,7 +62,10 @@ class FeedController extends Controller
 
     private function products()
     {
-        return Product::with('category')->where('is_active', true)->orderBy('sort_order')->get();
+        // services (ad credit etc.) are not shippable goods — keep them out of shopping feeds
+        return Product::with('category')->where('is_active', true)
+            ->whereHas('category', fn ($q) => $q->where('slug', '!=', 'services'))
+            ->orderBy('sort_order')->get();
     }
 
     private function tag(string $name, $value): string
