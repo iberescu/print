@@ -201,6 +201,22 @@ onMounted(() => {
     // Test seam: expose the fabric canvas only when ?test=1 (used by e2e/audit scripts; no-op in production).
     if (typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('test') === '1') window.__rmpCanvas = canvas;
     canvas.setDimensions({ width: W, height: H });
+
+    // No stretching: images and text scale from the corners only (uniform), so
+    // aspect ratio always holds. The one-axis middle handles are hidden —
+    // except a textbox's left/right, which re-flow the wrap width in fabric
+    // rather than stretching glyphs. Shift must not unlock distortion either.
+    canvas.uniformScaling = true;
+    canvas.uniScaleKey = null;
+    const keepAspect = (o) => {
+        if (!o || typeof o.setControlsVisibility !== 'function') return;
+        if (o.type === 'image' || o.type === 'i-text' || o.type === 'text') {
+            o.setControlsVisibility({ ml: false, mr: false, mt: false, mb: false });
+        } else if (o.type === 'textbox') {
+            o.setControlsVisibility({ mt: false, mb: false });
+        }
+    };
+    canvas.on('object:added', (e) => keepAspect(e.target));
     canvas.on('selection:created', syncSelection);
     canvas.on('selection:updated', syncSelection);
     canvas.on('selection:cleared', () => { hasSel.value = false; isText.value = false; });
