@@ -27,6 +27,7 @@ class AffiliateController extends Controller
     private const AD_PRODUCTS = [
         'tshirt_words', 'business_card_qr_logo', 'hoodie', 'bottle', 'sticker',
         'bags', 'glass_logo', 'cloudlab_umbrela', 'chocolate_bar', 'canvas',
+        'cloudlab_sortv2', 'cloudlab_pix', 'office', 'google_v2',
     ];
 
     public function show()
@@ -120,9 +121,14 @@ class AffiliateController extends Controller
             ->map(fn ($i) => ['url' => $i['url'], 'label' => $i['product_label'] ?? ''])
             ->values()->all();
 
+        // ready at 3+ mockups, or with whatever exists once the engine settles —
+        // some captures legitimately yield a smaller set
+        $done = in_array($state['computed_status'] ?? '', ['completed', 'partially_completed'], true)
+            || (bool) ($state['is_complete'] ?? false);
+
         return $this->cors([
-            'ready'  => count($images) >= 3,
-            'done'   => (bool) ($state['is_complete'] ?? false),
+            'ready'  => count($images) >= 3 || ($done && count($images) >= 1),
+            'done'   => $done,
             'images' => $images,
         ]);
     }
