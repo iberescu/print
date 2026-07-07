@@ -11,6 +11,7 @@ const props = defineProps({
     mode: { type: String, default: 'design' },
     templates: { type: Array, default: () => [] },
     template: { type: String, default: null },
+    savedDesign: { type: Object, default: null }, // work-in-progress from Review — restore instead of seeding
     canvas: { type: Object, default: () => ({}) },
     selection: { type: Object, default: () => ({}) },
 });
@@ -217,7 +218,9 @@ onMounted(() => {
         logoClickCandidate = null;
     });
 
+    const hasSaved = !!(props.savedDesign?.front || props.savedDesign?.back);
     if (props.template) applyTemplate(props.template);
+    else if (hasSaved) restoreSaved(); // back from Review — the buyer's work, not a fresh seed
     // shaped (die-cut) products get the CENTERED generic seed — the rectangular
     // business-card layout would fall outside the cut edge (e.g. circle cards)
     else if (props.mode === 'design') (isBusinessCard && !cutPath ? seedTemplate : seedGeneric)();
@@ -227,9 +230,9 @@ onMounted(() => {
     window.addEventListener('resize', fitCanvas);
 
     // Seeds are measured before webfonts finish loading → load the fonts then re-fit
-    // the text so a wider webfont isn't clipped. Templates keep their authored widths
-    // (applyTemplate repaints them after loading their fonts).
-    if (typeof document !== 'undefined' && !props.template) refitText();
+    // the text so a wider webfont isn't clipped. Templates and restored designs
+    // keep their authored widths (both repaint after loading their fonts).
+    if (typeof document !== 'undefined' && !props.template && !hasSaved) refitText();
 });
 
 onBeforeUnmount(() => {
@@ -577,14 +580,33 @@ function extractBrand() {
     return b;
 }
 
+// Back from Review: rehydrate both sides from the server-stored fabric JSON.
+// Coordinates are already canvas-space (no bleed offset), exactly like flip().
+async function restoreSaved() {
+    try {
+        store.front = props.savedDesign.front || null;
+        store.back = props.savedDesign.back || null;
+        const start = store[side.value] || store.front;
+        if (!start) return;
+        await canvas.loadFromJSON(start);
+        markLogos();
+        canvas.renderAll();
+        loadCanvasFonts().then(() => repaintFonts());
+    } catch (e) { console.error('restoreSaved failed', e); }
+}
+
 function goToReview() {
     saving.value = true;
     store[side.value] = canvas.toJSON(['rmpRole']);
-    const preview = canvas.toDataURL({ format: 'jpeg', quality: 0.82, multiplier: 0.7 });
+    // Export at a fixed design resolution: the canvas itself is fitted to the
+    // viewport (tiny on phones), so a flat multiplier produced blurry review
+    // previews. getWidth() is the FITTED width — compensate to ~1600px.
+    const preview = canvas.toDataURL({ format: 'jpeg', quality: 0.82, multiplier: Math.min(8, Math.max(0.5, 1600 / canvas.getWidth())) });
     router.post(`/design/${props.product.slug}/review`, {
         quantityId: props.selection?.quantityId ?? null,
         optionValueIds: props.selection?.optionValueIds ?? [],
         preview,
+        design: JSON.stringify(store), // server keeps it so "Back to editor" can restore
         brand: extractBrand(),
         mode: props.mode,
     }, { onFinish: () => (saving.value = false) });

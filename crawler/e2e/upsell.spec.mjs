@@ -3,7 +3,7 @@ import { completeUpsell, clickContinue, reviewAndAdd } from './helpers.mjs';
 
 // Forced multi-step upsell before the cart (req 3) + related-product step (req 4).
 async function addBusinessCard(page) {
-    await page.goto('/product/matte-business-cards');
+    await page.goto('/product/standard-business-cards');
     await page.getByRole('button', { name: /design online/i }).first().click();
     await page.waitForURL('**/design/**');
     await reviewAndAdd(page); // design → review → approve → add
@@ -47,7 +47,7 @@ test('business-card upsell offers a non-personalised card holder', async ({ page
 // A real brand (non-placeholder website) adds the third-party gallery step:
 // review → accessories → pqsg step (widget) → cart.
 test('designer brand adds the third-party upsell step', async ({ page }) => {
-    await page.goto('/design/matte-business-cards?test=1');
+    await page.goto('/design/standard-business-cards?test=1');
     await page.waitForFunction(() => window.__rmpCanvas && window.__rmpCanvas.getObjects().length > 0);
     await page.evaluate(() => {
         const c = window.__rmpCanvas;

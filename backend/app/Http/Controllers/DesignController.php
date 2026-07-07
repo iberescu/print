@@ -9,6 +9,7 @@ use App\Support\PrintSpec;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -21,12 +22,21 @@ class DesignController extends Controller
 
         $opts = $this->optionIds($request);
 
+        // Work-in-progress saved at Review — "Back to editor" restores it
+        // instead of seeding a fresh template. An explicit ?template= choice
+        // still wins (the buyer asked for a fresh start from the gallery).
+        $saved = null;
+        if (($wip = session("design.wip.{$product->slug}")) && Storage::disk('public')->exists($wip)) {
+            $saved = json_decode((string) Storage::disk('public')->get($wip), true) ?: null;
+        }
+
         return Inertia::render('Editor', [
             'product'   => $product->only('id', 'name', 'slug', 'decoration'),
             'category'  => ['name' => $product->category->name, 'slug' => $product->category->slug],
             'mode'      => $request->query('mode') === 'upload' ? 'upload' : 'design',
             'templates' => $this->templatesFor($product),
             'template'  => $request->query('template'),   // pre-apply this template ref (from the gallery)
+            'savedDesign' => $request->query('template') ? null : $saved,
             'canvas'    => $this->geometry($product, $opts),
             'selection' => [
                 'quantityId'     => ((int) $request->query('qty')) ?: null,
@@ -114,6 +124,8 @@ class DesignController extends Controller
 
         $data = $request->validate([
             'preview'           => ['nullable', 'string', 'max:4000000'],
+            // full fabric JSON (front/back) — uploaded logos ride along as data-URLs
+            'design'            => ['nullable', 'string', 'max:12000000'],
             'brand'             => ['nullable', 'array'],
             // NOTE: once one nested rule exists, validated() drops un-ruled siblings —
             // every brand field the funnel uses must be listed here.
@@ -136,6 +148,16 @@ class DesignController extends Controller
         if (isset($data['brand']['logo'])) {
             $data['brand']['logo'] = \App\Support\PreviewStore::persist($data['brand']['logo']);
         }
+
+        // The work-in-progress design (fabric JSON) also goes to disk: "Back to
+        // editor" used to land on a FRESH seeded canvas — the buyer's work only
+        // existed in the abandoned page's JS memory.
+        if (! empty($data['design'])) {
+            $path = 'designs/'.now()->format('Ym').'/'.\Illuminate\Support\Str::uuid().'.json';
+            Storage::disk('public')->put($path, $data['design']);
+            session(["design.wip.{$product->slug}" => $path]);
+        }
+        unset($data['design']); // session gets the path only, never the blob
 
         // Register the design with the pqSmartGenerator upsell engine — async,
         // after this response is sent, so the shopper never waits on it.

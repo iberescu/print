@@ -3,7 +3,7 @@ import { clickContinue, completeUpsell, reviewAndAdd } from './helpers.mjs';
 
 // Online designer workflow (req 8 / 9 / 17 / 18).
 test('online designer loads, opens the template picker and applies a template', async ({ page }) => {
-    await page.goto('/product/matte-business-cards');
+    await page.goto('/product/standard-business-cards');
     await page.getByRole('button', { name: /design online/i }).first().click();
     await page.waitForURL('**/design/**');
 
@@ -20,7 +20,7 @@ test('online designer loads, opens the template picker and applies a template', 
 
 // req: a review step between the editor and the cart.
 test('review step shows the design and gates add-to-cart behind approval', async ({ page }) => {
-    await page.goto('/product/matte-business-cards');
+    await page.goto('/product/standard-business-cards');
     await page.getByRole('button', { name: /design online/i }).first().click();
     await page.waitForURL('**/design/**');
 
@@ -40,7 +40,7 @@ test('review step shows the design and gates add-to-cart behind approval', async
 // gallery when a real brand was captured) → cart. Placeholder designs get the
 // final-step + accessories steps only.
 test('designer → add routes into the upsell flow, then on to the cart', async ({ page }) => {
-    await page.goto('/product/matte-business-cards');
+    await page.goto('/product/standard-business-cards');
     await page.getByRole('button', { name: /design online/i }).first().click();
     await page.waitForURL('**/design/**');
     await page.getByRole('button', { name: 'Text' }).click();
