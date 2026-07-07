@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed } from 'vue';
 import { Head, useForm } from '@inertiajs/vue3';
 import StoreLayout from '../Layouts/StoreLayout.vue';
 import SmartImage from '../Components/SmartImage.vue';
@@ -7,24 +7,6 @@ import SmartImage from '../Components/SmartImage.vue';
 const props = defineProps({
     heroImage: { type: String, default: null },
     showcaseImage: { type: String, default: null },
-    demoKey: { type: String, default: null },
-});
-
-// ---- live hero demo: the REAL widget, rendering against the real engine ----
-const demoHost = ref(null);
-const demoStarted = ref(false);
-onMounted(() => {
-    if (!props.demoKey || !demoHost.value) return;
-    const el = document.createElement('div');
-    el.setAttribute('data-rmp-affiliate', props.demoKey);
-    // a committed sample logo — public on this origin, so the engine can fetch it
-    el.setAttribute('data-logo-url', `${window.location.origin}/storage/logo-samples/bakery.svg`);
-    demoHost.value.appendChild(el);
-    const s = document.createElement('script');
-    s.src = '/affiliate-widget.js';
-    s.async = true;
-    document.head.appendChild(s);
-    demoStarted.value = true;
 });
 
 // ---- earnings calculator ----------------------------------------------------
@@ -38,21 +20,17 @@ const form = useForm({ name: '', company: '', email: '', website: '' });
 const sent = ref(false);
 const apply = () => form.post('/affiliates/apply', { preserveScroll: true, onSuccess: () => (sent.value = true) });
 
-const snippet = `<script async src="https://www.runmyprint.com/affiliate-widget.js"><\/script>
-<div data-rmp-affiliate="YOUR_KEY"
-     data-logo-url="https://yourapp.com/user/logo.png"></div>`;
-
 const faq = [
     { q: 'How are impressions counted?', a: 'One impression is counted when the ad has finished rendering the visitor\'s products AND at least half of it is on screen. Blank or below-the-fold units never count — you are paid for ads people actually saw.' },
     { q: 'When and how do we get paid?', a: 'Monthly, once your balance passes $50. Your dashboard row shows impressions, the exact amount earned and what is still owed at any moment.' },
-    { q: 'What do we pass to the widget?', a: 'One attribute: a public URL of your user\'s logo (data-logo-url) or their website address (data-website). No personal data, no cookies from us, no tracking scripts beyond the impression counter.' },
+    { q: 'What do we pass to the widget?', a: 'A public URL of your user\'s brand image, or their website address — one attribute, documented in your onboarding pack. No personal data, no cookies from us, no tracking scripts beyond the impression counter.' },
     { q: 'What does the ad look like?', a: 'A quiet card in your page\'s flow: a personalized ad showing real products made for that visitor, one line of copy and a button. You saw a live one at the top of this page.' },
-    { q: 'Who is this for?', a: 'Products whose users run a business: site builders, business-formation tools, hosting panels, directory listings, invoicing apps. If your users have a brand or a website, you can serve them personalized ads.' },
+    { q: 'Who is this for?', a: 'B2B audiences only: site builders, business-formation tools, hosting panels, directory listings, invoicing apps — products whose users run a business. We verify audience fit during onboarding; consumer placements aren\'t accepted.' },
     { q: 'Why $15–20 and not one number?', a: 'New partners start at $15 CPM. Placements that consistently convert to orders move to $20 — we review monthly and only ever move rates up.' },
 ];
 
 const steps = [
-    { n: '1', title: 'Paste two lines', text: 'The script tag and one div. No SDK, no build step, no account linking — the widget is 4 KB of vanilla JavaScript.' },
+    { n: '1', title: 'Apply and onboard', text: 'Tell us where the widget will live. Approved partners get their key and the two-line embed snippet — no SDK, no build step.' },
     { n: '2', title: 'Point it at your user data', text: 'Your users already added a brand image or a website in your product. Hand the widget that URL and our print engine does the rest.' },
     { n: '3', title: 'Each visitor sees a personalized ad', text: 'Business cards, shirts, mugs, totes carrying their own brand — rendered server-side in about 30 seconds, as a clean ad card linking to our shop.' },
     { n: '4', title: 'You are paid per view', text: '$15–20 per 1000 viewable impressions, counted only when the rendered ad is actually on screen. Paid monthly.' },
@@ -83,18 +61,14 @@ const steps = [
                         Embed one widget. It builds a personalized ad for every visitor — their own brand, printed on
                         real products they can actually buy. We pay <strong class="text-lime-accent">$15–20 per 1000 views</strong>.
                     </p>
-                    <!-- the integration IS this small — show it -->
-                    <div class="mt-7 max-w-lg overflow-hidden rounded-xl border border-white/15 bg-[#0d1523] shadow-2xl shadow-black/40">
-                        <div class="flex items-center gap-1.5 border-b border-white/10 px-4 py-2.5">
-                            <span class="h-2.5 w-2.5 rounded-full bg-white/15"></span><span class="h-2.5 w-2.5 rounded-full bg-white/15"></span><span class="h-2.5 w-2.5 rounded-full bg-white/15"></span>
-                            <span class="ml-2 text-[11px] font-medium uppercase tracking-wider text-white/40">the whole integration</span>
-                        </div>
-                        <pre class="overflow-x-auto px-4 py-3.5 text-[12.5px] leading-relaxed text-[#9cc6ff]"><code>{{ snippet }}</code></pre>
+                    <div class="mt-7 flex max-w-lg items-start gap-3 rounded-xl border border-white/15 bg-white/5 px-4 py-3.5 text-sm text-white/70">
+                        <svg class="mt-0.5 h-5 w-5 shrink-0 text-[#9cc6ff]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M9 12l2 2 4-4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        <span>Integration is two lines of code. You receive your key and embed snippet with onboarding, right after your application is approved.</span>
                     </div>
                     <div class="mt-7 flex flex-wrap items-center gap-4">
                         <a href="#apply" class="rounded-full bg-brand-blue px-8 py-4 font-semibold text-white shadow-lg shadow-brand-blue/30 transition hover:bg-[#2f78e0]">Apply to join</a>
                         <ul class="flex flex-wrap gap-x-4 gap-y-1 text-sm text-white/65">
-                            <li>✓ Viewable impressions only</li><li>✓ Paid monthly</li><li>✓ No exclusivity</li>
+                            <li>✓ B2B audiences only</li><li>✓ Viewable impressions only</li><li>✓ Paid monthly</li>
                         </ul>
                     </div>
                 </div>
@@ -105,22 +79,12 @@ const steps = [
                                 <span class="h-2.5 w-2.5 rounded-full bg-[#e8554d]"></span><span class="h-2.5 w-2.5 rounded-full bg-[#e8b04b]"></span><span class="h-2.5 w-2.5 rounded-full bg-[#57bb63]"></span>
                             </div>
                             <span class="text-[11px] text-ink/40">yourapp.com — a page with the widget on it</span>
-                            <span class="inline-flex items-center gap-1.5 text-[11px] font-semibold text-brand-700">
-                                <span class="inline-block h-1.5 w-1.5 animate-pulse rounded-full bg-brand-blue"></span> live
-                            </span>
+                            <span class="text-[11px] text-ink/40">the ad unit</span>
                         </div>
                         <div class="p-4">
-                            <div class="mb-3 space-y-2" aria-hidden="true">
-                                <div class="h-2.5 w-2/5 rounded bg-paper-300"></div>
-                                <div class="h-2.5 w-3/5 rounded bg-paper-200"></div>
-                            </div>
-                            <div ref="demoHost">
-                                <div v-if="!demoStarted" class="rounded-xl border border-paper-300 bg-paper-200/60 p-10 text-center text-sm text-ink/45">
-                                    Widget demo loads on the live site.
-                                </div>
-                            </div>
+                            <SmartImage :src="showcaseImage" alt="The personalized ad card embedded in a partner dashboard" class="overflow-hidden rounded-xl" />
                             <p class="mt-3 text-center text-xs text-ink/45">
-                                This is the real widget building a personalized ad through our print engine right now — first products in ~30 s.
+                                The widget as your users see it — a personalized ad card, rendered by our print engine in ~30 s.
                             </p>
                         </div>
                     </div>
@@ -193,20 +157,15 @@ const steps = [
             </div>
         </section>
 
-        <!-- placement illustration -->
-        <section class="mx-auto max-w-7xl px-6 pb-14 sm:px-8">
-            <div class="grid items-center gap-10 lg:grid-cols-2">
-                <div>
-                    <p class="text-sm font-semibold uppercase tracking-widest text-brand-600">Fits your product</p>
-                    <h2 class="mt-2 font-display text-3xl font-bold tracking-tight">A personalized ad in your layout, not a banner fighting it</h2>
-                    <p class="mt-4 leading-relaxed text-ink/65">The widget inherits nothing and leaks nothing — one shadow-DOM card, sized to its container.
-                    Put it where a "your brand" moment already happens in your product. If the engine can't render a visitor's
-                    products, the widget shows nothing and you lose nothing.</p>
-                </div>
-                <div class="overflow-hidden rounded-3xl border border-paper-300 shadow-xl shadow-ink/10">
-                    <SmartImage :src="showcaseImage" alt="The affiliate ad card embedded in a partner dashboard" />
-                </div>
-            </div>
+        <!-- placement + audience -->
+        <section class="mx-auto max-w-4xl px-6 pb-14 text-center sm:px-8">
+            <p class="text-sm font-semibold uppercase tracking-widest text-brand-600">Fits your product</p>
+            <h2 class="mt-2 font-display text-3xl font-bold tracking-tight">A personalized ad in your layout, not a banner fighting it</h2>
+            <p class="mx-auto mt-4 max-w-2xl leading-relaxed text-ink/65">The widget inherits nothing and leaks nothing — one shadow-DOM card, sized to its container.
+            Put it where a "your brand" moment already happens in your product. If the engine can't render a visitor's
+            products, the widget shows nothing and you lose nothing.</p>
+            <p class="mx-auto mt-4 max-w-2xl leading-relaxed text-ink/65"><strong class="text-ink">We buy B2B leads only.</strong> Your audience should be business owners and teams —
+            founders, freelancers, agencies. Consumer placements aren't accepted, and we verify audience fit during onboarding.</p>
         </section>
 
         <!-- FAQ -->

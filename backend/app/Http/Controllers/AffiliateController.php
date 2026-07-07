@@ -35,7 +35,6 @@ class AffiliateController extends Controller
         return Inertia::render('Affiliates', [
             'heroImage'     => \App\Support\Img::url('promos/affiliates-hero'),
             'showcaseImage' => \App\Support\Img::url('promos/affiliates-widget'),
-            'demoKey'       => Affiliate::where('email', 'demo@runmyprint.com')->value('key'),
         ]);
     }
 
