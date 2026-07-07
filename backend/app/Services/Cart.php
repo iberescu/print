@@ -2,9 +2,14 @@
 
 namespace App\Services;
 
+use App\Models\Coupon;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+
 class Cart
 {
     private const KEY = 'cart';
+    private const COUPON = 'cart_coupon';
     private const UPSELL = 'cart_upsell';
     private const UPSELL_I = 'cart_upsell_i';
     private const UPSELL_LINE = 'cart_upsell_line';
@@ -28,6 +33,7 @@ class Cart
         if (isset($cart[$id])) {
             $cart[$id] = array_merge($cart[$id], $patch);
             session([self::KEY => $cart]);
+            $this->snapshot();
         }
     }
 
@@ -38,6 +44,7 @@ class Cart
         $item['id'] = $id;
         $cart[$id] = $item;
         session([self::KEY => $cart]);
+        $this->snapshot();
 
         return $id;
     }
@@ -47,11 +54,77 @@ class Cart
         $cart = session(self::KEY, []);
         unset($cart[$id]);
         session([self::KEY => $cart]);
+        $this->snapshot();
     }
 
     public function clear(): void
     {
-        session()->forget([self::KEY, self::UPSELL, self::UPSELL_I, self::UPSELL_LINE]);
+        session()->forget([self::KEY, self::COUPON, self::UPSELL, self::UPSELL_I, self::UPSELL_LINE]);
+        if ($uid = Auth::id()) {
+            DB::table('cart_reminders')->where('user_id', $uid)->delete();
+        }
+    }
+
+    /** Abandoned-cart trail: signed-in carts get a DB snapshot the hourly
+     *  carts:remind command turns into a nudge email. Guests have no address
+     *  to write to, so only authed carts are recorded. */
+    private function snapshot(): void
+    {
+        $user = Auth::user();
+        if (! $user) {
+            return;
+        }
+        $items = $this->items();
+        if (! $items) {
+            DB::table('cart_reminders')->where('user_id', $user->id)->delete();
+
+            return;
+        }
+        DB::table('cart_reminders')->upsert([[
+            'user_id'     => $user->id,
+            'email'       => $user->email,
+            'items'       => json_encode(array_map(fn ($i) => [
+                'name' => $i['name'] ?? '', 'quantity' => $i['quantity'] ?? 1,
+                'line_total' => $i['line_total'] ?? 0, 'preview' => $i['design']['preview'] ?? null,
+            ], $items)),
+            'subtotal'    => $this->subtotal(),
+            'reminded_at' => null,
+            'updated_at'  => now(),
+            'created_at'  => now(),
+        ]], ['user_id'], ['email', 'items', 'subtotal', 'reminded_at', 'updated_at']);
+    }
+
+    // ---- coupon --------------------------------------------------------------
+
+    /** Apply a code; returns an error string or null on success. */
+    public function applyCoupon(string $code): ?string
+    {
+        $coupon = Coupon::findUsable($code);
+        if (! $coupon) {
+            return 'That code is not valid.';
+        }
+        session([self::COUPON => $coupon->code]);
+
+        return null;
+    }
+
+    public function removeCoupon(): void
+    {
+        session()->forget(self::COUPON);
+    }
+
+    public function coupon(): ?Coupon
+    {
+        $code = session(self::COUPON);
+
+        return $code ? Coupon::findUsable($code) : null;
+    }
+
+    public function discount(): float
+    {
+        $coupon = $this->coupon();
+
+        return $coupon ? round($this->subtotal() * $coupon->percent_off / 100, 2) : 0.0;
     }
 
     /** Forced upsell flow: an ordered list of step keys the buyer passes before the cart.
@@ -138,6 +211,6 @@ class Cart
 
     public function total(): float
     {
-        return round($this->subtotal() + $this->shipping(), 2);
+        return round($this->subtotal() - $this->discount() + $this->shipping(), 2);
     }
 }

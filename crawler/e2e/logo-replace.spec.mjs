@@ -23,7 +23,7 @@ async function clickLogoOnCanvas(page) {
 }
 
 test('clicking the logo placeholder opens the replace popup and swaps the logo in place', async ({ page }) => {
-    await page.goto('/design/matte-business-cards?test=1');
+    await page.goto('/design/standard-business-cards?test=1');
     await page.waitForFunction(() => window.__rmpCanvas?.getObjects().some((o) => o.rmpRole === 'logo'));
 
     const before = await page.evaluate(() => {
@@ -58,7 +58,7 @@ test('clicking the logo placeholder opens the replace popup and swaps the logo i
 });
 
 test('clicking an uploaded logo re-opens the popup with replace + remove', async ({ page }) => {
-    await page.goto('/design/matte-business-cards?test=1');
+    await page.goto('/design/standard-business-cards?test=1');
     await page.waitForFunction(() => window.__rmpCanvas?.getObjects().some((o) => o.rmpRole === 'logo'));
 
     // replace the placeholder first
@@ -86,7 +86,7 @@ test('clicking an uploaded logo re-opens the popup with replace + remove', async
 });
 
 test('dragging the logo placeholder does not open the popup', async ({ page }) => {
-    await page.goto('/design/matte-business-cards?test=1');
+    await page.goto('/design/standard-business-cards?test=1');
     await page.waitForFunction(() => window.__rmpCanvas?.getObjects().some((o) => o.rmpRole === 'logo'));
 
     const pos = await page.evaluate(() => {

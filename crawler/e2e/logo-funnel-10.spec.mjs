@@ -25,7 +25,7 @@ for (const { n, file } of logos) {
         fs.mkdirSync(dir, { recursive: true });
 
         // --- editor: upload the logo -----------------------------------------
-        await page.goto('/design/matte-business-cards?test=1');
+        await page.goto('/design/standard-business-cards?test=1');
         await page.waitForFunction(() => window.__rmpCanvas?.getObjects().some((o) => o.rmpRole === 'logo'));
 
         const [chooser] = await Promise.all([

@@ -246,12 +246,15 @@ onMounted(() => {
     fitCanvas();
     window.addEventListener('resize', fitCanvas);
 
-    // Autosave arms AFTER the initial content lands (seed/template/restore all
-    // fire object:added storms) — only user edits from then on mark it dirty.
+    // Autosave + undo history arm AFTER the initial content lands (seed/template/
+    // restore all fire object:added storms) — only user edits count from then on.
     setTimeout(() => {
         autosaveArmed = true;
+        historyBaseline();
         ['object:added', 'object:removed', 'object:modified', 'text:changed'].forEach((ev) => canvas.on(ev, markDirty));
+        ['object:added', 'object:removed', 'object:modified', 'text:changed'].forEach((ev) => canvas.on(ev, recordHistory));
     }, 2000);
+    window.addEventListener('keydown', onHistoryKeys);
 
     // Seeds are measured before webfonts finish loading → load the fonts then re-fit
     // the text so a wider webfont isn't clipped. Templates and restored designs
@@ -261,9 +264,90 @@ onMounted(() => {
 
 onBeforeUnmount(() => {
     window.removeEventListener('resize', fitCanvas);
+    window.removeEventListener('keydown', onHistoryKeys);
     if (autosaveTimer) clearTimeout(autosaveTimer);
+    if (historyTimer) clearTimeout(historyTimer);
     canvas && canvas.dispose();
 });
+
+// ---- undo / redo -------------------------------------------------------------
+// Serialized-canvas snapshots after each user edit (debounced so one drag is
+// one step). Programmatic loads (undo itself, templates, side flips) are
+// suppressed; the side flip resets history to the new side's baseline.
+let undoStack = [];
+let redoStack = [];
+let historySuppressed = false;
+let historyTimer = null;
+const canUndo = ref(false);
+const canRedo = ref(false);
+
+const historySnapshot = () => JSON.stringify(canvas.toJSON(['rmpRole']));
+
+function historyBaseline() {
+    undoStack = [historySnapshot()];
+    redoStack = [];
+    syncHistoryFlags();
+}
+
+function syncHistoryFlags() {
+    canUndo.value = undoStack.length > 1;
+    canRedo.value = redoStack.length > 0;
+}
+
+function recordHistory() {
+    if (!autosaveArmed || historySuppressed || applyingTpl.value) return;
+    if (historyTimer) clearTimeout(historyTimer);
+    historyTimer = setTimeout(() => {
+        const snap = historySnapshot();
+        if (snap === undoStack[undoStack.length - 1]) return;
+        undoStack.push(snap);
+        if (undoStack.length > 50) undoStack.shift();
+        redoStack = [];
+        syncHistoryFlags();
+    }, 300);
+}
+
+async function applyHistory(snap) {
+    historySuppressed = true;
+    try {
+        await canvas.loadFromJSON(JSON.parse(snap));
+        markLogos();
+        canvas.discardActiveObject();
+        canvas.renderAll();
+        syncSelection();
+        markDirty(); // an undo is a change worth autosaving
+    } finally {
+        // let the load's object:added storm drain before re-enabling capture
+        setTimeout(() => (historySuppressed = false), 50);
+    }
+}
+
+function undo() {
+    if (undoStack.length < 2) return;
+    redoStack.push(undoStack.pop());
+    syncHistoryFlags();
+    applyHistory(undoStack[undoStack.length - 1]);
+}
+
+function redo() {
+    if (!redoStack.length) return;
+    const snap = redoStack.pop();
+    undoStack.push(snap);
+    syncHistoryFlags();
+    applyHistory(snap);
+}
+
+function onHistoryKeys(e) {
+    const mod = e.ctrlKey || e.metaKey;
+    if (!mod) return;
+    // never steal keys from form fields or in-canvas text editing
+    const tag = (document.activeElement?.tagName || '').toLowerCase();
+    if (['input', 'textarea', 'select'].includes(tag)) return;
+    if (canvas?.getActiveObject()?.isEditing) return;
+    if (e.key.toLowerCase() === 'z' && !e.shiftKey) { e.preventDefault(); undo(); }
+    else if (e.key.toLowerCase() === 'y' || (e.key.toLowerCase() === 'z' && e.shiftKey)) { e.preventDefault(); redo(); }
+}
+// -------------------------------------------------------------------------------
 
 // ---- autosave ---------------------------------------------------------------
 // Debounced best-effort save so the design lands in "My designs" without ever
@@ -588,9 +672,11 @@ function flip(to) {
     if (to === side.value) return;
     store[side.value] = canvas.toJSON(['rmpRole']);
     side.value = to;
+    historySuppressed = true;
     canvas.clear();
-    if (store[to]) canvas.loadFromJSON(store[to]).then(() => { markLogos(); canvas.renderAll(); });
-    else { canvas.backgroundColor = '#f8f6ef'; canvas.renderAll(); }
+    const done = () => { historySuppressed = false; historyBaseline(); };
+    if (store[to]) canvas.loadFromJSON(store[to]).then(() => { markLogos(); canvas.renderAll(); done(); });
+    else { canvas.backgroundColor = '#f8f6ef'; canvas.renderAll(); done(); }
 }
 
 async function applyTemplate(ref) {
@@ -690,6 +776,9 @@ function goToReview() {
         </header>
 
         <div class="flex flex-wrap items-center gap-2 bg-ink px-4 py-2 text-paper">
+            <button class="rounded-md px-2.5 py-1.5 text-sm font-medium hover:bg-white/10 disabled:opacity-30" :disabled="!canUndo" title="Undo (Ctrl+Z)" aria-label="Undo" @click="undo">↶</button>
+            <button class="rounded-md px-2.5 py-1.5 text-sm font-medium hover:bg-white/10 disabled:opacity-30" :disabled="!canRedo" title="Redo (Ctrl+Y)" aria-label="Redo" @click="redo">↷</button>
+            <div class="mx-1 h-6 w-px bg-white/15"></div>
             <button class="rounded-md px-3 py-1.5 text-sm font-medium hover:bg-white/10" @click="newText">+ Text</button>
             <button class="rounded-md px-3 py-1.5 text-sm font-medium hover:bg-white/10" @click="fileInput.click()">↑ Upload image</button>
             <button class="rounded-md px-3 py-1.5 text-sm font-medium text-[#9cc6ff] hover:bg-white/10" @click="openLogoBuilder(false)">✦ AI Logo</button>

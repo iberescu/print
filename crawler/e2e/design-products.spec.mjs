@@ -21,7 +21,7 @@ function orientation(w, h) {
 
 // slug → expected canvas orientation (crawled catalogue + embroidered apparel)
 const PRODUCTS = [
-    ['matte-business-cards', 'landscape'],
+    ['standard-business-cards', 'landscape'],
     ['rounded-corner-business-cards', 'landscape'],
     ['flyers', 'portrait'], // default size 11"x17" — canvas honours the selected size
     ['custom-posters', 'portrait'],
@@ -100,22 +100,22 @@ test('an embroidered product shows stitch guidance in the designer', async ({ pa
 
 // Item 2: the template gallery appears BEFORE the editor and a pick opens the editor.
 test('templates gallery appears before the editor and applies a pick', async ({ page }) => {
-    await page.goto('/product/matte-business-cards');
+    await page.goto('/product/standard-business-cards');
     await page.getByRole('button', { name: /browse .* templates/i }).first().click();
-    await page.waitForURL('**/design/matte-business-cards/templates*');
+    await page.waitForURL('**/design/standard-business-cards/templates*');
 
     await expect(page.getByRole('heading', { name: /choose a template/i })).toBeVisible();
     await expect(page.getByRole('button', { name: /start from scratch/i })).toBeVisible();
     expect(await page.locator('button:has(img)').count()).toBeGreaterThan(0);
 
     await page.locator('button:has(img)').first().click();
-    await page.waitForURL(/\/design\/matte-business-cards\?.*template=/);
+    await page.waitForURL(/\/design\/standard-business-cards\?.*template=/);
     await expect(page.locator('canvas')).toHaveCount(2);
 });
 
 // Print guides: bleed band + trim line + safe area render and can be toggled.
 test('designer shows bleed / trim / safe-area guides and toggles them', async ({ page }) => {
-    await page.goto('/design/matte-business-cards');
+    await page.goto('/design/standard-business-cards');
     await page.waitForSelector('.canvas-container canvas');
 
     await expect(page.locator('path[fill-rule="evenodd"]')).toHaveCount(1); // the bleed band
@@ -127,8 +127,8 @@ test('designer shows bleed / trim / safe-area guides and toggles them', async ({
 });
 
 test('templates gallery: start from scratch opens a blank editor', async ({ page }) => {
-    await page.goto('/design/matte-business-cards/templates');
+    await page.goto('/design/standard-business-cards/templates');
     await page.getByRole('button', { name: /start from scratch/i }).click();
-    await page.waitForURL(/\/design\/matte-business-cards(\?|$)/);
+    await page.waitForURL(/\/design\/standard-business-cards(\?|$)/);
     await expect(page.locator('canvas')).toHaveCount(2);
 });

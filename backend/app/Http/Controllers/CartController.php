@@ -101,10 +101,27 @@ class CartController extends Controller
         return back();
     }
 
+    public function applyCoupon(Request $request)
+    {
+        $data = $request->validate(['code' => ['required', 'string', 'max:40']]);
+        $error = $this->cart->applyCoupon($data['code']);
+
+        return back()->with($error ? 'error' : 'success', $error ?: 'Code applied.');
+    }
+
+    public function removeCoupon()
+    {
+        $this->cart->removeCoupon();
+
+        return back();
+    }
+
     private function summary(): array
     {
         return [
             'subtotal'  => $this->cart->subtotal(),
+            'coupon'    => $this->cart->coupon()?->code,
+            'discount'  => $this->cart->discount(),
             'shipping'  => $this->cart->shipping(),
             'total'     => $this->cart->total(),
             'count'     => $this->cart->count(),

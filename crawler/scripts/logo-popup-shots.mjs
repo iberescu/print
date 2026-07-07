@@ -11,7 +11,7 @@ fs.mkdirSync(outDir, { recursive: true });
 const browser = await chromium.launch();
 const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
 
-await page.goto(`${base}/design/matte-business-cards?test=1`);
+await page.goto(`${base}/design/standard-business-cards?test=1`);
 await page.waitForFunction(() => window.__rmpCanvas?.getObjects().some((o) => o.rmpRole === 'logo'));
 await page.waitForTimeout(1200); // fonts settle
 await page.screenshot({ path: `${outDir}/1-editor-placeholder.png` });

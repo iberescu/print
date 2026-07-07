@@ -20,7 +20,7 @@ test.describe('mobile', () => {
     });
 
     test('online designer fits the screen and text edits via the on-screen input', async ({ page }) => {
-        await page.goto('/product/matte-business-cards');
+        await page.goto('/product/standard-business-cards');
         await page.getByRole('button', { name: /design online/i }).first().click();
         await page.waitForURL('**/design/**');
         await expect(page.locator('canvas')).toHaveCount(2);

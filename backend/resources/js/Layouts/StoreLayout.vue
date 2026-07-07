@@ -8,7 +8,11 @@ const page = usePage();
 const categories = computed(() => page.props.navCategories ?? []);
 const threshold = computed(() => page.props.shop?.freeShippingThreshold ?? 50);
 const flash = computed(() => page.props.flash?.success ?? null);
+const flashError = computed(() => page.props.flash?.error ?? null);
 const cartCount = computed(() => page.props.cart?.count ?? 0);
+const searchQ = ref('');
+const goSearch = () => { const q = searchQ.value.trim(); if (q) router.get('/search', { q }); };
+
 const user = computed(() => page.props.auth?.user ?? null);
 const company = computed(() => page.props.shop?.company ?? {});
 const year = new Date().getFullYear();
@@ -58,7 +62,7 @@ const logout = () => router.post('/logout');
                 <Link href="/" class="shrink-0"><AppLogo featured /></Link>
                 <div class="hidden flex-1 items-center border border-ink/20 bg-white px-4 py-2.5 md:flex">
                     <svg class="h-5 w-5 text-ink/40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="11" cy="11" r="7" /><path d="m21 21-4.3-4.3" stroke-linecap="round" /></svg>
-                    <input type="text" placeholder="What are you looking for?" class="w-full bg-transparent px-3 text-sm placeholder:text-ink/40 focus:outline-none" />
+                    <input v-model="searchQ" type="text" placeholder="What are you looking for?" class="w-full bg-transparent px-3 text-sm placeholder:text-ink/40 focus:outline-none" @keydown.enter="goSearch" />
                 </div>
                 <div class="flex flex-1 items-center justify-end gap-1 md:flex-none">
                     <Link :href="user ? '/account' : '/login'" class="hidden h-11 w-11 place-items-center text-ink/70 hover:text-ink sm:grid" :aria-label="user ? 'My account' : 'Sign in'">
@@ -74,7 +78,7 @@ const logout = () => router.post('/logout');
             <div class="px-4 pb-3 md:hidden">
                 <div class="flex items-center border border-ink/20 bg-white px-4 py-2.5">
                     <svg class="h-5 w-5 text-ink/40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="11" cy="11" r="7" /><path d="m21 21-4.3-4.3" stroke-linecap="round" /></svg>
-                    <input type="text" placeholder="What are you looking for?" class="w-full bg-transparent px-3 text-sm placeholder:text-ink/40 focus:outline-none" />
+                    <input v-model="searchQ" type="text" placeholder="What are you looking for?" class="w-full bg-transparent px-3 text-sm placeholder:text-ink/40 focus:outline-none" @keydown.enter="goSearch" />
                 </div>
             </div>
             <!-- category mega-nav (desktop) — trimmed so it never scrolls; the
@@ -134,6 +138,9 @@ const logout = () => router.post('/logout');
 
         <div v-if="flash" class="bg-brand-50 text-brand-900">
             <div class="mx-auto max-w-7xl px-6 py-2.5 text-sm font-medium">✓ {{ flash }}</div>
+        </div>
+        <div v-if="flashError" class="bg-red-50 text-red-800">
+            <div class="mx-auto max-w-7xl px-6 py-2.5 text-sm font-medium">⚠ {{ flashError }}</div>
         </div>
 
         <main class="flex-1"><slot /></main>

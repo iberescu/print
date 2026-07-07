@@ -71,6 +71,16 @@ class SupportController extends Controller
         $ticket->messages()->create(['sender' => 'admin', 'body' => $data['body']]);
         $ticket->update(['status' => 'answered']);
 
+        // Signed-in customers get the reply by email too; guest tickets are
+        // session-bound and only visible in the chat bubble.
+        if ($ticket->user?->email) {
+            try {
+                \Illuminate\Support\Facades\Mail::to($ticket->user->email)->send(new \App\Mail\SupportReplied($data['body']));
+            } catch (\Throwable $e) {
+                \Illuminate\Support\Facades\Log::error('support reply mail failed', ['ticket' => $ticket->id, 'error' => $e->getMessage()]);
+            }
+        }
+
         return redirect()->route('admin.support.show', $ticket)->with('success', 'Reply sent.');
     }
 }

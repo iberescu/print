@@ -43,23 +43,39 @@ class CheckoutController extends Controller
             'country' => ['required', 'string', 'max:60'],
         ]);
 
+        // First-order codes are enforced here, where the email is finally known.
+        $coupon = $this->cart->coupon();
+        if ($coupon?->first_order_only && Order::where('email', $data['email'])->exists()) {
+            $this->cart->removeCoupon();
+
+            return redirect()->route('checkout')->with('error', "The code {$coupon->code} is for first orders only — it was removed.");
+        }
+
         $order = Order::create([
-            'number'   => 'RMP-'.strtoupper(Str::random(8)),
-            'email'    => $data['email'],
-            'name'     => $data['name'],
-            'address'  => ['line' => $data['address'], 'city' => $data['city'], 'postal' => $data['postal'], 'country' => $data['country']],
-            'items'    => $this->cart->items(),
-            'subtotal' => $this->cart->subtotal(),
-            'shipping' => $this->cart->shipping(),
-            'total'    => $this->cart->total(),
-            'status'   => 'pending',
+            'number'      => 'RMP-'.strtoupper(Str::random(8)),
+            'email'       => $data['email'],
+            'name'        => $data['name'],
+            'address'     => ['line' => $data['address'], 'city' => $data['city'], 'postal' => $data['postal'], 'country' => $data['country']],
+            'items'       => $this->cart->items(),
+            'subtotal'    => $this->cart->subtotal(),
+            'coupon_code' => $coupon?->code,
+            'discount'    => $this->cart->discount(),
+            'shipping'    => $this->cart->shipping(),
+            'total'       => $this->cart->total(),
+            'status'      => 'pending',
         ]);
 
         $secret = config('shop.stripe.secret');
 
-        // Demo mode (no Stripe keys configured): mark paid and finish.
+        // Demo mode is a DEV convenience only — a production box without Stripe
+        // keys must refuse checkout, not give the products away for free.
         if (! $secret) {
-            $order->update(['status' => 'paid']);
+            if (app()->isProduction()) {
+                \Illuminate\Support\Facades\Log::error('checkout attempted without Stripe keys in production', ['order' => $order->number]);
+
+                return redirect()->route('cart')->with('error', 'Payments are temporarily unavailable — please try again shortly.');
+            }
+            $order->markPaid();
             $this->cart->clear();
 
             return redirect()->route('checkout.success', ['number' => $order->number]);
@@ -83,17 +99,35 @@ class CheckoutController extends Controller
             ];
         }
 
-        $session = \Stripe\Checkout\Session::create([
+        $params = [
             'mode'           => 'payment',
             'line_items'     => $lineItems,
             'customer_email' => $data['email'],
             'success_url'    => route('checkout.success', ['number' => $order->number]).'&session_id={CHECKOUT_SESSION_ID}',
             'cancel_url'     => route('cart'),
             'metadata'       => ['order' => $order->number],
-        ]);
+        ];
+        if ($coupon) {
+            $params['discounts'] = [['coupon' => $this->stripeCouponId($coupon->percent_off)]];
+        }
+
+        $session = \Stripe\Checkout\Session::create($params);
         $order->update(['stripe_session_id' => $session->id]);
 
         return Inertia::location($session->url);
+    }
+
+    /** A reusable Stripe percent-off coupon per rate (created once, then reused). */
+    private function stripeCouponId(int $percent): string
+    {
+        $id = "RMP-{$percent}PCT";
+        try {
+            \Stripe\Coupon::retrieve($id);
+        } catch (\Throwable) {
+            \Stripe\Coupon::create(['id' => $id, 'percent_off' => $percent, 'duration' => 'once']);
+        }
+
+        return $id;
     }
 
     public function success(Request $request)
@@ -108,7 +142,7 @@ class CheckoutController extends Controller
                 \Stripe\Stripe::setApiKey(config('shop.stripe.secret'));
                 $s = \Stripe\Checkout\Session::retrieve($request->query('session_id'));
                 if (($s->payment_status ?? null) === 'paid') {
-                    $order->update(['status' => 'paid']);
+                    $order->markPaid();
                 }
             } catch (\Throwable $e) {
                 // leave as pending; webhook will reconcile
@@ -143,7 +177,7 @@ class CheckoutController extends Controller
             if (($event->type ?? null) === 'checkout.session.completed') {
                 $num = $event->data->object->metadata->order ?? null;
                 if ($num) {
-                    Order::where('number', $num)->update(['status' => 'paid']);
+                    Order::where('number', $num)->first()?->markPaid();
                 }
             }
         } catch (\Throwable $e) {
@@ -157,6 +191,8 @@ class CheckoutController extends Controller
     {
         return [
             'subtotal' => $this->cart->subtotal(),
+            'coupon'   => $this->cart->coupon()?->code,
+            'discount' => $this->cart->discount(),
             'shipping' => $this->cart->shipping(),
             'total'    => $this->cart->total(),
         ];

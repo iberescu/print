@@ -20,4 +20,21 @@ class Order extends Model
     {
         return 'number';
     }
+
+    /** Mark paid and send the confirmation exactly once — every paid-transition
+     *  path (demo mode, success-page verify, webhook) funnels through here. */
+    public function markPaid(): void
+    {
+        if ($this->status !== 'paid') {
+            $this->update(['status' => 'paid']);
+        }
+        if (! $this->confirmation_sent_at) {
+            $this->update(['confirmation_sent_at' => now()]);
+            try {
+                \Illuminate\Support\Facades\Mail::to($this->email)->send(new \App\Mail\OrderConfirmed($this));
+            } catch (\Throwable $e) {
+                \Illuminate\Support\Facades\Log::error('order confirmation mail failed', ['order' => $this->number, 'error' => $e->getMessage()]);
+            }
+        }
+    }
 }

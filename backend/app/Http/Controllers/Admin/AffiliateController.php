@@ -71,6 +71,16 @@ class AffiliateController extends Controller
             'notes'     => $data['notes'] ?? null,
         ], fn ($v) => $v !== null));
 
+        // First activation sends the onboarding email: key, snippet, portal link.
+        if (($data['status'] ?? null) === 'active' && ! $affiliate->approved_at) {
+            $affiliate->update(['approved_at' => now()]);
+            try {
+                \Illuminate\Support\Facades\Mail::to($affiliate->email)->send(new \App\Mail\AffiliateApproved($affiliate));
+            } catch (\Throwable $e) {
+                \Illuminate\Support\Facades\Log::error('affiliate approval mail failed', ['affiliate' => $affiliate->id, 'error' => $e->getMessage()]);
+            }
+        }
+
         return back()->with('success', 'Affiliate updated.');
     }
 

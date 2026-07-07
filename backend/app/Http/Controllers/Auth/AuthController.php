@@ -132,4 +132,50 @@ class AuthController extends Controller
 
         return redirect()->route('home');
     }
+
+    // ---- password reset -------------------------------------------------------
+
+    public function showForgotPassword()
+    {
+        return Inertia::render('Auth/ForgotPassword');
+    }
+
+    public function sendResetLink(Request $request)
+    {
+        $request->validate(['email' => ['required', 'email']]);
+
+        \Illuminate\Support\Facades\Password::sendResetLink($request->only('email'));
+
+        // Same response whether or not the account exists — no user enumeration.
+        return back()->with('success', 'If that address has an account, a reset link is on its way.');
+    }
+
+    public function showResetPassword(Request $request, string $token)
+    {
+        return Inertia::render('Auth/ResetPassword', [
+            'token' => $token,
+            'email' => (string) $request->query('email', ''),
+        ]);
+    }
+
+    public function resetPassword(Request $request)
+    {
+        $request->validate([
+            'token'    => ['required'],
+            'email'    => ['required', 'email'],
+            'password' => ['required', 'confirmed', Password::min(8)],
+        ]);
+
+        $status = \Illuminate\Support\Facades\Password::reset(
+            $request->only('email', 'password', 'password_confirmation', 'token'),
+            function (User $user, string $password) {
+                $user->update(['password' => Hash::make($password)]);
+                Auth::login($user);
+            }
+        );
+
+        return $status === \Illuminate\Support\Facades\Password::PASSWORD_RESET
+            ? redirect()->route('account')->with('success', 'Password updated — you are signed in.')
+            : back()->withErrors(['email' => __($status)]);
+    }
 }

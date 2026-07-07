@@ -36,6 +36,7 @@ const submit = () => form.post('/login');
                 </div>
                 <label class="flex items-center gap-2 text-sm text-ink/60"><input v-model="form.remember" type="checkbox" class="h-4 w-4" /> Remember me</label>
                 <button :disabled="form.processing" class="w-full bg-brand-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-brand-700 disabled:opacity-60">{{ form.processing ? 'Signing in…' : 'Sign in' }}</button>
+                <p class="mt-3 text-center text-sm"><Link href="/forgot-password" class="text-ink/55 transition hover:text-brand-700">Forgot your password?</Link></p>
             </form>
 
             <p class="mt-5 text-center text-sm text-ink/55">New here? <Link href="/register" class="font-semibold text-brand-700 hover:underline">Create an account</Link></p>

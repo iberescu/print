@@ -209,4 +209,55 @@ class StorefrontController extends Controller
     {
         return \App\Support\Img::url($path);
     }
+
+    /** Header search — name/tagline/category match over active products. */
+    public function search(\Illuminate\Http\Request $request): Response
+    {
+        $q = trim((string) $request->query('q', ''));
+        $products = collect();
+
+        if ($q !== '') {
+            $like = '%'.str_replace(['%', '_'], ['\\%', '\\_'], $q).'%';
+            $products = Product::with('category')->where('is_active', true)
+                ->where(function ($w) use ($like) {
+                    $w->where('name', 'like', $like)
+                        ->orWhere('tagline', 'like', $like)
+                        ->orWhereHas('category', fn ($c) => $c->where('name', 'like', $like));
+                })
+                ->orderBy('sort_order')->limit(48)->get()
+                ->map(fn (Product $p) => $this->productCard($p));
+        }
+
+        return Inertia::render('Search', ['q' => $q, 'products' => $products]);
+    }
+
+    /** sitemap.xml — static pages + categories + active products, cached 1h. */
+    public function sitemap()
+    {
+        $xml = \Illuminate\Support\Facades\Cache::remember('sitemap.xml', 3600, function () {
+            $urls = [
+                [url('/'), now()->toDateString(), 'daily'],
+                [url('/logo-maker'), now()->toDateString(), 'weekly'],
+                [url('/affiliates'), now()->toDateString(), 'monthly'],
+            ];
+            foreach (\App\Models\Category::orderBy('name')->get() as $c) {
+                $urls[] = [route('category.show', $c->slug), $c->updated_at?->toDateString(), 'weekly'];
+            }
+            foreach (Product::where('is_active', true)->orderBy('id')->get() as $p) {
+                $urls[] = [route('product.show', $p->slug), $p->updated_at?->toDateString(), 'weekly'];
+            }
+
+            $body = '';
+            foreach ($urls as [$loc, $mod, $freq]) {
+                $body .= '<url><loc>'.e($loc).'</loc>'
+                    .($mod ? '<lastmod>'.$mod.'</lastmod>' : '')
+                    .'<changefreq>'.$freq.'</changefreq></url>';
+            }
+
+            return '<?xml version="1.0" encoding="UTF-8"?>'
+                .'<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'.$body.'</urlset>';
+        });
+
+        return response($xml, 200, ['Content-Type' => 'application/xml; charset=UTF-8']);
+    }
 }

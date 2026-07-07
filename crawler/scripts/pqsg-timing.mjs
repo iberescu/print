@@ -25,7 +25,7 @@ page.on('response', async (r) => {
     }
 });
 
-await page.goto(`${base}/design/matte-business-cards?test=1`);
+await page.goto(`${base}/design/standard-business-cards?test=1`);
 await page.waitForFunction(() => window.__rmpCanvas?.getObjects().some((o) => o.rmpRole === 'logo'));
 mark('editor_ready');
 

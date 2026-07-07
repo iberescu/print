@@ -1,4 +1,5 @@
 <script setup>
+import { ref } from 'vue';
 import { Head, Link, router } from '@inertiajs/vue3';
 import StoreLayout from '../Layouts/StoreLayout.vue';
 import FreeShippingBar from '../Components/FreeShippingBar.vue';
@@ -11,6 +12,15 @@ defineProps({
 });
 
 const remove = (id) => router.post(`/cart/remove/${id}`, {}, { preserveScroll: true });
+
+const promo = ref('');
+const applying = ref(false);
+const applyPromo = () => {
+    if (!promo.value.trim() || applying.value) return;
+    applying.value = true;
+    router.post('/cart/coupon', { code: promo.value.trim() }, { preserveScroll: true, onFinish: () => { applying.value = false; promo.value = ''; } });
+};
+const removePromo = () => router.post('/cart/coupon/remove', {}, { preserveScroll: true });
 
 // Reopen the line's design project in the editor; re-adding after the edit
 // REPLACES this line (same project id), it doesn't duplicate it.
@@ -64,8 +74,17 @@ const editHref = (it) => {
                 </div>
 
                 <aside class="h-max rounded-2xl border border-paper-300 bg-white p-5 lg:sticky lg:top-24">
+                    <form v-if="!summary.coupon" class="mb-4 flex gap-2" @submit.prevent="applyPromo">
+                        <input v-model="promo" type="text" placeholder="Promo code" class="w-full rounded-lg border border-paper-300 px-3 py-2 text-sm uppercase placeholder:normal-case focus:border-brand-400 focus:outline-none" />
+                        <button :disabled="applying" class="shrink-0 rounded-lg border border-brand-600 px-4 py-2 text-sm font-semibold text-brand-700 transition hover:bg-brand-50 disabled:opacity-60">Apply</button>
+                    </form>
+                    <div v-else class="mb-4 flex items-center justify-between rounded-lg bg-emerald-50 px-3 py-2 text-sm text-emerald-800">
+                        <span>Code <strong>{{ summary.coupon }}</strong> applied</span>
+                        <button class="text-emerald-700 underline" @click="removePromo">Remove</button>
+                    </div>
                     <dl class="space-y-2 text-sm">
                         <div class="flex justify-between"><dt class="text-ink/60">Subtotal</dt><dd class="font-medium">{{ money(summary.subtotal) }}</dd></div>
+                        <div v-if="summary.discount > 0" class="flex justify-between text-emerald-700"><dt>Discount ({{ summary.coupon }})</dt><dd class="font-medium">−{{ money(summary.discount) }}</dd></div>
                         <div class="flex justify-between"><dt class="text-ink/60">Shipping</dt><dd class="font-medium">{{ summary.shipping ? money(summary.shipping) : 'FREE' }}</dd></div>
                         <div class="flex justify-between border-t border-paper-300 pt-2 text-base font-semibold"><dt>Total</dt><dd>{{ money(summary.total) }}</dd></div>
                     </dl>

@@ -34,6 +34,8 @@ Route::get('/design/template/{template}/data', [DesignController::class, 'templa
 Route::get('/cart', [CartController::class, 'show'])->name('cart');
 Route::post('/cart/add/{product}', [CartController::class, 'add'])->name('cart.add');
 Route::post('/cart/remove/{lineId}', [CartController::class, 'remove'])->name('cart.remove');
+Route::post('/cart/coupon', [CartController::class, 'applyCoupon'])->middleware('throttle:12,1,coupon')->name('cart.coupon');
+Route::post('/cart/coupon/remove', [CartController::class, 'removeCoupon'])->name('cart.coupon.remove');
 
 // Forced upsell steps before the cart (multi-step upsell + card-holder cross-sell)
 Route::get('/upsell', [UpsellController::class, 'show'])->name('upsell.show');
@@ -41,15 +43,30 @@ Route::post('/upsell/add/{product}', [UpsellController::class, 'add'])->name('up
 Route::post('/upsell/finalize', [UpsellController::class, 'finalize'])->name('upsell.finalize');
 Route::post('/upsell/next', [UpsellController::class, 'next'])->name('upsell.next');
 
+// Search + sitemap
+Route::get('/search', [StorefrontController::class, 'search'])->name('search');
+Route::get('/sitemap.xml', [StorefrontController::class, 'sitemap'])->name('sitemap');
+
+// Affiliate partner portal (key-based sign-in, no user accounts)
+Route::get('/partner', [\App\Http\Controllers\PartnerController::class, 'show'])->name('partner');
+Route::post('/partner', [\App\Http\Controllers\PartnerController::class, 'login'])->middleware('throttle:10,1,partner-login')->name('partner.login');
+Route::get('/partner/dashboard', [\App\Http\Controllers\PartnerController::class, 'dashboard'])->name('partner.dashboard');
+Route::post('/partner/logout', [\App\Http\Controllers\PartnerController::class, 'logout'])->name('partner.logout');
+
 // Customer accounts — Google + email/password (req: login before checkout)
 Route::get('/login', [CustomerAuth::class, 'showLogin'])->name('login');
-Route::post('/login', [CustomerAuth::class, 'login'])->name('login.attempt');
+Route::post('/login', [CustomerAuth::class, 'login'])->middleware('throttle:8,1,auth-login')->name('login.attempt');
 Route::get('/register', [CustomerAuth::class, 'showRegister'])->name('register');
-Route::post('/register', [CustomerAuth::class, 'register'])->name('register.store');
+Route::post('/register', [CustomerAuth::class, 'register'])->middleware('throttle:8,1,auth-register')->name('register.store');
+Route::get('/forgot-password', [CustomerAuth::class, 'showForgotPassword'])->name('password.request');
+Route::post('/forgot-password', [CustomerAuth::class, 'sendResetLink'])->middleware('throttle:5,1,auth-forgot')->name('password.email');
+Route::get('/reset-password/{token}', [CustomerAuth::class, 'showResetPassword'])->name('password.reset');
+Route::post('/reset-password', [CustomerAuth::class, 'resetPassword'])->middleware('throttle:5,1,auth-reset')->name('password.update');
 Route::get('/auth/google', [CustomerAuth::class, 'redirectToGoogle'])->name('auth.google');
 Route::get('/auth/google/callback', [CustomerAuth::class, 'handleGoogleCallback']);
 Route::post('/logout', [CustomerAuth::class, 'logout'])->middleware('auth')->name('logout');
 Route::get('/account', [AccountController::class, 'show'])->middleware('auth')->name('account');
+Route::post('/account/orders/{order}/reorder', [AccountController::class, 'reorder'])->middleware('auth')->name('account.reorder');
 
 // Checkout + Stripe (req 14) — must be signed in to check out
 Route::middleware('auth')->group(function () {
@@ -98,7 +115,7 @@ Route::get('/returns', fn () => Inertia::render('Legal/Returns'))->name('returns
 
 // Admin dashboard + PIM
 Route::get('/admin/login', [AdminAuth::class, 'show'])->name('admin.login.show');
-Route::post('/admin/login', [AdminAuth::class, 'login'])->name('admin.login');
+Route::post('/admin/login', [AdminAuth::class, 'login'])->middleware('throttle:6,1,auth-admin')->name('admin.login');
 Route::post('/admin/logout', [AdminAuth::class, 'logout'])->name('admin.logout');
 
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {

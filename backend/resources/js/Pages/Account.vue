@@ -12,6 +12,7 @@ defineProps({
 const user = computed(() => usePage().props.auth?.user ?? {});
 const statusClass = (s) => ({ paid: 'bg-emerald-100 text-emerald-700', pending: 'bg-amber-100 text-amber-700', failed: 'bg-red-100 text-red-700' }[s] || 'bg-paper-300 text-ink/60');
 const logout = () => router.post('/logout');
+const reorder = (o) => router.post(`/account/orders/${o.number}/reorder`);
 </script>
 
 <template>
@@ -51,7 +52,7 @@ const logout = () => router.post('/logout');
             <div class="mt-4 overflow-hidden rounded-2xl border border-paper-300 bg-white shadow-sm">
                 <table class="w-full text-sm">
                     <thead class="bg-paper-200 text-left text-xs font-semibold uppercase tracking-wide text-ink/50">
-                        <tr><th class="px-5 py-3">Order</th><th class="px-5 py-3">Items</th><th class="px-5 py-3">Total</th><th class="px-5 py-3">Status</th><th class="hidden px-5 py-3 sm:table-cell">Date</th></tr>
+                        <tr><th class="px-5 py-3">Order</th><th class="px-5 py-3">Items</th><th class="px-5 py-3">Total</th><th class="px-5 py-3">Status</th><th class="hidden px-5 py-3 sm:table-cell">Date</th><th class="px-5 py-3"></th></tr>
                     </thead>
                     <tbody class="divide-y divide-paper-200">
                         <tr v-for="o in orders" :key="o.number">
@@ -60,8 +61,9 @@ const logout = () => router.post('/logout');
                             <td class="px-5 py-3 font-medium text-ink">{{ money(o.total) }}</td>
                             <td class="px-5 py-3"><span class="rounded-full px-2.5 py-0.5 text-xs font-semibold capitalize" :class="statusClass(o.status)">{{ o.status }}</span></td>
                             <td class="hidden px-5 py-3 text-xs text-ink/50 sm:table-cell">{{ o.date }}</td>
+                            <td class="px-5 py-3 text-right"><button class="text-sm font-medium text-brand-700 hover:underline" @click="reorder(o)">Reorder</button></td>
                         </tr>
-                        <tr v-if="!orders.length"><td colspan="5" class="px-5 py-12 text-center text-ink/50">No orders yet. <Link href="/" class="font-medium text-brand-700 hover:underline">Start shopping →</Link></td></tr>
+                        <tr v-if="!orders.length"><td colspan="6" class="px-5 py-12 text-center text-ink/50">No orders yet. <Link href="/" class="font-medium text-brand-700 hover:underline">Start shopping →</Link></td></tr>
                     </tbody>
                 </table>
             </div>
