@@ -12,7 +12,7 @@ APP_NAME=RunMyPrint
 APP_ENV=production
 APP_KEY=${APP_KEY:-}
 APP_DEBUG=false
-APP_URL=${APP_URL:-https://runmyprint.com}
+APP_URL=${APP_URL:-https://www.runmyprint.com}
 APP_LOCALE=en
 APP_FALLBACK_LOCALE=en
 APP_FAKER_LOCALE=en_US
@@ -50,7 +50,7 @@ STRIPE_SECRET=${STRIPE_SECRET:-}
 STRIPE_WEBHOOK_SECRET=${STRIPE_WEBHOOK_SECRET:-}
 GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID:-}
 GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET:-}
-GOOGLE_REDIRECT_URI=${GOOGLE_REDIRECT_URI:-https://runmyprint.com/auth/google/callback}
+GOOGLE_REDIRECT_URI=${GOOGLE_REDIRECT_URI:-https://www.runmyprint.com/auth/google/callback}
 ENVEOF
 
 echo "=== build + up ==="
