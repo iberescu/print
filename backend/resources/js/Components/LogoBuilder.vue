@@ -126,7 +126,7 @@ const INDUSTRIES = [
 const OTHER = '__other';
 const industryChoice = ref('');
 
-const form = ref({ company: '', tagline: '', industry: '', style: 'minimal', color: 'brand-blue' });
+const form = ref({ company: '', tagline: '', industry: '', style: 'minimal', color: 'brand-blue', colors: ['#2b3b55', '#398aff'] });
 
 function onIndustryChange() {
     form.value.industry = industryChoice.value === OTHER ? '' : industryChoice.value;
@@ -138,13 +138,15 @@ const error = ref('');
 // every round covers four concept lanes (matches the server's variant map)
 const conceptLabel = (v) => ['Industry', 'Your name', 'Abstract', form.value.tagline.trim() ? 'Tagline' : 'Name + industry'][(v ?? 0) % 4];
 
-const colorMeta = {
-    'brand-blue': { label: 'Brand blue', chips: ['#2b3b55', '#398aff'] },
+// "Your colours" is the customisable slot (defaults to the brand blues) —
+// its chips mirror the pickers live; the other palettes are fixed presets.
+const colorMeta = computed(() => ({
+    'brand-blue': { label: 'Your colours', chips: form.value.colors },
     monochrome:   { label: 'Monochrome', chips: ['#16233b', '#ffffff'] },
     warm:         { label: 'Warm', chips: ['#c96f4a', '#e8b04b'] },
     nature:       { label: 'Nature', chips: ['#2f6b4f', '#8a6d3b'] },
     colorful:     { label: 'Colorful', chips: ['#398aff', '#e8554d', '#e8b04b'] },
-};
+}));
 const ready = computed(() => form.value.company.trim() && form.value.industry.trim() && pending.value === 0);
 
 const xsrf = () => decodeURIComponent((document.cookie.match(/(?:^|;\s*)XSRF-TOKEN=([^;]+)/) || [])[1] || '');
@@ -160,7 +162,8 @@ async function generateOne(v) {
         const r = await fetch('/logo-maker/generate', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json', Accept: 'application/json', 'X-XSRF-TOKEN': xsrf() },
-            body: JSON.stringify({ ...form.value, variant: v }),
+            // the custom palette only applies to the "Your colours" choice
+            body: JSON.stringify({ ...form.value, colors: form.value.color === 'brand-blue' ? form.value.colors : undefined, variant: v }),
         });
         if (!r.ok) throw new Error((await r.json().catch(() => ({})))?.message || `generation failed (${r.status})`);
         const { id } = await r.json();
@@ -255,6 +258,15 @@ function moreLike(r) {
                 </span>
                 {{ colorMeta[c]?.label || c }}
             </button>
+        </div>
+        <div v-if="form.color === 'brand-blue'" class="mt-3 flex flex-wrap items-center gap-4 rounded-xl border border-paper-300 bg-paper-200/40 px-4 py-2.5">
+            <p class="text-xs font-semibold uppercase tracking-wide text-ink/55">Pick your two colours</p>
+            <label class="flex items-center gap-2 text-sm text-ink/70">Primary
+                <input v-model="form.colors[0]" type="color" class="h-8 w-11 cursor-pointer rounded-md border border-paper-300 bg-white p-0.5" />
+            </label>
+            <label class="flex items-center gap-2 text-sm text-ink/70">Secondary
+                <input v-model="form.colors[1]" type="color" class="h-8 w-11 cursor-pointer rounded-md border border-paper-300 bg-white p-0.5" />
+            </label>
         </div>
 
         <button type="button" :disabled="!ready" @click="generate"

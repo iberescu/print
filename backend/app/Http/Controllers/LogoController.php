@@ -68,6 +68,9 @@ class LogoController extends Controller
             'industry' => ['required', 'string', 'max:80'],
             'style'    => ['required', 'string', 'in:'.implode(',', array_keys(self::STYLES))],
             'color'    => ['required', 'string', 'in:'.implode(',', array_keys(self::COLORS))],
+            // custom palette (the "Your colours" pickers) — overrides the preset hint
+            'colors'   => ['nullable', 'array', 'max:2'],
+            'colors.*' => ['string', 'regex:/^#[0-9a-f]{6}$/i'],
             'variant'  => ['nullable', 'integer', 'min:0'],
         ]);
 
@@ -224,12 +227,20 @@ class LogoController extends Controller
                     .'of the '.$industry.' trade into ONE clean combined pictogram.',
         };
 
+        // buyer-picked hexes beat the preset phrasing (recraft follows hex codes well)
+        $custom = array_values(array_filter((array) ($d['colors'] ?? [])));
+        $palette = match (count($custom)) {
+            2       => 'exactly the two-colour palette '.$custom[0].' and '.$custom[1],
+            1       => 'exactly the colour '.$custom[0].' with neutral accents',
+            default => self::COLORS[$d['color']],
+        };
+
         return 'Professional vector logo for "'.$company.'"'
             .($tagline !== '' ? ' with the tagline "'.$tagline.'"' : '')
             .', a '.$industry.' business. '
             .'A simple distinctive emblem centred above the wordmark, the wordmark reading exactly "'.$company.'". '
             .$concept.' '
-            .'Style: '.self::STYLES[$d['style']].'. Colours: '.self::COLORS[$d['color']].' on a plain white background. '
+            .'Style: '.self::STYLES[$d['style']].'. Colours: '.$palette.' on a plain white background. '
             .'Professional brand identity design, crisp clean vector shapes, balanced composition, '
             .'no photorealism, no watermark.';
     }
