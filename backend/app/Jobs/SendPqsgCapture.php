@@ -70,47 +70,29 @@ class SendPqsgCapture
         $sources = ['logo_url', 'pdf_url', 'website', 'image_url'];
 
         try {
-            for ($attempt = 1; $attempt <= 2; $attempt++) {
-                $resp = Http::timeout(10)->acceptJson()->post($cfg['api_base'].'/capture', $payload);
-                $body = $resp->json() ?? [];
-                $uuid = $body['uuid'] ?? $body['capture_uuid'] ?? ($body['data']['uuid'] ?? null);
+            $resp = Http::timeout(10)->acceptJson()->post($cfg['api_base'].'/capture', $payload);
+            $body = $resp->json() ?? [];
+            $uuid = $body['uuid'] ?? $body['capture_uuid'] ?? ($body['data']['uuid'] ?? null);
 
-                if ($resp->successful() && $uuid) {
-                    // 12h: shopping sessions outlive short TTLs, and a session key
-                    // pointing at an evicted uuid shows dead gallery steps
-                    Cache::put("pqsg:{$this->key}", $uuid, now()->addHours(12));
-                    Log::info('pqsg capture registered', [
-                        'key'     => $this->key,
-                        'uuid'    => $uuid,
-                        'source'  => $this->source,
-                        'sent'    => array_values(array_intersect($sources, array_keys($payload))),
-                        'retried' => $attempt > 1,
-                    ]);
-
-                    return;
-                }
-
-                // The engine validates every source and one bad one poisons the
-                // whole capture (e.g. a bot-blocked website returning HTTP 429,
-                // as The Met's site did) — drop exactly what it rejected and
-                // retry with the sources that are still fine.
-                $bad = $resp->status() === 422
-                    ? array_intersect(array_keys($body['errors'] ?? []), $sources)
-                    : [];
-                $payload = array_diff_key($payload, array_flip($bad));
-                if ($attempt === 1 && $bad && array_intersect_key($payload, array_flip($sources))) {
-                    Log::warning('pqsg capture retrying without rejected sources', ['key' => $this->key, 'dropped' => array_values($bad)]);
-
-                    continue;
-                }
-
+            if ($resp->successful() && $uuid) {
+                // 12h: shopping sessions outlive short TTLs, and a session key
+                // pointing at an evicted uuid shows dead gallery steps
+                Cache::put("pqsg:{$this->key}", $uuid, now()->addHours(12));
+                Log::info('pqsg capture registered', [
+                    'key'    => $this->key,
+                    'uuid'   => $uuid,
+                    'source' => $this->source,
+                    'sent'   => array_values(array_intersect($sources, array_keys($payload))),
+                ]);
+            } else {
+                // NOTE: one failing source rejects the whole capture engine-side
+                // (e.g. a bot-blocked website, HTTP 429) — fix requested from the
+                // engine team; we deliberately do NOT work around it here.
                 Log::error('pqsg capture rejected', [
                     'status' => $resp->status(), 'body' => $resp->body(),
                     'key' => $this->key, 'source' => $this->source,
                     'sent' => array_values(array_intersect($sources, array_keys($payload))),
                 ]);
-
-                return;
             }
         } catch (\Throwable $e) {
             // upsell is strictly best-effort — never surface a failure to the shopper
