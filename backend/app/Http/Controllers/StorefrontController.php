@@ -31,6 +31,7 @@ class StorefrontController extends Controller
     public function home(): Response
     {
         $categories = Category::where('is_active', true)
+            ->where('slug', '!=', 'services') // ad credit etc. — buyable via upsell, not browsable
             ->whereHas('products', fn ($q) => $q->where('is_active', true))
             ->orderBy('sort_order')->get()
             ->map(fn (Category $c) => $this->categoryCard($c));
@@ -178,6 +179,7 @@ class StorefrontController extends Controller
     {
         // cached briefly (admin product saves forget this key; imports just wait out the TTL)
         return \Illuminate\Support\Facades\Cache::remember('nav.categories', 600, fn () => Category::where('is_active', true)
+            ->where('slug', '!=', 'services') // upsell-only category, not browsable
             ->whereHas('products', fn ($q) => $q->where('is_active', true))
             ->orderBy('sort_order')->get(['name', 'slug']));
     }
@@ -238,6 +240,7 @@ class StorefrontController extends Controller
             $urls = [
                 [url('/'), now()->toDateString(), 'daily'],
                 [url('/logo-maker'), now()->toDateString(), 'weekly'],
+                [url('/qr-code-generator'), now()->toDateString(), 'weekly'],
                 [url('/affiliates'), now()->toDateString(), 'monthly'],
             ];
             foreach (\App\Models\Category::orderBy('name')->get() as $c) {

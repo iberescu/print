@@ -199,6 +199,39 @@ class AdsSetup extends Command
             rsa: $rsaBC,
         );
 
+        $rsaQr = [
+            'headlines' => [
+                ['text' => 'Free QR Code Generator', 'pinnedField' => 'HEADLINE_1'],
+                ['text' => 'QR Codes In One Click'], ['text' => 'URL, vCard, Email Or Phone'],
+                ['text' => 'Download SVG + PNG Free'], ['text' => 'No Signup. No Watermark.'],
+                ['text' => 'Print-Ready Vector QR'], ['text' => 'Make Your QR Code Free'],
+                ['text' => 'Codes That Never Expire'], ['text' => 'QR For Your Business'],
+                ['text' => 'Then Print It On Anything'], ['text' => 'Free Forever. Unlimited.'],
+                ['text' => 'Scan-To-Save Contact QR'],
+            ],
+            'descriptions' => [
+                ['text' => 'Create a free QR code for your website, contact card, email or phone — in seconds.'],
+                ['text' => 'True vector SVG plus high-res PNG. Print-ready, no watermark, no account needed.'],
+                ['text' => 'Static codes that never expire — free, unlimited, yours for commercial use.'],
+                ['text' => 'Point it at your site, then see it printed on business cards, stickers and more.'],
+            ],
+            'path1' => 'qr-codes',
+        ];
+
+        $this->searchCampaign(
+            name: 'RMP — QR Code Generator (Search)',
+            budgetName: 'RMP QR Generator Budget',
+            budgetMicros: 90_000_000,        // 90 RON/day ≈ $20
+            cpcCeilMicros: 7_000_000,        // 7 RON ≈ $1.55 — QR terms run cheap
+            finalUrl: self::SITE.'/qr-code-generator',
+            negatives: ['api', 'python', 'javascript', 'library', 'scanner', 'reader app', 'dynamic qr pricing', 'tracking analytics', 'barcode inventory'],
+            adGroups: [
+                'Generator' => ['EXACT', ['qr code generator', 'free qr code generator', 'qr code maker', 'create qr code', 'qr generator']],
+                'Use case' => ['PHRASE', ['qr code for website', 'qr code for business card', 'vcard qr code', 'contact qr code', 'qr code for menu']],
+            ],
+            rsa: $rsaQr,
+        );
+
         $this->searchCampaign(
             name: 'RMP — AI Logo Maker (Search)',
             budgetName: 'RMP Logo Maker Budget',

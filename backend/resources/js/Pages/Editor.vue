@@ -59,6 +59,11 @@ const showLogoBuilder = ref(false);
 const builderError = ref('');
 let builderTarget = null;     // logo to replace when opened from the popup (null = insert new)
 const applyingTpl = ref(false);
+// QR code insert (free tool, no upsell): server renders the PNG, fabric places it.
+const showQr = ref(false);
+const qr = ref({ type: 'url', url: '', name: '', company: '', phone: '', email: '', site: '', style: 'square', color: '000000' });
+const QR_COLORS = ['000000', '2b3b55', '1d4ed8', '166534', '7f1d1d'];
+const qrBusy = ref(false);
 const showGuides = ref(true);
 
 // Template/seed art is authored at the trim origin (0,0). Shift it into the trim
@@ -713,7 +718,7 @@ function extractBrand() {
     });
     if (!b.logo) {
         // any customer image can stand in for a logo — but never the seeded placeholder
-        const img = objs.find((o) => o.type === 'image'
+        const img = objs.find((o) => o.type === 'image' && o.rmpRole !== 'qr'
             && !((o.getSrc?.() || o._originalElement?.src || '').includes('logo-placeholder')));
         if (img) { try { b.logo = img.toDataURL({ format: 'png' }); } catch (e) {} }
     }
@@ -733,6 +738,36 @@ async function restoreSaved() {
         canvas.renderAll();
         loadCanvasFonts().then(() => repaintFonts());
     } catch (e) { console.error('restoreSaved failed', e); }
+}
+
+function qrPayload() {
+    const v = qr.value;
+    if (v.type === 'url') { const u = v.url.trim(); return u ? (/^https?:\/\//i.test(u) ? u : 'https://' + u) : ''; }
+    if (v.type === 'email') { const e = v.email.trim(); return e ? 'mailto:' + e : ''; }
+    if (v.type === 'phone') { const t = v.phone.trim(); return t ? 'tel:' + t.replace(/[^\d+]/g, '') : ''; }
+    if (!v.name.trim()) return '';
+    const site = v.site.trim() ? (/^https?:\/\//i.test(v.site.trim()) ? v.site.trim() : 'https://' + v.site.trim()) : '';
+    return ['BEGIN:VCARD', 'VERSION:3.0', 'FN:' + v.name.trim(),
+        v.company.trim() ? 'ORG:' + v.company.trim() : null,
+        v.phone.trim() ? 'TEL:' + v.phone.trim() : null,
+        v.email.trim() ? 'EMAIL:' + v.email.trim() : null,
+        site ? 'URL:' + site : null, 'END:VCARD'].filter(Boolean).join('\n');
+}
+
+async function insertQr() {
+    const payload = qrPayload();
+    if (!payload || qrBusy.value) return;
+    qrBusy.value = true;
+    try {
+        const img = await fabric.FabricImage.fromURL(`/qr/image?data=${encodeURIComponent(payload)}&format=png&size=600&style=${qr.value.style}&color=${qr.value.color}`, { crossOrigin: 'anonymous' });
+        const s = (canvas.getWidth() * 0.22) / img.width;
+        // rmpRole 'qr' — never picked up as the brand logo by extractBrand()
+        img.set({ left: canvas.getWidth() / 2, top: canvas.getHeight() / 2, originX: 'center', originY: 'center', scaleX: s, scaleY: s, rmpRole: 'qr' });
+        canvas.add(img);
+        canvas.setActiveObject(img);
+        canvas.requestRenderAll();
+        showQr.value = false;
+    } catch (e) { /* leave the modal open to retry */ } finally { qrBusy.value = false; }
 }
 
 function goToReview() {
@@ -782,6 +817,7 @@ function goToReview() {
             <button class="rounded-md px-3 py-1.5 text-sm font-medium hover:bg-white/10" @click="newText">+ Text</button>
             <button class="rounded-md px-3 py-1.5 text-sm font-medium hover:bg-white/10" @click="fileInput.click()">↑ Upload image</button>
             <button class="rounded-md px-3 py-1.5 text-sm font-medium text-[#9cc6ff] hover:bg-white/10" @click="openLogoBuilder(false)">✦ AI Logo</button>
+            <button class="rounded-md px-3 py-1.5 text-sm font-medium hover:bg-white/10" @click="showQr = true">▦ QR code</button>
             <button v-if="templates.length" class="rounded-md px-3 py-1.5 text-sm font-medium hover:bg-white/10" @click="showTemplates = true">▦ Templates</button>
             <button class="rounded-md px-3 py-1.5 text-sm font-medium hover:bg-white/10 disabled:opacity-30" :disabled="!hasSel" @click="removeSel">🗑 Delete</button>
             <button v-if="bleed || safety || cutPath" class="rounded-md px-3 py-1.5 text-sm font-medium hover:bg-white/10" :class="showGuides ? 'bg-white/15' : ''" @click="showGuides = !showGuides" title="Show print bleed &amp; safe-area guides">▣ Guides</button>
@@ -924,6 +960,54 @@ function goToReview() {
                     <button class="text-sm font-medium text-ink/55 transition hover:text-ink" @click="closeLogoPopup">Keep current</button>
                 </div>
                 <input ref="logoInput" type="file" accept="image/*" class="hidden" @change="onLogoFile" />
+            </div>
+        </div>
+
+        <!-- QR insert modal (free feature, no upsell) -->
+        <div v-if="showQr" class="fixed inset-0 z-50 grid place-items-center bg-ink/40 p-4" @click.self="showQr = false">
+            <div class="w-full max-w-md rounded-2xl bg-white p-6 shadow-2xl">
+                <div class="flex items-start justify-between gap-4">
+                    <h2 class="font-display text-xl font-bold text-ink">Add a QR code</h2>
+                    <button class="text-xl text-ink/50 hover:text-ink" aria-label="Close" @click="showQr = false">✕</button>
+                </div>
+                <div class="mt-3 flex flex-wrap gap-2">
+                    <button v-for="t in [['url','Website'],['vcard','Contact'],['email','Email'],['phone','Phone']]" :key="t[0]" type="button"
+                            class="rounded-full border px-3.5 py-1 text-sm transition"
+                            :class="qr.type === t[0] ? 'border-brand-600 bg-brand-600 text-white' : 'border-paper-300 text-ink/70 hover:border-ink/30'"
+                            @click="qr.type = t[0]">{{ t[1] }}</button>
+                </div>
+                <div class="mt-4 space-y-3">
+                    <input v-if="qr.type === 'url'" v-model="qr.url" type="text" placeholder="yourcompany.com" class="w-full rounded-xl border border-paper-300 px-3.5 py-2.5 text-sm focus:border-brand-400 focus:outline-none" />
+                    <template v-if="qr.type === 'vcard'">
+                        <input v-model="qr.name" type="text" placeholder="Full name *" class="w-full rounded-xl border border-paper-300 px-3.5 py-2.5 text-sm focus:border-brand-400 focus:outline-none" />
+                        <div class="grid grid-cols-2 gap-3">
+                            <input v-model="qr.phone" type="text" placeholder="Phone" class="w-full rounded-xl border border-paper-300 px-3.5 py-2.5 text-sm focus:border-brand-400 focus:outline-none" />
+                            <input v-model="qr.email" type="email" placeholder="Email" class="w-full rounded-xl border border-paper-300 px-3.5 py-2.5 text-sm focus:border-brand-400 focus:outline-none" />
+                        </div>
+                        <input v-model="qr.site" type="text" placeholder="Website" class="w-full rounded-xl border border-paper-300 px-3.5 py-2.5 text-sm focus:border-brand-400 focus:outline-none" />
+                    </template>
+                    <input v-if="qr.type === 'email'" v-model="qr.email" type="email" placeholder="hello@yourcompany.com" class="w-full rounded-xl border border-paper-300 px-3.5 py-2.5 text-sm focus:border-brand-400 focus:outline-none" />
+                    <input v-if="qr.type === 'phone'" v-model="qr.phone" type="text" placeholder="+1 555 123 4567" class="w-full rounded-xl border border-paper-300 px-3.5 py-2.5 text-sm focus:border-brand-400 focus:outline-none" />
+                </div>
+                <div class="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2 border-t border-paper-200 pt-3">
+                    <div class="flex items-center gap-1.5">
+                        <span class="text-xs font-semibold uppercase tracking-wide text-ink/50">Dots</span>
+                        <button v-for="s in [['square','Square'],['rounded','Rounded'],['dots','Dots']]" :key="s[0]" type="button"
+                                class="rounded-full border px-2.5 py-0.5 text-xs transition"
+                                :class="qr.style === s[0] ? 'border-brand-600 bg-brand-600 text-white' : 'border-paper-300 text-ink/60 hover:border-ink/30'"
+                                @click="qr.style = s[0]">{{ s[1] }}</button>
+                    </div>
+                    <div class="flex items-center gap-1.5">
+                        <span class="text-xs font-semibold uppercase tracking-wide text-ink/50">Color</span>
+                        <button v-for="c in QR_COLORS" :key="c" type="button" :aria-label="'#' + c"
+                                class="h-5 w-5 rounded-full border-2 transition"
+                                :class="qr.color === c ? 'border-brand-blue ring-2 ring-brand-blue/30' : 'border-white shadow'"
+                                :style="{ backgroundColor: '#' + c }" @click="qr.color = c"></button>
+                    </div>
+                </div>
+                <button type="button" :disabled="!qrPayload() || qrBusy" class="mt-5 w-full rounded-full bg-brand-600 px-6 py-3 font-semibold text-white transition hover:bg-brand-700 disabled:opacity-50" @click="insertQr">
+                    {{ qrBusy ? 'Adding…' : 'Place on my design' }}
+                </button>
             </div>
         </div>
 

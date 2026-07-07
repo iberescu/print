@@ -175,6 +175,8 @@ const logout = () => router.post('/logout');
                     <h4 class="text-xs font-semibold uppercase tracking-widest text-paper/45">Products</h4>
                     <ul class="mt-4 space-y-2.5 text-sm">
                         <li v-for="c in categories" :key="c.slug"><Link :href="`/category/${c.slug}`" class="text-paper/70 transition hover:text-lime-accent">{{ c.name }}</Link></li>
+                        <li><Link href="/logo-maker" class="text-paper/70 transition hover:text-lime-accent">Free logo maker</Link></li>
+                        <li><Link href="/qr-code-generator" class="text-paper/70 transition hover:text-lime-accent">Free QR code generator</Link></li>
                     </ul>
                 </div>
                 <div>

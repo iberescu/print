@@ -95,6 +95,12 @@ Route::get('/logo-maker/download', [\App\Http\Controllers\LogoController::class,
 Route::get('/logo-maker/png', [\App\Http\Controllers\LogoController::class, 'png'])->middleware('throttle:30,1,logo-png')->name('logo.png');
 Route::get('/logo-maker/status/{id}', [\App\Http\Controllers\LogoController::class, 'status'])->middleware('throttle:120,1,logo-status')->name('logo.status');
 
+// Free QR code generator (low-CPC entry tool; footer link only)
+Route::get('/qr-code-generator', [\App\Http\Controllers\QrController::class, 'show'])->name('qr.show');
+Route::get('/qr/image', [\App\Http\Controllers\QrController::class, 'image'])->middleware('throttle:120,1,qr-image')->name('qr.image');
+Route::post('/qr/logo', [\App\Http\Controllers\QrController::class, 'logo'])->middleware('throttle:20,1,qr-logo')->name('qr.logo');
+Route::post('/qr/capture', [\App\Http\Controllers\QrController::class, 'capture'])->middleware('throttle:10,1,qr-capture')->name('qr.capture');
+
 // B2B affiliate program: landing + apply + the CORS-open widget API
 Route::get('/affiliates', [\App\Http\Controllers\AffiliateController::class, 'show'])->name('affiliates');
 Route::post('/affiliates/apply', [\App\Http\Controllers\AffiliateController::class, 'apply'])->middleware('throttle:6,1,affiliate-apply')->name('affiliates.apply');
