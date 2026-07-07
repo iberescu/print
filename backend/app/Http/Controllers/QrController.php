@@ -174,13 +174,16 @@ class QrController extends Controller
     private function renderSvg(string $payload, int $size, string $style, string $color, ErrorCorrectionLevel $ec): string
     {
         $module = match ($style) {
-            'rounded' => new RoundnessModule(RoundnessModule::MEDIUM),
-            'dots'    => new DotsModule(DotsModule::MEDIUM),
+            'rounded' => new RoundnessModule(0.8), // MEDIUM (0.5) barely differs from square at screen sizes
+            'dots'    => new DotsModule(DotsModule::LARGE), // smaller dots leave too little ink per module — decoders give up
             default   => SquareModule::instance(),
         };
+        // dot-shaped finder eyes (the ModuleEye default) break decoders — keep
+        // the eyes solid circles so dot-style codes stay scannable
+        $eye = $style === 'dots' ? \BaconQrCode\Renderer\Eye\SimpleCircleEye::instance() : null;
         [$r, $g, $b] = sscanf($color, '%02x%02x%02x');
         $fill = Fill::uniformColor(new Rgb(255, 255, 255), new Rgb($r, $g, $b));
-        $renderer = new ImageRenderer(new RendererStyle($size, 4, $module, null, $fill), new SvgImageBackEnd);
+        $renderer = new ImageRenderer(new RendererStyle($size, 4, $module, $eye, $fill), new SvgImageBackEnd);
 
         return (new Writer($renderer))->writeString($payload, Encoder::DEFAULT_BYTE_MODE_ENCODING, $ec);
     }

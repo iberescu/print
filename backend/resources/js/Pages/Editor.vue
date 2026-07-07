@@ -991,11 +991,11 @@ function goToReview() {
                 </div>
                 <div class="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2 border-t border-paper-200 pt-3">
                     <div class="flex items-center gap-1.5">
-                        <span class="text-xs font-semibold uppercase tracking-wide text-ink/50">Dots</span>
-                        <button v-for="s in [['square','Square'],['rounded','Rounded'],['dots','Dots']]" :key="s[0]" type="button"
-                                class="rounded-full border px-2.5 py-0.5 text-xs transition"
-                                :class="qr.style === s[0] ? 'border-brand-600 bg-brand-600 text-white' : 'border-paper-300 text-ink/60 hover:border-ink/30'"
-                                @click="qr.style = s[0]">{{ s[1] }}</button>
+                        <span class="text-xs font-semibold uppercase tracking-wide text-ink/50">Style</span>
+                        <button v-for="s in [['square','Square'],['rounded','Rounded'],['dots','Dots']]" :key="s[0]" type="button" :title="s[1]"
+                                class="flex items-center gap-1 rounded-full border py-0.5 pl-1 pr-2.5 text-xs transition"
+                                :class="qr.style === s[0] ? 'border-brand-600 bg-brand-50 text-brand-700 ring-2 ring-brand-600/20' : 'border-paper-300 text-ink/60 hover:border-ink/30'"
+                                @click="qr.style = s[0]"><img :src="'/img/qr-style-' + s[0] + '.webp'" :alt="s[1] + ' modules'" class="h-4 w-4 rounded" />{{ s[1] }}</button>
                     </div>
                     <div class="flex items-center gap-1.5">
                         <span class="text-xs font-semibold uppercase tracking-wide text-ink/50">Color</span>

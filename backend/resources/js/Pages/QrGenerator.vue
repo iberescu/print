@@ -48,9 +48,9 @@ const payload = computed(() => {
 
 // ---- styling: module shape, foreground colour, centre logo --------------------
 const STYLES = [
-    { key: 'square', label: 'Square' },
-    { key: 'rounded', label: 'Rounded' },
-    { key: 'dots', label: 'Dots' },
+    { key: 'square', label: 'Square', icon: '/img/qr-style-square.webp' },
+    { key: 'rounded', label: 'Rounded', icon: '/img/qr-style-rounded.webp' },
+    { key: 'dots', label: 'Dots', icon: '/img/qr-style-dots.webp' },
 ];
 const COLORS = ['000000', '2b3b55', '1d4ed8', '166534', '7f1d1d'];
 const style = ref('square');
@@ -297,10 +297,11 @@ const inputCls = 'mt-1.5 w-full rounded-xl border border-paper-300 bg-white px-3
                         <!-- styling: shape, colour, centre logo -->
                         <div class="mt-5 flex flex-wrap items-center gap-x-5 gap-y-3 border-t border-paper-300 pt-4">
                             <div class="flex items-center gap-1.5">
-                                <span class="mr-1 text-xs font-semibold uppercase tracking-wide text-ink/55">Dots</span>
-                                <button v-for="s in STYLES" :key="s.key" type="button" @click="style = s.key"
-                                        class="rounded-full border px-3 py-1 text-xs font-medium transition"
-                                        :class="style === s.key ? 'border-brand-600 bg-brand-600 text-white' : 'border-paper-300 text-ink/60 hover:border-ink/30'">
+                                <span class="mr-1 text-xs font-semibold uppercase tracking-wide text-ink/55">Style</span>
+                                <button v-for="s in STYLES" :key="s.key" type="button" @click="style = s.key" :title="s.label"
+                                        class="flex items-center gap-1.5 rounded-full border py-1 pl-1.5 pr-3 text-xs font-medium transition"
+                                        :class="style === s.key ? 'border-brand-600 bg-brand-50 text-brand-700 ring-2 ring-brand-600/20' : 'border-paper-300 text-ink/60 hover:border-ink/30'">
+                                    <img :src="s.icon" :alt="s.label + ' modules'" class="h-6 w-6 rounded" />
                                     {{ s.label }}
                                 </button>
                             </div>
