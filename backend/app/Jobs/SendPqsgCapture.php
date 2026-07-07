@@ -76,7 +76,12 @@ class SendPqsgCapture
                 // 12h: shopping sessions outlive short TTLs, and a session key
                 // pointing at an evicted uuid shows dead gallery steps
                 Cache::put("pqsg:{$this->key}", $uuid, now()->addHours(12));
-                Log::info('pqsg capture registered', ['key' => $this->key, 'uuid' => $uuid, 'source' => $this->source]);
+                Log::info('pqsg capture registered', [
+                    'key'    => $this->key,
+                    'uuid'   => $uuid,
+                    'source' => $this->source,
+                    'sent'   => array_values(array_intersect(['logo_url', 'pdf_url', 'website', 'image_url'], array_keys($payload))),
+                ]);
             } else {
                 Log::error('pqsg capture rejected', ['status' => $resp->status(), 'body' => $resp->body(), 'key' => $this->key]);
             }

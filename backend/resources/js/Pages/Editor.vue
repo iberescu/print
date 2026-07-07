@@ -360,9 +360,26 @@ async function onLogoFile(e) {
     e.target.value = '';
     if (!file || !logoTarget) return;
     uploadArtwork(file); // fire-and-forget; no-op outside upload mode
-    const url = await new Promise((res) => { const r = new FileReader(); r.onload = (ev) => res(ev.target.result); r.readAsDataURL(file); });
+    let url = await new Promise((res) => { const r = new FileReader(); r.onload = (ev) => res(ev.target.result); r.readAsDataURL(file); });
+    // Big raster logos (phone photos…) blow the review payload cap and the
+    // brand capture silently drops them — downscale to what print needs.
+    // SVGs stay as-is (tiny text; the server rasterises them at Review).
+    if (file.size > 1_500_000 && !url.startsWith('data:image/svg')) {
+        url = await downscaleLogo(url).catch(() => url);
+    }
     await swapLogoWith(url, logoTarget);
     closeLogoPopup();
+}
+
+async function downscaleLogo(dataUrl, max = 1024) {
+    const img = await new Promise((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = rej; i.src = dataUrl; });
+    const s = Math.min(1, max / Math.max(img.width, img.height));
+    if (s >= 1) return dataUrl;
+    const c = document.createElement('canvas');
+    c.width = Math.round(img.width * s);
+    c.height = Math.round(img.height * s);
+    c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+    return c.toDataURL('image/png');
 }
 
 // Swap `target` for the image at `url`, fitted inside the old logo's box.

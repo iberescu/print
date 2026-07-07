@@ -19,6 +19,10 @@ class PreviewStore
     /**
      * Convert a data-URL to a stored file URL. Already-stored URLs/paths pass
      * through untouched; anything invalid or oversized returns null.
+     *
+     * SVG logos (popup upload accepts image/*) rasterise to PNG via mutool —
+     * storing raw customer SVGs on our origin would be stored XSS, and
+     * silently dropping them cost a WirMachenDruck capture on 2026-07-07.
      */
     public static function persist(?string $image): ?string
     {
@@ -29,7 +33,7 @@ class PreviewStore
         if (Str::startsWith($image, ['/storage/', 'http://', 'https://'])) {
             return $image;
         }
-        if (! preg_match('#^data:image/(jpeg|png|webp);base64,(.+)$#s', $image, $m)) {
+        if (! preg_match('#^data:image/(jpeg|png|webp|gif|svg\+xml);base64,(.+)$#s', $image, $m)) {
             return null;
         }
         $bytes = base64_decode($m[2], true);
@@ -37,9 +41,39 @@ class PreviewStore
             return null;
         }
 
+        if ($m[1] === 'svg+xml') {
+            return self::rasterizeSvg($bytes);
+        }
+
         $ext = $m[1] === 'jpeg' ? 'jpg' : $m[1];
         $path = 'previews/'.now()->format('Ym').'/'.Str::uuid().'.'.$ext;
         Storage::disk('public')->put($path, $bytes);
+
+        return Storage::disk('public')->url($path);
+    }
+
+    /** SVG bytes → stored transparent PNG url (mutool ships in the app image). */
+    private static function rasterizeSvg(string $svg): ?string
+    {
+        if (! str_contains($svg, '<svg')) {
+            return null;
+        }
+
+        $tmp = tempnam(sys_get_temp_dir(), 'logo').'.svg';
+        file_put_contents($tmp, $svg);
+        $path = 'previews/'.now()->format('Ym').'/'.Str::uuid().'.png';
+        $out = Storage::disk('public')->path($path);
+        @mkdir(dirname($out), 0775, true);
+
+        $proc = new \Symfony\Component\Process\Process(['mutool', 'draw', '-o', $out, '-w', '1024', '-h', '1024', '-c', 'rgba', $tmp]);
+        $proc->run();
+        @unlink($tmp);
+
+        if (! $proc->isSuccessful() || ! is_file($out) || ! str_starts_with((string) file_get_contents($out, false, null, 0, 8), "\x89PNG")) {
+            @unlink($out);
+
+            return null;
+        }
 
         return Storage::disk('public')->url($path);
     }
