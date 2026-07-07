@@ -71,7 +71,7 @@ class CatalogSeeder extends Seeder
                 'description' => 'Premium custom business cards in a range of stocks, finishes and shapes.',
                 'products' => [
                     [
-                        'name' => 'Standard Business Cards', 'from_price' => 10.00, 'badge' => 'Bestseller',
+                        'name' => 'Standard Business Cards', 'from_price' => 7.50, 'badge' => 'Bestseller',
                         'tagline' => 'The everyday essential — sharp, affordable, fast.',
                         'description' => 'Classic 3.5×2" cards on quality stock. Design online or upload your artwork.',
                         'options' => [
@@ -87,7 +87,7 @@ class CatalogSeeder extends Seeder
                             ]],
                         ],
                         // Exact Vistaprint "Matte Business Cards" tiers (crawled snapshot).
-                        'quantities' => [[50, 0.20, true, 10.00], [100, 0.15, false, 14.99], [250, 0.08, false, 19.99], [500, 0.05, false, 24.99], [1000, 0.04, false, 39.99]],
+                        'quantities' => [[50, 0.15, true, 7.50], [100, 0.11, false, 11.24], [250, 0.06, false, 14.99], [500, 0.04, false, 18.74], [1000, 0.03, false, 29.99]],
                     ],
                     [
                         'name' => 'Premium Business Cards', 'from_price' => 22.99,
