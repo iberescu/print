@@ -230,6 +230,13 @@ onMounted(() => {
     fitCanvas();
     window.addEventListener('resize', fitCanvas);
 
+    // Autosave arms AFTER the initial content lands (seed/template/restore all
+    // fire object:added storms) — only user edits from then on mark it dirty.
+    setTimeout(() => {
+        autosaveArmed = true;
+        ['object:added', 'object:removed', 'object:modified', 'text:changed'].forEach((ev) => canvas.on(ev, markDirty));
+    }, 2000);
+
     // Seeds are measured before webfonts finish loading → load the fonts then re-fit
     // the text so a wider webfont isn't clipped. Templates and restored designs
     // keep their authored widths (both repaint after loading their fonts).
@@ -238,8 +245,38 @@ onMounted(() => {
 
 onBeforeUnmount(() => {
     window.removeEventListener('resize', fitCanvas);
+    if (autosaveTimer) clearTimeout(autosaveTimer);
     canvas && canvas.dispose();
 });
+
+// ---- autosave ---------------------------------------------------------------
+// Debounced best-effort save so the design lands in "My designs" without ever
+// reaching Review. Plain fetch — an Inertia visit would remount the editor.
+let autosaveArmed = false;
+let autosaveTimer = null;
+
+function markDirty() {
+    if (!autosaveArmed || applyingTpl.value) return;
+    if (autosaveTimer) clearTimeout(autosaveTimer);
+    autosaveTimer = setTimeout(autosave, 2500);
+}
+
+function autosave() {
+    autosaveTimer = null;
+    try {
+        store[side.value] = canvas.toJSON(['rmpRole']);
+        // small card preview; Review later overwrites it with the 1600px one
+        const preview = canvas.toDataURL({ format: 'jpeg', quality: 0.7, multiplier: Math.min(4, Math.max(0.3, 640 / canvas.getWidth())) });
+        const token = decodeURIComponent((document.cookie.match(/XSRF-TOKEN=([^;]+)/) || [])[1] || '');
+        fetch(`/design/${props.product.slug}/autosave`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', Accept: 'application/json', 'X-XSRF-TOKEN': token },
+            credentials: 'same-origin',
+            body: JSON.stringify({ design: JSON.stringify(store), project: props.project, preview }),
+        }).catch(() => {}); // best-effort — Review still does the authoritative save
+    } catch (e) { /* never let autosave break editing */ }
+}
+// -----------------------------------------------------------------------------
 
 function apply(prop, val) {
     const o = canvas.getActiveObject();

@@ -167,23 +167,7 @@ class DesignController extends Controller
         // project id: "Back to editor" resumes exactly this project (a clean
         // editor entry mints a new id and never sees other projects' work).
         if (! empty($data['design']) && ! empty($data['project'])) {
-            $path = 'designs/'.now()->format('Ym').'/'.$data['project'].'.json'; // re-review overwrites, no pile-up
-            Storage::disk('public')->put($path, $data['design']);
-            $projects = session('design.projects', []);
-            $projects[$data['project']] = $path;
-            session(['design.projects' => array_slice($projects, -10, null, true)]); // keep the last 10
-
-            // The durable record behind "My designs" + cross-session edit links.
-            // Owned by whoever is logged in; a later login claims guest projects.
-            $project = \App\Models\DesignProject::firstOrNew(['id' => $data['project']]);
-            $project->fill([
-                'product_slug' => $product->slug,
-                'product_name' => $product->name,
-                'preview'      => $data['preview'] ?: $project->preview,
-                'design_path'  => $path,
-            ]);
-            $project->user_id ??= $request->user()?->id;
-            $project->save();
+            $this->storeProject($product, $request, $data['project'], $data['design'], $data['preview']);
         }
         unset($data['design']); // session gets the id→path map only, never the blob
 
@@ -194,6 +178,47 @@ class DesignController extends Controller
         session(['design.review' => $data + ['product' => $product->slug]]);
 
         return redirect()->route('design.review', $product);
+    }
+
+    /** Debounced autosave from the editor — same storage as Review, so the
+     *  design shows in "My designs" without ever reaching the Review step. */
+    public function autosave(Product $product, Request $request)
+    {
+        abort_unless($product->is_active, 404);
+
+        $data = $request->validate([
+            'design'  => ['required', 'string', 'max:12000000'],
+            'project' => ['required', 'uuid'],
+            'preview' => ['nullable', 'string', 'max:1500000'], // small jpeg for the design card
+        ]);
+
+        $this->storeProject($product, $request, $data['project'], $data['design'],
+            \App\Support\PreviewStore::persist($data['preview'] ?? null));
+
+        return response()->noContent();
+    }
+
+    /** Store a project's fabric JSON on disk (one file per project), track it
+     *  in the session map, and upsert the durable design_projects row. */
+    private function storeProject(Product $product, Request $request, string $projectId, string $design, ?string $preview): void
+    {
+        $path = 'designs/'.now()->format('Ym').'/'.$projectId.'.json'; // re-save overwrites, no pile-up
+        Storage::disk('public')->put($path, $design);
+        $projects = session('design.projects', []);
+        $projects[$projectId] = $path;
+        session(['design.projects' => array_slice($projects, -10, null, true)]); // keep the last 10
+
+        // The durable record behind "My designs" + cross-session edit links.
+        // Owned by whoever is logged in; a later login claims guest projects.
+        $project = \App\Models\DesignProject::firstOrNew(['id' => $projectId]);
+        $project->fill([
+            'product_slug' => $product->slug,
+            'product_name' => $product->name,
+            'preview'      => $preview ?: $project->preview,
+            'design_path'  => $path,
+        ]);
+        $project->user_id ??= $request->user()?->id;
+        $project->save();
     }
 
     public function showReview(Product $product, Pricing $pricing): Response|RedirectResponse
