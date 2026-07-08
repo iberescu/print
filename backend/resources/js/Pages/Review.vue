@@ -18,10 +18,11 @@ const props = defineProps({
 const approved = ref(false);
 const busy = ref(false);
 
-// ---- 3D preview (Babylon, lazy-loaded) — flat print only: the design is
-// textured onto a slab in the product's exact die shape, or a waving cloth for
-// banners. Complex products (mugs/apparel/totes) get null from detectKind and
-// keep the flat image — no toggle, no 3D. ------------------------------------
+// ---- 3D preview (Babylon, lazy-loaded) — DISABLED for all products (user
+// call). Every product shows the flat design image. Flip ENABLE_3D back to
+// true to restore: flat print → procedural slab/cloth, mug/shirt → createx
+// models (see lib/preview3d.js — kept intact for that). -----------------------
+const ENABLE_3D = false;
 const has3d = ref(false);          // this product supports a procedural 3D view
 const view3d = ref(true);          // toggle: 3D | Flat
 const ready3d = ref(false);        // scene built
@@ -29,7 +30,7 @@ const canvas3d = ref(null);
 let scene3d = null;
 
 onMounted(async () => {
-    if (!props.preview || !canvas3d.value) return;
+    if (!ENABLE_3D || !props.preview || !canvas3d.value) return;
     try {
         const { mountPreview3D, detectKind } = await import('../lib/preview3d');
         const kind = detectKind(props.product, props.category);
