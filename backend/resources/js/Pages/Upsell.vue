@@ -88,7 +88,7 @@ function initMerchFeed() {
     pqsgItems.value = [];
     if (pqsgTimer) { clearTimeout(pqsgTimer); pqsgTimer = null; }
 
-    let tries = 0;
+    const deadline = Date.now() + 4 * 60 * 1000; // mockups stream ~1 min; give up quietly after 4
     const poll = async () => {
         if (pqsgInitFor !== 'pqsg') return;
         let done = false;
@@ -102,20 +102,15 @@ function initMerchFeed() {
             }
         } catch (e) { /* best-effort */ }
 
-        if (done) {
+        if (done || Date.now() > deadline) {
             pqsgDone.value = true;
             pqsgWaiting.value = false;
             if (!pqsgItems.value.length) pqsgEmpty.value = true;
             return;
         }
-        // mockups stream in for ~1 min; give up quietly after ~4 min
-        if (++tries < 95) {
-            pqsgTimer = setTimeout(poll, 2500);
-        } else {
-            pqsgDone.value = true;
-            pqsgWaiting.value = false;
-            if (!pqsgItems.value.length) pqsgEmpty.value = true;
-        }
+        // poll hard until the first mockups land (the shopper is staring at a
+        // spinner), then relax — the server cache is 2 s so this stays cheap
+        pqsgTimer = setTimeout(poll, pqsgItems.value.length ? 2500 : 1100);
     };
     poll();
 }
@@ -261,7 +256,17 @@ function next() {
                             </div>
                             <div class="flex flex-1 flex-col p-3">
                                 <p class="font-display text-sm font-semibold text-ink">{{ it.label || 'Your brand, mocked up' }}</p>
-                                <p class="text-xs text-ink/55">Made with your logo</p>
+                                <p v-if="it.product" class="text-xs text-ink/55">From {{ money(it.product.fromPrice) }}</p>
+                                <p v-else class="text-xs text-ink/55">Made with your logo</p>
+                                <button
+                                    v-if="it.product"
+                                    class="mt-3 w-full rounded-full px-4 py-2.5 text-sm font-semibold transition disabled:opacity-70"
+                                    :class="added[it.product.slug] ? 'bg-brand-50 text-brand-700' : 'bg-brand-600 text-white hover:bg-brand-700'"
+                                    :disabled="busy === it.product.slug || added[it.product.slug]"
+                                    @click="addItem({ slug: it.product.slug })"
+                                >
+                                    {{ added[it.product.slug] ? '✓ Added' : busy === it.product.slug ? 'Adding…' : '+ Add to order' }}
+                                </button>
                             </div>
                         </div>
                         <!-- streaming placeholder keeps the grid feeling alive while the set finishes -->

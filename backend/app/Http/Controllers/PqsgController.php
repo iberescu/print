@@ -30,6 +30,20 @@ class PqsgController extends Controller
         'cloudlab_umbrela', 'cloudlab_usb', 'chocolate_bar', 'google_v2', 'office', 'hoodie',
     ];
 
+    /** Engine mockup → OUR shop product, so every card gets a real "Add to order". */
+    private const MERCH_TO_PRODUCT = [
+        'business_card_qr_logo' => 'qr-code-business-cards',
+        'roll_stickers'         => 'roll-labels',
+        'canvas'                => 'canvas-prints',
+        'tshirt_words'          => 'gildan-softstyle-unisex-t-shirt',
+        'bags'                  => 'custom-canvas-tote-bags',
+        'glass_logo'            => 'acrylic-table-signs',
+        'sticker'               => 'custom-laptop-stickers',
+        'google_v2'             => 'mounted-tabletop-signs',
+        'hoodie'                => 'jerzees-nublend-hooded-sweatshirt',
+        // bottle/pen/umbrella/usb/chocolate/apron/office: no catalog match — card stays a showcase
+    ];
+
     /** Customer-facing card titles — the engine's own labels leak internal names ("Cloudlab Sort V2"). */
     private const MERCH_LABELS = [
         'business_card_qr_logo' => 'QR business card',
@@ -99,8 +113,10 @@ class PqsgController extends Controller
             return response()->json(['done' => false, 'images' => []]);
         }
 
-        // proxy the engine's widget feed (cached briefly — the step polls every ~2.5 s)
-        $state = Cache::remember("pqsg:engine:{$uuid}", 8, function () use ($uuid) {
+        // proxy the engine's widget feed. The cache only smooths poll bursts —
+        // keep it SHORT (2 s) so fresh mockups reach the shopper almost live
+        // (a capture is per-shopper, unlike the many-visitor affiliate feed).
+        $state = Cache::remember("pqsg:engine:{$uuid}", 2, function () use ($uuid) {
             try {
                 return Http::timeout(8)->acceptJson()
                     ->get(config('shop.pqsg.api_base')."/capture/{$uuid}/widget")->json() ?? [];
@@ -109,14 +125,22 @@ class PqsgController extends Controller
             }
         });
 
+        // the mapped shop products, one indexed query (name + entry price for the card CTA)
+        $shop = \App\Models\Product::query()
+            ->whereIn('slug', array_values(self::MERCH_TO_PRODUCT))
+            ->where('is_active', true)
+            ->get(['slug', 'name', 'from_price'])
+            ->keyBy('slug');
+
         $wanted = array_flip(self::MERCH_PRODUCTS);
         $images = collect($state['images'] ?? [])
             ->filter(fn ($i) => ($i['type'] ?? '') === 'product_mockup'
                 && (isset($wanted[$i['product_key'] ?? '']) || isset($wanted[$i['special_product_key'] ?? ''])))
             ->unique(fn ($i) => $i['product_key'] ?? $i['special_product_key'])
-            ->map(function ($i) {
+            ->map(function ($i) use ($shop) {
                 $key = (string) ($i['product_key'] ?? $i['special_product_key']);
                 $engine = (string) ($i['product_label'] ?? '');
+                $mapped = $shop->get(self::MERCH_TO_PRODUCT[$key] ?? '');
 
                 return [
                     'key'   => $key,
@@ -124,7 +148,12 @@ class PqsgController extends Controller
                     // curated title, else the engine label unless it reads internal
                     'label' => self::MERCH_LABELS[$key]
                         ?? (preg_match('/cloudlab|pipeline|v\d/i', $engine) ? 'Your brand, mocked up' : $engine),
-                    'link'  => $i['product_link'] ?? $i['link'] ?? null,
+                    // the REAL product behind the mockup → "+ Add to order"
+                    'product' => $mapped ? [
+                        'slug'      => $mapped->slug,
+                        'name'      => $mapped->name,
+                        'fromPrice' => (float) $mapped->from_price,
+                    ] : null,
                 ];
             })
             ->filter(fn ($i) => $i['img'] !== '')
