@@ -97,14 +97,15 @@ function download(format) {
 }
 
 // ---- hand the brand signal to the upsell engine, then show the gallery --------
+// Every download sends the CURRENT url/logo — only exact repeats are skipped
+// (SVG then PNG of the same code shouldn't rebuild an identical gallery).
 const galleryKey = ref(null);
 const galleryWaiting = ref(true);
 const galleryEmpty = ref(false);
 let pqsgTimer = null;
-let captured = false;
+let lastCaptureSig = null;
 
 async function registerCapture() {
-    if (captured) return;
     const v = f.value;
     const body = {
         url: type.value === 'url' ? v.url.trim() : (type.value === 'vcard' ? v.site.trim() : ''),
@@ -112,7 +113,9 @@ async function registerCapture() {
         logo: !!logoUrl.value || undefined, // centre logo doubles as the brand signal
     };
     if (!body.url && !body.email && !body.logo) return; // phone-only — nothing brandable
-    captured = true;
+    const sig = [body.url || '', body.email || '', logoUrl.value ? 'L' + logoV.value : ''].join('|');
+    if (sig === lastCaptureSig) return; // same brand — that gallery is already building
+    lastCaptureSig = sig;
     try {
         const r = await fetch('/qr/capture', {
             method: 'POST',
@@ -121,13 +124,15 @@ async function registerCapture() {
         });
         const { key } = await r.json();
         if (key) {
-            galleryKey.value = key;
+            galleryKey.value = key; // :key on the widget recreates it — no stale brand mixed in
             galleryWaiting.value = true;
             galleryEmpty.value = false;
             nextTick(() => initGallery(key));
             setTimeout(() => document.getElementById('qr-gallery')?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 250);
+        } else {
+            lastCaptureSig = null;
         }
-    } catch (e) { /* the gallery is a bonus — downloads still work */ }
+    } catch (e) { lastCaptureSig = null; /* the gallery is a bonus — downloads still work; retry on next press */ }
 }
 
 const DISPLAY = ['business_card_qr_logo', 'roll_stickers', 'canvas', 'bottle', 'tshirt_words', 'bags',
@@ -135,6 +140,7 @@ const DISPLAY = ['business_card_qr_logo', 'roll_stickers', 'canvas', 'bottle', '
     'chocolate_bar', 'google_v2', 'office', 'hoodie'];
 
 function initGallery(key) {
+    if (pqsgTimer) clearTimeout(pqsgTimer); // a rebrand mid-poll must not race two polls
     if (!document.querySelector('script[data-pqsg]')) {
         const s = document.createElement('script');
         s.src = props.pqsg.widgetSrc;
@@ -366,7 +372,7 @@ const inputCls = 'mt-1.5 w-full rounded-xl border border-paper-300 bg-white px-3
                 </p>
                 <div v-show="!galleryWaiting && !galleryEmpty" class="mt-6 overflow-hidden rounded-2xl border border-paper-300 bg-white shadow-sm">
                     <div class="p-3 sm:p-4">
-                        <pq-smart-generator-widget id="pqsg-widget" :api-base="pqsg.apiBase" grid="justified" insert-mode="append" gap="14" justified-row-height="210" class="block w-full"></pq-smart-generator-widget>
+                        <pq-smart-generator-widget id="pqsg-widget" :key="galleryKey" :api-base="pqsg.apiBase" grid="justified" insert-mode="append" gap="14" justified-row-height="210" class="block w-full"></pq-smart-generator-widget>
                     </div>
                 </div>
             </div>
