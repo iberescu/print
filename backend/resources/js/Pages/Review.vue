@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted, onBeforeUnmount } from 'vue';
 import { Head, Link, router } from '@inertiajs/vue3';
 import StoreLayout from '../Layouts/StoreLayout.vue';
 import { money } from '../lib/format';
@@ -9,6 +9,7 @@ const props = defineProps({
     product: { type: Object, required: true },
     category: { type: Object, default: () => ({}) },
     preview: { type: String, default: null },
+    canvas: { type: Object, default: () => ({}) },   // surface spec for the procedural 3D
     mode: { type: String, default: 'design' },
     design: { type: Object, default: () => ({}) },
     quote: { type: Object, default: () => ({}) },
@@ -16,6 +17,32 @@ const props = defineProps({
 
 const approved = ref(false);
 const busy = ref(false);
+
+// ---- 3D preview (Babylon, lazy-loaded) — flat print only: the design is
+// textured onto a slab in the product's exact die shape, or a waving cloth for
+// banners. Complex products (mugs/apparel/totes) get null from detectKind and
+// keep the flat image — no toggle, no 3D. ------------------------------------
+const has3d = ref(false);          // this product supports a procedural 3D view
+const view3d = ref(true);          // toggle: 3D | Flat
+const ready3d = ref(false);        // scene built
+const canvas3d = ref(null);
+let scene3d = null;
+
+onMounted(async () => {
+    if (!props.preview || !canvas3d.value) return;
+    try {
+        const { mountPreview3D, detectKind } = await import('../lib/preview3d');
+        const kind = detectKind(props.product, props.category);
+        if (!kind) return;             // complex product — flat image only
+        has3d.value = true;
+        scene3d = await mountPreview3D(canvas3d.value, { kind, spec: props.canvas || {}, texture: props.preview });
+        ready3d.value = true;
+    } catch (e) {
+        has3d.value = false;
+        view3d.value = false;
+    }
+});
+onBeforeUnmount(() => { scene3d?.dispose(); scene3d = null; });
 
 const backHref = computed(() => {
     const p = new URLSearchParams();
@@ -58,12 +85,23 @@ function addToCart() {
             <p class="mt-2 text-ink/60">Double-check the following details before you continue.</p>
 
             <div class="mt-8 grid gap-8 lg:grid-cols-[1fr_360px]">
-                <!-- preview -->
+                <!-- preview: procedural 3D for flat print (toggle), flat image otherwise -->
                 <div class="overflow-hidden rounded-2xl border border-paper-300 bg-paper-200 p-4 shadow-sm">
-                    <p class="mb-3 text-xs font-semibold uppercase tracking-widest text-ink/45">Your design</p>
-                    <div class="grid place-items-center rounded-xl bg-white p-4 shadow-inner">
-                        <img v-if="preview" :src="preview" :alt="`${product.name} preview`" class="max-h-[420px] w-auto max-w-full rounded-md ring-1 ring-paper-300" />
-                        <p v-else class="py-16 text-ink/40">No preview available.</p>
+                    <div class="mb-3 flex items-center justify-between gap-3">
+                        <p class="text-xs font-semibold uppercase tracking-widest text-ink/45">Your design</p>
+                        <div v-if="has3d" class="flex rounded-full border border-paper-300 bg-white p-0.5 text-xs font-semibold">
+                            <button type="button" class="rounded-full px-3 py-1 transition" :class="view3d ? 'bg-brand-600 text-white' : 'text-ink/55 hover:text-ink'" @click="view3d = true">3D</button>
+                            <button type="button" class="rounded-full px-3 py-1 transition" :class="!view3d ? 'bg-brand-600 text-white' : 'text-ink/55 hover:text-ink'" @click="view3d = false">Flat</button>
+                        </div>
+                    </div>
+                    <div class="relative grid place-items-center rounded-xl bg-white p-4 shadow-inner">
+                        <canvas v-show="has3d && view3d && ready3d" ref="canvas3d" class="h-[420px] w-full touch-none rounded-md outline-none" aria-label="3D preview — drag to rotate"></canvas>
+                        <div v-if="has3d && view3d && !ready3d" class="absolute inset-0 grid place-items-center">
+                            <div class="h-8 w-8 animate-spin rounded-full border-2 border-brand-600 border-t-transparent"></div>
+                        </div>
+                        <img v-show="!has3d || !view3d || !ready3d" v-if="preview" :src="preview" :alt="`${product.name} preview`" class="max-h-[420px] w-auto max-w-full rounded-md ring-1 ring-paper-300" :class="has3d && view3d && !ready3d ? 'opacity-30' : ''" />
+                        <p v-if="!preview" class="py-16 text-ink/40">No preview available.</p>
+                        <p v-if="has3d && view3d && ready3d" class="pointer-events-none absolute bottom-2 right-4 text-[11px] font-medium text-ink/35">drag to rotate · scroll to zoom</p>
                     </div>
                 </div>
 

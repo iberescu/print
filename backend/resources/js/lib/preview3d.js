@@ -1,35 +1,44 @@
 // 3D product preview for the Review step (Babylon.js).
 //
-// The fabric-canvas export (the review preview image) becomes a texture on a
-// 3D model of the product. Flat products get their geometry GENERATED from the
-// surface spec — trim ratio, die-cut outline (holes included: door hangers),
-// thickness — so every die shape previews without hand-built models. A few
-// product families get bespoke procedural builders (cloth that waves for
-// banners, a mug, a tote, a tee). No downloaded assets: every mesh is built
-// in code (no CC0 mug/shirt models exist on the usual open libraries anyway).
+// PROCEDURAL ONLY — every mesh is generated in code from the product's surface
+// spec, no downloaded/authored assets. Flat print (cards, flyers, postcards,
+// door hangers, labels, stickers, posters) becomes a thin slab in its exact die
+// shape (holes included: the door-hanger hook); banners/tablecloths become a
+// gently waving cloth. Complex 3D products (mugs, apparel, totes) do NOT get a
+// 3D preview — they fall back to the flat design image (detectKind returns null
+// for them), because a convincing mug/shirt needs a real modelled/licensed
+// asset and low-poly stand-ins read as cheap.
 //
 //   const preview = await mountPreview3D(canvasEl, { kind, spec, texture });
 //   preview.dispose();
 //
-// kind: 'slab' | 'cloth' | 'mug' | 'tote' | 'shirt'  (detectKind helps)
-// spec:  the PrintSpec canvas payload — { trimW, trimH, cut, ... } (slab/cloth)
+// kind: 'slab' | 'cloth'   (detectKind → one of these, or null = no 3D)
+// spec:  the PrintSpec canvas payload — { trimW, trimH, cut, ... }
 // texture: URL or data-URL of the design preview (same-origin / data)
 
 import {
     ArcRotateCamera, Color3, Color4, DirectionalLight, Engine, HemisphericLight,
-    Mesh, MeshBuilder, Scene, SceneLoader, ShadowGenerator, StandardMaterial, Texture,
+    MeshBuilder, Scene, SceneLoader, ShadowGenerator, StandardMaterial, Texture,
     TransformNode, Vector3, VertexBuffer,
 } from '@babylonjs/core';
-import '@babylonjs/loaders/glTF';
+import '@babylonjs/core/Loading/Plugins/babylonFileLoader'; // registers the native .babylon loader
 import earcut from 'earcut';
 
-/** Pick a model family from the product; 'slab' covers every flat print. */
+/**
+ * Which preview fits this product:
+ *  - 'mug' / 'shirt': a real .babylon model (see MODELS) textured with the design
+ *  - 'cloth': procedural waving banner/tablecloth from the surface spec
+ *  - 'slab': procedural flat print in its exact die shape (the default)
+ *  - null: complex product with no model yet (tote/hat/…) → flat image only
+ */
 export function detectKind(product = {}, category = {}) {
     const n = `${product.slug || ''} ${product.name || ''}`.toLowerCase();
-    if (/\bmug|cup\b/.test(n)) return 'mug';
-    if (/tote|canvas-bag|shopping bag/.test(n)) return 'tote';
-    if (/t-?shirt|hoodie|sweatshirt|polo/.test(n)) return 'shirt';
-    if (/banner|tablecloth|backdrop|table runner/.test(n) && !/frame/.test(n)) return 'cloth';
+    if (/\bmug|cup\b|becher|tasse/.test(n)) return 'mug';
+    if (/t-?shirt|hoodie|sweatshirt|polo|jersey/.test(n)) return 'shirt';
+    if (/tote|\bbag\b|beutel|hat|cap|beanie|pillow|apron|bottle|umbrella|drinkware/.test(n)) {
+        return null; // complex product, no model yet — flat image only
+    }
+    if (/banner|tablecloth|backdrop|table runner|flag/.test(n) && !/frame|stand|pole/.test(n)) return 'cloth';
     return 'slab';
 }
 
@@ -287,169 +296,63 @@ function cloth(scene, spec, tex) {
     return [mesh];
 }
 
-/** Mug: ceramic cylinder + handle, the design wrapped around the side. */
-function mug(scene, spec, tex) {
-    const root = new TransformNode('mug', scene);
-    const body = MeshBuilder.CreateCylinder('mug-body', { height: 0.85, diameter: 0.8, tessellation: 64 }, scene);
-    body.material = bodyMaterial(scene, '#fbfaf7');
-    body.parent = root;
-
-    // print band: a slightly wider open cylinder carrying the design
-    const band = MeshBuilder.CreateCylinder('mug-band', { height: 0.58, diameter: 0.808, tessellation: 64, cap: Mesh.NO_CAP }, scene);
-    const bandMat = designMaterial(scene, tex);
-    bandMat.backFaceCulling = true;
-    if (tex) {
-        tex.wrapU = Texture.CLAMP_ADDRESSMODE;
-        // wrap the design around the front of the mug; cylinder UVs run the
-        // other way, so mirror U to keep the design readable
-        tex.uScale = -1.6;
-        tex.uOffset = 1.3;
-    }
-    band.material = bandMat;
-    band.parent = root;
-
-    // vertical loop beside the body, swung toward the camera so it reads
-    const handlePivot = new TransformNode('mug-handle-pivot', scene);
-    handlePivot.parent = root;
-    handlePivot.rotation.y = 0.9;
-    const handle = MeshBuilder.CreateTorus('mug-handle', { diameter: 0.42, thickness: 0.08, tessellation: 40 }, scene);
-    handle.rotation.x = Math.PI / 2;
-    handle.position.x = 0.44;
-    handle.material = bodyMaterial(scene, '#fbfaf7');
-    handle.parent = handlePivot;
-
-    const inside = MeshBuilder.CreateCylinder('mug-inside', { height: 0.02, diameter: 0.72, tessellation: 64 }, scene);
-    inside.position.y = 0.42;
-    inside.material = bodyMaterial(scene, '#e8e4da');
-    inside.parent = root;
-
-    root.position.y = -0.06;
-    return [body, band, handle];
-}
-
-/** Tote bag: canvas slab + two handles, the design printed on the front face. */
-function tote(scene, spec, tex) {
-    const root = new TransformNode('tote', scene);
-    const w = 0.85;
-    const h = 0.8;
-    const d = 0.09;
-    const r = 4; // soft body corners, in the 0–100 path space
-
-    // built flat in XZ like the slab, then the whole group stands up
-    const rect = samplePath(`M ${r} 0 L ${100 - r} 0 A ${r} ${r} 0 0 1 100 ${r} L 100 100 L 0 100 L 0 ${r} A ${r} ${r} 0 0 1 ${r} 0 Z`)[0];
-    const toXZ = (p) => new Vector3((p.x / 100 - 0.5) * w, 0, (0.5 - p.y / 100) * h);
-    const outline = rect.map(toXZ);
-
-    const body = MeshBuilder.ExtrudePolygon('tote-body', { shape: outline, depth: d }, scene, earcut);
-    body.material = bodyMaterial(scene, '#efe9db'); // natural canvas
-    body.position.y = d;
-    body.parent = root;
-
-    const face = MeshBuilder.CreatePolygon('tote-face', { shape: outline }, scene, earcut);
-    remapTopUVs(face, w, h);
-    face.material = designMaterial(scene, tex);
-    face.position.y = d + 0.0015;
-    face.parent = root;
-
-    for (const s of [-1, 1]) {
-        const handle = MeshBuilder.CreateTorus(`tote-handle${s}`, { diameter: 0.4, thickness: 0.035, tessellation: 48 }, scene);
-        // flat in group space (XZ) like everything else — vertical once the group stands
-        handle.position.set(s * 0.19, d / 2, h / 2 - 0.02);
-        handle.material = bodyMaterial(scene, '#dfd7c4');
-        handle.parent = root;
-    }
-
-    root.rotation.x = -Math.PI / 2 + 0.06;
-    root.position.y = h / 2 - 0.42;
-    return root.getChildMeshes();
-}
-
-/** Tee/hoodie/polo: extruded shirt silhouette, the design printed on the chest. */
-function shirt(scene, spec, tex) {
-    const root = new TransformNode('shirt', scene);
-    // t-shirt outline in the same 0–100 (y down) space the die cuts use
-    const outlinePath = 'M 30 6 L 41 2 Q 50 9 59 2 L 70 6 L 92 18 L 84 36 L 72 30 L 72 88 L 28 88 L 28 30 L 16 36 L 8 18 Z';
-    const rings = samplePath(outlinePath);
-    const toXZ = (p) => new Vector3((p.x / 100 - 0.5) * 0.98, 0, (0.5 - p.y / 100) * 0.98);
-    const outline = rings[0].map(toXZ);
-
-    const body = MeshBuilder.ExtrudePolygon('shirt-body', { shape: outline, depth: 0.05 }, scene, earcut);
-    body.material = bodyMaterial(scene, '#eef0f2');
-    body.position.y = 0.05;
-    body.parent = root;
-
-    // chest print — same flat-polygon technique as the slab face, so the UV
-    // mapping and orientation are identical (no decal guesswork)
-    const pw = 0.4;
-    const ph = Math.min(0.42, pw * ((Number(spec.trimH) || 1) / (Number(spec.trimW) || 1)));
-    const printShape = [
-        new Vector3(-pw / 2, 0, -ph / 2), new Vector3(pw / 2, 0, -ph / 2),
-        new Vector3(pw / 2, 0, ph / 2), new Vector3(-pw / 2, 0, ph / 2),
-    ];
-    const print = MeshBuilder.CreatePolygon('shirt-print', { shape: printShape }, scene, earcut);
-    remapTopUVs(print, pw, ph);
-    print.material = designMaterial(scene, tex);
-    print.position.set(0, 0.052, 0.1); // chest height in the flat layout
-    print.parent = root;
-
-    root.rotation.x = -Math.PI / 2 + 0.08;
-    root.position.y = 0.98 / 2 - 0.46;
-    return [body, print];
-}
-
 /**
- * Blender-authored model (backend/scripts/blender/gen_models.py → public/models).
- * Convention: the mesh named "Print" carries clean 0–1 UVs and receives the
- * design texture; every other mesh keeps its albedo, re-lit with our Standard
- * pipeline (the glb's PBR would render black without an environment map).
+ * Real 3D product models (createx-editor .babylon, hosted at /models/createx).
+ * `print` = mesh name(s) that carry the printable UV area — the design texture
+ * lands there; every other mesh keeps a neutral body colour. `bodyHex` maps a
+ * body mesh name to its colour (unlisted body meshes get the default).
  */
-/** Screen-facing yaw per asset (models are authored with front = Blender +Y,
- *  which the glTF→Babylon chain lands 90° left of the camera). */
-const MODEL_YAW = { 'mug.glb': 0, 'tshirt.glb': 0, 'tote.glb': 0 };
+const MODELS = {
+    mug:   { file: 'mug.babylon',    print: ['texture'], yaw: 0, bodyHex: { color: '#f6f5f2', white: '#f6f5f2' } },
+    shirt: { file: 'tshirt.babylon', print: ['polySurface26'], yaw: Math.PI / 2, bodyHex: { 'low:Group1': '#eef0f2' } },
+};
 
-async function loadModel(scene, file, tex) {
-    const res = await SceneLoader.ImportMeshAsync('', '/models/', file, scene);
-    // spin via a wrapper pivot — the loader's __root__ carries the RH→LH
-    // conversion transform and must stay untouched
-    const root = res.meshes.find((m) => m.name === '__root__') || res.meshes[0];
-    const pivot = new TransformNode(`pivot-${file}`, scene);
-    root.parent = pivot;
-    pivot.rotation.y = MODEL_YAW[file] ?? 0;
+async function loadModel(scene, tex, cfg) {
+    const res = await SceneLoader.ImportMeshAsync('', '/models/createx/', cfg.file, scene);
     const meshes = res.meshes.filter((m) => (m.getTotalVertices?.() || 0) > 0);
+    const print = new Set(cfg.print);
     for (const m of meshes) {
-        if (/print/i.test(m.name) || /print/i.test(m.material?.name || '')) {
+        if (print.has(m.name)) {
             const mat = designMaterial(scene, tex);
-            mat.backFaceCulling = false; // print patches are open surfaces
+            mat.backFaceCulling = false; // print shells are single-sided in the source
+            // createx print meshes carry UVs in u[0,1] v[1,2] (V offset by +1) —
+            // WRAP addressing folds v:1→2 back onto the design's 0→1
+            if (tex) { tex.wrapU = Texture.WRAP_ADDRESSMODE; tex.wrapV = Texture.WRAP_ADDRESSMODE; }
             m.material = mat;
         } else {
-            const albedo = m.material?.albedoColor;
-            const mat = new StandardMaterial(`${m.name}-std`, scene);
-            mat.diffuseColor = albedo ? new Color3(albedo.r, albedo.g, albedo.b) : new Color3(0.92, 0.92, 0.92);
+            const mat = new StandardMaterial(`${m.name}-body`, scene);
+            mat.diffuseColor = Color3.FromHexString(cfg.bodyHex?.[m.name] || '#f0efec');
             mat.specularColor = new Color3(0.05, 0.05, 0.05);
-            // thin garment shells (the tee) have faces viewed from both sides —
-            // one-sided lighting renders random black facets
             mat.backFaceCulling = false;
             mat.twoSidedLighting = true;
             m.material = mat;
         }
-        m.receiveShadows = false;
     }
+
+    // createx models are authored at ~100-unit scale — normalize the whole set
+    // to ~1 unit tall, centered on the origin, so the shared camera framing (and
+    // the ground/shadows) work identically to the procedural builders.
+    const roots = meshes.filter((m) => !m.parent);
+    const pivot = new TransformNode('createx-root', scene);
+    roots.forEach((m) => { if (m !== pivot) m.parent = pivot; });
+    pivot.rotation.y = cfg.yaw || 0; // turn the model's print face toward the camera
+    pivot.computeWorldMatrix(true);
+    meshes.forEach((m) => m.computeWorldMatrix(true));
+    const ext = scene.getWorldExtends((m) => meshes.includes(m));
+    const size = ext.max.subtract(ext.min);
+    const maxDim = Math.max(size.x, size.y, size.z) || 1;
+    const s = 1.0 / maxDim;
+    pivot.scaling.setAll(s);
+    const center = ext.min.add(size.scale(0.5));
+    pivot.position = center.scale(-s);
+    pivot.computeWorldMatrix(true);
+
     return meshes;
 }
-
-/** Prefer the Blender asset; fall back to the procedural builder if it fails. */
-const glb = (file, fallback) => async (scene, spec, tex) => {
-    try {
-        return await loadModel(scene, file, tex);
-    } catch (e) {
-        return fallback(scene, spec, tex);
-    }
-};
 
 const BUILDERS = {
     slab,
     cloth,
-    mug: glb('mug.glb', mug),
-    tote: glb('tote.glb', tote),
-    shirt: glb('tshirt.glb', shirt),
+    mug: (scene, spec, tex) => loadModel(scene, tex, MODELS.mug),
+    shirt: (scene, spec, tex) => loadModel(scene, tex, MODELS.shirt),
 };
