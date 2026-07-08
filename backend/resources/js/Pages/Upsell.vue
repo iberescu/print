@@ -55,6 +55,15 @@ const title = computed(() => ({
     ads: 'Runmyprint × Layout.ai',
 }[props.step] ?? 'Recommended for you'));
 
+// fun step names for the progress line — nicer than "Step 2 of 4"
+const stepName = computed(() => ({
+    finalize: 'The finishing touch',
+    related: 'An impressive accessories selection',
+    pqsg: "Your logo's world tour",
+    ads: 'The ad studio',
+    brand: 'Your brand on more good stuff',
+}[props.step] ?? 'A little something extra'));
+
 // ---- pqSmartGenerator gallery steps ----------------------------------------
 // Two steps share the engine capture (registered back at Review) and both
 // render NATIVELY from our feed proxy (/pqsg/feed?set=…): 'pqsg' shows the
@@ -140,7 +149,10 @@ function next() {
     <StoreLayout>
         <div class="mx-auto max-w-6xl px-4 py-8 sm:px-6 sm:py-10">
             <!-- progress -->
-            <p class="text-sm font-medium text-ink/55">Step {{ stepIndex }} of {{ stepCount }} · before checkout</p>
+            <p class="text-sm font-medium text-ink/70">
+                <span class="font-semibold text-brand-700">{{ stepName }}</span>
+                <span class="text-ink/45"> · {{ stepIndex }} of {{ stepCount }} · before checkout</span>
+            </p>
             <div class="mt-2 flex gap-1.5">
                 <div v-for="i in stepCount" :key="i" class="h-1.5 flex-1 rounded-full transition-colors" :class="i <= stepIndex ? 'bg-brand-600' : 'bg-paper-300'"></div>
             </div>
