@@ -61,6 +61,13 @@ class SendPqsgCapture
             'pipeline_poster_4x5'               => ['generate' => false],
             'pipeline_flyer_mockup'             => ['generate' => false],
         ];
+        // pipeline_facebook_ad has preview:false (direct template images, no SVG
+        // mockup) — the widget's "linked/forced products only" mode hides it
+        // unless the CAPTURE forces display (engine-team guidance, 2026-07-08;
+        // the widget-side display-products attribute alone isn't enough)
+        $payload['displayProducts'] = ['pipeline_facebook_ad' => true];
+        // thin brand signals produced German ad copy — pin the template language
+        $payload['template_language'] = 'en';
 
         // at least one content source is required by their API
         if (! array_intersect_key($payload, array_flip(['logo_url', 'pdf_url', 'website', 'image_url']))) {
