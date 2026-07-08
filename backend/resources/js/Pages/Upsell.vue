@@ -108,9 +108,9 @@ function initMerchFeed() {
             if (!pqsgItems.value.length) pqsgEmpty.value = true;
             return;
         }
-        // poll hard until the first mockups land (the shopper is staring at a
-        // spinner), then relax — the server cache is 2 s so this stays cheap
-        pqsgTimer = setTimeout(poll, pqsgItems.value.length ? 2500 : 1100);
+        // 1s flat — the shopper should see every mockup the moment it exists
+        // (the 1s server cache keeps the engine traffic bounded)
+        pqsgTimer = setTimeout(poll, 1000);
     };
     poll();
 }

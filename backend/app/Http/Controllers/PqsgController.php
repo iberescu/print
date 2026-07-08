@@ -114,9 +114,9 @@ class PqsgController extends Controller
         }
 
         // proxy the engine's widget feed. The cache only smooths poll bursts —
-        // keep it SHORT (2 s) so fresh mockups reach the shopper almost live
-        // (a capture is per-shopper, unlike the many-visitor affiliate feed).
-        $state = Cache::remember("pqsg:engine:{$uuid}", 2, function () use ($uuid) {
+        // keep it SHORT (1 s, matching the page's poll cadence) so fresh
+        // mockups reach the shopper the second they exist.
+        $state = Cache::remember("pqsg:engine:{$uuid}", 1, function () use ($uuid) {
             try {
                 return Http::timeout(8)->acceptJson()
                     ->get(config('shop.pqsg.api_base')."/capture/{$uuid}/widget")->json() ?? [];
