@@ -188,15 +188,13 @@ class DesignController extends Controller
             return redirect()->route('design.start', $product);
         }
 
-        $product->load(['category', 'surface', 'options.values.surface']);
+        $product->load('category');
         $quote = $pricing->quote($product, $d['quantityId'] ?? null, $d['optionValueIds'] ?? []);
 
         return Inertia::render('Review', [
-            'product'  => $product->only('id', 'name', 'slug', 'decoration'),
+            'product'  => $product->only('id', 'name', 'slug'),
             'category' => ['name' => $product->category->name, 'slug' => $product->category->slug],
             'preview'  => $d['preview'] ?? null,
-            // surface geometry for the 3D preview (dims ratio + die-cut outline)
-            'canvas'   => \App\Support\SurfaceResolver::resolve($product, $d['optionValueIds'] ?? []),
             'mode'     => $d['mode'] ?? 'design',
             'design'   => [
                 'brand'          => $d['brand'] ?? null,

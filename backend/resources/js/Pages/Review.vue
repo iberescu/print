@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, onMounted, onBeforeUnmount } from 'vue';
+import { ref, computed } from 'vue';
 import { Head, Link, router } from '@inertiajs/vue3';
 import StoreLayout from '../Layouts/StoreLayout.vue';
 import { money } from '../lib/format';
@@ -9,7 +9,6 @@ const props = defineProps({
     product: { type: Object, required: true },
     category: { type: Object, default: () => ({}) },
     preview: { type: String, default: null },
-    canvas: { type: Object, default: () => ({}) },   // surface spec for the 3D model
     mode: { type: String, default: 'design' },
     design: { type: Object, default: () => ({}) },
     quote: { type: Object, default: () => ({}) },
@@ -17,34 +16,6 @@ const props = defineProps({
 
 const approved = ref(false);
 const busy = ref(false);
-
-// ---- 3D preview (Babylon, lazy-loaded — the design becomes a texture on a
-// model generated from the product's surface: exact die shape for flat print,
-// cloth/mug/tote/tee builders for those families) -----------------------------
-const view3d = ref(true);          // toggle: 3D | Flat
-const ready3d = ref(false);        // scene built
-const failed3d = ref(false);       // WebGL/asset failure → flat image only
-const kind3d = ref('slab');        // which model family rendered (drives the CC-BY note)
-const canvas3d = ref(null);
-let scene3d = null;
-
-onMounted(async () => {
-    if (!props.preview || !canvas3d.value) { failed3d.value = true; view3d.value = false; return; }
-    try {
-        const { mountPreview3D, detectKind } = await import('../lib/preview3d');
-        kind3d.value = detectKind(props.product, props.category);
-        scene3d = await mountPreview3D(canvas3d.value, {
-            kind: kind3d.value,
-            spec: props.canvas || {},
-            texture: props.preview,
-        });
-        ready3d.value = true;
-    } catch (e) {
-        failed3d.value = true;
-        view3d.value = false;
-    }
-});
-onBeforeUnmount(() => { scene3d?.dispose(); scene3d = null; });
 
 const backHref = computed(() => {
     const p = new URLSearchParams();
@@ -87,28 +58,13 @@ function addToCart() {
             <p class="mt-2 text-ink/60">Double-check the following details before you continue.</p>
 
             <div class="mt-8 grid gap-8 lg:grid-cols-[1fr_360px]">
-                <!-- preview: interactive 3D (design textured onto the product) with a flat fallback -->
+                <!-- preview -->
                 <div class="overflow-hidden rounded-2xl border border-paper-300 bg-paper-200 p-4 shadow-sm">
-                    <div class="mb-3 flex items-center justify-between gap-3">
-                        <p class="text-xs font-semibold uppercase tracking-widest text-ink/45">Your design</p>
-                        <div v-if="!failed3d" class="flex rounded-full border border-paper-300 bg-white p-0.5 text-xs font-semibold">
-                            <button type="button" class="rounded-full px-3 py-1 transition" :class="view3d ? 'bg-brand-600 text-white' : 'text-ink/55 hover:text-ink'" @click="view3d = true">3D</button>
-                            <button type="button" class="rounded-full px-3 py-1 transition" :class="!view3d ? 'bg-brand-600 text-white' : 'text-ink/55 hover:text-ink'" @click="view3d = false">Flat</button>
-                        </div>
+                    <p class="mb-3 text-xs font-semibold uppercase tracking-widest text-ink/45">Your design</p>
+                    <div class="grid place-items-center rounded-xl bg-white p-4 shadow-inner">
+                        <img v-if="preview" :src="preview" :alt="`${product.name} preview`" class="max-h-[420px] w-auto max-w-full rounded-md ring-1 ring-paper-300" />
+                        <p v-else class="py-16 text-ink/40">No preview available.</p>
                     </div>
-                    <div class="relative grid place-items-center rounded-xl bg-white p-4 shadow-inner">
-                        <canvas v-show="view3d && ready3d" ref="canvas3d" class="h-[420px] w-full touch-none rounded-md outline-none" aria-label="3D preview — drag to rotate"></canvas>
-                        <div v-if="view3d && !ready3d && !failed3d" class="absolute inset-0 grid place-items-center">
-                            <div class="h-8 w-8 animate-spin rounded-full border-2 border-brand-600 border-t-transparent"></div>
-                        </div>
-                        <img v-show="!view3d || !ready3d" v-if="preview" :src="preview" :alt="`${product.name} preview`" class="max-h-[420px] w-auto max-w-full rounded-md ring-1 ring-paper-300" :class="view3d && !ready3d ? 'opacity-30' : ''" />
-                        <p v-if="!preview" class="py-16 text-ink/40">No preview available.</p>
-                        <p v-if="view3d && ready3d" class="pointer-events-none absolute bottom-2 right-4 text-[11px] font-medium text-ink/35">drag to rotate · scroll to zoom</p>
-                    </div>
-                    <!-- CC-BY attribution for the mug/tee base meshes (scripts/blender/CREDITS.md) -->
-                    <p v-if="view3d && ready3d && ['mug', 'shirt'].includes(kind3d)" class="mt-2 text-right text-[10px] text-ink/30">
-                        base model by Poly by Google (<a href="https://creativecommons.org/licenses/by/3.0/" target="_blank" rel="noopener" class="underline">CC-BY</a>)
-                    </p>
                 </div>
 
                 <!-- details + approve -->
