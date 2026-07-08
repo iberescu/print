@@ -33,8 +33,42 @@ const guidePath = `M0 0H${W}V${H}H0Z M${bleed} ${bleed}h${trimW}v${trimH}h${-tri
 const noPrint = props.canvas?.noPrint || []; // [{x,y,w,h,label}] (canvas px)
 const fold = props.canvas?.fold || [];       // [{orientation,pos,label}] (canvas px)
 // Die-cut / sewn edge: SVG path in normalized 0–100 coords relative to the trim box.
-// Rendered via a nested <svg viewBox="0 0 100 100"> so no path math is needed.
 const cutPath = props.canvas?.cut || null;
+
+// Scale the normalized cut path into canvas px so guide strokes are uniform (a
+// stretched nested-svg distorts them — on a tall door hanger the old 90%-scaled
+// "safety" clone sat ~4× too deep top/bottom and drifted off the hanger hole).
+// Handles the absolute commands our surfaces use; null → legacy stretched render.
+function cutPathToPx(d, sx, sy, dx, dy) {
+    if (/[a-z]/.test(d)) return null; // relative commands — not produced by our data
+    const XY = { M: 2, L: 2, T: 2, C: 6, S: 4, Q: 4 };
+    const r2 = (n) => Math.round(n * 100) / 100;
+    let out = '';
+    for (const [, cmd, rest] of d.matchAll(/([MLHVCSQTAZ])([^MLHVCSQTAZ]*)/g)) {
+        const nums = (rest.match(/-?\d*\.?\d+/g) || []).map(Number);
+        let mapped;
+        if (cmd === 'Z') mapped = [];
+        else if (cmd === 'H') mapped = nums.map((x) => r2(x * sx + dx));
+        else if (cmd === 'V') mapped = nums.map((y) => r2(y * sy + dy));
+        else if (cmd === 'A') {
+            if (nums.length % 7) return null;
+            mapped = [];
+            for (let i = 0; i < nums.length; i += 7) {
+                const [rx, ry, rot, laf, sf, x, y] = nums.slice(i, i + 7);
+                if (rot) return null; // rotated arcs don't scale anisotropically
+                mapped.push(r2(rx * sx), r2(ry * sy), rot, laf, sf, r2(x * sx + dx), r2(y * sy + dy));
+            }
+        } else if (XY[cmd] && nums.length % XY[cmd] === 0) {
+            mapped = nums.map((n, i) => (i % 2 === 0 ? r2(n * sx + dx) : r2(n * sy + dy)));
+        } else return null;
+        out += cmd + (mapped.length ? ' ' + mapped.join(' ') : '') + ' ';
+    }
+    return out.trim() || null;
+}
+const cutPx = cutPath ? cutPathToPx(cutPath, trimW / 100, trimH / 100, bleed, bleed) : null;
+// Everything outside the die gets trimmed off — tint the lot (the bleed ring AND
+// any hole/notch the die punches, e.g. the door-hanger hook) via evenodd.
+const cutBandPath = cutPx ? `M0 0H${W}V${H}H0Z ${cutPx}` : null;
 const isEmbroidery = props.product?.decoration === 'embroidery';
 const isBusinessCard = props.category?.slug === 'business-cards';
 
@@ -862,7 +896,7 @@ function goToReview() {
                     <span v-if="cutPath" class="flex items-center gap-1.5"><span class="inline-block h-0 w-5 border-t-2 border-rose-500"></span>Die-cut<span class="hidden sm:inline"> / sewn edge — finished shape</span></span>
                     <span v-else-if="isEmbroidery" class="flex items-center gap-1.5"><span class="inline-block h-0 w-5 border-t-2 border-rose-500"></span>Embroidery area<span class="hidden sm:inline"> — max stitch zone</span></span>
                     <span v-else class="flex items-center gap-1.5"><span class="inline-block h-0 w-5 border-t-2 border-rose-500"></span>Trim<span class="hidden sm:inline"> / cut line</span></span>
-                    <span class="flex items-center gap-1.5"><span class="inline-block h-0 w-5 border-t-2 border-dashed border-sky-500"></span>Safe<span class="hidden sm:inline"> area — keep text &amp; logos inside</span></span>
+                    <span class="flex items-center gap-1.5"><span v-if="cutPx" class="inline-block h-3 w-4 bg-sky-500/25 ring-1 ring-sky-500/60"></span><span v-else class="inline-block h-0 w-5 border-t-2 border-dashed border-sky-500"></span>Safe<span class="hidden sm:inline" v-if="cutPx"> margin — keep text &amp; logos out of the blue band</span><span class="hidden sm:inline" v-else> area — keep text &amp; logos inside</span></span>
                     <span v-if="noPrint.length" class="flex items-center gap-1.5"><span class="inline-block h-3 w-4 bg-slate-800/40 ring-1 ring-slate-800"></span>No-print<span class="hidden sm:inline"> area</span></span>
                     <span v-if="fold.length" class="flex items-center gap-1.5"><span class="inline-block h-0 w-5 border-t-2 border-dashed border-purple-600"></span>Fold<span class="hidden sm:inline"> line</span></span>
                 </div>
@@ -873,13 +907,21 @@ function goToReview() {
                 </div>
                 <!-- print guides: bleed band (red tint) · trim/cut line (solid) · safe area (dashed) -->
                 <svg v-if="(bleed || safety || noPrint.length || fold.length || cutPath) && showGuides" class="pointer-events-none absolute inset-0 h-full w-full" :viewBox="`0 0 ${W} ${H}`" preserveAspectRatio="none">
-                    <path v-if="bleed" :d="guidePath" fill="rgba(225,29,72,0.12)" fill-rule="evenodd" />
-                    <template v-if="cutPath">
-                        <!-- die-cut / sewn edge (normalized 0–100 path scaled onto the trim box);
-                             inner scaled clone approximates the safe/stitch margin -->
+                    <path v-if="bleed && !cutPx" :d="guidePath" fill="rgba(225,29,72,0.12)" fill-rule="evenodd" />
+                    <template v-if="cutPx">
+                        <!-- die-cut / sewn edge in canvas px: tint everything the die trims off,
+                             then an EXACT safe margin — the die edge stroked 2×safety wide and
+                             clipped to the inside keeps a `safety`-deep band along every cut,
+                             door-hanger holes included -->
+                        <path :d="cutBandPath" fill="rgba(225,29,72,0.12)" fill-rule="evenodd" />
+                        <path :d="cutPx" fill="none" stroke="#e11d48" stroke-width="1.5" />
+                        <clipPath id="rmp-cut-inside"><path :d="cutPx" /></clipPath>
+                        <path v-if="safety" :d="cutPx" fill="none" stroke="rgba(14,165,233,0.25)" :stroke-width="2 * safety" clip-path="url(#rmp-cut-inside)" />
+                    </template>
+                    <template v-else-if="cutPath">
+                        <!-- fallback for an exotic path the px-scaler can't handle -->
                         <svg :x="bleed" :y="bleed" :width="trimW" :height="trimH" viewBox="0 0 100 100" preserveAspectRatio="none" class="overflow-visible">
                             <path :d="cutPath" fill="rgba(225,29,72,0.05)" stroke="#e11d48" stroke-width="1.5" vector-effect="non-scaling-stroke" />
-                            <path v-if="safety" :d="cutPath" fill="none" stroke="#0ea5e9" stroke-width="1.5" stroke-dasharray="4 3" vector-effect="non-scaling-stroke" transform="translate(50 50) scale(0.9) translate(-50 -50)" />
                         </svg>
                     </template>
                     <template v-else>

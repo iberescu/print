@@ -157,9 +157,11 @@ class ImportCatalog extends Command
                         'sort_order' => $oi,
                     ]);
                     $stats['options']++;
+                    $kept = 0;
                     foreach (array_values($opt['values']) as $vi => $val) {
                         $label = trim((string) ($val['label'] ?? ''));
-                        if ($label === '') {
+                        // crawl noise: section headers/disclaimers read as values
+                        if ($label === '' || preg_match('/not available|other selections|^see /i', $label)) {
                             continue;
                         }
                         $dims = $val['dimensions'] ?? null;
@@ -167,11 +169,12 @@ class ImportCatalog extends Command
                         $option->values()->create([
                             'label'       => $label,
                             'price_delta' => (float) ($val['priceDelta'] ?? 0),
-                            'is_default'  => $vi === 0,
+                            'is_default'  => $kept === 0, // first KEPT value
                             'attributes'  => $this->dimAttributes($dims),
                             'surface_id'  => $valSurface?->id,
                             'sort_order'  => $vi,
                         ]);
+                        $kept++;
                         $stats['values']++;
                     }
                 }
@@ -190,7 +193,8 @@ class ImportCatalog extends Command
 
         if (! $dry) {
             $this->markFeatured();
-            $this->refineShapedSurfaces();
+            $this->wireShapeSurfaces();
+            $this->refineShapedSurfaces();   // curated products win: clears value-level wiring
             $this->wireCornerSurfaces();
         }
 
@@ -255,9 +259,15 @@ class ImportCatalog extends Command
         $slug = 's-'.$tw.'x'.$th.$unit.($folded ? '-fold' : '')
             .($cut ? '-cut-'.Str::slug(Str::limit($context, 28, '')) : '');
 
-        // Prefer real geometry read from the spec template SVG; else print-standard / heuristic.
-        $bleed = is_numeric($s['bleed'] ?? null) && $s['bleed'] > 0 ? (float) $s['bleed'] : (self::BLEED[$unit] ?? 0);
-        $safety = is_numeric($s['safety'] ?? null) && $s['safety'] >= 0 ? (float) $s['safety'] : (self::SAFETY[$unit] ?? 0);
+        // Prefer real geometry read from the spec template SVG; else print-standard /
+        // heuristic. Crawled values are only trusted within sane print bounds — Gemini
+        // once returned a 1730mm bleed on a 54mm surface — and even the standard
+        // default is capped so tiny formats (0.5" labels) keep a usable canvas.
+        $maxMargin = 0.15 * min($w, $h);
+        $bleed = is_numeric($s['bleed'] ?? null) && $s['bleed'] > 0 && $s['bleed'] <= $maxMargin
+            ? (float) $s['bleed'] : min(self::BLEED[$unit] ?? 0, $maxMargin);
+        $safety = is_numeric($s['safety'] ?? null) && $s['safety'] >= 0 && $s['safety'] <= $maxMargin
+            ? (float) $s['safety'] : min(self::SAFETY[$unit] ?? 0, $maxMargin);
 
         $foldLines = [];
         if (! empty($s['fold']) && is_array($s['fold'])) {
@@ -297,8 +307,20 @@ class ImportCatalog extends Command
 
         $existing = Surface::where('slug', $slug)->first();
         if ($existing) {
+            $fix = [];
             if ($cut && ! $existing->cut_path) {
-                $existing->update(['cut_path' => $cut]);
+                $fix['cut_path'] = $cut;
+            }
+            // repair out-of-bounds margins from earlier imports (admin refinements
+            // within sane bounds are left alone)
+            if ((float) $existing->bleed > $maxMargin) {
+                $fix['bleed'] = $bleed;
+            }
+            if ((float) $existing->safety > $maxMargin) {
+                $fix['safety'] = $safety;
+            }
+            if ($fix) {
+                $existing->update($fix);
             }
 
             return $existing;
@@ -452,6 +474,225 @@ class ImportCatalog extends Command
         }
     }
 
+    /** mm per unit, for scaling curated geometry to a surface's unit. */
+    private const MM_PER_UNIT = ['mm' => 1.0, 'cm' => 10.0, 'in' => 25.4, 'ft' => 304.8];
+
+    /**
+     * Exact parametric die outlines (normalized 0–100 over the trim box; the box's
+     * aspect ratio shapes them — an ellipse on a non-square box IS the oval). These
+     * are geometric primitives, not copied product dies; Vistaprint's own template,
+     * when the crawler captured one, still wins at the product level.
+     */
+    private const SHAPE_PATHS = [
+        'ellipse'     => 'M 50 0 A 50 50 0 1 0 50 100 A 50 50 0 1 0 50 0 Z',
+        'leaf'        => 'M 0 45 Q 0 0 45 0 L 100 0 L 100 55 Q 100 100 55 100 L 0 100 Z',
+        'half-circle' => 'M 0 100 A 50 100 0 0 1 100 100 Z',
+        'hexagon'     => 'M 25 0 L 75 0 L 100 50 L 75 100 L 25 100 Z',
+        'star'        => 'M 50 0 L 61.8 38.1 L 100 38.1 L 69.1 61.8 L 80.9 100 L 50 76.4 L 19.1 100 L 30.9 61.8 L 0 38.1 L 38.2 38.1 Z',
+        'heart'       => 'M 50 100 C 24 80 0 58 0 30 C 0 12 14 0 29 0 C 38 0 46 5 50 13 C 54 5 62 0 71 0 C 86 0 100 12 100 30 C 100 58 76 80 50 100 Z',
+        'arrow'       => 'M 0 28 L 62 28 L 62 0 L 100 50 L 62 100 L 62 72 L 0 72 Z',
+        'shield'      => 'M 50 100 C 22 88 0 68 0 38 L 0 0 L 100 0 L 100 38 C 100 68 78 88 50 100 Z',
+    ];
+
+    /**
+     * A "Shape" option value changes the finished die — wire each recognizable value
+     * to a dedicated surface carrying the right cut (Circle/Oval → ellipse, Rounded
+     * Rectangle → arcs, Heart/Star/Hexagon → primitives…). A flat value (Rectangle,
+     * Square, Custom die-cut) gets a surface WITHOUT a cut so it can clear a die-cut
+     * product default — this is what lets "Product Labels" stop being a circle when
+     * the shopper picks Rectangle. Exotic dies we can't synthesize honestly
+     * (Graduation Cap, House, Football, pet faces…) are left unwired: the canvas
+     * keeps the product default and the audit reports them.
+     */
+    private function wireShapeSurfaces(): void
+    {
+        $wired = 0;
+        $skipped = [];
+
+        foreach (Product::with('surface', 'options.values.surface')->get() as $p) {
+            foreach ($p->options as $o) {
+                if (! preg_match('/shape/i', $o->name) || $o->values->count() < 2) {
+                    continue; // single-value shape options describe the product itself (Oval BCs)
+                }
+                // surfaceless products (yard signs, most stickers) still carry dims
+                // in their Size option labels — first one that parses wins
+                $parsed = null;
+                if (! $p->surface) {
+                    $sizeOpt = $p->options->first(fn ($so) => preg_match('/size|format|dimension/i', $so->name));
+                    foreach ($sizeOpt?->values->sortByDesc('is_default') ?? [] as $sv) {
+                        if ($parsed = \App\Support\PrintSpec::parsedDims($sv->label, $p)) {
+                            break;
+                        }
+                    }
+                }
+
+                foreach ($o->values as $v) {
+                    $kind = self::classifyShape($v->label);
+                    if ($kind === null) {
+                        $skipped[] = "{$p->slug}: {$v->label}";
+
+                        continue;
+                    }
+                    if ($kind === 'keep') {
+                        continue; // the value's crawled dims surface (if any) already does the job
+                    }
+
+                    // dims: the value's own crawled surface, else the product's, else the size label
+                    $src = $v->surface ?? $p->surface;
+                    if (! $src && $parsed) {
+                        [$pw, $ph, , $punit] = $parsed;
+                        $max = 0.15 * min($pw, $ph);
+                        $src = new Surface([   // unsaved carrier — just dims + margins
+                            'unit'   => $punit,
+                            'width'  => $pw,
+                            'height' => $ph,
+                            'bleed'  => min(self::BLEED[$punit] ?? 0, $max),
+                            'safety' => min(self::SAFETY[$punit] ?? 0, $max),
+                        ]);
+                    }
+                    if (! $src) {
+                        $skipped[] = "{$p->slug}: {$v->label} (no dims)";
+
+                        continue;
+                    }
+                    $w = (float) $src->width;
+                    $h = (float) $src->height;
+                    // a square-ish shape squares the canvas (Circle sticker on a 2×4 base)
+                    if ($this->wantsSquare($v->label)) {
+                        $w = $h = min($w, $h);
+                    }
+
+                    $cut = $this->shapeCutPath($kind, $w, $h, $src->unit);
+                    // a flat shape only needs its own surface to CLEAR a die-cut
+                    // product default or to change the dims (Square on a rect base)
+                    if ($kind === 'flat' && ! $p->surface?->cut_path
+                        && abs($w - (float) $src->width) < 0.001 && abs($h - (float) $src->height) < 0.001) {
+                        continue;
+                    }
+                    // Square/Rectangle on a die-cut product re-boxes the product's own
+                    // die (a square rounded-corner card keeps its rounded corners);
+                    // only "Custom" flattens — there the die follows the artwork
+                    if ($kind === 'flat' && $p->surface?->cut_path && ! str_contains(strtolower($v->label), 'custom')) {
+                        $cut = $p->surface->cut_path;
+                    }
+
+                    $trim = fn ($n) => rtrim(rtrim(number_format($n, 2, '.', ''), '0'), '.');
+                    $slug = Str::limit('s-'.$trim($w).'x'.$trim($h).$src->unit.'-shape-'.Str::slug($v->label).'-'.$p->slug, 96, '');
+                    $surface = Surface::updateOrCreate(['slug' => $slug], [
+                        'name'           => trim($trim($w).' × '.$trim($h).' '.$src->unit." ({$v->label})"),
+                        'unit'           => $src->unit,
+                        'width'          => $w,
+                        'height'         => $h,
+                        'bleed'          => $src->bleed,
+                        'safety'         => $src->safety,
+                        'no_print_areas' => [],
+                        'fold_lines'     => [],
+                        'cut_path'       => $cut,
+                        'is_active'      => true,
+                    ]);
+                    $v->update(['surface_id' => $surface->id]);
+                    $wired++;
+                }
+            }
+        }
+        // drop shape surfaces a re-import stopped referencing (rule changes leave orphans)
+        $orphans = Surface::where('slug', 'like', '%-shape-%')
+            ->whereNotIn('id', \App\Models\OptionValue::whereNotNull('surface_id')->pluck('surface_id'))
+            ->whereNotIn('id', Product::whereNotNull('surface_id')->pluck('surface_id'))
+            ->delete();
+
+        if ($wired) {
+            $this->line("  shape surfaces: wired {$wired} shape values to dedicated surfaces".($orphans ? ", pruned {$orphans} orphans" : '').'.');
+        }
+        if ($skipped) {
+            $this->line('  shape surfaces: left '.count($skipped).' exotic values unwired ('.Str::limit(implode('; ', array_slice($skipped, 0, 4)), 110).'…).');
+        }
+    }
+
+    /** Bucket a shape label; null = a die we can't synthesize honestly. (Public: surfaces:audit mirrors this.) */
+    public static function classifyShape(string $label): ?string
+    {
+        $l = strtolower(trim(preg_replace('/\s*new\s*$/i', '', $label))); // "HeartNew" → heart
+
+        return match (true) {
+            str_contains($l, 'custom')                        => 'flat', // die follows the artwork; honest canvas is flat
+            // "Standard" describes the product's own format (Rounded Corner BCs:
+            // Standard vs Square SIZES) — never rewire, the product die/dims stay
+            str_contains($l, 'standard')                      => 'keep',
+            str_contains($l, 'rounded')                       => 'rounded',
+            (bool) preg_match('/half\s*(circle|moon)/', $l)   => 'half-circle',
+            (bool) preg_match('/half\s*left\s*arch/', $l)     => 'arch-left',
+            (bool) preg_match('/half\s*right\s*arch/', $l)    => 'arch-right',
+            (bool) preg_match('/\barch(way)?\b/', $l)         => 'arch',
+            (bool) preg_match('/circle|oval|\bround\b/', $l)  => 'ellipse',
+            str_contains($l, 'leaf')                          => 'leaf',
+            str_contains($l, 'hexagon')                       => 'hexagon',
+            str_contains($l, 'starburst')                     => 'starburst',
+            str_contains($l, 'star')                          => 'star',
+            str_contains($l, 'heart')                         => 'heart',
+            str_contains($l, 'arrow')                         => 'arrow',
+            str_contains($l, 'shield')                        => 'shield',
+            (bool) preg_match('/rectangle|square/', $l)       => 'flat',
+            default                                           => null, // Graduation Cap, House, Football, Jar, pet faces…
+        };
+    }
+
+    /** Square the canvas for shapes that are square by definition. */
+    private function wantsSquare(string $label): bool
+    {
+        $l = strtolower($label);
+        $square = str_contains($l, 'square')
+            || (preg_match('/^circle\b/', $l) === 1 && ! str_contains($l, 'oval'));
+
+        return $square && ! str_contains($l, 'rectangle'); // "Square/Rectangle" keeps the base dims
+    }
+
+    /** The cut path for a shape kind at given dims (null = flat, no die). */
+    private function shapeCutPath(string $kind, float $w, float $h, string $unit): ?string
+    {
+        if ($kind === 'flat') {
+            return null;
+        }
+        if ($kind === 'rounded') {
+            return $this->roundedCutPath($w, $h, $unit);
+        }
+        if ($kind === 'starburst') {
+            $pts = [];
+            for ($i = 0; $i < 24; $i++) {
+                $r = $i % 2 === 0 ? 50 : 41;
+                $a = -M_PI / 2 + $i * M_PI / 12;
+                $pts[] = round(50 + $r * cos($a), 1).' '.round(50 + $r * sin($a), 1);
+            }
+
+            return 'M '.implode(' L ', $pts).' Z';
+        }
+        if (in_array($kind, ['arch', 'arch-left', 'arch-right'], true)) {
+            // arch dome radius = half width (full) or full width (halves), capped
+            $ry = min(95, round(100 * ($kind === 'arch' ? $w / 2 : $w) / max($h, 0.01), 1));
+
+            return match ($kind) {
+                'arch'       => "M 0 100 L 0 {$ry} A 50 {$ry} 0 0 1 100 {$ry} L 100 100 Z",
+                'arch-left'  => "M 0 100 L 0 {$ry} A 100 {$ry} 0 0 1 100 0 L 100 100 Z",
+                'arch-right' => "M 0 100 L 0 0 A 100 {$ry} 0 0 1 100 {$ry} L 100 100 Z",
+            };
+        }
+
+        return self::SHAPE_PATHS[$kind] ?? null;
+    }
+
+    /** Rounded-rectangle die (≈3.5 mm corner radius) normalized to a w×h trim box. */
+    private function roundedCutPath(float $w, float $h, string $unit): string
+    {
+        $r = 3.5 / (self::MM_PER_UNIT[$unit] ?? 1.0);
+        $rx = round(100 * $r / max($w, 0.01), 2);
+        $ry = round(100 * $r / max($h, 0.01), 2);
+
+        return 'M '.$rx.' 0 L '.(100 - $rx).' 0 A '.$rx.' '.$ry.' 0 0 1 100 '.$ry
+            .' L 100 '.(100 - $ry).' A '.$rx.' '.$ry.' 0 0 1 '.(100 - $rx).' 100'
+            .' L '.$rx.' 100 A '.$rx.' '.$ry.' 0 0 1 0 '.(100 - $ry)
+            .' L 0 '.$ry.' A '.$rx.' '.$ry.' 0 0 1 '.$rx.' 0 Z';
+    }
+
     /**
      * A "Corners: Rounded" option value changes the finished SHAPE — give the value
      * its own surface with a rounded-rect cut so the designer shows it. Reuses the
@@ -479,15 +720,9 @@ class ImportCatalog extends Command
                     }
                     $w = (float) $s->width;
                     $h = (float) $s->height;
-                    $r = match ($s->unit) { 'cm' => 0.35, 'in' => 0.14, 'ft' => 0.012, default => 3.5 }; // ≈3.5 mm radius
-                    $rx = round(100 * $r / max($w, 0.01), 2);
-                    $ry = round(100 * $r / max($h, 0.01), 2);
                     $cut = ($template && abs($w - 88.9) < 0.6 && abs($h - 50.8) < 0.6)
                         ? $template->cut_path
-                        : 'M '.$rx.' 0 L '.(100 - $rx).' 0 A '.$rx.' '.$ry.' 0 0 1 100 '.$ry
-                          .' L 100 '.(100 - $ry).' A '.$rx.' '.$ry.' 0 0 1 '.(100 - $rx).' 100'
-                          .' L '.$rx.' 100 A '.$rx.' '.$ry.' 0 0 1 0 '.(100 - $ry)
-                          .' L 0 '.$ry.' A '.$rx.' '.$ry.' 0 0 1 '.$rx.' 0 Z';
+                        : $this->roundedCutPath($w, $h, $s->unit);
 
                     $rounded = Surface::updateOrCreate(['slug' => Str::limit($s->slug, 90, '').'-rounded'], [
                         'name'           => $s->name.' (rounded corners)',

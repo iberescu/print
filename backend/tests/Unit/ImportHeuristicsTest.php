@@ -81,4 +81,29 @@ class ImportHeuristicsTest extends TestCase
             $this->assertSame($expected, $this->invoke('categorize', $title, $vp, 'other'), "for {$title}");
         }
     }
+
+    public function test_shape_labels_classify(): void
+    {
+        $cases = [
+            // "Standard" is the product's own format — never rewires the die
+            // (regression: it flattened Rounded Corner BCs to plain rectangles)
+            ['Standard', 'keep'],
+            ['Rounded Rectangle', 'rounded'],
+            ['Rounded Square', 'rounded'],
+            ['Circle', 'ellipse'],
+            ['Circle/Oval', 'ellipse'],
+            ['Half Circle', 'half-circle'],
+            ['Custom (Die-Cut)', 'flat'],
+            ['Rectangle/Square', 'flat'],
+            ['HeartNew', 'heart'],          // crawl badge glued to the label
+            ['StarburstNew', 'starburst'],
+            ['Full Arch', 'arch'],
+            ['Half Left Arch', 'arch-left'],
+            ['Graduation Cap', null],       // exotic die — left to the product default
+            ['Dog Face 1', null],
+        ];
+        foreach ($cases as [$label, $expected]) {
+            $this->assertSame($expected, ImportCatalog::classifyShape($label), "for {$label}");
+        }
+    }
 }

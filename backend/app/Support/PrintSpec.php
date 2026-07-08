@@ -32,6 +32,9 @@ class PrintSpec
     private const LANDSCAPE = ['vinyl-banner', 'vinyl-banners', 'yard-signs'];
     private const PORTRAIT  = ['roll-up-banner', 'retractable-banners'];
 
+    /** mm per unit — for converting bleed/safety between surfaces that disagree. */
+    private const MM = ['mm' => 1.0, 'cm' => 10.0, 'in' => 25.4, 'ft' => 304.8];
+
     /**
      * @param  int[]  $optionValueIds
      * @return array{w:int,h:int,trimW:int,trimH:int,bleed:int,safety:int,label:string}
@@ -57,7 +60,40 @@ class PrintSpec
             'noPrint' => [],
             'fold'    => [],
             'cut'     => null,
+            'unit'    => $unit,       // spec metadata for guide overrides (not used by the editor)
+            'ppu'     => $pxPerUnit,
         ];
+    }
+
+    /**
+     * Replace a spec's bleed/safety with another surface's values (unit-converted) —
+     * the die-cut template's measured margins beat a size value's print-standard
+     * defaults. Fold/no-print positions ride on the bleed offset, so shift them too.
+     */
+    public static function withGuidesFrom(array $spec, Surface $guides): array
+    {
+        $factor = (self::MM[$guides->unit] ?? 1.0) / (self::MM[$spec['unit']] ?? 1.0);
+        $bleed = (int) round((float) $guides->bleed * $factor * $spec['ppu']);
+        $safety = (int) round((float) $guides->safety * $factor * $spec['ppu']);
+        $shift = $bleed - $spec['bleed'];
+
+        $spec['bleed'] = $bleed;
+        $spec['safety'] = $safety;
+        $spec['w'] = $spec['trimW'] + 2 * $bleed;
+        $spec['h'] = $spec['trimH'] + 2 * $bleed;
+        $spec['noPrint'] = array_map(function ($a) use ($shift) {
+            $a['x'] += $shift;
+            $a['y'] += $shift;
+
+            return $a;
+        }, $spec['noPrint']);
+        $spec['fold'] = array_map(function ($f) use ($shift) {
+            $f['pos'] += $shift;
+
+            return $f;
+        }, $spec['fold']);
+
+        return $spec;
     }
 
     /**
@@ -104,6 +140,8 @@ class PrintSpec
             'fold'    => $fold,
             // die-cut edge, normalized 0–100 relative to the trim box (editor scales it)
             'cut'     => $surface->cut_path ?: null,
+            'unit'    => $surface->unit,
+            'ppu'     => $ppu,
         ];
     }
 
@@ -129,13 +167,25 @@ class PrintSpec
         return self::parse($label, $product) !== null;
     }
 
+    /** The dims a label parses to — [w, h, label, unit] — or null (for the surface audit). */
+    public static function parsedDims(string $label, Product $product): ?array
+    {
+        return self::parse($label, $product);
+    }
+
     /** @return array{0:float,1:float,2:string,3:string}|null */
     private static function parse(string $label, Product $product): ?array
     {
         $slug = $product->slug;
 
-        // "W × H" (inches or feet): "3.5×2\"", "8.5\" x 11\"", "2×4 ft", "33×79\""
-        if (preg_match('/(\d+(?:\.\d+)?)\s*(?:"|″|in\b)?\s*[×x]\s*(\d+(?:\.\d+)?)/ui', $label, $m)) {
+        // Three dimension groups = a 3D product (tower displays "13\" x 12\" x 63.4\"") —
+        // the first two numbers are NOT a print W×H, so refuse to parse.
+        if (preg_match('/\d[^×x]*[×x][^×x]*\d[^×x]*[×x][^×x]*\d/ui', $label)) {
+            return null;
+        }
+
+        // "W × H" (inches or feet): "3.5×2\"", "8.5\" x 11\"", "2×4 ft", "2”x2”" (curly quote)
+        if (preg_match('/(\d+(?:\.\d+)?)\s*(?:"|”|″|in\b)?\s*[×x]\s*(\d+(?:\.\d+)?)/ui', $label, $m)) {
             $w = (float) $m[1];
             $h = (float) $m[2];
             $unit = stripos($label, 'ft') !== false ? 'ft' : 'in';

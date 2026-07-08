@@ -122,7 +122,8 @@ const foldPos = (f) => geo.value.bleed + (Number(f.position) || 0) * geo.value.p
                             <template v-if="form.cutPath && form.cutPath.trim()">
                                 <svg :x="geo.bleed" :y="geo.bleed" :width="geo.tw" :height="geo.th" viewBox="0 0 100 100" preserveAspectRatio="none" class="overflow-visible">
                                     <path :d="form.cutPath" fill="rgba(225,29,72,0.05)" stroke="#e11d48" stroke-width="1" vector-effect="non-scaling-stroke" />
-                                    <path v-if="geo.safety" :d="form.cutPath" fill="none" stroke="#0ea5e9" stroke-width="1" stroke-dasharray="4 3" vector-effect="non-scaling-stroke" transform="translate(50 50) scale(0.9) translate(-50 -50)" />
+                                    <!-- per-axis inset so the margin really is `safety` on both axes (a uniform 0.9 was 4× too deep on tall dies) -->
+                                    <path v-if="geo.safety" :d="form.cutPath" fill="none" stroke="#0ea5e9" stroke-width="1" stroke-dasharray="4 3" vector-effect="non-scaling-stroke" :transform="`translate(50 50) scale(${geo.safeW / geo.tw} ${geo.safeH / geo.th}) translate(-50 -50)`" />
                                 </svg>
                             </template>
                             <template v-else>

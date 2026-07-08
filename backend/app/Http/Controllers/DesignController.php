@@ -78,51 +78,79 @@ class DesignController extends Controller
         ]);
     }
 
-    /** A surface assigned to the chosen option value (e.g. Format → A4) wins, then the
-     *  product's default surface, then the size-option derived geometry. */
+    /** The die-cut edge and the canvas dimensions resolve INDEPENDENTLY, then merge:
+     *  a Shape value carries the cut (possibly none — "Rectangle" flattens a die-cut
+     *  default), a Size/Format value carries the dims, a cut-bearing value on any
+     *  other option (e.g. Corners → Rounded) still wins the cut. Bleed/safety come
+     *  from the cut's surface — the die template's measured margins beat a size
+     *  value's print-standard defaults. */
     private function geometry(Product $product, array $opts): array
     {
-        $productCut = (bool) $product->surface?->cut_path;
+        $base = $product->surface;
 
-        $surface = null;
+        // Per option: the explicitly selected value, else its default (the product
+        // page sends the full selection; template/deep links may send none).
+        $picked = [];
         foreach ($product->options as $opt) {
-            $match = $opt->values->first(fn ($v) => in_array($v->id, $opts, true) && $v->surface);
-            // a PLAIN value surface must not flatten a die-cut product (door hangers,
-            // die-cut postcards…) — only a value surface with its own cut (e.g. a
-            // "Rounded" corners mapping) may replace the product's shape
-            if ($match && ($match->surface->cut_path || ! $productCut)) {
-                $surface = $match->surface;
-                break;
+            $v = $opt->values->first(fn ($v) => in_array($v->id, $opts, true))
+                ?? $opt->values->first(fn ($v) => $v->is_default);
+            if ($v) {
+                $picked[] = [$opt, $v];
             }
         }
-        // no explicit selection → fall back to the default value's surface, then the product's
-        if (! $surface && empty($opts) && ! $productCut) {
-            foreach ($product->options as $opt) {
-                $def = $opt->values->first(fn ($v) => $v->is_default && $v->surface);
-                if ($def) {
-                    $surface = $def->surface;
+
+        $cut = $base?->cut_path;
+        $cutSrc = $base;                // surface whose bleed/safety apply
+        $dims = null;                   // plain value surface that sets the dims
+        $shapeDims = null;              // a shape value's own surface can set dims too
+        foreach ($picked as [$opt, $v]) {
+            if (! $v->surface) {
+                continue;
+            }
+            if (preg_match('/shape/i', $opt->name)) {
+                // a Shape value ALWAYS owns the cut — an explicit flat shape
+                // (Rectangle, Custom die-cut) clears an inherited die
+                $cut = $v->surface->cut_path;
+                $cutSrc = $v->surface;
+                $shapeDims = $v->surface;
+            } elseif ($v->surface->cut_path) {
+                $cut = $v->surface->cut_path;   // Corners → Rounded etc.
+                $cutSrc = $v->surface;
+            } else {
+                $dims ??= $v->surface;          // size/format/paper value
+            }
+        }
+
+        // Dims: explicit value surface > parseable size label > shape surface > product.
+        $spec = null;
+        $specSrc = null;                // surface the spec was built from (null = parsed label)
+        if ($dims) {
+            $spec = PrintSpec::fromSurface($dims);
+            $specSrc = $dims;
+        } else {
+            foreach ($picked as [$opt, $v]) {
+                if (preg_match('/size|format|dimension/i', $opt->name) && ! $v->surface
+                    && PrintSpec::parsesAsSize($v->label, $product)) {
+                    $spec = PrintSpec::canvas($product, $opts);
                     break;
                 }
             }
         }
-
-        // A selected size WITHOUT its own surface (crawled sizes often have none) must
-        // still change the canvas — parse its label instead of silently keeping the
-        // product's default surface. Never flatten a die-cut product this way.
-        if (! $surface && $opts && ! $productCut) {
-            foreach ($product->options as $opt) {
-                if (! preg_match('/size|format|dimension/i', $opt->name)) {
-                    continue;
-                }
-                $val = $opt->values->first(fn ($v) => in_array($v->id, $opts, true));
-                if ($val && PrintSpec::parsesAsSize($val->label, $product)) {
-                    return PrintSpec::canvas($product, $opts);
-                }
-            }
+        if (! $spec && $shapeDims) {
+            $spec = PrintSpec::fromSurface($shapeDims);
+            $specSrc = $shapeDims;
         }
-        $surface ??= $product->surface;
+        if (! $spec) {
+            $spec = $base ? PrintSpec::fromSurface($base) : PrintSpec::canvas($product, $opts);
+            $specSrc = $base;
+        }
 
-        return $surface ? PrintSpec::fromSurface($surface) : PrintSpec::canvas($product, $opts);
+        $spec['cut'] = $cut;
+        if ($cutSrc && $cutSrc->id !== $specSrc?->id) {
+            $spec = PrintSpec::withGuidesFrom($spec, $cutSrc);
+        }
+
+        return $spec;
     }
 
     public function templateData(Template $template): JsonResponse
