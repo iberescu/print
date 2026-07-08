@@ -29,7 +29,7 @@ let stepLoadTimer = null;
 function armStepLoader() {
     stepLoading.value = true;
     if (stepLoadTimer) clearTimeout(stepLoadTimer);
-    stepLoadTimer = setTimeout(() => (stepLoading.value = false), 1000);
+    stepLoadTimer = setTimeout(() => (stepLoading.value = false), 2000);
 }
 const loaderText = computed(() => ({
     finalize: 'Preparing your final step…',
@@ -145,12 +145,8 @@ function next() {
                 <div v-for="i in stepCount" :key="i" class="h-1.5 flex-1 rounded-full transition-colors" :class="i <= stepIndex ? 'bg-brand-600' : 'bg-paper-300'"></div>
             </div>
 
-            <FreeShippingBar class="mt-5" :subtotal="summary.subtotal" :threshold="summary.threshold" :remaining="summary.remaining" :qualifies="summary.qualifies" />
-            <div class="mt-3 flex justify-end">
-                <button class="inline-flex items-center gap-1.5 rounded-full border border-brand-600 px-5 py-2 text-sm font-semibold text-brand-700 transition hover:bg-brand-50" @click="next">{{ isLast ? 'Continue to cart →' : 'Continue →' }}</button>
-            </div>
-
-            <!-- 1s "preparing" beat before each step reveals -->
+            <!-- 2s "preparing" beat before each step reveals — everything below the
+                 progress dots (shipping bar + Continue included) waits behind it -->
             <div v-if="stepLoading" class="flex flex-col items-center justify-center py-24 text-center sm:py-32">
                 <div class="relative h-14 w-14">
                     <div class="absolute inset-0 animate-spin rounded-full border-[3px] border-paper-300 border-t-brand-600"></div>
@@ -166,6 +162,11 @@ function next() {
             </div>
 
             <template v-else>
+            <FreeShippingBar class="mt-5" :subtotal="summary.subtotal" :threshold="summary.threshold" :remaining="summary.remaining" :qualifies="summary.qualifies" />
+            <div class="mt-3 flex justify-end">
+                <button class="inline-flex items-center gap-1.5 rounded-full border border-brand-600 px-5 py-2 text-sm font-semibold text-brand-700 transition hover:bg-brand-50" @click="next">{{ isLast ? 'Continue to cart →' : 'Continue →' }}</button>
+            </div>
+
             <h1 class="mt-7 font-display text-3xl font-semibold tracking-tight sm:text-4xl">{{ heading }}</h1>
             <p class="mt-2 max-w-2xl text-ink/60">{{ sub }}</p>
 
@@ -351,7 +352,7 @@ function next() {
 .pqsgcard-enter-active { transition: opacity 0.45s ease, transform 0.45s ease; }
 .pqsgcard-move { transition: transform 0.45s ease; }
 .pqsgcard-leave-active { display: none; }
-/* the step loader's 1s fill */
-.steploadbar { width: 0; animation: steploadbar 1s ease-out forwards; }
+/* the step loader's 2s fill */
+.steploadbar { width: 0; animation: steploadbar 2s ease-out forwards; }
 @keyframes steploadbar { to { width: 100%; } }
 </style>
