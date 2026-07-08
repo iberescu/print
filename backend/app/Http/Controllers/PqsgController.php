@@ -103,8 +103,11 @@ class PqsgController extends Controller
         return response()->json(['uuid' => Cache::get("pqsg:{$key}")]);
     }
 
-    /** Merch mockups for the gallery step, streamed as the engine finishes them. */
-    public function feed(string $key): JsonResponse
+    /** Gallery feeds, streamed as the engine finishes them: ?set=merch (default,
+     *  the "your logo on more products" mockups) or ?set=ads (the Layout.ai
+     *  facebook-ad canvases — type template_preview, which the third-party
+     *  widget never displayed; we render them ourselves). */
+    public function feed(string $key, Request $request): JsonResponse
     {
         abort_unless(Str::isUuid($key), 404);
 
@@ -124,6 +127,26 @@ class PqsgController extends Controller
                 return [];
             }
         });
+
+        $done = in_array($state['computed_status'] ?? '', ['completed', 'partially_completed'], true)
+            || (bool) ($state['is_complete'] ?? false);
+
+        if ($request->query('set') === 'ads') {
+            $images = collect($state['images'] ?? [])
+                ->filter(fn ($i) => ($i['type'] ?? '') === 'template_preview'
+                    && ($i['product_key'] ?? $i['special_product_key'] ?? '') === 'pipeline_facebook_ad'
+                    && ($i['url'] ?? '') !== '')
+                ->take(8)
+                ->values()
+                ->map(fn ($i, $n) => [
+                    'key'     => 'ad-'.$n,
+                    'img'     => (string) $i['url'],
+                    'label'   => 'Ad concept '.($n + 1),
+                    'product' => null,
+                ])->all();
+
+            return response()->json(['done' => $done, 'images' => $images]);
+        }
 
         // the mapped shop products, one indexed query (name + entry price for the card CTA)
         $shop = \App\Models\Product::query()
@@ -158,9 +181,6 @@ class PqsgController extends Controller
             })
             ->filter(fn ($i) => $i['img'] !== '')
             ->values()->all();
-
-        $done = in_array($state['computed_status'] ?? '', ['completed', 'partially_completed'], true)
-            || (bool) ($state['is_complete'] ?? false);
 
         return response()->json(['done' => $done, 'images' => $images]);
     }
