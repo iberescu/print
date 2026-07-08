@@ -21,6 +21,23 @@ const busy = ref(null);
 const isLast = computed(() => props.stepIndex >= props.stepCount);
 const products = computed(() => props.payload.products || []);
 
+// Every step opens with a ~1s "preparing" beat (labor illusion — these offers
+// ARE personalised) before the content reveals. Inertia reuses this component
+// across steps, so re-arm on every step change, not just on mount.
+const stepLoading = ref(true);
+let stepLoadTimer = null;
+function armStepLoader() {
+    stepLoading.value = true;
+    if (stepLoadTimer) clearTimeout(stepLoadTimer);
+    stepLoadTimer = setTimeout(() => (stepLoading.value = false), 1000);
+}
+const loaderText = computed(() => ({
+    finalize: 'Preparing your final step…',
+    brand: 'Placing your brand on matching products…',
+    pqsg: 'Generating ideas with your logo…',
+    ads: 'Preparing your ad offer…',
+}[props.step] ?? 'Finding products that match your order…'));
+
 const heading = computed(() => ({
     brand: 'Put your brand on more',
     pqsg: 'Your logo on more products',
@@ -160,10 +177,13 @@ function initAdsWidget() {
     poll();
 }
 
-onMounted(initPqsg);
-watch(() => props.step, () => initPqsg(), { flush: 'post' });
+onMounted(() => { armStepLoader(); initPqsg(); });
+watch(() => props.step, () => { armStepLoader(); initPqsg(); }, { flush: 'post' });
 
-onBeforeUnmount(() => { if (pqsgTimer) clearTimeout(pqsgTimer); });
+onBeforeUnmount(() => {
+    if (pqsgTimer) clearTimeout(pqsgTimer);
+    if (stepLoadTimer) clearTimeout(stepLoadTimer);
+});
 // ----------------------------------------------------------------------------
 
 function addItem(p) {
@@ -194,6 +214,22 @@ function next() {
                 <button class="inline-flex items-center gap-1.5 rounded-full border border-brand-600 px-5 py-2 text-sm font-semibold text-brand-700 transition hover:bg-brand-50" @click="next">{{ isLast ? 'Continue to cart →' : 'Continue →' }}</button>
             </div>
 
+            <!-- 1s "preparing" beat before each step reveals -->
+            <div v-if="stepLoading" class="flex flex-col items-center justify-center py-24 text-center sm:py-32">
+                <div class="relative h-14 w-14">
+                    <div class="absolute inset-0 animate-spin rounded-full border-[3px] border-paper-300 border-t-brand-600"></div>
+                    <svg class="absolute inset-0 m-auto h-6 w-6 text-brand-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true">
+                        <path d="M12 3l1.7 4.6L18 9l-4.3 1.4L12 15l-1.7-4.6L6 9l4.3-1.4z" stroke-linejoin="round" />
+                    </svg>
+                </div>
+                <p class="mt-5 font-display text-lg font-semibold text-ink">{{ loaderText }}</p>
+                <p class="mt-1 text-sm text-ink/55">Personalising this step for your order</p>
+                <div class="mt-5 h-1.5 w-64 max-w-full overflow-hidden rounded-full bg-paper-300">
+                    <div class="steploadbar h-full rounded-full bg-brand-600"></div>
+                </div>
+            </div>
+
+            <template v-else>
             <h1 class="mt-7 font-display text-3xl font-semibold tracking-tight sm:text-4xl">{{ heading }}</h1>
             <p class="mt-2 max-w-2xl text-ink/60">{{ sub }}</p>
 
@@ -354,6 +390,7 @@ function next() {
                     {{ isLast ? 'Continue to cart →' : 'Continue →' }}
                 </button>
             </div>
+            </template>
         </div>
     </StoreLayout>
 </template>
@@ -364,4 +401,7 @@ function next() {
 .pqsgcard-enter-active { transition: opacity 0.45s ease, transform 0.45s ease; }
 .pqsgcard-move { transition: transform 0.45s ease; }
 .pqsgcard-leave-active { display: none; }
+/* the step loader's 1s fill */
+.steploadbar { width: 0; animation: steploadbar 1s ease-out forwards; }
+@keyframes steploadbar { to { width: 100%; } }
 </style>
