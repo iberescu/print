@@ -166,12 +166,17 @@ class ImportCatalog extends Command
                         }
                         $dims = $val['dimensions'] ?? null;
                         $valSurface = $dims ? $this->surfaceFor($dims + ['label' => $label], "{$title} {$label}", $stats) : null;
+                        // options:previews images are keyed by slug+labels — relink the
+                        // generated file, or a fresh import silently strips the final
+                        // step's material cards (383 orphaned previews on prod, 07-08)
+                        $preview = sprintf('option-previews/%s/%s-%s.webp', $slug, Str::slug($name), Str::slug($label));
                         $option->values()->create([
                             'label'       => $label,
                             'price_delta' => (float) ($val['priceDelta'] ?? 0),
                             'is_default'  => $kept === 0, // first KEPT value
                             'attributes'  => $this->dimAttributes($dims),
                             'surface_id'  => $valSurface?->id,
+                            'image_path'  => Storage::disk('public')->exists($preview) ? $preview : null,
                             'sort_order'  => $vi,
                         ]);
                         $kept++;

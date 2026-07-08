@@ -276,6 +276,15 @@ class AuditSurfaces extends Command
                     $this->add('ERROR', $where, "junk option value \"{$v->label}\" ({$o->name})");
                 }
 
+                // a generated option preview that no value links = a fresh import
+                // stripped the final step's material card image
+                if (! $v->image_path) {
+                    $preview = sprintf('option-previews/%s/%s-%s.webp', $p->slug, \Illuminate\Support\Str::slug($o->name), \Illuminate\Support\Str::slug($v->label));
+                    if (\Illuminate\Support\Facades\Storage::disk('public')->exists($preview)) {
+                        $this->add('ERROR', $where, "preview exists but is UNLINKED: {$preview}");
+                    }
+                }
+
                 // size labels that disagree with the surface they map to
                 if ($v->surface && ($dims = PrintSpec::parsedDims($v->label, $p))) {
                     [$lw, $lh] = $dims;
