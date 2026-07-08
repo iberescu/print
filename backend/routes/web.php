@@ -83,6 +83,7 @@ Route::get('/feed/rtbhouse.xml', [FeedController::class, 'rtbhouse'])->name('fee
 // pqSmartGenerator upsell engine (async capture + widget status)
 Route::post('/pqsg/upload', [\App\Http\Controllers\PqsgController::class, 'upload'])->name('pqsg.upload');
 Route::get('/pqsg/status/{key}', [\App\Http\Controllers\PqsgController::class, 'status'])->name('pqsg.status');
+Route::get('/pqsg/feed/{key}', [\App\Http\Controllers\PqsgController::class, 'feed'])->name('pqsg.feed');
 
 // AI logo maker (Replicate recraft SVG; finishing hands the logo to the upsell engine)
 Route::get('/logo-maker', [\App\Http\Controllers\LogoController::class, 'show'])->name('logo.show');

@@ -40,20 +40,15 @@ const title = computed(() => ({
 
 // ---- pqSmartGenerator gallery steps ----------------------------------------
 // Two steps share the engine capture (registered back at Review): 'pqsg' shows
-// the buyer's logo on the merch set, 'ads' shows only the generated facebook-ad
-// creative for the Layout.ai offer. The updated widget hides every product
-// without a link, so each step passes its allow-list via `display-products`.
-const PQSG_DISPLAY = {
-    pqsg: [
-        'business_card_qr_logo', 'roll_stickers', 'canvas', 'bottle', 'tshirt_words',
-        'bags', 'cloudlab_sortv2', 'glass_logo', 'sticker', 'cloudlab_pix',
-        'cloudlab_umbrela', 'cloudlab_usb', 'chocolate_bar', 'google_v2', 'office', 'hoodie',
-    ],
-    ads: ['pipeline_facebook_ad'],
-};
+// the buyer's logo on the merch set as OUR OWN cards (same design system as the
+// accessories grid — the server proxies + filters the engine feed at
+// /pqsg/feed), 'ads' still embeds the sealed third-party widget for the
+// generated facebook-ad creative of the Layout.ai offer.
+const ADS_DISPLAY = ['pipeline_facebook_ad'];
 const pqsgWaiting = ref(true);
 const pqsgEmpty = ref(false);   // capture finished without a displayable image
-let pqsgUuid = null;
+const pqsgItems = ref([]);      // [{key, img, label, link}] streamed from /pqsg/feed
+const pqsgDone = ref(false);    // engine settled — stop the "generating live" pulse
 let pqsgTimer = null;
 let pqsgInitFor = null;
 
@@ -62,8 +57,55 @@ let pqsgInitFor = null;
 // first step. Init on mount AND on the step changing; the post-flush watcher
 // runs after the step's own widget element exists in the DOM.
 function initPqsg() {
-    const kind = props.step;
-    if (!PQSG_DISPLAY[kind] || pqsgInitFor === kind || !props.payload?.key) return;
+    if (pqsgInitFor === props.step || !props.payload?.key) return;
+    if (props.step === 'pqsg') initMerchFeed();
+    else if (props.step === 'ads') initAdsWidget();
+}
+
+// Merch gallery: poll our feed proxy and render native cards as results finish.
+function initMerchFeed() {
+    pqsgInitFor = 'pqsg';
+    pqsgWaiting.value = true;
+    pqsgEmpty.value = false;
+    pqsgDone.value = false;
+    pqsgItems.value = [];
+    if (pqsgTimer) { clearTimeout(pqsgTimer); pqsgTimer = null; }
+
+    let tries = 0;
+    const poll = async () => {
+        if (pqsgInitFor !== 'pqsg') return;
+        let done = false;
+        try {
+            const r = await fetch(`/pqsg/feed/${props.payload.key}`, { headers: { Accept: 'application/json' } });
+            const data = await r.json();
+            done = !!data.done;
+            if (data.images?.length) {
+                pqsgItems.value = data.images;
+                pqsgWaiting.value = false;
+            }
+        } catch (e) { /* best-effort */ }
+
+        if (done) {
+            pqsgDone.value = true;
+            pqsgWaiting.value = false;
+            if (!pqsgItems.value.length) pqsgEmpty.value = true;
+            return;
+        }
+        // mockups stream in for ~1 min; give up quietly after ~4 min
+        if (++tries < 95) {
+            pqsgTimer = setTimeout(poll, 2500);
+        } else {
+            pqsgDone.value = true;
+            pqsgWaiting.value = false;
+            if (!pqsgItems.value.length) pqsgEmpty.value = true;
+        }
+    };
+    poll();
+}
+
+// Ads step: the third-party widget renders the ad creatives (sealed shadow DOM).
+function initAdsWidget() {
+    const kind = 'ads';
     pqsgInitFor = kind;
     pqsgWaiting.value = true;
     pqsgEmpty.value = false;
@@ -80,14 +122,13 @@ function initPqsg() {
     const el = document.getElementById('pqsg-widget');
     if (!el) return;
     // attribute (not property) — safe whether or not the element has upgraded yet
-    el.setAttribute('display-products', JSON.stringify(Object.fromEntries(PQSG_DISPLAY[kind].map((k) => [k, true]))));
+    el.setAttribute('display-products', JSON.stringify(Object.fromEntries(ADS_DISPLAY.map((k) => [k, true]))));
     el.addEventListener('pqsg:ready', () => { pqsgWaiting.value = false; });
-    // some captures (e.g. website-only) never produce this step's products —
-    // when the engine settles without one, drop the placeholder instead of
-    // spinning forever. `detail.images` is the widget's current artifact list.
+    // some captures never produce the ad creative — when the engine settles
+    // without one, drop the showcase instead of spinning forever
     const settled = (e) => {
         if (pqsgInitFor !== kind) return;
-        const wanted = new Set(PQSG_DISPLAY[kind]);
+        const wanted = new Set(ADS_DISPLAY);
         const has = (e?.detail?.images || []).some((i) => wanted.has(i.product_key) || wanted.has(i.special_product_key));
         if (!has) pqsgEmpty.value = true;
         pqsgWaiting.value = false;
@@ -96,20 +137,14 @@ function initPqsg() {
     el.addEventListener('pqsg:timeout', settled);
     el.addEventListener('pqsg:update', (e) => { if (e?.detail?.isComplete) settled(e); });
 
-    const begin = (uuid) => {
-        el.setAttribute('uuid', uuid);
-        if (typeof el.start === 'function') el.start(uuid);
-    };
-    if (pqsgUuid) { begin(pqsgUuid); return; } // ads step reuses the uuid pqsg resolved
-
     let tries = 0;
     const poll = async () => {
         try {
             const r = await fetch(`/pqsg/status/${props.payload.key}`, { headers: { Accept: 'application/json' } });
             const { uuid } = await r.json();
             if (uuid) {
-                pqsgUuid = uuid;
-                begin(uuid);
+                el.setAttribute('uuid', uuid);
+                if (typeof el.start === 'function') el.start(uuid);
                 return; // the widget polls their API from here on
             }
         } catch (e) { /* best-effort */ }
@@ -162,7 +197,8 @@ function next() {
             <h1 class="mt-7 font-display text-3xl font-semibold tracking-tight sm:text-4xl">{{ heading }}</h1>
             <p class="mt-2 max-w-2xl text-ink/60">{{ sub }}</p>
 
-            <!-- pqSmartGenerator gallery (third-party): hidden until images arrive -->
+            <!-- pqSmartGenerator merch gallery: engine mockups rendered as OUR cards
+                 (same grid + card system as the accessories step below) -->
             <div v-if="step === 'pqsg'" class="mt-7">
                 <div v-if="pqsgWaiting" class="grid place-items-center rounded-2xl border border-dashed border-paper-300 bg-paper-200/50 py-14 text-center">
                     <div>
@@ -173,29 +209,37 @@ function next() {
                 <p v-else-if="pqsgEmpty" class="rounded-2xl border border-paper-300 bg-paper-200/50 px-5 py-8 text-center text-sm text-ink/55">
                     We couldn't generate previews from your design this time — your order isn't affected.
                 </p>
-                <!-- gallery frame: the widget itself is shadow-DOM sealed, so the
-                     polish lives on the container + layout attributes. v-show keeps
-                     the element in the DOM while hidden, so polling never stops. -->
-                <div v-show="!pqsgWaiting && !pqsgEmpty" class="overflow-hidden rounded-2xl border border-paper-300 bg-white shadow-sm">
-                    <div class="flex items-center justify-between gap-3 border-b border-paper-300 bg-paper-200/60 px-4 py-2.5">
+                <template v-else>
+                    <div class="mb-3 flex items-center justify-between gap-3">
                         <p class="text-xs font-semibold uppercase tracking-widest text-ink/50">Fresh from your design</p>
-                        <span class="inline-flex items-center gap-1.5 text-[11px] font-medium text-brand-700">
+                        <span v-if="!pqsgDone" class="inline-flex items-center gap-1.5 text-[11px] font-medium text-brand-700">
                             <span class="inline-block h-1.5 w-1.5 animate-pulse rounded-full bg-brand-blue"></span>
                             generating live
                         </span>
+                        <span v-else class="text-[11px] font-medium text-ink/45">{{ pqsgItems.length }} ideas · made with your logo</span>
                     </div>
-                    <div class="p-3 sm:p-4">
-                        <pq-smart-generator-widget
-                            id="pqsg-widget"
-                            :api-base="payload.apiBase"
-                            grid="justified"
-                            insert-mode="append"
-                            gap="14"
-                            justified-row-height="210"
-                            class="block w-full"
-                        ></pq-smart-generator-widget>
-                    </div>
-                </div>
+                    <TransitionGroup name="pqsgcard" tag="div" class="grid grid-cols-2 gap-4 sm:gap-5 md:grid-cols-3 lg:grid-cols-4">
+                        <div v-for="it in pqsgItems" :key="it.key" class="flex flex-col overflow-hidden rounded-2xl border border-paper-300 bg-white">
+                            <div class="aspect-square overflow-hidden bg-paper-200">
+                                <SmartImage :src="it.img" :alt="it.label || 'Your logo, mocked up'" />
+                            </div>
+                            <div class="flex flex-1 flex-col p-3">
+                                <p class="font-display text-sm font-semibold text-ink">{{ it.label || 'Your brand, mocked up' }}</p>
+                                <p class="text-xs text-ink/55">Made with your logo</p>
+                            </div>
+                        </div>
+                        <!-- streaming placeholder keeps the grid feeling alive while the set finishes -->
+                        <div v-if="!pqsgDone" key="pqsg-more" class="flex flex-col overflow-hidden rounded-2xl border border-dashed border-paper-300 bg-paper-200/40">
+                            <div class="grid aspect-square place-items-center">
+                                <div class="h-6 w-6 animate-spin rounded-full border-2 border-brand-600/60 border-t-transparent"></div>
+                            </div>
+                            <div class="p-3">
+                                <p class="font-display text-sm font-semibold text-ink/45">More on the way…</p>
+                                <p class="text-xs text-ink/40">New ideas appear as they finish</p>
+                            </div>
+                        </div>
+                    </TransitionGroup>
+                </template>
             </div>
 
             <!-- Layout.ai ad-credit offer: promo visual + the buyer's own generated ad -->
@@ -313,3 +357,11 @@ function next() {
         </div>
     </StoreLayout>
 </template>
+
+<style scoped>
+/* merch gallery cards stream in as the engine finishes them */
+.pqsgcard-enter-from { opacity: 0; transform: translateY(10px) scale(0.98); }
+.pqsgcard-enter-active { transition: opacity 0.45s ease, transform 0.45s ease; }
+.pqsgcard-move { transition: transform 0.45s ease; }
+.pqsgcard-leave-active { display: none; }
+</style>
