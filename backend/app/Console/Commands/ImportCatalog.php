@@ -166,6 +166,14 @@ class ImportCatalog extends Command
                         }
                         $dims = $val['dimensions'] ?? null;
                         $valSurface = $dims ? $this->surfaceFor($dims + ['label' => $label], "{$title} {$label}", $stats) : null;
+                        // colour swatches: the crawl leaves the hex in the label
+                        // ("Blue - #0083CA") or just a name ("Navy Blue") — pull a
+                        // hex either way so the product page shows the real colour,
+                        // and clean the hex out of the shown label
+                        $swatch = $isColour ? $this->swatchFor($label) : null;
+                        if ($swatch) {
+                            $label = trim(preg_replace('/[\s\-–—|:]*#?[0-9a-f]{6}\b/i', '', $label)) ?: $label;
+                        }
                         // options:previews images are keyed by slug+labels — relink the
                         // generated file, or a fresh import silently strips the final
                         // step's material cards (383 orphaned previews on prod, 07-08)
@@ -176,6 +184,7 @@ class ImportCatalog extends Command
                             'is_default'  => $kept === 0, // first KEPT value
                             'attributes'  => $this->dimAttributes($dims),
                             'surface_id'  => $valSurface?->id,
+                            'swatch'      => $swatch,
                             'image_path'  => Storage::disk('public')->exists($preview) ? $preview : null,
                             'sort_order'  => $vi,
                         ]);
@@ -364,6 +373,43 @@ class ImportCatalog extends Command
             ['name' => 'Width', 'value' => "{$dims['width']} {$unit}"],
             ['name' => 'Height', 'value' => "{$dims['height']} {$unit}"],
         ];
+    }
+
+    /** Common print-colour names → hex, for the product-page swatch dots. */
+    private const COLOUR_HEX = [
+        'white' => '#ffffff', 'black' => '#1a1a1a', 'natural' => '#e8dcc4', 'kraft' => '#c8a97e',
+        'cream' => '#f5efe0', 'ivory' => '#fffff0', 'grey' => '#8a8d91', 'gray' => '#8a8d91',
+        'silver' => '#c0c0c0', 'gold' => '#c9a227', 'rose gold' => '#b76e79', 'copper' => '#b87333',
+        'bronze' => '#cd7f32', 'red' => '#e11d2f', 'dark red' => '#8b1a1a', 'maroon' => '#7d1128',
+        'burgundy' => '#6d1a2e', 'orange' => '#f57c1f', 'yellow' => '#ffd400', 'lime' => '#9acd32',
+        'green' => '#2e9e4f', 'dark green' => '#1c5e34', 'forest green' => '#1c5e34', 'teal' => '#0099b1',
+        'turquoise' => '#30d5c8', 'cyan' => '#00b7eb', 'blue' => '#0083ca', 'royal blue' => '#1f4fd8',
+        'navy' => '#1b2a4a', 'navy blue' => '#1b2a4a', 'dark blue' => '#14274e', 'light blue' => '#8ecae6',
+        'sky blue' => '#8ecae6', 'purple' => '#6b3fa0', 'violet' => '#7f4fc9', 'pink' => '#f26fb2',
+        'hot pink' => '#ff69b4', 'magenta' => '#d0208f', 'brown' => '#6b4423', 'tan' => '#d2b48c',
+        'beige' => '#e8dcc4', 'clear' => '#e9f2f5', 'frosted' => '#dbe4e6', 'transparent' => '#e9f2f5',
+        'holographic' => '#c9d6e5',
+    ];
+
+    /**
+     * A hex colour for a swatch value: a hex embedded in the label wins
+     * ("Blue - #0083CA"), else the colour name maps to a standard hex; the
+     * longest matching name wins ("dark blue" beats "blue"). Null = unknown.
+     */
+    private function swatchFor(string $label): ?string
+    {
+        if (preg_match('/#?([0-9a-f]{6})\b/i', $label, $m)) {
+            return '#'.strtolower($m[1]);
+        }
+        $l = strtolower($label);
+        $best = null;
+        foreach (self::COLOUR_HEX as $name => $hex) {
+            if (str_contains($l, $name) && (! $best || strlen($name) > strlen($best[0]))) {
+                $best = [$name, $hex];
+            }
+        }
+
+        return $best[1] ?? null;
     }
 
     /**
