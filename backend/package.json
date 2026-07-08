@@ -16,6 +16,7 @@
     },
     "dependencies": {
         "@babylonjs/core": "^9.15.0",
+        "@babylonjs/loaders": "^9.15.0",
         "@inertiajs/vue3": "^3.5.0",
         "earcut": "^3.2.3",
         "fabric": "^7.4.0",

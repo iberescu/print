@@ -24,6 +24,7 @@ const busy = ref(false);
 const view3d = ref(true);          // toggle: 3D | Flat
 const ready3d = ref(false);        // scene built
 const failed3d = ref(false);       // WebGL/asset failure → flat image only
+const kind3d = ref('slab');        // which model family rendered (drives the CC-BY note)
 const canvas3d = ref(null);
 let scene3d = null;
 
@@ -31,8 +32,9 @@ onMounted(async () => {
     if (!props.preview || !canvas3d.value) { failed3d.value = true; view3d.value = false; return; }
     try {
         const { mountPreview3D, detectKind } = await import('../lib/preview3d');
+        kind3d.value = detectKind(props.product, props.category);
         scene3d = await mountPreview3D(canvas3d.value, {
-            kind: detectKind(props.product, props.category),
+            kind: kind3d.value,
             spec: props.canvas || {},
             texture: props.preview,
         });
@@ -103,6 +105,10 @@ function addToCart() {
                         <p v-if="!preview" class="py-16 text-ink/40">No preview available.</p>
                         <p v-if="view3d && ready3d" class="pointer-events-none absolute bottom-2 right-4 text-[11px] font-medium text-ink/35">drag to rotate · scroll to zoom</p>
                     </div>
+                    <!-- CC-BY attribution for the mug/tee base meshes (scripts/blender/CREDITS.md) -->
+                    <p v-if="view3d && ready3d && ['mug', 'shirt'].includes(kind3d)" class="mt-2 text-right text-[10px] text-ink/30">
+                        base model by Poly by Google (<a href="https://creativecommons.org/licenses/by/3.0/" target="_blank" rel="noopener" class="underline">CC-BY</a>)
+                    </p>
                 </div>
 
                 <!-- details + approve -->

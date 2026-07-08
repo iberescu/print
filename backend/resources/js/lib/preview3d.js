@@ -17,9 +17,10 @@
 
 import {
     ArcRotateCamera, Color3, Color4, DirectionalLight, Engine, HemisphericLight,
-    Mesh, MeshBuilder, Scene, ShadowGenerator, StandardMaterial, Texture,
+    Mesh, MeshBuilder, Scene, SceneLoader, ShadowGenerator, StandardMaterial, Texture,
     TransformNode, Vector3, VertexBuffer,
 } from '@babylonjs/core';
+import '@babylonjs/loaders/glTF';
 import earcut from 'earcut';
 
 /** Pick a model family from the product; 'slab' covers every flat print. */
@@ -33,7 +34,10 @@ export function detectKind(product = {}, category = {}) {
 }
 
 export async function mountPreview3D(canvas, { kind = 'slab', spec = {}, texture = null } = {}) {
-    const engine = new Engine(canvas, true, { preserveDrawingBuffer: true, stencil: false, antialias: true });
+    // adaptToDeviceRatio renders at the DEVICE's resolution — without it the
+    // backing store is CSS pixels and every scaled display (retina, Windows
+    // 125%) sees a pixelated upscale
+    const engine = new Engine(canvas, true, { preserveDrawingBuffer: true, stencil: false, antialias: true, adaptToDeviceRatio: true });
     const scene = new Scene(engine);
     scene.clearColor = new Color4(1, 1, 1, 1); // the review card is white
 
@@ -71,7 +75,13 @@ export async function mountPreview3D(canvas, { kind = 'slab', spec = {}, texture
     shadows.setDarkness(0.82);
 
     const designTex = texture ? new Texture(texture, scene, false, true) : null; // invertY=true: image top = UV v1
-    const cast = BUILDERS[kind] ? BUILDERS[kind](scene, spec, designTex) : BUILDERS.slab(scene, spec, designTex);
+    if (designTex) {
+        designTex.anisotropicFilteringLevel = 8; // crisp at glancing angles
+        designTex.wrapU = Texture.CLAMP_ADDRESSMODE;
+        designTex.wrapV = Texture.CLAMP_ADDRESSMODE;
+    }
+    const build = BUILDERS[kind] || BUILDERS.slab;
+    const cast = await Promise.resolve(build(scene, spec, designTex));
     cast.forEach((m) => shadows.addShadowCaster(m));
 
     // frame the object: aim at its center, back off proportionally to its size
@@ -387,4 +397,59 @@ function shirt(scene, spec, tex) {
     return [body, print];
 }
 
-const BUILDERS = { slab, cloth, mug, tote, shirt };
+/**
+ * Blender-authored model (backend/scripts/blender/gen_models.py → public/models).
+ * Convention: the mesh named "Print" carries clean 0–1 UVs and receives the
+ * design texture; every other mesh keeps its albedo, re-lit with our Standard
+ * pipeline (the glb's PBR would render black without an environment map).
+ */
+/** Screen-facing yaw per asset (models are authored with front = Blender +Y,
+ *  which the glTF→Babylon chain lands 90° left of the camera). */
+const MODEL_YAW = { 'mug.glb': 0, 'tshirt.glb': 0, 'tote.glb': 0 };
+
+async function loadModel(scene, file, tex) {
+    const res = await SceneLoader.ImportMeshAsync('', '/models/', file, scene);
+    // spin via a wrapper pivot — the loader's __root__ carries the RH→LH
+    // conversion transform and must stay untouched
+    const root = res.meshes.find((m) => m.name === '__root__') || res.meshes[0];
+    const pivot = new TransformNode(`pivot-${file}`, scene);
+    root.parent = pivot;
+    pivot.rotation.y = MODEL_YAW[file] ?? 0;
+    const meshes = res.meshes.filter((m) => (m.getTotalVertices?.() || 0) > 0);
+    for (const m of meshes) {
+        if (/print/i.test(m.name) || /print/i.test(m.material?.name || '')) {
+            const mat = designMaterial(scene, tex);
+            mat.backFaceCulling = false; // print patches are open surfaces
+            m.material = mat;
+        } else {
+            const albedo = m.material?.albedoColor;
+            const mat = new StandardMaterial(`${m.name}-std`, scene);
+            mat.diffuseColor = albedo ? new Color3(albedo.r, albedo.g, albedo.b) : new Color3(0.92, 0.92, 0.92);
+            mat.specularColor = new Color3(0.05, 0.05, 0.05);
+            // thin garment shells (the tee) have faces viewed from both sides —
+            // one-sided lighting renders random black facets
+            mat.backFaceCulling = false;
+            mat.twoSidedLighting = true;
+            m.material = mat;
+        }
+        m.receiveShadows = false;
+    }
+    return meshes;
+}
+
+/** Prefer the Blender asset; fall back to the procedural builder if it fails. */
+const glb = (file, fallback) => async (scene, spec, tex) => {
+    try {
+        return await loadModel(scene, file, tex);
+    } catch (e) {
+        return fallback(scene, spec, tex);
+    }
+};
+
+const BUILDERS = {
+    slab,
+    cloth,
+    mug: glb('mug.glb', mug),
+    tote: glb('tote.glb', tote),
+    shirt: glb('tshirt.glb', shirt),
+};
