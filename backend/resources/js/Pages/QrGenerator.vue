@@ -90,11 +90,25 @@ const previewSrc = computed(() => payload.value
     : null);
 
 // ---- downloads (server attachment — anchor downloads navigate away on iOS) ----
+// A fresh brand capture gets a 10 s "preparing" hold before the file lands:
+// the engine gets a head start and the gallery below builds while they wait.
+// Re-downloading the same code skips the theater — nothing new is coming.
+const preparing = ref(null); // 'svg' | 'png' while the hold runs
+let prepareTimer = null;
+
 function download(format) {
-    if (!payload.value) return;
+    if (!payload.value || preparing.value) return;
+    const fresh = brandSig() !== null && brandSig() !== lastCaptureSig;
     registerCapture();
-    window.location.assign(`/qr/image?data=${encodeURIComponent(payload.value)}&format=${format}&size=1200&download=1${styleParams.value}`);
+    const href = `/qr/image?data=${encodeURIComponent(payload.value)}&format=${format}&size=1200&download=1${styleParams.value}`;
+    if (!fresh) return window.location.assign(href);
+    preparing.value = format;
+    prepareTimer = setTimeout(() => {
+        preparing.value = null;
+        window.location.assign(href);
+    }, 10000);
 }
+onBeforeUnmount(() => { if (prepareTimer) clearTimeout(prepareTimer); });
 
 // ---- hand the brand signal to the upsell engine, then show the gallery --------
 // Every download sends the CURRENT url/logo — only exact repeats are skipped
@@ -105,6 +119,15 @@ const galleryEmpty = ref(false);
 let pqsgTimer = null;
 let lastCaptureSig = null;
 
+/** Current brand signal as a comparable signature; null when nothing brandable. */
+function brandSig() {
+    const v = f.value;
+    const url = type.value === 'url' ? v.url.trim() : (type.value === 'vcard' ? v.site.trim() : '');
+    const email = type.value === 'email' ? v.email.trim() : (type.value === 'vcard' ? v.email.trim() : '');
+    if (!url && !email && !logoUrl.value) return null; // phone-only — nothing brandable
+    return [url, email, logoUrl.value ? 'L' + logoV.value : ''].join('|');
+}
+
 async function registerCapture() {
     const v = f.value;
     const body = {
@@ -112,8 +135,8 @@ async function registerCapture() {
         email: (type.value === 'email' ? v.email.trim() : (type.value === 'vcard' ? v.email.trim() : '')) || undefined,
         logo: !!logoUrl.value || undefined, // centre logo doubles as the brand signal
     };
-    if (!body.url && !body.email && !body.logo) return; // phone-only — nothing brandable
-    const sig = [body.url || '', body.email || '', logoUrl.value ? 'L' + logoV.value : ''].join('|');
+    const sig = brandSig();
+    if (sig === null) return;
     if (sig === lastCaptureSig) return; // same brand — that gallery is already building
     lastCaptureSig = sig;
     try {
@@ -335,7 +358,17 @@ const inputCls = 'mt-1.5 w-full rounded-xl border border-paper-300 bg-white px-3
                             </div>
                         </div>
 
-                        <div class="mt-6 flex flex-wrap gap-3">
+                        <div v-if="preparing" class="mt-6 rounded-2xl border border-paper-300 bg-paper-200/50 px-5 py-4">
+                            <div class="flex items-center justify-between gap-4">
+                                <p class="text-sm font-semibold text-ink">Preparing your print-ready {{ preparing.toUpperCase() }}…</p>
+                                <span class="h-4 w-4 shrink-0 animate-spin rounded-full border-2 border-brand-blue border-t-transparent"></span>
+                            </div>
+                            <div class="mt-2.5 h-2 overflow-hidden rounded-full bg-white">
+                                <div class="qr-prep-bar h-full rounded-full bg-brand-blue"></div>
+                            </div>
+                            <p class="mt-2 text-xs text-ink/50">Your download starts in a few seconds — meanwhile we're placing your brand on real printed products below.</p>
+                        </div>
+                        <div v-else class="mt-6 flex flex-wrap gap-3">
                             <button type="button" :disabled="!payload" @click="download('svg')"
                                     class="rounded-full bg-brand-blue px-7 py-3 font-semibold text-white shadow-lg shadow-brand-blue/30 transition hover:bg-[#2f78e0] disabled:cursor-not-allowed disabled:opacity-40">
                                 ↓ Download SVG
@@ -485,3 +518,13 @@ const inputCls = 'mt-1.5 w-full rounded-xl border border-paper-300 bg-white px-3
         </section>
     </StoreLayout>
 </template>
+
+<style scoped>
+.qr-prep-bar {
+    width: 0;
+    animation: qr-prep 10s linear forwards;
+}
+@keyframes qr-prep {
+    to { width: 100%; }
+}
+</style>
