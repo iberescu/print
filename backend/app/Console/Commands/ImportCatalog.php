@@ -160,8 +160,8 @@ class ImportCatalog extends Command
                     $kept = 0;
                     foreach (array_values($opt['values']) as $vi => $val) {
                         $label = trim((string) ($val['label'] ?? ''));
-                        // crawl noise: section headers/disclaimers read as values
-                        if ($label === '' || preg_match('/not available|other selections|^see /i', $label)) {
+                        // crawl noise: section headers/disclaimers/dropdown placeholders read as values
+                        if ($label === '' || preg_match('/not available|other selections|^see |^select\b|^choose\b/i', $label)) {
                             continue;
                         }
                         $dims = $val['dimensions'] ?? null;
@@ -176,6 +176,10 @@ class ImportCatalog extends Command
                         ]);
                         $kept++;
                         $stats['values']++;
+                    }
+                    if ($kept === 0) {
+                        $option->delete();      // every value was crawl noise ("Select...")
+                        $stats['options']--;
                     }
                 }
 
@@ -195,6 +199,7 @@ class ImportCatalog extends Command
             $this->markFeatured();
             $this->wireShapeSurfaces();
             $this->refineShapedSurfaces();   // curated products win: clears value-level wiring
+            $this->refineNamedDies();
             $this->wireCornerSurfaces();
         }
 
@@ -691,6 +696,52 @@ class ImportCatalog extends Command
             .' L 100 '.(100 - $ry).' A '.$rx.' '.$ry.' 0 0 1 '.(100 - $rx).' 100'
             .' L '.$rx.' 100 A '.$rx.' '.$ry.' 0 0 1 0 '.(100 - $ry)
             .' L 0 '.$ry.' A '.$rx.' '.$ry.' 0 0 1 '.$rx.' 0 Z';
+    }
+
+    /**
+     * A product whose NAME declares its die (Circle Stickers, Oval Stickers,
+     * Rounded Corner Postcards, Circle Stamps…) but whose crawl brought no
+     * template gets the parametric cut on a DEDICATED clone of its surface —
+     * same fallback-only rule as refineShapedSurfaces, never a shared surface.
+     */
+    private function refineNamedDies(): void
+    {
+        foreach (Product::with('surface')->get() as $p) {
+            $s = $p->surface;
+            if (! $s || $s->cut_path) {
+                continue; // no dims to shape / the crawler template already rules
+            }
+            $name = strtolower($p->name);
+            // only flat print products — "Round Podium Counters" is a cylinder whose
+            // PRINT surface is a rectangular wrap, not a round die
+            if (! preg_match('/sticker|label|stamp|card|magnet|postcard|coaster|decal|tag|invitation/', $name)) {
+                continue;
+            }
+            $cut = match (true) {
+                str_contains($name, 'rounded corner')               => $this->roundedCutPath((float) $s->width, (float) $s->height, $s->unit),
+                (bool) preg_match('/\b(circle|oval|round)\b/', $name) => self::SHAPE_PATHS['ellipse'],
+                (bool) preg_match('/\bleaf\b/', $name)              => self::SHAPE_PATHS['leaf'],
+                (bool) preg_match('/\bheart\b/', $name)             => self::SHAPE_PATHS['heart'],
+                default                                             => null,
+            };
+            if (! $cut) {
+                continue;
+            }
+            $ded = Surface::updateOrCreate(['slug' => Str::limit($s->slug.'-cut-'.$p->slug, 96, '')], [
+                'name'           => $s->name.' ('.$p->name.')',
+                'unit'           => $s->unit,
+                'width'          => $s->width,
+                'height'         => $s->height,
+                'bleed'          => $s->bleed,
+                'safety'         => $s->safety,
+                'no_print_areas' => $s->no_print_areas ?? [],
+                'fold_lines'     => $s->fold_lines ?? [],
+                'cut_path'       => $cut,
+                'is_active'      => true,
+            ]);
+            $p->update(['surface_id' => $ded->id]);
+            $this->line("  named die: {$p->name} -> {$ded->slug}");
+        }
     }
 
     /**

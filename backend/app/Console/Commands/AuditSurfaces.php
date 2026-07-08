@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use App\Models\Product;
 use App\Models\Surface;
 use App\Support\PrintSpec;
+use App\Support\SurfaceResolver;
 use Illuminate\Console\Command;
 
 /**
@@ -263,8 +264,15 @@ class AuditSurfaces extends Command
         }
 
         foreach ($p->options as $o) {
+            // a Size option whose values are bare letters is a crawl double-read
+            // (dims captured, labels lost) — works, but PIM-rename it
+            if (preg_match('/size/i', $o->name) && $o->values->count() > 1
+                && $o->values->every(fn ($v) => preg_match('/^[A-Z]$/', $v->label))) {
+                $this->add('INFO', $where, "size option {$o->id} uses letter labels (".$o->values->pluck('label')->implode('/').') — crawl lost the names');
+            }
+
             foreach ($o->values as $v) {
-                if (preg_match('/not available|other selections|^see /i', $v->label)) {
+                if (preg_match('/not available|other selections|^see |^select\b|^choose\b/i', $v->label)) {
                     $this->add('ERROR', $where, "junk option value \"{$v->label}\" ({$o->name})");
                 }
 
@@ -301,6 +309,45 @@ class AuditSurfaces extends Command
                             .($p->surface?->cut_path ? ' — designer is stuck on the product die' : ''));
                     }
                 }
+            }
+
+            // END-STATE: resolve the designer geometry for each shape value and
+            // check the rendered die against what the label promises (this is what
+            // caught Oval BCs rendering flat: a crawl-artifact plain surface on the
+            // "Oval" value read as an explicit flatten)
+            if (preg_match('/shape/i', $o->name)) {
+                foreach ($o->values as $v) {
+                    $kind = ImportCatalog::classifyShape($v->label);
+                    if ($kind === null || $kind === 'keep') {
+                        continue; // exotic/format values legitimately show the product default
+                    }
+                    $cut = SurfaceResolver::resolve($p, [$v->id])['cut'] ?? null;
+                    $custom = str_contains(strtolower($v->label), 'custom');
+                    $expectCut = $kind !== 'flat' || (! $custom && (bool) $p->surface?->cut_path);
+                    if ($expectCut && ! $cut) {
+                        $this->add('ERROR', $where, "shape \"{$v->label}\" resolves WITHOUT its die in the designer");
+                    } elseif (! $expectCut && $cut) {
+                        $this->add('ERROR', $where, "shape \"{$v->label}\" should be flat but resolves with a die");
+                    }
+                }
+            }
+        }
+
+        // die-named products (Oval/Circle/Leaf/Rounded-Corner…) must open the
+        // designer with their die — unless the default shape is genuinely flat.
+        // ("Die-Cut …" products are EXCLUDED: the customer's artwork drives that
+        // die, so a flat canvas is the honest editor.)
+        if (preg_match('/\b(oval|circle|leaf|heart|rounded corner)\b/i', $p->name)) {
+            $defShape = null;
+            foreach ($p->options as $o) {
+                if (preg_match('/shape/i', $o->name)) {
+                    $defShape = $o->values->first(fn ($v) => $v->is_default);
+                    break;
+                }
+            }
+            $defKind = $defShape ? ImportCatalog::classifyShape($defShape->label) : null;
+            if ($defKind !== 'flat' && ! (SurfaceResolver::resolve($p, [])['cut'] ?? null)) {
+                $this->add('ERROR', $where, 'die-named product opens the designer FLAT (no cut resolves by default)');
             }
         }
     }

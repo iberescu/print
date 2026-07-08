@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\Product;
 use App\Models\Template;
 use App\Services\Pricing;
-use App\Support\PrintSpec;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -78,79 +77,10 @@ class DesignController extends Controller
         ]);
     }
 
-    /** The die-cut edge and the canvas dimensions resolve INDEPENDENTLY, then merge:
-     *  a Shape value carries the cut (possibly none — "Rectangle" flattens a die-cut
-     *  default), a Size/Format value carries the dims, a cut-bearing value on any
-     *  other option (e.g. Corners → Rounded) still wins the cut. Bleed/safety come
-     *  from the cut's surface — the die template's measured margins beat a size
-     *  value's print-standard defaults. */
+    /** Canvas geometry for the product + selection — see SurfaceResolver. */
     private function geometry(Product $product, array $opts): array
     {
-        $base = $product->surface;
-
-        // Per option: the explicitly selected value, else its default (the product
-        // page sends the full selection; template/deep links may send none).
-        $picked = [];
-        foreach ($product->options as $opt) {
-            $v = $opt->values->first(fn ($v) => in_array($v->id, $opts, true))
-                ?? $opt->values->first(fn ($v) => $v->is_default);
-            if ($v) {
-                $picked[] = [$opt, $v];
-            }
-        }
-
-        $cut = $base?->cut_path;
-        $cutSrc = $base;                // surface whose bleed/safety apply
-        $dims = null;                   // plain value surface that sets the dims
-        $shapeDims = null;              // a shape value's own surface can set dims too
-        foreach ($picked as [$opt, $v]) {
-            if (! $v->surface) {
-                continue;
-            }
-            if (preg_match('/shape/i', $opt->name)) {
-                // a Shape value ALWAYS owns the cut — an explicit flat shape
-                // (Rectangle, Custom die-cut) clears an inherited die
-                $cut = $v->surface->cut_path;
-                $cutSrc = $v->surface;
-                $shapeDims = $v->surface;
-            } elseif ($v->surface->cut_path) {
-                $cut = $v->surface->cut_path;   // Corners → Rounded etc.
-                $cutSrc = $v->surface;
-            } else {
-                $dims ??= $v->surface;          // size/format/paper value
-            }
-        }
-
-        // Dims: explicit value surface > parseable size label > shape surface > product.
-        $spec = null;
-        $specSrc = null;                // surface the spec was built from (null = parsed label)
-        if ($dims) {
-            $spec = PrintSpec::fromSurface($dims);
-            $specSrc = $dims;
-        } else {
-            foreach ($picked as [$opt, $v]) {
-                if (preg_match('/size|format|dimension/i', $opt->name) && ! $v->surface
-                    && PrintSpec::parsesAsSize($v->label, $product)) {
-                    $spec = PrintSpec::canvas($product, $opts);
-                    break;
-                }
-            }
-        }
-        if (! $spec && $shapeDims) {
-            $spec = PrintSpec::fromSurface($shapeDims);
-            $specSrc = $shapeDims;
-        }
-        if (! $spec) {
-            $spec = $base ? PrintSpec::fromSurface($base) : PrintSpec::canvas($product, $opts);
-            $specSrc = $base;
-        }
-
-        $spec['cut'] = $cut;
-        if ($cutSrc && $cutSrc->id !== $specSrc?->id) {
-            $spec = PrintSpec::withGuidesFrom($spec, $cutSrc);
-        }
-
-        return $spec;
+        return \App\Support\SurfaceResolver::resolve($product, $opts);
     }
 
     public function templateData(Template $template): JsonResponse
