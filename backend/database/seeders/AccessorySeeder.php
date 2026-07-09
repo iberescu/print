@@ -5,7 +5,6 @@ namespace Database\Seeders;
 use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\Storage;
 
 /**
  * Non-personalised accessories — the card-holder cross-sell in the upsell flow
@@ -40,7 +39,10 @@ class AccessorySeeder extends Seeder
                 'supports_upload' => false,
                 'is_active'       => true,
                 'sort_order'      => 300 + $i,
-                'image_path'      => Storage::disk('public')->exists("products/{$item['slug']}.webp") ? "products/{$item['slug']}.webp" : null,
+                // the webp is committed to the repo, so always link it — the old
+                // conditional left image_path NULL when the seeder ran before the
+                // image was generated (a non-FRESH deploy never re-seeds to fix it)
+                'image_path'      => "products/{$item['slug']}.webp",
             ]);
             $product->quantities()->updateOrCreate(['quantity' => 1], [
                 'unit_price' => $item['price'], 'total_price' => $item['price'], 'is_default' => true, 'sort_order' => 0,
