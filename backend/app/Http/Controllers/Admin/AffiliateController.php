@@ -19,6 +19,7 @@ class AffiliateController extends Controller
                 $impressions = (int) $a->stats->sum('impressions');
                 $clicks = (int) $a->stats->sum('clicks');
                 $earned = (int) round($impressions / 1000 * $a->cpm_cents);
+                $bonus = (int) $a->bonus_cents;
                 $paid = (int) $a->payouts->sum('amount_cents');
 
                 return [
@@ -33,8 +34,9 @@ class AffiliateController extends Controller
                     'impressions' => $impressions,
                     'clicks'      => $clicks,
                     'earned'      => $earned / 100,
+                    'bonus'       => $bonus / 100,
                     'paid'        => $paid / 100,
-                    'owed'        => max(0, $earned - $paid) / 100,
+                    'owed'        => max(0, $earned + $bonus - $paid) / 100,
                     'since'       => $a->created_at?->toFormattedDateString(),
                     'notes'       => $a->notes,
                 ];
@@ -52,7 +54,12 @@ class AffiliateController extends Controller
             'website' => ['nullable', 'string', 'max:200'],
         ]);
 
-        Affiliate::create($data + ['key' => Str::random(40), 'status' => 'active']);
+        Affiliate::create($data + [
+            'key'         => Str::random(40),
+            'status'      => 'active',
+            'approved_at' => now(),
+            'bonus_cents' => (int) config('shop.affiliate_signup_bonus_cents', 25000),
+        ]);
 
         return back()->with('success', 'Affiliate created — copy their embed key from the row.');
     }
@@ -71,9 +78,13 @@ class AffiliateController extends Controller
             'notes'     => $data['notes'] ?? null,
         ], fn ($v) => $v !== null));
 
-        // First activation sends the onboarding email: key, snippet, portal link.
+        // First activation: credit the one-time signup bonus + send onboarding
+        // (key, snippet, portal link). approved_at guards against re-crediting.
         if (($data['status'] ?? null) === 'active' && ! $affiliate->approved_at) {
-            $affiliate->update(['approved_at' => now()]);
+            $affiliate->update([
+                'approved_at' => now(),
+                'bonus_cents' => (int) config('shop.affiliate_signup_bonus_cents', 25000),
+            ]);
             try {
                 \Illuminate\Support\Facades\Mail::to($affiliate->email)->send(new \App\Mail\AffiliateApproved($affiliate));
             } catch (\Throwable $e) {

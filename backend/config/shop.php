@@ -7,6 +7,12 @@ return [
     'free_shipping_threshold' => (float) env('FREE_SHIPPING_THRESHOLD', 50),
 
     /*
+    | One-time credit added to a partner's balance when their affiliate
+    | application is approved (USD cents). Counts toward what they're owed.
+    */
+    'affiliate_signup_bonus_cents' => (int) env('AFFILIATE_SIGNUP_BONUS_CENTS', 25000),
+
+    /*
     | Legal entity behind the storefront (shown on legal pages + the footer).
     */
     'company' => [

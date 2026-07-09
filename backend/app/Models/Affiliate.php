@@ -7,9 +7,11 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /** A B2B partner embedding the affiliate widget — paid per 1000 impressions. */
-#[Fillable(['name', 'company', 'email', 'website', 'key', 'cpm_cents', 'status', 'notes'])]
+#[Fillable(['name', 'company', 'email', 'website', 'key', 'cpm_cents', 'bonus_cents', 'status', 'notes', 'approved_at'])]
 class Affiliate extends Model
 {
+    protected $casts = ['approved_at' => 'datetime'];
+
     public function stats(): HasMany
     {
         return $this->hasMany(AffiliateStat::class);
@@ -41,9 +43,10 @@ class Affiliate extends Model
         return (int) $this->payouts()->sum('amount_cents');
     }
 
+    /** Earnings + signup bonus, minus what's already been paid out. */
     public function owedCents(): int
     {
-        return max(0, $this->earnedCents() - $this->paidCents());
+        return max(0, $this->earnedCents() + (int) $this->bonus_cents - $this->paidCents());
     }
 
     /** Count one event on today's row (atomic upsert-increment). */

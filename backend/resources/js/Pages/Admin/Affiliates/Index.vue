@@ -57,7 +57,7 @@ const statusClass = (s) => ({ active: 'bg-emerald-100 text-emerald-700', pending
                     <tr>
                         <th class="px-5 py-3">Affiliate</th><th class="px-5 py-3">Status</th><th class="px-5 py-3">CPM</th>
                         <th class="px-5 py-3 text-right">Impressions</th><th class="px-5 py-3 text-right">Clicks</th>
-                        <th class="px-5 py-3 text-right">Earned</th><th class="px-5 py-3 text-right">Paid</th><th class="px-5 py-3 text-right">Owed</th>
+                        <th class="px-5 py-3 text-right">Earned</th><th class="px-5 py-3 text-right">Bonus</th><th class="px-5 py-3 text-right">Paid</th><th class="px-5 py-3 text-right">Owed</th>
                         <th class="px-5 py-3"></th>
                     </tr>
                 </thead>
@@ -75,6 +75,7 @@ const statusClass = (s) => ({ active: 'bg-emerald-100 text-emerald-700', pending
                             <td class="px-5 py-3 text-right tabular-nums text-ink/80">{{ a.impressions.toLocaleString() }}</td>
                             <td class="px-5 py-3 text-right tabular-nums text-ink/80">{{ a.clicks.toLocaleString() }}</td>
                             <td class="px-5 py-3 text-right tabular-nums font-medium text-ink">{{ money(a.earned) }}</td>
+                            <td class="px-5 py-3 text-right tabular-nums" :class="a.bonus > 0 ? 'text-brand-blue font-medium' : 'text-ink/40'">{{ a.bonus > 0 ? money(a.bonus) : '—' }}</td>
                             <td class="px-5 py-3 text-right tabular-nums text-ink/70">{{ money(a.paid) }}</td>
                             <td class="px-5 py-3 text-right tabular-nums font-semibold" :class="a.owed > 0 ? 'text-brand-700' : 'text-ink/50'">{{ money(a.owed) }}</td>
                             <td class="px-5 py-3 text-right">
@@ -86,9 +87,9 @@ const statusClass = (s) => ({ active: 'bg-emerald-100 text-emerald-700', pending
                                 </div>
                             </td>
                         </tr>
-                        <tr v-if="revealed === a.id"><td colspan="9" class="bg-paper-200/50 px-5 py-3"><pre class="overflow-x-auto text-xs text-ink/70">{{ snippet(a) }}</pre></td></tr>
+                        <tr v-if="revealed === a.id"><td colspan="10" class="bg-paper-200/50 px-5 py-3"><pre class="overflow-x-auto text-xs text-ink/70">{{ snippet(a) }}</pre></td></tr>
                     </template>
-                    <tr v-if="!affiliates.length"><td colspan="9" class="px-5 py-12 text-center text-ink/50">No affiliates yet — applications from the landing page appear here.</td></tr>
+                    <tr v-if="!affiliates.length"><td colspan="10" class="px-5 py-12 text-center text-ink/50">No affiliates yet — applications from the landing page appear here.</td></tr>
                 </tbody>
             </table>
         </div>
