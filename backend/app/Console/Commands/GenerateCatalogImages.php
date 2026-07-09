@@ -30,6 +30,16 @@ class GenerateCatalogImages extends Command
         .'overlays — but the printed product faces MUST display the described brand design with a clearly visible '
         .'logo and readable text.';
 
+    /** Accessories (card holders/cases/stands): tight, product-focused catalog shot,
+     *  Vistaprint-style — the product fills the frame on pure white, plain & unbranded. */
+    private const ACCESSORY_STYLE = 'Clean e-commerce catalog product photograph. The single product is CENTERED and '
+        .'FILLS most of the frame — tight crop, minimal empty space, product-focused — shot straight-on or at a gentle '
+        .'three-quarter angle. Pure seamless white background (#ffffff), bright even soft studio lighting, one soft '
+        .'natural contact shadow directly beneath, crisp sharp focus showing the material, finish and craftsmanship. '
+        .'The product is completely PLAIN and UNBRANDED — no logo, no printed design, no engraving, no text anywhere. '
+        .'If it holds business cards, show a small neat stack of plain blank white cards. Realistic premium product '
+        .'photography, no extra props, no text, no watermark, no UI overlay.';
+
     /** Fictional B2B brands / palettes / motifs — picked deterministically per product slug. */
     private const BRANDS = [
         ['Northwind Consulting', 'navy blue and lime green on white'],
@@ -154,8 +164,20 @@ class GenerateCatalogImages extends Command
                 ->orderBy('sort_order')->get();
 
             foreach ($products as $product) {
-                // Accessories and other non-personalisable items ship as-is —
-                // their photo must be neutral, no printed brand design.
+                // Accessories (card holders/cases/stands) — a tight product-focused
+                // catalog shot on white, always PLAIN (holders aren't printed), even
+                // though the crawl left some flagged supports_design.
+                if ($product->category->slug === 'accessories') {
+                    $tasks[] = [
+                        'path'   => "products/{$product->slug}",
+                        'maxw'   => 1000,
+                        'prompt' => "{$product->name} — {$product->tagline} ".self::ACCESSORY_STYLE,
+                        'save'   => fn (string $p) => tap($product)->update(['image_path' => $p]),
+                    ];
+                    continue;
+                }
+
+                // Other non-personalisable items ship as-is — neutral, no brand design.
                 if (! $product->supports_design && ! $product->supports_upload) {
                     $tasks[] = [
                         'path'   => "products/{$product->slug}",
