@@ -56,6 +56,7 @@ class AdsSetup extends Command
 
         $labels = $this->conversionActions();
         $this->searchCampaigns();
+        $this->shoppingCampaign($cfg['merchant_id'] ?? null);
         $lists = $this->userLists();
         $this->remarketingCampaign($lists['all']);
 
@@ -294,6 +295,77 @@ class AdsSetup extends Command
             ]]]);
             $this->line("  ad group ready: $agName (".count($keywords)." keywords + RSA)");
         }
+    }
+
+    // ---- shopping ------------------------------------------------------------
+
+    /**
+     * Standard Shopping campaign focused on business cards. Needs a linked
+     * Merchant Center (GOOGLE_ADS_MERCHANT_ID) — the feed /feed/google.xml sets
+     * g:product_type to the category name, so a campaign-level listing scope of
+     * productType LEVEL1 = "Business Cards" limits it to those products; a single
+     * "all products" listing-group UNIT bids on that scoped inventory. PAUSED.
+     */
+    private function shoppingCampaign(?string $merchantId): void
+    {
+        $name = 'RMP — Business Cards (Shopping)';
+        if (! $merchantId) {
+            $this->warn("skip Shopping: link Merchant Center + set GOOGLE_ADS_MERCHANT_ID (feed ready at /feed/google.xml). \"$name\" not created.");
+
+            return;
+        }
+        if ($this->existing('campaign', $name)) {
+            $this->line("campaign exists, skipping: $name");
+
+            return;
+        }
+
+        $budget = $this->existing('campaign_budget', 'RMP Shopping Budget')
+            ?? $this->mutate('campaignBudgets', [['create' => [
+                'name' => 'RMP Shopping Budget', 'amountMicros' => (string) 180_000_000, // 180 RON/day ≈ $40
+                'deliveryMethod' => 'STANDARD', 'explicitlyShared' => false,
+            ]]])[0];
+
+        $campaign = $this->mutate('campaigns', [['create' => [
+            'name' => $name, 'status' => 'PAUSED', 'advertisingChannelType' => 'SHOPPING',
+            'campaignBudget' => $budget,
+            'manualCpc' => ['enhancedCpcEnabled' => false],
+            'shoppingSetting' => [
+                'merchantId' => (string) $merchantId,
+                'feedLabel' => 'US',
+                'campaignPriority' => 0,
+            ],
+            'networkSettings' => ['targetGoogleSearch' => true, 'targetSearchNetwork' => false, 'targetContentNetwork' => false, 'targetPartnerSearchNetwork' => false],
+            'geoTargetTypeSetting' => ['positiveGeoTargetType' => 'PRESENCE', 'negativeGeoTargetType' => 'PRESENCE'],
+            'containsEuPoliticalAdvertising' => 'DOES_NOT_CONTAIN_EU_POLITICAL_ADVERTISING',
+        ]]])[0];
+        $this->info("campaign created (PAUSED): $name");
+
+        // USA + English + limit the whole campaign's inventory to Business Cards
+        $this->mutate('campaignCriteria', [
+            ['create' => ['campaign' => $campaign, 'location' => ['geoTargetConstant' => self::US]]],
+            ['create' => ['campaign' => $campaign, 'language' => ['languageConstant' => self::EN]]],
+            ['create' => ['campaign' => $campaign, 'listingScope' => ['dimensions' => [
+                ['productType' => ['level' => 'LEVEL1', 'value' => 'Business Cards']],
+            ]]]],
+        ]);
+
+        $ag = $this->mutate('adGroups', [['create' => [
+            'name' => "$name · Products", 'campaign' => $campaign, 'status' => 'ENABLED', 'type' => 'SHOPPING_PRODUCT_ADS',
+        ]]])[0];
+
+        // one root "everything" listing-group UNIT (the scoped = business cards)
+        $this->mutate('adGroupCriteria', [['create' => [
+            'adGroup' => $ag, 'status' => 'ENABLED',
+            'listingGroup' => ['type' => 'UNIT'],
+            'cpcBidMicros' => (string) 3_000_000, // 3 RON max CPC ≈ $0.65
+        ]]]);
+
+        // a Product Shopping Ad pulls creative from the Merchant feed
+        $this->mutate('adGroupAds', [['create' => [
+            'adGroup' => $ag, 'status' => 'ENABLED', 'ad' => ['shoppingProductAd' => (object) []],
+        ]]]);
+        $this->line('  shopping ad group ready: Products (business-cards listing scope + product ad)');
     }
 
     // ---- remarketing ---------------------------------------------------------

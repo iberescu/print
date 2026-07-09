@@ -50,6 +50,7 @@ return [
         'refresh_token'     => env('GOOGLE_ADS_REFRESH_TOKEN'),
         'customer_id'       => env('GOOGLE_ADS_CUSTOMER_ID'),
         'login_customer_id' => env('GOOGLE_ADS_LOGIN_CUSTOMER_ID'),
+        'merchant_id'       => env('GOOGLE_ADS_MERCHANT_ID'), // Merchant Center, for Shopping campaigns
         'tag_id'            => env('GOOGLE_ADS_TAG_ID'),
         'label_purchase'    => env('GOOGLE_ADS_LABEL_PURCHASE'),
         'label_logo'        => env('GOOGLE_ADS_LABEL_LOGO'),
