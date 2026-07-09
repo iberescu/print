@@ -21,6 +21,8 @@ const sent = ref(false);
 const apply = () => form.post('/affiliates/apply', { preserveScroll: true, onSuccess: () => (sent.value = true) });
 
 const faq = [
+    { q: 'How does the $250 sign-up bonus work?', a: 'New partners get a $250 credit on their account once approved and the widget goes live. It counts toward your first payouts — a head start while your impressions ramp up. One bonus per partner.' },
+    { q: 'Per view or per lead?', a: 'Per view. You earn on every viewable impression (CPM) — you are not waiting on a signup or a sale to get paid. Ads people actually saw earn, full stop.' },
     { q: 'How are impressions counted?', a: 'One impression is counted when the ad has finished rendering the visitor\'s products AND at least half of it is on screen. Blank or below-the-fold units never count — you are paid for ads people actually saw.' },
     { q: 'When and how do we get paid?', a: 'Monthly, once your balance passes $50. Your dashboard row shows impressions, the exact amount earned and what is still owed at any moment.' },
     { q: 'What do we pass to the widget?', a: 'A public URL of your user\'s brand image, or their website address — one attribute, documented in your onboarding pack. No personal data, no cookies from us, no tracking scripts beyond the impression counter.' },
@@ -38,7 +40,7 @@ const steps = [
 </script>
 
 <template>
-    <Head title="Affiliate Program — Personalized Ads, $15–20 CPM" />
+    <Head title="Affiliate Program — $250 Sign-Up Bonus + $15–20 CPM" />
     <StoreLayout>
         <!-- hero: the pitch + the widget actually running -->
         <section class="relative isolate overflow-hidden bg-gradient-to-br from-navy via-navy to-navy-950 text-white">
@@ -54,12 +56,16 @@ const steps = [
             <div class="relative mx-auto grid max-w-7xl items-center gap-12 px-6 py-16 sm:px-8 sm:py-20 lg:grid-cols-[1.05fr_1fr]">
                 <div>
                     <p class="text-sm font-semibold uppercase tracking-widest text-[#9cc6ff]">Partner program</p>
+                    <span class="mt-4 inline-flex items-center gap-2 rounded-full bg-lime-accent/15 px-3.5 py-1.5 text-sm font-semibold text-lime-accent ring-1 ring-lime-accent/30">
+                        🎉 $250 sign-up bonus for new partners
+                    </span>
                     <h1 class="mt-4 font-display text-4xl font-extrabold leading-[1.05] tracking-tight sm:text-5xl">
                         Personalized ads,<br />built for each visitor.<br /><span class="text-lime-accent">Paid per view.</span>
                     </h1>
                     <p class="mt-5 max-w-lg text-lg text-white/70">
                         Embed one widget. It builds a personalized ad for every visitor — their own brand, printed on
-                        real products they can actually buy. We pay <strong class="text-lime-accent">$15–20 per 1000 views</strong>.
+                        real products they can actually buy. Start with a <strong class="text-lime-accent">$250 bonus</strong>,
+                        then earn <strong class="text-lime-accent">$15–20 per 1000 views</strong> — paid per impression, not per lead.
                     </p>
                     <div class="mt-7 flex max-w-lg items-start gap-3 rounded-xl border border-white/15 bg-white/5 px-4 py-3.5 text-sm text-white/70">
                         <svg class="mt-0.5 h-5 w-5 shrink-0 text-[#9cc6ff]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M9 12l2 2 4-4" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -68,7 +74,7 @@ const steps = [
                     <div class="mt-7 flex flex-wrap items-center gap-4">
                         <a href="#apply" class="rounded-full bg-brand-blue px-8 py-4 font-semibold text-white shadow-lg shadow-brand-blue/30 transition hover:bg-[#2f78e0]">Apply to join</a>
                         <ul class="flex flex-wrap gap-x-4 gap-y-1 text-sm text-white/65">
-                            <li>✓ B2B audiences only</li><li>✓ Viewable impressions only</li><li>✓ Paid monthly</li>
+                            <li>✓ $250 sign-up bonus</li><li>✓ Paid per view, not per lead</li><li>✓ Paid monthly</li>
                         </ul>
                     </div>
                 </div>
@@ -95,9 +101,9 @@ const steps = [
         <!-- money strip -->
         <section class="border-b border-paper-300 bg-paper-200/60">
             <div class="mx-auto grid max-w-7xl grid-cols-2 gap-6 px-6 py-8 sm:px-8 md:grid-cols-4">
+                <div class="text-center"><p class="font-display text-2xl font-bold text-brand-blue">$250</p><p class="mt-0.5 text-sm text-ink/55">sign-up bonus, new partners</p></div>
                 <div class="text-center"><p class="font-display text-2xl font-bold text-brand-700">$15–20</p><p class="mt-0.5 text-sm text-ink/55">per 1000 viewable impressions</p></div>
                 <div class="text-center"><p class="font-display text-2xl font-bold text-brand-700">2 lines</p><p class="mt-0.5 text-sm text-ink/55">of code to integrate</p></div>
-                <div class="text-center"><p class="font-display text-2xl font-bold text-brand-700">~30 s</p><p class="mt-0.5 text-sm text-ink/55">to render a visitor's products</p></div>
                 <div class="text-center"><p class="font-display text-2xl font-bold text-brand-700">Monthly</p><p class="mt-0.5 text-sm text-ink/55">payouts, $50 minimum</p></div>
             </div>
         </section>
@@ -186,7 +192,7 @@ const steps = [
         <section id="apply" class="mx-auto max-w-4xl scroll-mt-24 px-6 pb-20 sm:px-8">
             <div class="rounded-3xl border border-paper-300 bg-white p-8 shadow-sm sm:p-10">
                 <h2 class="font-display text-2xl font-bold tracking-tight sm:text-3xl">Apply to the program</h2>
-                <p class="mt-2 max-w-xl text-ink/60">Tell us where the widget would live. We review within one business day and email your widget key — you could be earning this week.</p>
+                <p class="mt-2 max-w-xl text-ink/60">Tell us where the widget would live. We review within one business day and email your widget key — approved partners start with a <strong class="text-brand-700">$250 bonus</strong> and could be earning this week.</p>
 
                 <div v-if="sent" class="mt-6 rounded-2xl bg-emerald-50 px-5 py-6 text-emerald-800">
                     <p class="font-semibold">Application received.</p>

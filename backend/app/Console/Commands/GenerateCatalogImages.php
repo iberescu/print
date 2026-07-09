@@ -92,6 +92,23 @@ class GenerateCatalogImages extends Command
         }
 
         if (in_array($only, ['all', 'promo'], true)) {
+            // Facebook/Instagram ad creative for affiliate recruitment (square 1:1).
+            $tasks[] = [
+                'path'   => 'promos/affiliate-fb-ad',
+                'maxw'   => 1080,
+                'prompt' => 'Scroll-stopping square 1:1 social media ad creative for recruiting affiliate marketers to a '
+                    .'print brand\'s partner program. Modern deep-navy (#16233b) background with sophisticated fintech '
+                    .'depth: a soft halftone dot gradient, thin concentric arcs, and one bold rising line-chart curve '
+                    .'with small glowing lime-green (#c7f23d) nodes climbing to the upper right — signalling growing '
+                    .'passive earnings. Dominant centre: a huge premium pure-white "$250" in an elegant editorial '
+                    .'typeface, and directly beneath it "SIGN-UP BONUS" in wide letterspaced light-blue (#9cc6ff) '
+                    .'capitals with a short lime-green underline. Small stacked coin / upward-arrow motifs in blue tones '
+                    .'at the lower left for a finance feel. Balanced composition, generous margins so nothing is '
+                    .'cropped on mobile, cinematic soft lighting, luxury affiliate-marketing aesthetic. Exactly the '
+                    .'text "$250" and "SIGN-UP BONUS" and NOTHING else — no other words, no paragraphs, no logos, '
+                    .'no watermark, no UI, no human faces.',
+                'save'   => null,
+            ];
             $tasks[] = [
                 'path'   => 'promos/layout-ai-offer',
                 'maxw'   => 1200,
