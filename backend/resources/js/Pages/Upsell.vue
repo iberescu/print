@@ -29,7 +29,7 @@ let stepLoadTimer = null;
 function armStepLoader() {
     stepLoading.value = true;
     if (stepLoadTimer) clearTimeout(stepLoadTimer);
-    stepLoadTimer = setTimeout(() => (stepLoading.value = false), 2000);
+    stepLoadTimer = setTimeout(() => (stepLoading.value = false), 1000);
 }
 const loaderText = computed(() => ({
     finalize: 'Preparing your final step…',
@@ -157,7 +157,7 @@ function next() {
                 <div v-for="i in stepCount" :key="i" class="h-1.5 flex-1 rounded-full transition-colors" :class="i <= stepIndex ? 'bg-brand-600' : 'bg-paper-300'"></div>
             </div>
 
-            <!-- 2s "preparing" beat before each step reveals — everything below the
+            <!-- 1s "preparing" beat before each step reveals — everything below the
                  progress dots (shipping bar + Continue included) waits behind it -->
             <div v-if="stepLoading" class="flex flex-col items-center justify-center py-24 text-center sm:py-32">
                 <div class="relative h-14 w-14">
@@ -364,7 +364,7 @@ function next() {
 .pqsgcard-enter-active { transition: opacity 0.45s ease, transform 0.45s ease; }
 .pqsgcard-move { transition: transform 0.45s ease; }
 .pqsgcard-leave-active { display: none; }
-/* the step loader's 2s fill */
-.steploadbar { width: 0; animation: steploadbar 2s ease-out forwards; }
+/* the step loader's 1s fill */
+.steploadbar { width: 0; animation: steploadbar 1s ease-out forwards; }
 @keyframes steploadbar { to { width: 100%; } }
 </style>
