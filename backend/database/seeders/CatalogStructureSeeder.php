@@ -140,6 +140,21 @@ class CatalogStructureSeeder extends Seeder
             }
         }
 
+        // Merchandising: Standard Business Cards leads the Business Cards category.
+        // sort_order is unsigned, so reindex the category — Standard = 0, the rest
+        // keep their relative order from 1. Idempotent (stable ordering each run).
+        $standard = Product::where('slug', 'standard-business-cards')->first();
+        if ($standard) {
+            $standard->update(['sort_order' => 0]);
+            $others = Product::where('category_id', $standard->category_id)
+                ->where('id', '!=', $standard->id)
+                ->orderBy('sort_order')->orderBy('id')->get();
+            $i = 1;
+            foreach ($others as $p) {
+                $p->update(['sort_order' => $i++]);
+            }
+        }
+
         // "More Products" is now empty — retire it from the storefront.
         Category::where('slug', 'other')->update(['is_active' => false]);
 
