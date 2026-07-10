@@ -131,16 +131,9 @@ class PqsgController extends Controller
             || (bool) ($state['is_complete'] ?? false);
 
         if ($request->query('set') === 'ads') {
-            // Prefer the new facebook_ads_nano canvases; fall back to the legacy
-            // pipeline_facebook_ad set if nano produced nothing (see SendPqsgCapture).
-            $keyed = fn ($want) => collect($state['images'] ?? [])
-                ->filter(fn ($i) => in_array($want, [$i['product_key'] ?? '', $i['special_product_key'] ?? ''], true)
-                    && ($i['url'] ?? '') !== '');
-            $ads = $keyed('facebook_ads_nano');
-            if ($ads->isEmpty()) {
-                $ads = $keyed('pipeline_facebook_ad');
-            }
-            $images = $ads
+            $images = collect($state['images'] ?? [])
+                ->filter(fn ($i) => in_array('facebook_ads_nano', [$i['product_key'] ?? '', $i['special_product_key'] ?? ''], true)
+                    && ($i['url'] ?? '') !== '')
                 ->take(8)
                 ->values()
                 ->map(fn ($i, $n) => [
