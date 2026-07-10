@@ -63,6 +63,23 @@ const adSteps = [
     { title: 'You get thousands of visitors', text: 'The winners run on Google’s network and send thousands of highly targeted visitors to your shop — or your money back.' },
 ];
 
+// Layout.ai ALSO writes & runs Google *Search* ads for the customer. Until the
+// per-customer endpoint lands this is a hardcoded preview — the query, urls,
+// headlines and descriptions will be swapped for real data keyed to the buyer's
+// business. Results fade out toward the bottom to imply "…and more running".
+const searchPreview = {
+    query: 'branded print for small business',
+    ads: [
+        { url: 'northwind.co', title: 'Northwind & Co. — Premium Branded Print', description: 'Business cards, flyers and signage designed to match your brand. Free shipping over $50.' },
+        { url: 'northwind.co/business-cards', title: 'Custom Business Cards from $19', description: 'Thick premium stock, matte or gloss. Design online in minutes — 500 cards, fast turnaround.' },
+        { url: 'northwind.co/flyers', title: 'Flyers & Marketing Materials That Get Noticed', description: 'Full-colour flyers with same-day proofs and next-day dispatch across the US.' },
+        { url: 'northwind.co/signage', title: 'Banners & Signs for Your Storefront', description: 'Durable indoor and outdoor signage in custom sizes and weatherproof finishes.' },
+        { url: 'northwind.co/stationery', title: 'Branded Stationery & Notepads', description: 'Letterheads, notepads and more — all matched to your logo and colours.' },
+    ],
+};
+// solid for the first two, then fade results 3→5 so the list appears to trail off
+const searchAdOpacity = (i) => [1, 1, 0.6, 0.34, 0.18][i] ?? 0.12;
+
 // fun step names for the progress line — nicer than "Step 2 of 4"
 const stepName = computed(() => ({
     finalize: 'The finishing touch',
@@ -346,6 +363,57 @@ function next() {
                                     </div>
                                 </TransitionGroup>
                             </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Layout.ai ALSO runs Google *Search* ads — hardcoded preview for
+                     now; query/url/headline/description come per-customer from an
+                     endpoint later. Results fade toward the bottom (more running). -->
+                <div class="rounded-2xl bg-gradient-to-br from-brand-blue/50 via-paper-300 to-lime-accent/40 p-[1.5px]">
+                    <div class="overflow-hidden rounded-2xl bg-white">
+                        <div class="flex flex-wrap items-center justify-between gap-3 bg-navy px-4 py-3 text-white">
+                            <p class="flex items-center gap-2 text-xs font-semibold uppercase tracking-widest text-[#9cc6ff]">
+                                <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="11" cy="11" r="7" /><path d="m21 21-4.3-4.3" stroke-linecap="round" /></svg>
+                                Search ads · your keywords
+                            </p>
+                            <span class="rounded-full bg-white/10 px-2.5 py-1 text-[11px] font-medium text-white/75">also included · example preview</span>
+                        </div>
+                        <div class="p-3 sm:p-4">
+                            <!-- browser + Google results mock -->
+                            <div class="overflow-hidden rounded-xl border border-paper-300 bg-white shadow-sm">
+                                <div class="flex items-center gap-1.5 border-b border-paper-200 bg-paper-100 px-4 py-2.5">
+                                    <span class="h-2.5 w-2.5 rounded-full bg-[#ff5f57]"></span>
+                                    <span class="h-2.5 w-2.5 rounded-full bg-[#febc2e]"></span>
+                                    <span class="h-2.5 w-2.5 rounded-full bg-[#28c840]"></span>
+                                    <div class="ml-3 hidden flex-1 truncate rounded-full border border-paper-200 bg-white px-3 py-1 text-[11px] text-ink/35 sm:block">google.com/search?q={{ searchPreview.query.replace(/ /g, '+') }}</div>
+                                </div>
+                                <div class="flex items-center gap-3 border-b border-paper-100 px-4 py-4 sm:gap-5 sm:px-6">
+                                    <span class="select-none font-display text-xl font-medium tracking-tight sm:text-2xl">
+                                        <span style="color:#4285F4">G</span><span style="color:#EA4335">o</span><span style="color:#FBBC05">o</span><span style="color:#4285F4">g</span><span style="color:#34A853">l</span><span style="color:#EA4335">e</span>
+                                    </span>
+                                    <div class="flex flex-1 items-center gap-2 rounded-full border border-paper-300 px-4 py-2 shadow-sm">
+                                        <span class="flex-1 truncate text-sm text-ink sm:text-base">{{ searchPreview.query }}</span>
+                                        <svg class="h-4 w-4 shrink-0 text-[#4285F4]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7" /><path d="m21 21-4.3-4.3" stroke-linecap="round" /></svg>
+                                    </div>
+                                </div>
+                                <div class="relative">
+                                    <div class="space-y-5 px-4 py-5 sm:px-6">
+                                        <div v-for="(ad, i) in searchPreview.ads" :key="i" :style="{ opacity: searchAdOpacity(i) }">
+                                            <div class="flex items-center gap-2 text-xs">
+                                                <span class="font-bold text-ink">Ad</span>
+                                                <span class="text-ink/30">·</span>
+                                                <span class="truncate text-ink/70">{{ ad.url }}</span>
+                                            </div>
+                                            <h4 class="mt-0.5 text-lg leading-snug text-[#1a0dab] hover:underline">{{ ad.title }}</h4>
+                                            <p class="mt-0.5 text-sm leading-relaxed text-ink/60">{{ ad.description }}</p>
+                                        </div>
+                                    </div>
+                                    <!-- fade mask: the results "disappear" downward -->
+                                    <div class="pointer-events-none absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-white via-white/85 to-transparent"></div>
+                                </div>
+                            </div>
+                            <p class="mt-3 px-1 text-center text-xs text-ink/45">Layout.ai also writes and runs Google Search ads for your business — they show the moment someone searches for what you offer.</p>
                         </div>
                     </div>
                 </div>
