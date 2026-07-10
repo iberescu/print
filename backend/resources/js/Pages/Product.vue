@@ -271,14 +271,19 @@ function addDirect() {
                             Design online
                         </button>
                         <button
+                            v-if="product.supportsDesign && product.templateCount" type="button" @click="browseTemplates"
+                            class="flex w-full items-center justify-center gap-2 rounded-full bg-lime-accent px-6 py-4 text-base font-bold text-navy shadow-lg shadow-lime-accent/30 transition hover:brightness-95"
+                        >
+                            <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+                            Browse our templates
+                            <span class="rounded-full bg-navy/15 px-2 py-0.5 text-xs font-bold">{{ product.templateCount }}</span>
+                        </button>
+                        <button
                             v-if="product.supportsUpload" type="button" @click="start('upload')"
                             class="flex w-full items-center justify-center gap-2 rounded-full border border-ink/20 bg-white px-6 py-4 text-base font-semibold text-ink transition hover:border-ink/40"
                         >
                             <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 16V4m0 0L8 8m4-4 4 4M5 20h14" stroke-linecap="round" stroke-linejoin="round"/></svg>
                             Upload your design
-                        </button>
-                        <button v-if="product.supportsDesign && product.templateCount" type="button" @click="browseTemplates" class="w-full text-center text-sm font-medium text-brand-700 underline-offset-4 hover:underline">
-                            or browse {{ product.name.toLowerCase() }} templates
                         </button>
                         <button
                             v-if="!product.supportsDesign && !product.supportsUpload" type="button" @click="addDirect"
