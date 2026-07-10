@@ -23,6 +23,7 @@ class DatabaseSeeder extends Seeder
         $this->call([
             CatalogSeeder::class,
             CatalogStructureSeeder::class,
+            BusinessCardPricingSeeder::class,
         ]);
     }
 }

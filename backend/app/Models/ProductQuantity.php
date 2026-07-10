@@ -10,9 +10,10 @@ class ProductQuantity extends Model
     protected $guarded = [];
 
     protected $casts = [
-        'unit_price'  => 'decimal:4',
-        'total_price' => 'decimal:2',
-        'is_default'  => 'boolean',
+        'unit_price'       => 'decimal:4',
+        'total_price'      => 'decimal:2',
+        'compare_at_total' => 'decimal:2',
+        'is_default'       => 'boolean',
     ];
 
     public function product(): BelongsTo

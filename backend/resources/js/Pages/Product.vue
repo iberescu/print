@@ -104,6 +104,14 @@ const perUnit = computed(() =>
 );
 const remainingForFree = computed(() => Math.max(0, props.freeShippingThreshold - total.value));
 
+// bulk / promo pricing: a tier may carry a pre-discount "compare at" price
+const tierDiscount = (q) => (q.compareAtTotal && q.compareAtTotal > q.total ? Math.round((1 - q.total / q.compareAtTotal) * 100) : 0);
+const compareAtTotal = computed(() => {
+    const c = selectedQty.value?.compareAtTotal;
+    return c && c > selectedQty.value.total ? Number(c) + optionDeltas.value : null;
+});
+const discountPct = computed(() => (selectedQty.value ? tierDiscount(selectedQty.value) : 0));
+
 function start(mode) {
     router.get(`/design/${props.product.slug}`, {
         mode,
@@ -161,8 +169,10 @@ function addDirect() {
                     <p class="mt-2 text-lg text-ink/60">{{ product.tagline }}</p>
 
                     <!-- price -->
-                    <div class="mt-6 flex items-end gap-3 border-y border-paper-300 py-5">
+                    <div class="mt-6 flex flex-wrap items-end gap-x-3 gap-y-1 border-y border-paper-300 py-5">
                         <span class="font-display text-4xl font-semibold text-ink">{{ money(total) }}</span>
+                        <span v-if="compareAtTotal" class="pb-1 text-lg text-ink/40 line-through">{{ money(compareAtTotal) }}</span>
+                        <span v-if="discountPct" class="mb-1 rounded-full bg-lime-accent px-2 py-0.5 text-xs font-bold uppercase tracking-wide text-navy">Save {{ discountPct }}%</span>
                         <span class="pb-1 text-sm text-ink/55">{{ money(perUnit) }} each · {{ selectedQty?.quantity }} units</span>
                     </div>
 
@@ -223,7 +233,7 @@ function addDirect() {
                                 v-model="selectedQtyId"
                                 class="w-full appearance-none rounded-xl border border-paper-300 bg-white py-3 pl-4 pr-11 text-sm font-medium text-ink shadow-sm transition hover:border-ink/25 focus:border-brand-600 focus:outline-none focus:ring-2 focus:ring-brand-600/20"
                             >
-                                <option v-for="q in product.quantities" :key="q.id" :value="q.id">{{ q.quantity }} units — {{ money(Number(q.total) + optionDeltas) }}</option>
+                                <option v-for="q in product.quantities" :key="q.id" :value="q.id">{{ q.quantity }} units — {{ money(Number(q.total) + optionDeltas) }}{{ tierDiscount(q) ? ` · save ${tierDiscount(q)}%` : '' }}</option>
                             </select>
                             <svg class="pointer-events-none absolute right-4 top-1/2 h-4 w-4 -translate-y-1/2 text-ink/45" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6" stroke-linecap="round" stroke-linejoin="round" /></svg>
                         </div>
@@ -236,7 +246,10 @@ function addDirect() {
                                 :class="selectedQtyId === q.id ? 'border-brand-600 bg-brand-50' : 'border-paper-300 bg-white hover:border-ink/25'"
                             >
                                 <span class="block font-display text-lg font-semibold text-ink">{{ q.quantity }}</span>
-                                <span class="block text-xs text-ink/50">{{ money(Number(q.total) + optionDeltas) }}</span>
+                                <span class="block text-xs text-ink/50">
+                                    {{ money(Number(q.total) + optionDeltas) }}
+                                    <span v-if="tierDiscount(q)" class="text-ink/35 line-through">{{ money(Number(q.compareAtTotal) + optionDeltas) }}</span>
+                                </span>
                             </button>
                         </div>
                     </div>
