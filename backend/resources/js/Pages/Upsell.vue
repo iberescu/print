@@ -278,12 +278,28 @@ function next() {
                                 {{ g }}
                             </li>
                         </ul>
+                        <!-- price anchor: make the 8.6× value obvious at a glance -->
+                        <div class="mt-6 flex items-end gap-3">
+                            <span class="font-display text-2xl font-semibold text-white/35 line-through decoration-2">$250</span>
+                            <span class="font-display text-4xl font-extrabold leading-none text-lime-accent">$29</span>
+                            <span class="mb-1 rounded-full bg-lime-accent/15 px-2.5 py-1 text-xs font-semibold text-lime-accent ring-1 ring-lime-accent/30">8.6× value · save $221</span>
+                        </div>
+                        <!-- real, honest urgency: the offer is scoped to this order -->
+                        <p class="mt-2 flex items-center gap-1.5 text-sm font-medium text-[#9cc6ff]">
+                            <svg class="h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                            Only available with this order — it won't be offered again at checkout.
+                        </p>
                         <button type="button" :disabled="busy === 'ad-credit-250' || added['ad-credit-250']"
-                                class="mt-6 rounded-full px-7 py-3 font-semibold transition disabled:opacity-80"
+                                class="mt-4 rounded-full px-7 py-3 font-semibold transition disabled:opacity-80"
                                 :class="added['ad-credit-250'] ? 'bg-white/15 text-lime-accent' : 'bg-brand-blue text-white shadow-lg shadow-brand-blue/30 hover:bg-[#2f78e0]'"
                                 @click="addItem({ slug: 'ad-credit-250' })">
                             {{ added['ad-credit-250'] ? '✓ Added to your order — $29' : 'Add to my order — $29' }}
                         </button>
+                        <!-- social proof -->
+                        <p class="mt-3 flex items-center gap-2 text-sm text-white/75">
+                            <span class="text-base tracking-tight text-lime-accent">★★★★★</span>
+                            Trusted by <span class="font-semibold text-white">23,000+</span> small businesses
+                        </p>
                         <!-- money-back guarantee: unmissable -->
                         <div class="mt-5 flex items-center gap-3 rounded-xl border border-lime-accent/40 bg-lime-accent/10 px-4 py-3">
                             <svg class="h-7 w-7 shrink-0 text-lime-accent" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true">
