@@ -159,6 +159,11 @@ class CatalogStructureSeeder extends Seeder
             }
         }
 
+        // The Layout.ai ad-credit product lives only in CatalogSeeder, which the
+        // prod catalog:import path never runs — so a fresh import drops it and the
+        // ads step's "Add to my order" 404s. Recreate it here (idempotent).
+        $this->ensureAdCredit();
+
         // "More Products" is now empty — retire it from the storefront.
         Category::where('slug', 'other')->update(['is_active' => false]);
 
@@ -175,5 +180,35 @@ class CatalogStructureSeeder extends Seeder
         if ($orphans->isNotEmpty()) {
             $this->command?->warn('  products with no subcategory: '.$orphans->implode(', '));
         }
+    }
+
+    /** The $29 Layout.ai ad-credit sold on the upsell ads step (Services category). */
+    private function ensureAdCredit(): void
+    {
+        $services = Category::firstOrCreate(
+            ['slug' => 'services'],
+            ['name' => 'Services', 'sort_order' => 8, 'is_active' => true, 'tagline' => 'Beyond print — services that launch your brand.']
+        );
+
+        $product = Product::updateOrCreate(
+            ['slug' => 'ad-credit-250'],
+            [
+                'category_id'     => $services->id,
+                'subcategory_id'  => null,
+                'name'            => 'Ad Credit — $250 Google Display Ads',
+                'tagline'         => 'Your first ad campaign, designed and managed by Layout.ai.',
+                'description'     => '$250 of Google Display advertising for $29. Ready-to-run ad designs built from your brand; you approve the campaign before anything runs. Thousands of highly targeted visitors or your $29 back; unused credit refunded. Fulfilled with our partner Layout.ai.',
+                'from_price'      => 29.00,
+                'supports_design' => false,
+                'supports_upload' => false,
+                'is_active'       => true,
+                'sort_order'      => 0,
+            ]
+        );
+
+        $product->quantities()->updateOrCreate(
+            ['quantity' => 1],
+            ['unit_price' => 29.00, 'total_price' => 29.00, 'is_default' => true, 'sort_order' => 0]
+        );
     }
 }
