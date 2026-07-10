@@ -26,15 +26,11 @@ const logout = () => router.post('/logout');
         <div class="bg-navy text-paper">
             <div class="mx-auto flex max-w-7xl items-center justify-between px-4 py-2.5 text-[13px] sm:px-8">
                 <span class="flex items-center gap-2.5">
-                    <svg viewBox="0 0 26 22" class="h-5 w-auto shrink-0 text-white" fill="currentColor" aria-hidden="true">
-                        <rect x="0" y="6" width="5" height="1.8" rx="0.9" opacity="0.75" />
-                        <rect x="1" y="10" width="4" height="1.8" rx="0.9" opacity="0.5" />
-                        <rect x="6" y="4" width="10" height="11" rx="1.6" />
-                        <path d="M16 8h3.3c.5 0 .97.23 1.28.63L23 12v3h-7z" />
-                        <circle cx="10" cy="16.5" r="2.3" /><circle cx="10" cy="16.5" r="0.9" fill="#2b3b55" />
-                        <circle cx="19" cy="16.5" r="2.3" /><circle cx="19" cy="16.5" r="0.9" fill="#2b3b55" />
+                    <svg viewBox="0 0 24 24" class="h-5 w-auto shrink-0 text-white" fill="none" aria-hidden="true">
+                        <path d="M12 2.4 4.9 5.1v6.1c0 4.5 3 7.9 7.1 9.4 4.1-1.5 7.1-4.9 7.1-9.4V5.1L12 2.4Z" fill="currentColor" />
+                        <path d="m8.7 11.9 2.3 2.4 4.4-5" stroke="#2b3b55" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                     </svg>
-                    <span class="text-white"><span class="font-semibold">Free shipping</span> on orders over <span class="font-semibold">${{ threshold }}</span></span>
+                    <span class="text-white"><span class="font-semibold">Best price</span> guarantee</span>
                 </span>
                 <nav class="hidden items-center gap-5 text-paper/80 sm:flex">
                     <a href="#" class="hover:text-paper">Help center</a>
