@@ -145,7 +145,11 @@ class CatalogStructureSeeder extends Seeder
         // keep their relative order from 1. Idempotent (stable ordering each run).
         $standard = Product::where('slug', 'standard-business-cards')->first();
         if ($standard) {
-            $standard->update(['sort_order' => 0]);
+            $standard->update([
+                'sort_order' => 0,
+                // square-corner card hero with real artwork (versioned = CF-safe)
+                'image_path' => 'products/standard-business-cards-v2.webp',
+            ]);
             $others = Product::where('category_id', $standard->category_id)
                 ->where('id', '!=', $standard->id)
                 ->orderBy('sort_order')->orderBy('id')->get();

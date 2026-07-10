@@ -188,6 +188,32 @@ class GenerateCatalogImages extends Command
                 ->orderBy('sort_order')->get();
 
             foreach ($products as $product) {
+                // Standard Business Cards — the category hero. A realistic card shot
+                // with SQUARE corners and real brand artwork. Versioned path so the
+                // fixed-URL asset changes without a Cloudflare purge.
+                if ($product->slug === 'standard-business-cards') {
+                    $tasks[] = [
+                        'path'   => 'products/standard-business-cards-v2',
+                        'maxw'   => 1000,
+                        'prompt' => 'A professional business-card design as a realistic product hero shot. '
+                            .'Two matte business cards with CRISP SQUARE 90° CORNERS (absolutely NO rounded '
+                            .'corners) resting at a slight angle on a clean, softly-lit light-grey surface — one '
+                            .'showing the front, one the back. The front carries a clean modern brand identity for '
+                            .'the fictional company "Northwind & Co.": a simple geometric logo mark (an abstract '
+                            .'compass / interlocking N), the company name in confident modern sans-serif, a person '
+                            .'name and title ("Alex Rivera · Founder"), and a short contact line (phone, email, '
+                            .'website) — in a deep navy (#16233b) and vivid blue (#398aff) scheme with a small '
+                            .'lime-green (#c7f23d) accent. The back shows the logo mark centred on a solid navy '
+                            .'field. Standard 3.5×2 inch landscape proportions, sharp square corners, premium matte '
+                            .'paper with a subtle realistic drop shadow. Bright even studio product photography, '
+                            .'crisp focus, clean e-commerce catalog style. No rounded corners, no phone or laptop '
+                            .'mockup, no UI, no watermark, and no text other than the card content.',
+                        'save'   => fn (string $p) => tap($product)->update(['image_path' => $p]),
+                    ];
+
+                    continue;
+                }
+
                 // Accessories (card holders/cases/stands) — a tight product-focused
                 // catalog shot on white, always PLAIN (holders aren't printed), even
                 // though the crawl left some flagged supports_design.
