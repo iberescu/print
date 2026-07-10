@@ -23,7 +23,7 @@ const logout = () => router.post('/logout');
 <template>
     <div class="flex min-h-screen flex-col bg-paper">
         <!-- utility bar -->
-        <div class="bg-navy text-paper">
+        <div class="no-round bg-navy text-paper">
             <div class="mx-auto flex max-w-7xl items-center justify-between px-4 py-2.5 text-[13px] sm:px-8">
                 <span class="flex items-center gap-2.5">
                     <svg viewBox="0 0 24 24" class="h-5 w-auto shrink-0 text-white" fill="none" aria-hidden="true">

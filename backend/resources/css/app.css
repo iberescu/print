@@ -63,6 +63,11 @@
         border-radius: 3px !important;
     }
 
+    /* Opt-out for full-bleed bars that should have square corners */
+    .no-round, .no-round::before, .no-round::after {
+        border-radius: 0 !important;
+    }
+
     /* Pointer cursor on every interactive element */
     a, button, [role="button"], label, summary, select {
         cursor: pointer;
