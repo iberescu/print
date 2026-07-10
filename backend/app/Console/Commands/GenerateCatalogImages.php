@@ -109,21 +109,10 @@ class GenerateCatalogImages extends Command
                     .'no watermark, no UI, no human faces.',
                 'save'   => null,
             ];
-            $tasks[] = [
-                'path'   => 'promos/layout-ai-offer-v2',
-                'maxw'   => 1400,
-                'prompt' => 'Ultra-premium cinematic 3D render for a print brand × AI ad-tech partnership, portrait-'
-                    .'leaning composition. A softly-lit deep-navy studio (#0f2038 → #16233b gradient) with rich '
-                    .'volumetric depth and gentle bokeh. Floating at slight angles in the space: three or four sleek '
-                    .'glossy glass-and-metal cards, each a tiny vibrant advertisement mock-up (abstract colour blocks, '
-                    .'no readable text), with realistic soft reflections and subtle drop shadows, as if a campaign is '
-                    .'assembling itself in mid-air. Weaving between them, one elegant luminous rising curve made of '
-                    .'fine light with a few glowing lime-green (#c7f23d) nodes climbing to the upper right — the growth '
-                    .'story. Cool blue key light (#398aff) with a single warm lime rim-glow accent, polished, '
-                    .'expensive Apple-keynote / luxury-fintech aesthetic, immaculate, high detail, shallow depth of '
-                    .'field. NO text, NO numbers, no logos, no watermark, no cartoon icons, no people.',
-                'save'   => null,
-            ];
+            // NOTE: the Layout.ai header (promos/layout-ai-offer-v3.webp) is a
+            // composited analytics-report card, NOT a Gemini render — rebuild it
+            // from backend/scripts/promo/layout-ai-report.html (browser screenshot),
+            // so it is intentionally not a task here.
         }
 
         if (in_array($only, ['all', 'logo-maker'], true)) {

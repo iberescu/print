@@ -47,7 +47,7 @@ const heading = computed(() => ({
 const sub = computed(() => ({
     brand: 'Add your logo, name and details to matching products — laid out automatically.',
     pqsg: 'Fresh ideas generated from your design — they appear below as they finish.',
-    ads: 'Pay $29, get $250 of Google Display ads through our Layout.ai partnership. You approve the campaign before anything runs — 1,000 visitors from the USA guaranteed, or your money back.',
+    ads: 'Pay $29, get $250 of Google Display ads through our Layout.ai partnership. You approve the campaign before anything runs — get thousands of highly targeted visitors, or your money back.',
     finalize: 'Your design is approved and locked in. Fine-tune the quantity and material — the price updates as you go.',
 }[props.step] ?? 'Customers who buy business cards often add these. Not personalised — ships ready to use.'));
 const title = computed(() => ({
@@ -60,7 +60,7 @@ const adSteps = [
     { title: 'Layout.ai generates 100 ads', text: 'It takes your design and spins up ~100 on-brand ad variations — headlines, layouts and colours.' },
     { title: 'It tests them, keeps the winners', text: 'Every variation is scored and tested automatically, so only the highest-performing creatives survive.' },
     { title: 'You approve the best', text: 'Review the top ads and give the go-ahead. Nothing spends a cent until you approve.' },
-    { title: 'You get 1,000 U.S. visitors', text: 'The winners run on Google’s network until 1,000 U.S. visitors reach your shop — guaranteed, or your money back.' },
+    { title: 'You get thousands of visitors', text: 'The winners run on Google’s network and send thousands of highly targeted visitors to your shop — or your money back.' },
 ];
 
 // fun step names for the progress line — nicer than "Step 2 of 4"
@@ -270,7 +270,7 @@ function next() {
                         </h2>
                         <p class="mt-3 max-w-md text-white/70">Your first campaign, already designed. It runs on Google's network, managed by our partner <a href="https://layout.ai" target="_blank" rel="noopener" class="underline decoration-white/40 underline-offset-2 hover:text-white">Layout.ai</a> — and nothing goes live until you approve it.</p>
                         <ul class="mt-5 space-y-2.5 text-sm text-white/85">
-                            <li v-for="g in ['1,000 U.S. visitors guaranteed — or your money back', 'You approve the campaign before anything runs', 'Unused credit refunded', '8 ready-to-run ad designs (below)']" :key="g" class="flex items-center gap-2.5">
+                            <li v-for="g in ['Thousands of highly targeted visitors — or your money back', 'You approve the campaign before anything runs', 'Unused credit refunded', '8 ready-to-run ad designs (below)']" :key="g" class="flex items-center gap-2.5">
                                 <svg class="h-4.5 w-4.5 shrink-0" viewBox="0 0 16 16" aria-hidden="true">
                                     <circle cx="8" cy="8" r="7" fill="none" stroke="#398aff" stroke-width="1.5" />
                                     <path d="m5 8.2 2 2L11 6" fill="none" stroke="#9cc6ff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
@@ -306,9 +306,9 @@ function next() {
                                 <path d="M12 3l7 3v5c0 4.4-3 8-7 10-4-2-7-5.6-7-10V6z" stroke-linejoin="round" />
                                 <path d="m8.5 12 2.2 2.2L15.5 9.5" stroke-linecap="round" stroke-linejoin="round" />
                             </svg>
-                            <p class="text-sm font-semibold text-white">Money-back guarantee: get <span class="text-lime-accent">1,000 visitors from the USA</span> or your $29 is refunded in full.</p>
+                            <p class="text-sm font-semibold text-white">Money-back guarantee: get <span class="text-lime-accent">thousands of highly targeted visitors</span> or your $29 is refunded in full.</p>
                         </div>
-                        <p class="mt-4 text-xs text-white/45">One-time offer for new Runmyprint customers. The $29 is charged with your order; your campaign is fulfilled by our partner Layout.ai and nothing runs until you approve it. If it doesn't deliver 1,000 U.S. visitors, we refund the $29 — no questions asked.</p>
+                        <p class="mt-4 text-xs text-white/45">One-time offer for new Runmyprint customers. The $29 is charged with your order; your campaign is fulfilled by our partner Layout.ai and nothing runs until you approve it. If it doesn't deliver, we refund the $29 — no questions asked.</p>
                     </div>
                 </div>
 
