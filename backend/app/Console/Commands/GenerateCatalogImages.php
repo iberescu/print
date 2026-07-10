@@ -110,7 +110,7 @@ class GenerateCatalogImages extends Command
                 'save'   => null,
             ];
             $tasks[] = [
-                'path'   => 'promos/layout-ai-offer',
+                'path'   => 'promos/layout-ai-offer-v2',
                 'maxw'   => 1400,
                 'prompt' => 'Ultra-premium cinematic 3D render for a print brand × AI ad-tech partnership, portrait-'
                     .'leaning composition. A softly-lit deep-navy studio (#0f2038 → #16233b gradient) with rich '
