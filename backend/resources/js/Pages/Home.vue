@@ -10,6 +10,7 @@ const props = defineProps({
     featured: { type: Array, default: () => [] },
     shopBy: { type: Array, default: () => [] },
     heroImage: { type: String, default: null },
+    priceGuaranteeImage: { type: String, default: null },
     freeShippingThreshold: { type: Number, default: 100 },
 });
 
@@ -267,14 +268,26 @@ const tools = [
             </div>
         </section>
 
-        <!-- social proof -->
+        <!-- best price guarantee -->
         <section class="mt-16 border-t border-paper-300 bg-paper-200 sm:mt-20">
-            <div class="mx-auto max-w-7xl px-6 py-16 sm:px-8 sm:py-20">
-                <h2 class="mb-9 text-center font-display text-3xl font-bold tracking-tight sm:text-4xl">Made by you <span class="text-brand-600">#MadeWithRunMyPrint</span></h2>
-                <div class="grid grid-cols-3 gap-4 sm:grid-cols-6">
-                    <div v-for="p in featured.slice(0, 6)" :key="p.slug" class="aspect-square overflow-hidden rounded-2xl border border-paper-300 bg-white shadow-sm">
-                        <SmartImage :src="p.image" :alt="p.name" />
-                    </div>
+            <div class="mx-auto grid max-w-7xl items-center gap-10 px-6 py-16 sm:px-8 sm:py-20 lg:grid-cols-2 lg:gap-16">
+                <div class="order-last overflow-hidden rounded-3xl border border-paper-300 bg-white shadow-sm lg:order-first">
+                    <img v-if="priceGuaranteeImage" :src="priceGuaranteeImage" alt="Best Price Guarantee" loading="lazy" class="w-full object-cover" />
+                </div>
+                <div>
+                    <p class="text-xs font-semibold uppercase tracking-widest text-brand-700/70">Our promise</p>
+                    <h2 class="mt-2 font-display text-3xl font-bold tracking-tight sm:text-4xl">Best Price Guarantee</h2>
+                    <p class="mt-4 max-w-xl text-lg text-ink/65">Find the same product for less somewhere else? We'll match it. Premium print at the best price — guaranteed, with no compromise on quality.</p>
+                    <ul class="mt-6 space-y-3">
+                        <li v-for="point in ['We\'ll match any competitor\'s price on a like-for-like order', 'Backed by our 100% satisfaction guarantee — love it or we reprint', 'Fast turnaround with next-day options']" :key="point" class="flex items-start gap-3 text-ink/80">
+                            <svg class="mt-0.5 h-5 w-5 shrink-0 text-brand-600" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="10" cy="10" r="8.25" /><path d="m6.5 10.2 2.2 2.2 4.8-4.8" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                            <span>{{ point }}</span>
+                        </li>
+                    </ul>
+                    <Link href="/category/business-cards" class="mt-8 inline-flex items-center gap-2 rounded-full bg-brand-600 px-6 py-3.5 font-semibold text-white shadow-lg shadow-brand-600/20 transition hover:bg-brand-700">
+                        Start your order
+                        <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                    </Link>
                 </div>
             </div>
         </section>

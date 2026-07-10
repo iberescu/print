@@ -131,6 +131,22 @@ class GenerateCatalogImages extends Command
                     .'lettering, no logos, no watermark, no human faces, no mouse cursor.',
                 'save'   => null,
             ];
+            // Homepage "Best Price Guarantee" — a premium 3D seal/badge for the promise section.
+            $tasks[] = [
+                'path'   => 'promos/price-guarantee',
+                'maxw'   => 1200,
+                'prompt' => 'A premium "Best Price Guarantee" emblem as a polished 3D medallion — a circular '
+                    .'rosette seal with a subtle folded ribbon at the bottom, a bold rounded checkmark in the centre '
+                    .'and a small price-tag motif, finished in deep navy (#16233b) and vivid blue (#398aff) with a '
+                    .'lime-green (#c7f23d) accent and a soft brushed-metallic sheen. Around the top curve of the seal, '
+                    .'clean bold letters read "BEST PRICE" and just beneath the checkmark, smaller letterspaced caps '
+                    .'read "GUARANTEE". The badge floats with a soft realistic drop shadow, slightly angled, on a '
+                    .'clean softly-lit light-grey studio background with a few tastefully out-of-focus premium printed '
+                    .'items (business cards, a folded flyer) blurred behind it. Modern, trustworthy, high-end '
+                    .'e-commerce aesthetic, crisp and premium. Exactly and only the text "BEST PRICE" and "GUARANTEE" '
+                    .'— no other words, no gibberish lettering, no watermark, no human faces.',
+                'save'   => null,
+            ];
         }
 
         if (in_array($only, ['all', 'logo-maker'], true)) {

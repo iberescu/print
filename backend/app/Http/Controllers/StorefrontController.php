@@ -51,6 +51,7 @@ class StorefrontController extends Controller
             'featured'              => $featured,
             'shopBy'                => $this->shopByTiles(),
             'heroImage'             => \App\Support\Img::url('heroes/home'),
+            'priceGuaranteeImage'   => \App\Support\Img::url('promos/price-guarantee'),
             'freeShippingThreshold' => (float) config('shop.free_shipping_threshold'),
         ]);
     }
