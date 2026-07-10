@@ -368,9 +368,12 @@ function next() {
                     </div>
                 </div>
 
-                <!-- the buyer's own ad from the same engine capture; some captures
-                     never yield the ad creative — then the offer stands alone -->
+                <!-- generated GOOGLE DISPLAY ads (facebook_ads_nano canvases) -->
                 <div v-show="!pqsgEmpty">
+                    <div class="mb-3">
+                        <h3 class="font-display text-xl font-bold text-navy sm:text-2xl">Your Google Display ads</h3>
+                        <p class="mt-1 max-w-2xl text-sm text-ink/60">Image ads generated from your design — these run across the Google Display Network: millions of websites, apps and YouTube videos.</p>
+                    </div>
                     <div v-if="pqsgWaiting" class="grid place-items-center rounded-2xl border border-dashed border-paper-300 bg-paper-200/50 py-10 text-center">
                         <div>
                             <div class="mx-auto h-8 w-8 animate-spin rounded-full border-2 border-brand-600 border-t-transparent"></div>
@@ -406,10 +409,13 @@ function next() {
                     </div>
                 </div>
 
-                <!-- Layout.ai ALSO runs Google *Search* ads — hardcoded preview for
-                     now; query/url/headline/description come per-customer from an
-                     endpoint later. Results fade toward the bottom (more running). -->
-                <div class="rounded-2xl bg-gradient-to-br from-brand-blue/50 via-paper-300 to-lime-accent/40 p-[1.5px]">
+                <!-- generated GOOGLE SEARCH ads (keywords from the brand-profile API) -->
+                <div>
+                    <div class="mb-3">
+                        <h3 class="font-display text-xl font-bold text-navy sm:text-2xl">Your Google Search ads</h3>
+                        <p class="mt-1 max-w-2xl text-sm text-ink/60">Text ads that appear right at the top of Google the moment someone searches for what you offer.</p>
+                    </div>
+                    <div class="rounded-2xl bg-gradient-to-br from-brand-blue/50 via-paper-300 to-lime-accent/40 p-[1.5px]">
                     <div class="overflow-hidden rounded-2xl bg-white">
                         <div class="flex flex-wrap items-center justify-between gap-3 bg-navy px-4 py-3 text-white">
                             <p class="flex items-center gap-2 text-xs font-semibold uppercase tracking-widest text-[#9cc6ff]">
@@ -442,8 +448,8 @@ function next() {
                                     </div>
                                 </div>
                             </div>
-                            <p class="mt-3 px-1 text-center text-xs text-ink/45">Layout.ai also writes and runs Google Search ads for your business — they show the moment someone searches for what you offer.</p>
                         </div>
+                    </div>
                     </div>
                 </div>
 
