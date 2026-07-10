@@ -55,6 +55,14 @@ const title = computed(() => ({
     ads: 'Runmyprint × Layout.ai',
 }[props.step] ?? 'Recommended for you'));
 
+// Layout.ai "how it works" — shown under the generated concepts on the ads step
+const adSteps = [
+    { title: 'Layout.ai generates 100 ads', text: 'It takes your design and spins up ~100 on-brand ad variations — headlines, layouts and colours.' },
+    { title: 'It tests them, keeps the winners', text: 'Every variation is scored and tested automatically, so only the highest-performing creatives survive.' },
+    { title: 'You approve the best', text: 'Review the top ads and give the go-ahead. Nothing spends a cent until you approve.' },
+    { title: 'You get 1,000 U.S. visitors', text: 'The winners run on Google’s network until 1,000 U.S. visitors reach your shop — guaranteed, or your money back.' },
+];
+
 // fun step names for the progress line — nicer than "Step 2 of 4"
 const stepName = computed(() => ({
     finalize: 'The finishing touch',
@@ -322,6 +330,21 @@ function next() {
                                     </div>
                                 </TransitionGroup>
                             </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- how the campaign is built: sets expectations after they've seen the concepts -->
+                <div class="overflow-hidden rounded-3xl bg-gradient-to-br from-navy via-navy to-navy-950 p-8 text-white shadow-xl shadow-navy/20 sm:p-10">
+                    <p class="text-center text-xs font-semibold uppercase tracking-widest text-[#9cc6ff]">How your campaign is built</p>
+                    <h3 class="mx-auto mt-2 max-w-xl text-center font-display text-2xl font-bold leading-tight sm:text-3xl">From your design to real visitors — in four steps</h3>
+                    <div class="mt-9 grid gap-x-6 gap-y-8 sm:grid-cols-2 lg:grid-cols-4">
+                        <div v-for="(s, i) in adSteps" :key="s.title" class="relative">
+                            <!-- connector line between steps on desktop -->
+                            <span v-if="i < adSteps.length - 1" class="pointer-events-none absolute left-14 top-5 hidden h-px w-full bg-gradient-to-r from-brand-blue/50 to-transparent lg:block"></span>
+                            <span class="relative grid h-11 w-11 place-items-center rounded-full bg-lime-accent font-display text-lg font-bold text-navy">{{ i + 1 }}</span>
+                            <h4 class="mt-4 font-display text-base font-semibold">{{ s.title }}</h4>
+                            <p class="mt-1.5 text-sm leading-relaxed text-white/65">{{ s.text }}</p>
                         </div>
                     </div>
                 </div>

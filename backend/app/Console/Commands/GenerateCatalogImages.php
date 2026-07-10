@@ -111,17 +111,17 @@ class GenerateCatalogImages extends Command
             ];
             $tasks[] = [
                 'path'   => 'promos/layout-ai-offer',
-                'maxw'   => 1200,
-                'prompt' => 'Premium campaign visual for a print brand × ad-tech partnership, landscape 16:10. Deep navy '
-                    .'(#16233b) scene with sophisticated depth: two or three overlapping translucent glass panels in '
-                    .'blues (#398aff, #2b3b55) set at a slight angle with soft reflections, a fine halftone dot '
-                    .'gradient, thin concentric arc lines, and one elegant thin rising curve with small glowing nodes '
-                    .'suggesting growing traffic. Centre-left, clear of the panels: a large refined pure-white "$250" '
-                    .'in an elegant editorial typeface, beneath it "AD CREDIT" in wide letterspaced light-blue '
-                    .'(#9cc6ff) capitals with a short lime-green (#c7f23d) underline. A subtle lime edge-glow on one '
-                    .'glass panel is the only other warm accent. Cinematic soft lighting, luxury fintech-agency '
-                    .'aesthetic, balanced negative space on the right, no cartoon objects, no icons, no other text, '
-                    .'no logos, no watermark.',
+                'maxw'   => 1400,
+                'prompt' => 'Ultra-premium cinematic 3D render for a print brand × AI ad-tech partnership, portrait-'
+                    .'leaning composition. A softly-lit deep-navy studio (#0f2038 → #16233b gradient) with rich '
+                    .'volumetric depth and gentle bokeh. Floating at slight angles in the space: three or four sleek '
+                    .'glossy glass-and-metal cards, each a tiny vibrant advertisement mock-up (abstract colour blocks, '
+                    .'no readable text), with realistic soft reflections and subtle drop shadows, as if a campaign is '
+                    .'assembling itself in mid-air. Weaving between them, one elegant luminous rising curve made of '
+                    .'fine light with a few glowing lime-green (#c7f23d) nodes climbing to the upper right — the growth '
+                    .'story. Cool blue key light (#398aff) with a single warm lime rim-glow accent, polished, '
+                    .'expensive Apple-keynote / luxury-fintech aesthetic, immaculate, high detail, shallow depth of '
+                    .'field. NO text, NO numbers, no logos, no watermark, no cartoon icons, no people.',
                 'save'   => null,
             ];
         }
