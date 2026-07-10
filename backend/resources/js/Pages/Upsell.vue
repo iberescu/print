@@ -371,8 +371,11 @@ function next() {
                 <!-- generated GOOGLE DISPLAY ads (facebook_ads_nano canvases) -->
                 <div v-show="!pqsgEmpty">
                     <div class="mb-3">
-                        <h3 class="font-display text-xl font-bold text-navy sm:text-2xl">Your Google Display ads</h3>
-                        <p class="mt-1 max-w-2xl text-sm text-ink/60">Image ads generated from your design — these run across the Google Display Network: millions of websites, apps and YouTube videos.</p>
+                        <div class="flex flex-wrap items-center gap-x-3 gap-y-1">
+                            <h3 class="font-display text-xl font-bold text-navy sm:text-2xl">Your Google Display ads</h3>
+                            <span class="rounded-full bg-brand-50 px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-wide text-brand-700">Examples</span>
+                        </div>
+                        <p class="mt-1.5 max-w-2xl text-sm text-ink/60"><strong class="font-semibold text-ink/75">Example ads our engine just generated from your brand</strong> — a live sample of the kind of creatives we'll run for you across the Google Display Network (millions of websites, apps and YouTube). You approve the final campaign before anything goes live.</p>
                     </div>
                     <div v-if="pqsgWaiting" class="grid place-items-center rounded-2xl border border-dashed border-paper-300 bg-paper-200/50 py-10 text-center">
                         <div>
@@ -412,8 +415,11 @@ function next() {
                 <!-- generated GOOGLE SEARCH ads (keywords from the brand-profile API) -->
                 <div>
                     <div class="mb-3">
-                        <h3 class="font-display text-xl font-bold text-navy sm:text-2xl">Your Google Search ads</h3>
-                        <p class="mt-1 max-w-2xl text-sm text-ink/60">Text ads that appear right at the top of Google the moment someone searches for what you offer.</p>
+                        <div class="flex flex-wrap items-center gap-x-3 gap-y-1">
+                            <h3 class="font-display text-xl font-bold text-navy sm:text-2xl">Your Google Search ads</h3>
+                            <span class="rounded-full bg-brand-50 px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-wide text-brand-700">Examples</span>
+                        </div>
+                        <p class="mt-1.5 max-w-2xl text-sm text-ink/60"><strong class="font-semibold text-ink/75">Example keywords and ads we'll run for your business</strong> — these are the kinds of Google searches we'll target and bid on so people actively looking for what you offer land on your website and bring you traffic.</p>
                     </div>
                     <div class="rounded-2xl bg-gradient-to-br from-brand-blue/50 via-paper-300 to-lime-accent/40 p-[1.5px]">
                     <div class="overflow-hidden rounded-2xl bg-white">
