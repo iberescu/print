@@ -40,12 +40,16 @@ class BusinessCardPricingSeeder extends Seeder
             $count++;
         }
 
-        // Standard Business Cards: 50 for $7.50 (the banner deal).
+        // Standard Business Cards headline prices — these override the bulk rule
+        // above (run last, so they win): 50 for $7.50 (banner), 100 for $9.99.
         $standard = Product::where('slug', 'standard-business-cards')->first();
-        $fifty = $standard?->quantities()->where('quantity', 50)->first();
-        if ($fifty) {
-            $original = $fifty->compare_at_total !== null ? (float) $fifty->compare_at_total : (float) $fifty->total_price;
-            $this->reprice($fifty, $original, 7.50);
+        foreach ([50 => 7.50, 100 => 9.99] as $qty => $price) {
+            $tier = $standard?->quantities()->where('quantity', $qty)->first();
+            if (! $tier) {
+                continue;
+            }
+            $original = $tier->compare_at_total !== null ? (float) $tier->compare_at_total : (float) $tier->total_price;
+            $this->reprice($tier, $original, $price);
             $count++;
         }
 
