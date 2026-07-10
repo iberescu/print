@@ -105,8 +105,7 @@ class PqsgController extends Controller
 
     /** Gallery feeds, streamed as the engine finishes them: ?set=merch (default,
      *  the "your logo on more products" mockups) or ?set=ads (the Layout.ai
-     *  facebook-ad canvases — type template_preview, which the third-party
-     *  widget never displayed; we render them ourselves). */
+     *  facebook_ads_nano canvases — direct images we render ourselves). */
     public function feed(string $key, Request $request): JsonResponse
     {
         abort_unless(Str::isUuid($key), 404);
@@ -132,10 +131,16 @@ class PqsgController extends Controller
             || (bool) ($state['is_complete'] ?? false);
 
         if ($request->query('set') === 'ads') {
-            $images = collect($state['images'] ?? [])
-                ->filter(fn ($i) => ($i['type'] ?? '') === 'template_preview'
-                    && ($i['product_key'] ?? $i['special_product_key'] ?? '') === 'pipeline_facebook_ad'
-                    && ($i['url'] ?? '') !== '')
+            // Prefer the new facebook_ads_nano canvases; fall back to the legacy
+            // pipeline_facebook_ad set if nano produced nothing (see SendPqsgCapture).
+            $keyed = fn ($want) => collect($state['images'] ?? [])
+                ->filter(fn ($i) => in_array($want, [$i['product_key'] ?? '', $i['special_product_key'] ?? ''], true)
+                    && ($i['url'] ?? '') !== '');
+            $ads = $keyed('facebook_ads_nano');
+            if ($ads->isEmpty()) {
+                $ads = $keyed('pipeline_facebook_ad');
+            }
+            $images = $ads
                 ->take(8)
                 ->values()
                 ->map(fn ($i, $n) => [

@@ -47,25 +47,28 @@ class SendPqsgCapture
 
         // Capture-time generation controls (one capture feeds every gallery step):
         // the 16-product merch set renders WITH SVG previews ("your logo on more
-        // products" step), the Layout.ai ads step gets 8 direct LLM ad canvases
-        // (pipeline_facebook_ad has no SVG preview), and the pipeline templates
-        // we never display are skipped entirely.
+        // products" step), and the Layout.ai ads step gets the facebook_ads_nano
+        // canvases. We also still request the legacy pipeline_facebook_ad as a
+        // fallback — a live test showed nano can settle with failed tasks and no
+        // images, and the feed prefers nano but falls back so the gallery is never
+        // empty. Pipeline templates we never display are skipped.
         $payload['products'] = [
             ...collect([
                 'business_card_qr_logo', 'roll_stickers', 'canvas', 'bottle', 'tshirt_words',
                 'bags', 'cloudlab_sortv2', 'glass_logo', 'sticker', 'cloudlab_pix',
                 'cloudlab_umbrela', 'cloudlab_usb', 'chocolate_bar', 'google_v2', 'office', 'hoodie',
             ])->mapWithKeys(fn ($k) => [$k => ['generate' => true, 'preview' => true]])->all(),
+            'facebook_ads_nano'                 => ['generate' => true, 'preview' => false, 'template_count' => 8],
             'pipeline_facebook_ad'              => ['generate' => true, 'preview' => false, 'template_count' => 8],
             'pipeline_business_card_horizontal' => ['generate' => false],
             'pipeline_poster_4x5'               => ['generate' => false],
             'pipeline_flyer_mockup'             => ['generate' => false],
         ];
-        // pipeline_facebook_ad has preview:false (direct template images, no SVG
-        // mockup) — the widget's "linked/forced products only" mode hides it
-        // unless the CAPTURE forces display (engine-team guidance, 2026-07-08;
-        // the widget-side display-products attribute alone isn't enough)
-        $payload['displayProducts'] = ['pipeline_facebook_ad' => true];
+        // both ad products have preview:false (direct images, no SVG mockup) — the
+        // widget's "linked/forced products only" mode hides them unless the CAPTURE
+        // forces display (engine-team guidance; the widget-side display-products
+        // attribute alone isn't enough).
+        $payload['displayProducts'] = ['facebook_ads_nano' => true, 'pipeline_facebook_ad' => true];
         // thin brand signals produced German ad copy — pin the template language
         $payload['template_language'] = 'en';
 
