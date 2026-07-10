@@ -84,6 +84,7 @@ Route::get('/feed/rtbhouse.xml', [FeedController::class, 'rtbhouse'])->name('fee
 Route::post('/pqsg/upload', [\App\Http\Controllers\PqsgController::class, 'upload'])->name('pqsg.upload');
 Route::get('/pqsg/status/{key}', [\App\Http\Controllers\PqsgController::class, 'status'])->name('pqsg.status');
 Route::get('/pqsg/feed/{key}', [\App\Http\Controllers\PqsgController::class, 'feed'])->name('pqsg.feed');
+Route::get('/pqsg/brand-profile/{key}', [\App\Http\Controllers\PqsgController::class, 'brandProfile'])->name('pqsg.brand-profile');
 
 // AI logo maker (Replicate recraft SVG; finishing hands the logo to the upsell engine)
 Route::get('/logo-maker', [\App\Http\Controllers\LogoController::class, 'show'])->name('logo.show');

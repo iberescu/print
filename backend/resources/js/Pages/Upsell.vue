@@ -64,15 +64,17 @@ const adSteps = [
 ];
 
 // Layout.ai ALSO writes & runs Google *Search* ads for the customer — one box
-// per targeted keyword (2 per line). Hardcoded for now; the query, url, headline
-// and description will be swapped for real per-customer data from an endpoint
-// later (same shape).
-const searchBoxes = [
+// per targeted keyword (2 per line). These start as a generic example and are
+// swapped for the buyer's real brand data (4 Google keywords + company) as soon
+// as the async brand-profile endpoint reports ready (see initBrandProfile).
+const DEFAULT_SEARCH_BOXES = [
     { query: 'business cards near me', url: 'northwind.co/business-cards', title: 'Custom Business Cards from $19', description: 'Premium stock, matte or gloss. 500 cards with fast turnaround.' },
     { query: 'flyer printing services', url: 'northwind.co/flyers', title: 'Full-Colour Flyers, Next-Day', description: 'Same-day proofs and next-day dispatch across the US.' },
     { query: 'custom banners for events', url: 'northwind.co/signage', title: 'Banners & Signs for Any Event', description: 'Durable, weatherproof signage in custom sizes.' },
     { query: 'branded stationery online', url: 'northwind.co/stationery', title: 'Branded Stationery & Notepads', description: 'Letterheads and notepads matched to your logo and colours.' },
 ];
+const searchBoxes = ref(DEFAULT_SEARCH_BOXES);
+const searchIsReal = ref(false);
 
 // fun step names for the progress line — nicer than "Step 2 of 4"
 const stepName = computed(() => ({
@@ -100,8 +102,50 @@ let pqsgInitFor = null;
 // (Inertia reuses the page instance), so onMounted alone never fires past the
 // first step. Init on mount AND on the step changing.
 function initPqsg() {
+    if (props.step === 'ads') initBrandProfile();
     if (pqsgInitFor === props.step || !props.payload?.key) return;
     if (props.step === 'pqsg' || props.step === 'ads') initFeed(props.step);
+}
+
+// ---- Layout.ai search-ads: real keywords from the async brand-profile API -----
+let brandTimer = null;
+let brandInit = false;
+
+function domainFromCompany(name) {
+    const base = String(name || '').toLowerCase().replace(/&/g, ' and ').replace(/[^a-z0-9]+/g, '');
+    return base ? `${base.slice(0, 30)}.com` : 'yourbrand.com';
+}
+function titleCase(s) {
+    return String(s || '').replace(/\b\w/g, (c) => c.toUpperCase());
+}
+function boxesFromBrand(data) {
+    const kws = (data.keywords || []).filter(Boolean).slice(0, 4);
+    if (kws.length < 1) return null;
+    const domain = domainFromCompany(data.company);
+    const desc = String(data.description || '').replace(/\s+/g, ' ').trim();
+    const shortDesc = desc
+        ? (desc.length > 95 ? `${desc.slice(0, 92).trimEnd()}…` : desc)
+        : 'Quality print and promo, designed and delivered for your business.';
+    return kws.map((kw) => {
+        const path = String(kw).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').split('-').slice(-2).join('-');
+        return { query: kw, url: path ? `${domain}/${path}` : domain, title: titleCase(kw), description: shortDesc };
+    });
+}
+// Poll the brand-profile proxy every ~4s; swap in the buyer's real keywords when
+// ready. Until then (or if it never completes) the generic example stays.
+function initBrandProfile() {
+    if (brandInit || !props.payload?.key) return;
+    brandInit = true;
+    const deadline = Date.now() + 3 * 60 * 1000;
+    const poll = async () => {
+        try {
+            const r = await fetch(`/pqsg/brand-profile/${props.payload.key}`, { headers: { Accept: 'application/json' } });
+            const boxes = boxesFromBrand(await r.json());
+            if (boxes) { searchBoxes.value = boxes; searchIsReal.value = true; return; }
+        } catch (e) { /* keep the example */ }
+        if (Date.now() < deadline) brandTimer = setTimeout(poll, 4000);
+    };
+    poll();
 }
 
 // Poll our feed proxy and render native cards/tiles as the engine finishes them.
@@ -146,6 +190,7 @@ watch(() => props.step, () => { armStepLoader(); initPqsg(); }, { flush: 'post' 
 
 onBeforeUnmount(() => {
     if (pqsgTimer) clearTimeout(pqsgTimer);
+    if (brandTimer) clearTimeout(brandTimer);
     if (stepLoadTimer) clearTimeout(stepLoadTimer);
 });
 // ----------------------------------------------------------------------------
@@ -371,7 +416,7 @@ function next() {
                                 <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="11" cy="11" r="7" /><path d="m21 21-4.3-4.3" stroke-linecap="round" /></svg>
                                 Search ads · your keywords
                             </p>
-                            <span class="rounded-full bg-white/10 px-2.5 py-1 text-[11px] font-medium text-white/75">also included · example preview</span>
+                            <span class="rounded-full bg-white/10 px-2.5 py-1 text-[11px] font-medium text-white/75">also included · {{ searchIsReal ? 'your keywords' : 'example preview' }}</span>
                         </div>
                         <div class="p-3 sm:p-4">
                             <!-- 4 search-ad boxes, 2 per line — each a mini Google search -->

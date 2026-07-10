@@ -184,4 +184,39 @@ class PqsgController extends Controller
 
         return response()->json(['done' => $done, 'images' => $images]);
     }
+
+    /**
+     * GET /pqsg/brand-profile/{key}: the Layout.ai "search ads" preview polls this.
+     * Proxies the engine's async brand-profile endpoint (4 Google keywords + brand
+     * data + logo) and returns a compact, client-friendly shape. Read-only.
+     */
+    public function brandProfile(string $key): JsonResponse
+    {
+        abort_unless(Str::isUuid($key), 404);
+
+        $uuid = Cache::get("pqsg:{$key}");
+        if (! $uuid) {
+            return response()->json(['ready' => false, 'status' => 'pending']);
+        }
+
+        $data = Cache::remember("pqsg:brand:{$uuid}", 4, function () use ($uuid) {
+            try {
+                return Http::timeout(8)->acceptJson()
+                    ->get(config('shop.pqsg.api_base')."/capture/{$uuid}/brand-profile")->json() ?? [];
+            } catch (\Throwable) {
+                return [];
+            }
+        });
+
+        $keywords = $data['google_search_keywords'] ?? ($data['brand_data']['googleSearchKeywords'] ?? []);
+
+        return response()->json([
+            'ready'       => ($data['ready'] ?? false) === true || ($data['status'] ?? '') === 'complete',
+            'status'      => $data['status'] ?? 'pending',
+            'company'     => $data['brand_data']['companyName'] ?? null,
+            'description' => $data['brand_data']['description'] ?? null,
+            'keywords'    => array_values(array_filter((array) $keywords)),
+            'logo'        => $data['main_logo']['url'] ?? null,
+        ]);
+    }
 }
