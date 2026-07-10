@@ -183,7 +183,18 @@ function addDirect() {
                             ></button>
                         </div>
 
-                        <!-- cards -->
+                        <!-- select (5+ values — like vistaprint) -->
+                        <div v-else-if="o.values.length > 4" class="relative">
+                            <select
+                                v-model="selectedValues[o.id]"
+                                class="w-full appearance-none rounded-xl border border-paper-300 bg-white py-3 pl-4 pr-11 text-sm font-medium text-ink shadow-sm transition hover:border-ink/25 focus:border-brand-600 focus:outline-none focus:ring-2 focus:ring-brand-600/20"
+                            >
+                                <option v-for="v in o.values" :key="v.id" :value="v.id">{{ v.label }}{{ Number(v.priceDelta) > 0 ? ` (+${money(v.priceDelta)})` : '' }}{{ v.badge ? ` · ${v.badge}` : '' }}</option>
+                            </select>
+                            <svg class="pointer-events-none absolute right-4 top-1/2 h-4 w-4 -translate-y-1/2 text-ink/45" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                        </div>
+
+                        <!-- cards (≤4 values) -->
                         <div v-else class="flex flex-wrap gap-2.5">
                             <button
                                 v-for="v in o.values" :key="v.id" type="button"
@@ -206,7 +217,18 @@ function addDirect() {
                     <!-- quantity -->
                     <div class="mt-6">
                         <h3 class="mb-2.5 text-sm font-semibold text-ink">Quantity</h3>
-                        <div class="grid grid-cols-2 gap-2.5 sm:grid-cols-3">
+                        <!-- select (5+ tiers — like vistaprint) -->
+                        <div v-if="product.quantities.length > 4" class="relative">
+                            <select
+                                v-model="selectedQtyId"
+                                class="w-full appearance-none rounded-xl border border-paper-300 bg-white py-3 pl-4 pr-11 text-sm font-medium text-ink shadow-sm transition hover:border-ink/25 focus:border-brand-600 focus:outline-none focus:ring-2 focus:ring-brand-600/20"
+                            >
+                                <option v-for="q in product.quantities" :key="q.id" :value="q.id">{{ q.quantity }} units — {{ money(Number(q.total) + optionDeltas) }}</option>
+                            </select>
+                            <svg class="pointer-events-none absolute right-4 top-1/2 h-4 w-4 -translate-y-1/2 text-ink/45" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                        </div>
+                        <!-- tiles (≤4 tiers) -->
+                        <div v-else class="grid grid-cols-2 gap-2.5 sm:grid-cols-3">
                             <button
                                 v-for="q in product.quantities" :key="q.id" type="button"
                                 @click="selectedQtyId = q.id"
