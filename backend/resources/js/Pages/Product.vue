@@ -263,20 +263,24 @@ function addDirect() {
 
                     <!-- CTAs -->
                     <div class="mt-6 space-y-3">
-                        <button
-                            v-if="product.supportsDesign" type="button" @click="start('design')"
-                            class="flex w-full items-center justify-center gap-2 rounded-full bg-brand-600 px-6 py-4 text-base font-semibold text-white shadow-lg shadow-brand-600/20 transition hover:bg-brand-700"
-                        >
-                            <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="m12 19 7-7-4-4-7 7-1 5zM15 5l4 4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                            Design online
-                        </button>
+                        <!-- when templates exist they lead (blue), and Design online
+                             drops to a white secondary; otherwise Design online is the
+                             blue primary. -->
                         <button
                             v-if="product.supportsDesign && product.templateCount" type="button" @click="browseTemplates"
-                            class="flex w-full items-center justify-center gap-2 rounded-full bg-lime-accent px-6 py-4 text-base font-bold text-navy shadow-lg shadow-lime-accent/30 transition hover:brightness-95"
+                            class="flex w-full items-center justify-center gap-2 rounded-full bg-brand-600 px-6 py-4 text-base font-semibold text-white shadow-lg shadow-brand-600/20 transition hover:bg-brand-700"
                         >
                             <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
                             Browse our templates
-                            <span class="rounded-full bg-navy/15 px-2 py-0.5 text-xs font-bold">{{ product.templateCount }}</span>
+                            <span class="rounded-full bg-white/20 px-2 py-0.5 text-xs font-bold">{{ product.templateCount }}</span>
+                        </button>
+                        <button
+                            v-if="product.supportsDesign" type="button" @click="start('design')"
+                            class="flex w-full items-center justify-center gap-2 rounded-full px-6 py-4 text-base font-semibold transition"
+                            :class="product.templateCount ? 'border border-brand-600/30 bg-white text-brand-700 hover:border-brand-600' : 'bg-brand-600 text-white shadow-lg shadow-brand-600/20 hover:bg-brand-700'"
+                        >
+                            <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="m12 19 7-7-4-4-7 7-1 5zM15 5l4 4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                            Design online
                         </button>
                         <button
                             v-if="product.supportsUpload" type="button" @click="start('upload')"
