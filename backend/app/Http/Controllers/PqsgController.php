@@ -100,7 +100,28 @@ class PqsgController extends Controller
     {
         abort_unless(Str::isUuid($key), 404);
 
-        return response()->json(['uuid' => Cache::get("pqsg:{$key}")]);
+        return response()->json(['uuid' => $this->resolveUuid($key)]);
+    }
+
+    /**
+     * Resolve the engine capture uuid for a session key, resilient to cache loss.
+     * Tries Redis, then the (DB-backed) session mirror, then a uuid carried in the
+     * request URL, and re-warms both stores from whichever hit. The Redis cache can
+     * be flushed (deploys, restarts, eviction); the session survives cache:clear, and
+     * the URL survives even that — so the pointer to a customer's ads is not lost.
+     */
+    private function resolveUuid(string $key, ?string $hint = null): ?string
+    {
+        $uuid = Cache::get("pqsg:{$key}") ?: session("pqsg.uuid.{$key}");
+        if (! $uuid && $hint && Str::isUuid($hint)) {
+            $uuid = $hint;
+        }
+        if ($uuid) {
+            Cache::put("pqsg:{$key}", $uuid, now()->addHours(12));
+            session(["pqsg.uuid.{$key}" => $uuid]);
+        }
+
+        return $uuid;
     }
 
     /** Gallery feeds, streamed as the engine finishes them: ?set=merch (default,
@@ -110,7 +131,7 @@ class PqsgController extends Controller
     {
         abort_unless(Str::isUuid($key), 404);
 
-        $uuid = Cache::get("pqsg:{$key}");
+        $uuid = $this->resolveUuid($key, $request->query('uuid'));
         if (! $uuid) {
             return response()->json(['done' => false, 'images' => []]);
         }
@@ -188,11 +209,11 @@ class PqsgController extends Controller
      * Proxies the engine's async brand-profile endpoint (4 Google keywords + brand
      * data + logo) and returns a compact, client-friendly shape. Read-only.
      */
-    public function brandProfile(string $key): JsonResponse
+    public function brandProfile(string $key, Request $request): JsonResponse
     {
         abort_unless(Str::isUuid($key), 404);
 
-        $uuid = Cache::get("pqsg:{$key}");
+        $uuid = $this->resolveUuid($key, $request->query('uuid'));
         if (! $uuid) {
             return response()->json(['ready' => false, 'status' => 'pending']);
         }

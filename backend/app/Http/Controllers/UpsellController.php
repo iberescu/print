@@ -165,8 +165,15 @@ class UpsellController extends Controller
     /** Third-party gallery step: the widget polls with the capture registered at Review. */
     private function pqsgPayload(): array
     {
+        $key = session('pqsg.key');
+        // Carry the resolved engine uuid so the client can pass it back in the feed
+        // URL — a fallback if the Redis key→uuid mapping is ever gone (see
+        // PqsgController::resolveUuid). Session copy survives cache flushes.
+        $uuid = $key ? (\Illuminate\Support\Facades\Cache::get("pqsg:{$key}") ?: session("pqsg.uuid.{$key}")) : null;
+
         return [
-            'key'       => session('pqsg.key'),
+            'key'       => $key,
+            'uuid'      => $uuid,
             'apiBase'   => config('shop.pqsg.api_base'),
             'widgetSrc' => config('shop.pqsg.widget_src'),
         ];

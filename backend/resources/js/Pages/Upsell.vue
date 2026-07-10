@@ -139,7 +139,7 @@ function initBrandProfile() {
     const deadline = Date.now() + 3 * 60 * 1000;
     const poll = async () => {
         try {
-            const r = await fetch(`/pqsg/brand-profile/${props.payload.key}`, { headers: { Accept: 'application/json' } });
+            const r = await fetch(`/pqsg/brand-profile/${props.payload.key}${props.payload.uuid ? `?uuid=${props.payload.uuid}` : ''}`, { headers: { Accept: 'application/json' } });
             const boxes = boxesFromBrand(await r.json());
             if (boxes) { searchBoxes.value = boxes; searchIsReal.value = true; return; }
         } catch (e) { /* keep the example */ }
@@ -163,7 +163,7 @@ function initFeed(kind) {
         if (pqsgInitFor !== kind) return;
         let done = false;
         try {
-            const r = await fetch(`/pqsg/feed/${props.payload.key}?set=${set}`, { headers: { Accept: 'application/json' } });
+            const r = await fetch(`/pqsg/feed/${props.payload.key}?set=${set}${props.payload.uuid ? `&uuid=${props.payload.uuid}` : ''}`, { headers: { Accept: 'application/json' } });
             const data = await r.json();
             done = !!data.done;
             if (data.images?.length) {
