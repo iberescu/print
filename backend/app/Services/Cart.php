@@ -13,6 +13,7 @@ class Cart
     private const UPSELL = 'cart_upsell';
     private const UPSELL_I = 'cart_upsell_i';
     private const UPSELL_LINE = 'cart_upsell_line';
+    private const SHIP = 'cart_shipping';
 
     /** @return array<int,array<string,mixed>> */
     public function items(): array
@@ -59,7 +60,7 @@ class Cart
 
     public function clear(): void
     {
-        session()->forget([self::KEY, self::COUPON, self::UPSELL, self::UPSELL_I, self::UPSELL_LINE]);
+        session()->forget([self::KEY, self::COUPON, self::UPSELL, self::UPSELL_I, self::UPSELL_LINE, self::SHIP]);
         if ($uid = Auth::id()) {
             DB::table('cart_reminders')->where('user_id', $uid)->delete();
         }
@@ -199,14 +200,72 @@ class Cart
         return max(0, round($this->threshold() - $this->subtotal(), 2));
     }
 
-    public function shipping(): float
+    /**
+     * The fixed shipping methods with their effective price for this cart — the
+     * base method is free once the order clears the free-shipping threshold.
+     *
+     * @return array<int,array{code:string,label:string,eta:string,price:float,free:bool}>
+     */
+    public function methods(): array
     {
-        $sub = $this->subtotal();
-        if ($sub <= 0 || $this->qualifiesFreeShipping()) {
-            return 0.0;
+        $base = config('shop.shipping_base_method', 'economy');
+        $qualifies = $this->qualifiesFreeShipping();
+
+        return array_map(function ($m) use ($base, $qualifies) {
+            $free = $m['code'] === $base && $qualifies;
+
+            return [
+                'code'  => $m['code'],
+                'label' => $m['label'],
+                'eta'   => $m['eta'],
+                'price' => $free ? 0.0 : (float) $m['price'],
+                'free'  => $free,
+            ];
+        }, config('shop.shipping_methods', []));
+    }
+
+    /** Selected shipping method code, defaulting to the first configured method. */
+    public function shippingMethod(): string
+    {
+        $codes = array_column(config('shop.shipping_methods', []), 'code');
+        $selected = session(self::SHIP);
+
+        return in_array($selected, $codes, true) ? $selected : ($codes[0] ?? 'economy');
+    }
+
+    public function setShippingMethod(string $code): void
+    {
+        $codes = array_column(config('shop.shipping_methods', []), 'code');
+        if (in_array($code, $codes, true)) {
+            session([self::SHIP => $code]);
+        }
+    }
+
+    public function shippingLabel(): string
+    {
+        $code = $this->shippingMethod();
+        foreach (config('shop.shipping_methods', []) as $m) {
+            if ($m['code'] === $code) {
+                return $m['label'];
+            }
         }
 
-        return 4.99;
+        return 'Shipping';
+    }
+
+    public function shipping(): float
+    {
+        if ($this->subtotal() <= 0) {
+            return 0.0;
+        }
+        $code = $this->shippingMethod();
+        foreach ($this->methods() as $m) {
+            if ($m['code'] === $code) {
+                return (float) $m['price'];
+            }
+        }
+
+        return 0.0;
     }
 
     public function total(): float

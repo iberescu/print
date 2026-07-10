@@ -6,6 +6,17 @@ return [
     */
     'free_shipping_threshold' => (float) env('FREE_SHIPPING_THRESHOLD', 100),
 
+    // Fixed shipping methods (Vistaprint-style). The base method ('economy') is
+    // free once the order clears the free-shipping threshold above; faster
+    // methods are paid upgrades and always cost their fixed price.
+    'shipping_base_method' => 'economy',
+    'shipping_methods' => [
+        ['code' => 'economy',  'label' => 'Economy',  'eta' => '7–10 business days',     'price' => 7.99],
+        ['code' => 'standard', 'label' => 'Standard', 'eta' => '5–7 business days',       'price' => 12.99],
+        ['code' => 'express',  'label' => 'Express',  'eta' => '2 business days (48 hr)', 'price' => 24.99],
+        ['code' => 'nextday',  'label' => 'Next Day', 'eta' => 'Next business day',       'price' => 44.99],
+    ],
+
     /*
     | One-time credit added to a partner's balance when their affiliate
     | application is approved (USD cents). Counts toward what they're owed.

@@ -35,13 +35,19 @@ class CheckoutController extends Controller
         }
 
         $data = $request->validate([
-            'email'   => ['required', 'email'],
-            'name'    => ['required', 'string', 'max:120'],
-            'address' => ['required', 'string', 'max:200'],
-            'city'    => ['required', 'string', 'max:80'],
-            'postal'  => ['required', 'string', 'max:20'],
-            'country' => ['required', 'string', 'max:60'],
+            'email'          => ['required', 'email'],
+            'name'           => ['required', 'string', 'max:120'],
+            'address'        => ['required', 'string', 'max:200'],
+            'city'           => ['required', 'string', 'max:80'],
+            'postal'         => ['required', 'string', 'max:20'],
+            'country'        => ['required', 'string', 'max:60'],
+            'shippingMethod' => ['nullable', 'string', 'max:40'],
         ]);
+
+        // Lock in the chosen shipping method before any total is computed.
+        if (! empty($data['shippingMethod'])) {
+            $this->cart->setShippingMethod($data['shippingMethod']);
+        }
 
         // First-order codes are enforced here, where the email is finally known.
         $coupon = $this->cart->coupon();
@@ -59,10 +65,11 @@ class CheckoutController extends Controller
             'items'       => $this->cart->items(),
             'subtotal'    => $this->cart->subtotal(),
             'coupon_code' => $coupon?->code,
-            'discount'    => $this->cart->discount(),
-            'shipping'    => $this->cart->shipping(),
-            'total'       => $this->cart->total(),
-            'status'      => 'pending',
+            'discount'        => $this->cart->discount(),
+            'shipping'        => $this->cart->shipping(),
+            'shipping_method' => $this->cart->shippingLabel(),
+            'total'           => $this->cart->total(),
+            'status'          => 'pending',
         ]);
 
         $secret = config('shop.stripe.secret');
@@ -94,7 +101,7 @@ class CheckoutController extends Controller
 
         if ($this->cart->shipping() > 0) {
             $lineItems[] = [
-                'price_data' => ['currency' => 'usd', 'product_data' => ['name' => 'Shipping'], 'unit_amount' => (int) round($this->cart->shipping() * 100)],
+                'price_data' => ['currency' => 'usd', 'product_data' => ['name' => 'Shipping — '.$this->cart->shippingLabel()], 'unit_amount' => (int) round($this->cart->shipping() * 100)],
                 'quantity'   => 1,
             ];
         }
@@ -190,11 +197,14 @@ class CheckoutController extends Controller
     private function summary(): array
     {
         return [
-            'subtotal' => $this->cart->subtotal(),
-            'coupon'   => $this->cart->coupon()?->code,
-            'discount' => $this->cart->discount(),
-            'shipping' => $this->cart->shipping(),
-            'total'    => $this->cart->total(),
+            'subtotal'        => $this->cart->subtotal(),
+            'coupon'          => $this->cart->coupon()?->code,
+            'discount'        => $this->cart->discount(),
+            'shipping'        => $this->cart->shipping(),
+            'total'           => $this->cart->total(),
+            'threshold'       => $this->cart->threshold(),
+            'methods'         => $this->cart->methods(),
+            'shipping_method' => $this->cart->shippingMethod(),
         ];
     }
 }
