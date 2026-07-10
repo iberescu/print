@@ -56,7 +56,7 @@ class SendPqsgCapture
                 'bags', 'cloudlab_sortv2', 'glass_logo', 'sticker', 'cloudlab_pix',
                 'cloudlab_umbrela', 'cloudlab_usb', 'chocolate_bar', 'google_v2', 'office', 'hoodie',
             ])->mapWithKeys(fn ($k) => [$k => ['generate' => true, 'preview' => true]])->all(),
-            'facebook_ads_nano'                 => ['generate' => true, 'preview' => false, 'template_count' => 8],
+            'facebook_ads_nano'                 => ['generate' => true, 'preview' => false, 'template_count' => 6],
             'pipeline_business_card_horizontal' => ['generate' => false],
             'pipeline_poster_4x5'               => ['generate' => false],
             'pipeline_flyer_mockup'             => ['generate' => false],

@@ -155,7 +155,7 @@ class PqsgController extends Controller
             $images = collect($state['images'] ?? [])
                 ->filter(fn ($i) => in_array('facebook_ads_nano', [$i['product_key'] ?? '', $i['special_product_key'] ?? ''], true)
                     && ($i['url'] ?? '') !== '')
-                ->take(8)
+                ->take(6)
                 ->values()
                 ->map(fn ($i, $n) => [
                     'key'     => 'ad-'.$n,

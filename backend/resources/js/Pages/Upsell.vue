@@ -326,7 +326,7 @@ function next() {
                         </h2>
                         <p class="mt-3 max-w-md text-white/70">Your first campaign, already designed. It runs on Google's network, managed by our partner <a href="https://layout.ai" target="_blank" rel="noopener" class="underline decoration-white/40 underline-offset-2 hover:text-white">Layout.ai</a> — and nothing goes live until you approve it.</p>
                         <ul class="mt-5 space-y-2.5 text-sm text-white/85">
-                            <li v-for="g in ['Thousands of highly targeted visitors — or your money back', 'You approve the campaign before anything runs', 'Unused credit refunded', '8 ready-to-run ad designs (below)']" :key="g" class="flex items-center gap-2.5">
+                            <li v-for="g in ['Thousands of highly targeted visitors — or your money back', 'You approve the campaign before anything runs', 'Unused credit refunded', '6 ready-to-run ad designs (below)']" :key="g" class="flex items-center gap-2.5">
                                 <svg class="h-4.5 w-4.5 shrink-0" viewBox="0 0 16 16" aria-hidden="true">
                                     <circle cx="8" cy="8" r="7" fill="none" stroke="#398aff" stroke-width="1.5" />
                                     <path d="m5 8.2 2 2L11 6" fill="none" stroke="#9cc6ff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
