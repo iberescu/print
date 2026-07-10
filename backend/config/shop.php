@@ -4,7 +4,7 @@ return [
     /*
     | Free shipping kicks in at/above this order subtotal (USD).
     */
-    'free_shipping_threshold' => (float) env('FREE_SHIPPING_THRESHOLD', 50),
+    'free_shipping_threshold' => (float) env('FREE_SHIPPING_THRESHOLD', 100),
 
     /*
     | One-time credit added to a partner's balance when their affiliate

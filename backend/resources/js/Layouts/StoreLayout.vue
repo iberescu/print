@@ -6,7 +6,7 @@ import SupportWidget from '../Components/SupportWidget.vue';
 
 const page = usePage();
 const categories = computed(() => page.props.navCategories ?? []);
-const threshold = computed(() => page.props.shop?.freeShippingThreshold ?? 50);
+const threshold = computed(() => page.props.shop?.freeShippingThreshold ?? 100);
 const flash = computed(() => page.props.flash?.success ?? null);
 const flashError = computed(() => page.props.flash?.error ?? null);
 const cartCount = computed(() => page.props.cart?.count ?? 0);

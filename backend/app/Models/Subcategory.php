@@ -3,9 +3,10 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class Category extends Model
+class Subcategory extends Model
 {
     protected $guarded = [];
 
@@ -18,13 +19,13 @@ class Category extends Model
         return 'slug';
     }
 
+    public function category(): BelongsTo
+    {
+        return $this->belongsTo(Category::class);
+    }
+
     public function products(): HasMany
     {
         return $this->hasMany(Product::class)->orderBy('sort_order');
-    }
-
-    public function subcategories(): HasMany
-    {
-        return $this->hasMany(Subcategory::class)->orderBy('sort_order');
     }
 }

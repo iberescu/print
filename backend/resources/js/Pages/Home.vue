@@ -10,7 +10,7 @@ const props = defineProps({
     featured: { type: Array, default: () => [] },
     shopBy: { type: Array, default: () => [] },
     heroImage: { type: String, default: null },
-    freeShippingThreshold: { type: Number, default: 50 },
+    freeShippingThreshold: { type: Number, default: 100 },
 });
 
 const slides = [

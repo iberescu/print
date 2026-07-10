@@ -84,7 +84,28 @@ class StorefrontController extends Controller
     public function category(Category $category): Response
     {
         abort_unless($category->is_active, 404);
-        $category->load(['products' => fn ($q) => $q->where('is_active', true)]);
+
+        $category->load([
+            'products' => fn ($q) => $q->where('is_active', true),
+            'subcategories' => fn ($q) => $q->where('is_active', true),
+            'subcategories.products' => fn ($q) => $q->where('is_active', true),
+        ]);
+
+        // Grouped sections (one per non-empty subcategory) + tiles that jump to them.
+        $sections = $category->subcategories
+            ->map(fn ($s) => [
+                'name'     => $s->name,
+                'slug'     => $s->slug,
+                'image'    => $this->img($s->image_path),
+                'count'    => $s->products->count(),
+                'products' => $s->products->map(fn (Product $p) => $this->productCard($p))->values(),
+            ])
+            ->filter(fn ($s) => $s['count'] > 0)
+            ->values();
+
+        // Anything not yet filed under a subcategory still shows, in a trailing group.
+        $ungrouped = $category->products->whereNull('subcategory_id')
+            ->map(fn (Product $p) => $this->productCard($p))->values();
 
         return Inertia::render('Category', [
             'category' => [
@@ -94,7 +115,9 @@ class StorefrontController extends Controller
                 'description' => $category->description,
                 'image'       => $this->img($category->image_path),
             ],
-            'products'              => $category->products->map(fn (Product $p) => $this->productCard($p)),
+            'sections'              => $sections,
+            'ungrouped'             => $ungrouped,
+            'products'              => $category->products->map(fn (Product $p) => $this->productCard($p))->values(),
             'categories'            => $this->nav(),
             'freeShippingThreshold' => (float) config('shop.free_shipping_threshold'),
         ]);

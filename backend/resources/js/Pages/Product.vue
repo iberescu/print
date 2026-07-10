@@ -9,7 +9,7 @@ import { adsEvent } from '../lib/gads';
 const props = defineProps({
     product: { type: Object, required: true },
     related: { type: Array, default: () => [] },
-    freeShippingThreshold: { type: Number, default: 50 },
+    freeShippingThreshold: { type: Number, default: 100 },
 });
 
 
