@@ -35,7 +35,14 @@ if [ "${FRESH:-0}" = "1" ]; then
 fi
 
 echo "=== clear + restart ==="
-docker compose exec -T app php artisan optimize:clear < /dev/null
+# NOTE: do NOT run optimize:clear / cache:clear here — it flushes the whole Redis
+# app cache, which includes the pqsg:{session-key}=>{capture-uuid} mappings the
+# upsell ads step relies on (12h TTL). Flushing them mid-session leaves the ads
+# gallery unable to find a customer's generated ads. Clear only compiled config/
+# routes/views, which is all a code deploy needs.
+docker compose exec -T app php artisan config:clear < /dev/null
+docker compose exec -T app php artisan route:clear < /dev/null
+docker compose exec -T app php artisan view:clear < /dev/null
 docker compose -f docker-compose.yml -f docker-compose.prod.yml restart web
 
 echo "DEPLOY_DONE — now purge the Cloudflare cache."
