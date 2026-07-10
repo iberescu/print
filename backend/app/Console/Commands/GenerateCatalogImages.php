@@ -109,10 +109,28 @@ class GenerateCatalogImages extends Command
                     .'no watermark, no UI, no human faces.',
                 'save'   => null,
             ];
-            // NOTE: the Layout.ai header (promos/layout-ai-offer-v3.webp) is a
-            // composited analytics-report card, NOT a Gemini render — rebuild it
-            // from backend/scripts/promo/layout-ai-report.html (browser screenshot),
-            // so it is intentionally not a task here.
+            // Layout.ai offer header — a premium "growth from advertising" analytics
+            // visual (Gemini render). Square-ish, focal content centred so object-cover
+            // survives both the desktop portrait column and the mobile wide banner.
+            $tasks[] = [
+                'path'   => 'promos/layout-ai-offer-v4',
+                'maxw'   => 1400,
+                'prompt' => 'Premium analytics-dashboard illustration showing explosive business growth from '
+                    .'online advertising. Deep navy (#16233b) background with sophisticated fintech depth — a faint '
+                    .'halftone dot gradient and thin concentric arcs. Centred in the frame: a clean modern '
+                    .'data-visualization card with soft rounded corners and a gentle glow, containing a bold '
+                    .'upward-trending chart — two smooth rising curves, one vivid blue (#398aff) and one lime-green '
+                    .'(#c7f23d), sweeping from the lower left up to the top right in a clear hockey-stick growth '
+                    .'shape, with soft glowing round nodes and a translucent gradient fill beneath the curves. '
+                    .'Above the chart sit two compact stat tiles with large, crisp, perfectly legible numbers: the '
+                    .'left tile reads "CLICKS" above "2.4K", the right tile reads "VISITORS" above "31K". A small '
+                    .'clean circular callout marker sits on the steepest part of the rising curve. Minimal thin '
+                    .'gridlines and a few small axis ticks. High-end SaaS dashboard aesthetic, cinematic soft '
+                    .'lighting, crisp and modern, generous margins so nothing is cropped. Exactly and only the short '
+                    .'legible words "CLICKS", "2.4K", "VISITORS", "31K" — no other text, no paragraphs, no gibberish '
+                    .'lettering, no logos, no watermark, no human faces, no mouse cursor.',
+                'save'   => null,
+            ];
         }
 
         if (in_array($only, ['all', 'logo-maker'], true)) {
