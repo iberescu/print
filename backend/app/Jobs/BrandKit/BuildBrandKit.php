@@ -169,9 +169,13 @@ class BuildBrandKit implements ShouldQueue
         if ($dims[0] > 0 && max($dims[0], $dims[1]) < $minPx) {
             try {
                 $up = $gemini->generateImage(
-                    'Upscale this logo to a high-resolution version. Reproduce it PIXEL-FAITHFULLY — the exact '
-                    .'same shapes, letters, colours, spacing and proportions — only sharper and larger. Do NOT '
-                    .'restyle, recolour, add, remove, crop or redraw anything. Plain solid white background.',
+                    'Upscale this exact logo to a sharper, higher-resolution version. Treat the supplied logo '
+                    .'as a fixed asset to reproduce PIXEL-FAITHFULLY — identical shapes, letterforms, colours, '
+                    .'spacing and proportions, only cleaner and larger. Keep every FILLED/solid area exactly as '
+                    .'filled — do NOT convert filled shapes into outlines or add strokes. Keep the EXACT '
+                    .'original colours — do NOT brighten, lighten, saturate or shift any hue (dark navy stays '
+                    .'dark navy, never a brighter blue). Do NOT restyle, recolour, re-letter, add, remove, crop '
+                    .'or redraw anything. Output only the logo, centred on a plain solid white background.',
                     [$input],
                     config('shop.internal_engine.logo_model'),
                 );

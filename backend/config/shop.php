@@ -79,17 +79,15 @@ return [
     */
     'upsell_engine' => env('UPSELL_ENGINE', 'pqsg'),
 
-    // Internal engine image models. Product mockups use the fast/"Lite"
-    // nano-banana tier (many per capture, speed matters); display ads use the
-    // higher-quality "normal" tier (nano banana 2 = gemini-3-pro-image) since
-    // they're the customer-facing creative and we make fewer of them.
+    // Internal engine image models. Everything runs on the fast flash tier
+    // (gemini-3.1-flash-image) — the pro tier's 10-20s render was too slow for
+    // the display ads and the logo upscale; flash keeps the whole capture snappy.
     'internal_engine' => [
         'image_model'    => env('INTERNAL_ENGINE_IMAGE_MODEL', env('GEMINI_IMAGE_MODEL_FAST', 'gemini-3.1-flash-image')),
-        'ad_image_model' => env('INTERNAL_ENGINE_AD_IMAGE_MODEL', env('GEMINI_IMAGE_MODEL', 'gemini-3-pro-image')),
-        // Low-res logo upscale uses the pro tier too — it must stay faithful to the
-        // original (the Lite tier redraws it), and every downstream mockup/ad
-        // inherits this logo, so fidelity here matters most.
-        'logo_model'     => env('INTERNAL_ENGINE_LOGO_MODEL', env('GEMINI_IMAGE_MODEL', 'gemini-3-pro-image')),
+        'ad_image_model' => env('INTERNAL_ENGINE_AD_IMAGE_MODEL', env('GEMINI_IMAGE_MODEL_FAST', 'gemini-3.1-flash-image')),
+        // Low-res logo upscale — also on flash for speed. The upscale prompt keeps
+        // it pixel-faithful, and every downstream mockup/ad inherits this logo.
+        'logo_model'     => env('INTERNAL_ENGINE_LOGO_MODEL', env('GEMINI_IMAGE_MODEL_FAST', 'gemini-3.1-flash-image')),
         // Only upscale a logo when its largest side is under this many pixels.
         // Good-resolution logos are used as-is — upscaling would redraw them and
         // any redraw risks drifting from the original, so we avoid it when we can.

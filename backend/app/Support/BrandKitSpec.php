@@ -95,12 +95,14 @@ class BrandKitSpec
             .'or a tidy lockup), the headline as the dominant element, then the button. Confident asymmetric '
             .'layout with generous negative space; keep all content inside a safe margin so nothing is cropped. '
             // logo fidelity — the user's TOP priority; keep it emphatic
-            .'CRITICAL — DO NOT CHANGE THE LOGO: the supplied logo must appear EXACTLY as provided, '
-            .'pixel-for-pixel identical in shapes, letterforms, colours, proportions and spacing. Do NOT '
-            .'redraw, restyle, recolour, re-letter, crop, rotate, distort, add effects to, or regenerate it '
-            .'in any way — place it unaltered. Keep its ORIGINAL colours — never recolour it to white, black '
-            .'or any other colour for contrast. If the area behind it would be dark or busy, sit the logo on '
-            .'a clean solid light or white panel so it stays legible in its true, original colours. '
+            .'CRITICAL — DO NOT CHANGE THE LOGO: treat the supplied logo as a fixed image asset and place it '
+            .'AS-IS (as if pasting the original file), never recreated. It must appear pixel-for-pixel '
+            .'identical in shapes, letterforms, colours, proportions and spacing. Keep every FILLED/solid '
+            .'shape filled — do NOT turn filled areas into outlines or add strokes. Keep its EXACT original '
+            .'colours — do NOT brighten, saturate or shift any hue (dark navy stays dark navy, not a brighter '
+            .'blue), and never recolour it to white or black for contrast. Do NOT redraw, restyle, re-letter, '
+            .'crop, rotate, distort or add effects. If the area behind it would be dark or busy, sit the logo '
+            .'on a clean solid light or white panel so it stays legible in its true colours. '
             // palette + typography-as-personality
             ."Build the design from {$colours}, cohesive and high-contrast. Set the headline \"{$headline}\" in "
             .'a bold, characterful modern sans with strong weight and deliberate spacing — the headline carries '
