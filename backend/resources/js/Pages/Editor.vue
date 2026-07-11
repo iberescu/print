@@ -97,6 +97,28 @@ const applyingTpl = ref(false);
 const showQr = ref(false);
 const qr = ref({ type: 'url', url: '', name: '', company: '', phone: '', email: '', site: '', style: 'square', color: '000000' });
 const QR_COLORS = ['000000', '2b3b55', '1d4ed8', '166534', '7f1d1d'];
+
+// Live URL validity check for the QR url/website fields: debounced GET to the
+// backend, then a green/red tick with the reason as a hover tooltip (no inline text).
+const urlTick = reactive({ url: { state: '', msg: '' }, site: { state: '', msg: '' } });
+const urlTimers = {};
+function checkUrlField(field, value) {
+    const v = (value || '').trim();
+    clearTimeout(urlTimers[field]);
+    if (!v || !v.includes('.')) { urlTick[field].state = ''; urlTick[field].msg = ''; return; }
+    urlTick[field].state = 'checking';
+    urlTimers[field] = setTimeout(async () => {
+        try {
+            const r = await fetch(`/api/validate-url?url=${encodeURIComponent(v)}`, { headers: { Accept: 'application/json' } });
+            const j = await r.json();
+            urlTick[field].state = j.valid ? 'valid' : 'invalid';
+            urlTick[field].msg = j.message || '';
+        } catch {
+            urlTick[field].state = 'invalid';
+            urlTick[field].msg = 'Check failed — try again';
+        }
+    }, 600);
+}
 const qrBusy = ref(false);
 const showGuides = ref(true);
 
@@ -1019,14 +1041,28 @@ function goToReview() {
                             @click="qr.type = t[0]">{{ t[1] }}</button>
                 </div>
                 <div class="mt-4 space-y-3">
-                    <input v-if="qr.type === 'url'" v-model="qr.url" type="text" placeholder="yourcompany.com" class="w-full rounded-xl border border-paper-300 px-3.5 py-2.5 text-sm focus:border-brand-400 focus:outline-none" />
+                    <div v-if="qr.type === 'url'" class="relative">
+                        <input v-model="qr.url" @input="checkUrlField('url', qr.url)" type="text" placeholder="yourcompany.com" class="w-full rounded-xl border border-paper-300 px-3.5 py-2.5 pr-9 text-sm focus:border-brand-400 focus:outline-none" />
+                        <span v-if="urlTick.url.state" class="absolute right-3 top-1/2 -translate-y-1/2" :title="urlTick.url.msg">
+                            <svg v-if="urlTick.url.state === 'checking'" class="h-4 w-4 animate-spin text-ink/40" viewBox="0 0 24 24" fill="none"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.4 0 0 5.4 0 12h4z"/></svg>
+                            <svg v-else-if="urlTick.url.state === 'valid'" class="h-4 w-4 text-emerald-600" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.7 5.3a1 1 0 010 1.4l-7.5 7.5a1 1 0 01-1.4 0L3.3 9.7a1 1 0 011.4-1.4l3.1 3.1 6.8-6.8a1 1 0 011.4 0z" clip-rule="evenodd"/></svg>
+                            <svg v-else class="h-4 w-4 text-red-500" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 8.6 5.7 4.3 4.3 5.7 8.6 10l-4.3 4.3 1.4 1.4L10 11.4l4.3 4.3 1.4-1.4L11.4 10l4.3-4.3-1.4-1.4z" clip-rule="evenodd"/></svg>
+                        </span>
+                    </div>
                     <template v-if="qr.type === 'vcard'">
                         <input v-model="qr.name" type="text" placeholder="Full name *" class="w-full rounded-xl border border-paper-300 px-3.5 py-2.5 text-sm focus:border-brand-400 focus:outline-none" />
                         <div class="grid grid-cols-2 gap-3">
                             <input v-model="qr.phone" type="text" placeholder="Phone" class="w-full rounded-xl border border-paper-300 px-3.5 py-2.5 text-sm focus:border-brand-400 focus:outline-none" />
                             <input v-model="qr.email" type="email" placeholder="Email" class="w-full rounded-xl border border-paper-300 px-3.5 py-2.5 text-sm focus:border-brand-400 focus:outline-none" />
                         </div>
-                        <input v-model="qr.site" type="text" placeholder="Website" class="w-full rounded-xl border border-paper-300 px-3.5 py-2.5 text-sm focus:border-brand-400 focus:outline-none" />
+                        <div class="relative">
+                            <input v-model="qr.site" @input="checkUrlField('site', qr.site)" type="text" placeholder="Website" class="w-full rounded-xl border border-paper-300 px-3.5 py-2.5 pr-9 text-sm focus:border-brand-400 focus:outline-none" />
+                            <span v-if="urlTick.site.state" class="absolute right-3 top-1/2 -translate-y-1/2" :title="urlTick.site.msg">
+                                <svg v-if="urlTick.site.state === 'checking'" class="h-4 w-4 animate-spin text-ink/40" viewBox="0 0 24 24" fill="none"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.4 0 0 5.4 0 12h4z"/></svg>
+                                <svg v-else-if="urlTick.site.state === 'valid'" class="h-4 w-4 text-emerald-600" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.7 5.3a1 1 0 010 1.4l-7.5 7.5a1 1 0 01-1.4 0L3.3 9.7a1 1 0 011.4-1.4l3.1 3.1 6.8-6.8a1 1 0 011.4 0z" clip-rule="evenodd"/></svg>
+                                <svg v-else class="h-4 w-4 text-red-500" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 8.6 5.7 4.3 4.3 5.7 8.6 10l-4.3 4.3 1.4 1.4L10 11.4l4.3 4.3 1.4-1.4L11.4 10l4.3-4.3-1.4-1.4z" clip-rule="evenodd"/></svg>
+                            </span>
+                        </div>
                     </template>
                     <input v-if="qr.type === 'email'" v-model="qr.email" type="email" placeholder="hello@yourcompany.com" class="w-full rounded-xl border border-paper-300 px-3.5 py-2.5 text-sm focus:border-brand-400 focus:outline-none" />
                     <input v-if="qr.type === 'phone'" v-model="qr.phone" type="text" placeholder="+1 555 123 4567" class="w-full rounded-xl border border-paper-300 px-3.5 py-2.5 text-sm focus:border-brand-400 focus:outline-none" />
