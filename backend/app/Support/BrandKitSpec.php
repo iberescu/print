@@ -43,12 +43,14 @@ class BrandKitSpec
             ],
             [
                 'key' => 'infinity', 'label' => 'Infinity-mirror LED', 'slug' => 'led-infinity-mirror', 'decoration' => 'custom',
-                'prompt' => 'A modern infinity-mirror LED wall panel mounted on a dark interior wall, '
-                    .'photographed straight on in a dimly lit room. The glowing LED light forms the provided '
-                    .'logo exactly ONCE, centred at the front of the panel; behind it the infinity-mirror '
-                    .'makes a tunnel of small receding light points for depth. Show the logo only once — do '
-                    .'NOT duplicate, repeat or mirror the logo itself — glowing in the logo\'s own colours '
-                    .'against a deep black mirror.',
+                'prompt' => 'Ultra-realistic infinity-mirror sign of the provided logo. Thick 3D construction '
+                    .'with glossy black sides, a semi-transparent two-way mirror front and a mirrored back '
+                    .'panel. The provided logo forms the front face exactly ONCE, its continuous diffused LED '
+                    .'contour lighting following every edge in the brand\'s own colours (matching the logo); '
+                    .'that light reflects into dozens of nested reflections creating infinite depth, with a '
+                    .'soft neon edge glow. A floating wall-mounted sign in premium acrylic and aluminium, '
+                    .'ray-traced reflections, cinematic lighting, hyper-detailed, luxury modern product '
+                    .'photography, photorealistic, 8K.',
             ],
             [
                 'key' => 'wordcloud', 'label' => 'Word-cloud canvas', 'slug' => 'framed-canvas-prints', 'decoration' => 'custom',
