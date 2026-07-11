@@ -94,7 +94,7 @@ class BrandKitSpec
                     .'logo\'s own contour/silhouette — a tight outline hugging the logo with a thin white '
                     .'sticker border — lying flat on the lid, at a slight angle, with soft realistic lighting.',
             ],
-            ['key' => 'doorhanger', 'label' => 'Door hanger', 'slug' => 'door-hangers', 'decoration' => 'print', 'scene' => 'a printed door hanger with a rounded top and a die-cut keyhole at the top — a round hole with a small narrow slit cut from the hole up to the top edge (so it slips onto a door handle); the slit must always be present', 'placement' => 'centred — just the logo, nothing else', 'flat' => true],
+            ['key' => 'doorhanger', 'label' => 'Door hanger', 'slug' => 'door-hangers', 'decoration' => 'print', 'scene' => 'a printed door hanger with a rounded top and a die-cut keyhole near the top — a round hole with a small narrow slit cut from the hole out to the LEFT edge; the small cut/slit is ALWAYS on the LEFT side and must always be present', 'placement' => 'centred — just the logo, nothing else', 'flat' => true],
             [
                 'key' => 'mousepad', 'label' => 'Mouse pad', 'slug' => 'mouse-pads', 'decoration' => 'custom', 'logo_render' => 'white',
                 'prompt' => 'A studio product shot of a dark charcoal rectangular cloth mouse pad lying flat on '
