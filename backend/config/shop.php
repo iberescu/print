@@ -80,6 +80,13 @@ return [
         'image_model' => env('INTERNAL_ENGINE_IMAGE_MODEL', env('GEMINI_IMAGE_MODEL_FAST', 'gemini-3.1-flash-image')),
     ],
 
+    // Cloudflare Browser Rendering — renders JS/SPA + bot-walled sites to clean
+    // markdown for the internal engine's brand crawl (falls back to a plain fetch).
+    'cloudflare' => [
+        'account_id'    => env('CLOUDFLARE_ACCOUNT_ID'),
+        'browser_token' => env('CLOUDFLARE_BROWSER_TOKEN'),
+    ],
+
     'pqsg' => [
         'enabled'     => (bool) env('PQSG_ENABLED', true),
         'api_base'    => rtrim(env('PQSG_API_BASE', 'https://printbrothers-kickoff-clone.cloudlab-internal.com/api/pqsmartgenerator'), '/'),

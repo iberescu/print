@@ -68,8 +68,43 @@ class CrawlAndSummarize implements ShouldQueue
         }
     }
 
-    /** Fetch the homepage + one internal page, return collapsed visible text. */
+    /** Crawl the site: Cloudflare Browser Rendering (JS/SPA + bot-walls) first, plain fetch as fallback. */
     private function crawl(string $url): string
+    {
+        $markdown = $this->cloudflareMarkdown($url);
+        if (mb_strlen(trim((string) $markdown)) >= 200) {
+            return trim($markdown);
+        }
+
+        return $this->plainCrawl($url);
+    }
+
+    /** Render a URL to clean markdown via Cloudflare Browser Rendering (or null). */
+    private function cloudflareMarkdown(string $url): ?string
+    {
+        $account = config('shop.cloudflare.account_id');
+        $token = config('shop.cloudflare.browser_token');
+        if (! $account || ! $token) {
+            return null;
+        }
+
+        try {
+            $r = Http::withToken($token)->timeout(35)->post(
+                "https://api.cloudflare.com/client/v4/accounts/{$account}/browser-rendering/markdown",
+                ['url' => $url],
+            );
+            if ($r->successful() && $r->json('success') && is_string($r->json('result'))) {
+                return $r->json('result');
+            }
+        } catch (\Throwable) {
+            // fall back to a plain fetch
+        }
+
+        return null;
+    }
+
+    /** Fallback: fetch the homepage + one internal page server-side, return collapsed visible text. */
+    private function plainCrawl(string $url): string
     {
         $ua = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124 Safari/537.36';
         $get = fn (string $u) => rescue(fn () => Http::withHeaders(['User-Agent' => $ua, 'Accept' => 'text/html'])
