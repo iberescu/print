@@ -16,6 +16,11 @@ class BrandKitSpec
         .'natural-wood table with a soft light wall behind, a soft contact shadow under the product, bright '
         .'even lighting, crisp focus, centred, generous margins.';
 
+    /** Top-down flat-lay framing for flat products (apparel, paper). */
+    private const FLATLAY = 'Shot as a clean top-down flat-lay: the product lying flat on a light '
+        .'natural-wood table, the camera pointing straight down from directly above, soft natural shadows, '
+        .'crisp focus, the whole product centred in frame with generous even margins.';
+
     /**
      * Merch products. decoration: print|laser|embroidery. slug maps to a real
      * shop product so the gallery card can show a working "Add to order" CTA.
@@ -27,9 +32,9 @@ class BrandKitSpec
         $all = [
             ['key' => 'mug',     'label' => 'Ceramic mug',    'slug' => 'custom-mugs',                       'decoration' => 'print',      'scene' => 'a plain white ceramic coffee mug'],
             ['key' => 'tumbler', 'label' => 'Steel tumbler',  'slug' => '20-oz-tumbler',                     'decoration' => 'laser',      'scene' => 'a brushed stainless-steel insulated tumbler with a lid'],
-            ['key' => 'tote',    'label' => 'Canvas tote',    'slug' => 'custom-canvas-tote-bags',           'decoration' => 'print',      'scene' => 'a natural cotton-canvas tote bag standing upright on the table'],
-            ['key' => 'tshirt',  'label' => 'T-shirt',        'slug' => 'gildan-softstyle-unisex-t-shirt',   'decoration' => 'print',      'scene' => 'a t-shirt laid flat and shown from the front', 'placement' => 'in the upper-left chest area (left-breast / pocket position), small'],
-            ['key' => 'hoodie',  'label' => 'Hoodie',         'slug' => 'jerzees-nublend-hooded-sweatshirt', 'decoration' => 'embroidery', 'scene' => 'a pullover hoodie laid flat and shown from the front', 'placement' => 'in the upper-left chest area (left-breast position), small'],
+            ['key' => 'tote',    'label' => 'Canvas tote',    'slug' => 'custom-canvas-tote-bags',           'decoration' => 'print',      'scene' => 'a natural cotton-canvas tote bag neatly laid out flat, front side up', 'flat' => true],
+            ['key' => 'tshirt',  'label' => 'T-shirt',        'slug' => 'gildan-softstyle-unisex-t-shirt',   'decoration' => 'print',      'scene' => 'a t-shirt neatly laid out flat, front side up', 'placement' => 'in the upper-left chest area (left-breast / pocket position), small', 'flat' => true],
+            ['key' => 'hoodie',  'label' => 'Hoodie',         'slug' => 'jerzees-nublend-hooded-sweatshirt', 'decoration' => 'embroidery', 'scene' => 'a pullover hoodie neatly laid out flat, front side up', 'placement' => 'in the upper-left chest area (left-breast position), small', 'flat' => true],
             ['key' => 'cap',     'label' => 'Cap',            'slug' => 'embroidered-hats',                  'decoration' => 'embroidery', 'scene' => 'a structured baseball cap, three-quarter view'],
 
             // Showcase products with bespoke scenes (decoration = custom → uses its own prompt).
@@ -88,7 +93,7 @@ class BrandKitSpec
                     .'logo\'s own contour/silhouette — a tight outline hugging the logo with a thin white '
                     .'sticker border — lying flat on the lid, at a slight angle, with soft realistic lighting.',
             ],
-            ['key' => 'doorhanger', 'label' => 'Door hanger', 'slug' => 'door-hangers', 'decoration' => 'print', 'scene' => 'a printed door hanger with a rounded top and a die-cut hole for a door handle, laid flat resting on the table surface (lying down, not floating)', 'placement' => 'centred — just the logo, nothing else'],
+            ['key' => 'doorhanger', 'label' => 'Door hanger', 'slug' => 'door-hangers', 'decoration' => 'print', 'scene' => 'a printed door hanger with a rounded top and a die-cut hole for a door handle', 'placement' => 'centred — just the logo, nothing else', 'flat' => true],
             [
                 'key' => 'mousepad', 'label' => 'Mouse pad', 'slug' => 'mouse-pads', 'decoration' => 'custom', 'logo_render' => 'white',
                 'prompt' => 'A studio product shot of a dark charcoal rectangular cloth mouse pad lying flat on '
@@ -159,7 +164,9 @@ class BrandKitSpec
             .'product), make the PRODUCT WHITE instead (or charcoal if the logo itself is white/very light) '
             .'so the logo is clearly legible — never let the logo blend into a same-colour background.';
 
-        return "A studio product shot of {$p['scene']}. {$decoration}{$contrast} ".self::PHOTO
+        $framing = ($p['flat'] ?? false) ? self::FLATLAY : self::PHOTO;
+
+        return "A studio product shot of {$p['scene']}. {$decoration}{$contrast} ".$framing
             .' Show only the product — no extra text, no watermark.';
     }
 
