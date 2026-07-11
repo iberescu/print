@@ -14,9 +14,13 @@ const methods = computed(() => props.summary.methods || []);
 const form = useForm({
     email: props.customer.email ?? '',
     name: props.customer.name ?? '',
-    address: '', city: '', postal: '', country: 'United States',
+    company: '',
+    address: '', city: '', state: '', postal: '', country: 'United States',
     shippingMethod: props.summary.shipping_method ?? methods.value[0]?.code ?? 'economy',
+    billingSame: true,
+    billingName: '', billingCompany: '', billingAddress: '', billingCity: '', billingState: '', billingPostal: '', billingCountry: 'United States',
 });
+const US_STATES = ['AL','AK','AZ','AR','CA','CO','CT','DE','DC','FL','GA','HI','ID','IL','IN','IA','KS','KY','LA','ME','MD','MA','MI','MN','MS','MO','MT','NE','NV','NH','NJ','NM','NY','NC','ND','OH','OK','OR','PA','RI','SC','SD','TN','TX','UT','VT','VA','WA','WV','WI','WY'];
 
 const selectedMethod = computed(() => methods.value.find((m) => m.code === form.shippingMethod) || methods.value[0]);
 const shippingCost = computed(() => (selectedMethod.value ? Number(selectedMethod.value.price) : Number(props.summary.shipping || 0)));
@@ -44,6 +48,10 @@ const field = 'mt-1 w-full rounded-lg border border-paper-300 px-3 py-2.5 text-i
                         </label>
                         <label class="block sm:col-span-2"><span class="text-sm text-ink/60">Full name</span>
                             <input v-model="form.name" required :class="field" />
+                            <span v-if="form.errors.name" class="text-xs text-red-600">{{ form.errors.name }}</span>
+                        </label>
+                        <label class="block sm:col-span-2"><span class="text-sm text-ink/60">Company <span class="text-ink/40">(optional)</span></span>
+                            <input v-model="form.company" :class="field" />
                         </label>
                         <label class="block sm:col-span-2"><span class="text-sm text-ink/60">Address</span>
                             <input v-model="form.address" required :class="field" />
@@ -51,12 +59,55 @@ const field = 'mt-1 w-full rounded-lg border border-paper-300 px-3 py-2.5 text-i
                         <label class="block"><span class="text-sm text-ink/60">City</span>
                             <input v-model="form.city" required :class="field" />
                         </label>
+                        <label class="block"><span class="text-sm text-ink/60">State</span>
+                            <select v-model="form.state" required :class="field">
+                                <option value="" disabled>Select…</option>
+                                <option v-for="s in US_STATES" :key="s" :value="s">{{ s }}</option>
+                            </select>
+                            <span v-if="form.errors.state" class="text-xs text-red-600">{{ form.errors.state }}</span>
+                        </label>
                         <label class="block"><span class="text-sm text-ink/60">Postal code</span>
                             <input v-model="form.postal" required :class="field" />
                         </label>
-                        <label class="block sm:col-span-2"><span class="text-sm text-ink/60">Country</span>
+                        <label class="block"><span class="text-sm text-ink/60">Country</span>
                             <input v-model="form.country" required :class="field" />
                         </label>
+                    </div>
+
+                    <!-- billing address -->
+                    <div class="space-y-3 border-t border-paper-200 pt-5">
+                        <h2 class="font-display text-lg font-semibold">Billing address</h2>
+                        <label class="flex items-center gap-2 text-sm text-ink/75">
+                            <input v-model="form.billingSame" type="checkbox" class="h-4 w-4 accent-brand-600" />
+                            Use same as shipping address
+                        </label>
+                        <div v-if="!form.billingSame" class="grid gap-4 sm:grid-cols-2">
+                            <label class="block sm:col-span-2"><span class="text-sm text-ink/60">Full name</span>
+                                <input v-model="form.billingName" :class="field" />
+                                <span v-if="form.errors.billingName" class="text-xs text-red-600">{{ form.errors.billingName }}</span>
+                            </label>
+                            <label class="block sm:col-span-2"><span class="text-sm text-ink/60">Company <span class="text-ink/40">(optional)</span></span>
+                                <input v-model="form.billingCompany" :class="field" />
+                            </label>
+                            <label class="block sm:col-span-2"><span class="text-sm text-ink/60">Address</span>
+                                <input v-model="form.billingAddress" :class="field" />
+                            </label>
+                            <label class="block"><span class="text-sm text-ink/60">City</span>
+                                <input v-model="form.billingCity" :class="field" />
+                            </label>
+                            <label class="block"><span class="text-sm text-ink/60">State</span>
+                                <select v-model="form.billingState" :class="field">
+                                    <option value="" disabled>Select…</option>
+                                    <option v-for="s in US_STATES" :key="s" :value="s">{{ s }}</option>
+                                </select>
+                            </label>
+                            <label class="block"><span class="text-sm text-ink/60">Postal code</span>
+                                <input v-model="form.billingPostal" :class="field" />
+                            </label>
+                            <label class="block"><span class="text-sm text-ink/60">Country</span>
+                                <input v-model="form.billingCountry" :class="field" />
+                            </label>
+                        </div>
                     </div>
 
                     <!-- delivery speed -->

@@ -6,6 +6,7 @@ use App\Models\Order;
 use App\Services\Cart;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -34,15 +35,45 @@ class CheckoutController extends Controller
             return redirect()->route('cart');
         }
 
+        $billingRequired = Rule::requiredIf(fn () => ! $request->boolean('billingSame'));
         $data = $request->validate([
             'email'          => ['required', 'email'],
             'name'           => ['required', 'string', 'max:120'],
+            'company'        => ['nullable', 'string', 'max:120'],
             'address'        => ['required', 'string', 'max:200'],
             'city'           => ['required', 'string', 'max:80'],
+            'state'          => ['required', 'string', 'max:60'],
             'postal'         => ['required', 'string', 'max:20'],
             'country'        => ['required', 'string', 'max:60'],
             'shippingMethod' => ['nullable', 'string', 'max:40'],
+            'billingSame'    => ['boolean'],
+            'billingName'    => [$billingRequired, 'string', 'max:120'],
+            'billingCompany' => ['nullable', 'string', 'max:120'],
+            'billingAddress' => [$billingRequired, 'string', 'max:200'],
+            'billingCity'    => [$billingRequired, 'string', 'max:80'],
+            'billingState'   => [$billingRequired, 'string', 'max:60'],
+            'billingPostal'  => [$billingRequired, 'string', 'max:20'],
+            'billingCountry' => [$billingRequired, 'string', 'max:60'],
         ]);
+
+        $shippingAddr = [
+            'name'    => $data['name'],
+            'company' => $data['company'] ?? null,
+            'line'    => $data['address'],
+            'city'    => $data['city'],
+            'state'   => $data['state'],
+            'postal'  => $data['postal'],
+            'country' => $data['country'],
+        ];
+        $billingAddr = $request->boolean('billingSame') ? $shippingAddr : [
+            'name'    => $data['billingName'],
+            'company' => $data['billingCompany'] ?? null,
+            'line'    => $data['billingAddress'],
+            'city'    => $data['billingCity'],
+            'state'   => $data['billingState'],
+            'postal'  => $data['billingPostal'],
+            'country' => $data['billingCountry'],
+        ];
 
         // Lock in the chosen shipping method before any total is computed.
         if (! empty($data['shippingMethod'])) {
@@ -61,7 +92,8 @@ class CheckoutController extends Controller
             'number'      => 'RMP-'.strtoupper(Str::random(8)),
             'email'       => $data['email'],
             'name'        => $data['name'],
-            'address'     => ['line' => $data['address'], 'city' => $data['city'], 'postal' => $data['postal'], 'country' => $data['country']],
+            'address'     => $shippingAddr,
+            'billing'     => $billingAddr,
             'items'       => $this->cart->items(),
             'subtotal'    => $this->cart->subtotal(),
             'coupon_code' => $coupon?->code,

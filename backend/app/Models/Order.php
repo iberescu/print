@@ -10,6 +10,7 @@ class Order extends Model
 
     protected $casts = [
         'address'  => 'array',
+        'billing'  => 'array',
         'items'    => 'array',
         'subtotal' => 'decimal:2',
         'shipping' => 'decimal:2',
