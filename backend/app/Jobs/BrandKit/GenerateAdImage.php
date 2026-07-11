@@ -48,7 +48,7 @@ class GenerateAdImage implements ShouldQueue
                 (string) ($summary['description'] ?? ''),
             ),
             [$logo],
-            config('shop.internal_engine.image_model'),
+            config('shop.internal_engine.ad_image_model'),
         );
 
         $path = "brandkits/{$this->key}/ad-{$this->ad['key']}.webp";

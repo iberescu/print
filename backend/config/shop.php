@@ -79,12 +79,17 @@ return [
     */
     'upsell_engine' => env('UPSELL_ENGINE', 'pqsg'),
 
-    // Internal engine image model — the fast/"Lite" nano-banana tier.
+    // Internal engine image models. Product mockups use the fast/"Lite"
+    // nano-banana tier (many per capture, speed matters); display ads use the
+    // higher-quality "normal" tier (nano banana 2 = gemini-3-pro-image) since
+    // they're the customer-facing creative and we make fewer of them.
     'internal_engine' => [
-        'image_model' => env('INTERNAL_ENGINE_IMAGE_MODEL', env('GEMINI_IMAGE_MODEL_FAST', 'gemini-3.1-flash-image')),
-        // Cap how many product mockups / display ads to generate per capture (0 = all).
+        'image_model'    => env('INTERNAL_ENGINE_IMAGE_MODEL', env('GEMINI_IMAGE_MODEL_FAST', 'gemini-3.1-flash-image')),
+        'ad_image_model' => env('INTERNAL_ENGINE_AD_IMAGE_MODEL', env('GEMINI_IMAGE_MODEL', 'gemini-3-pro-image')),
+        // Cap how many product mockups / display ads to generate per capture
+        // (0 = all). Ads default to 4 — enough variety, keeps the pro-tier cost sane.
         'max_products' => (int) env('INTERNAL_ENGINE_MAX_PRODUCTS', 0),
-        'max_ads'      => (int) env('INTERNAL_ENGINE_MAX_ADS', 0),
+        'max_ads'      => (int) env('INTERNAL_ENGINE_MAX_ADS', 4),
     ],
 
     // Cloudflare Browser Rendering — renders JS/SPA + bot-walled sites to clean

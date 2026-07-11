@@ -158,6 +158,7 @@ class CrawlAndSummarize implements ShouldQueue
     {
         $company = $kit->company ? "The company appears to be \"{$kit->company}\". " : '';
         $domain = parse_url($kit->website, PHP_URL_HOST) ?: $kit->website;
+        $adCount = (int) config('shop.internal_engine.max_ads', 0) ?: 6;
         $thin = strlen(trim($text)) < 200
             ? 'The crawled text is sparse (likely a JS-rendered or protected site), so INFER what the '
                 ."business does from its name and its domain \"{$domain}\" and produce your best-guess "
@@ -174,7 +175,7 @@ class CrawlAndSummarize implements ShouldQueue
             .'"colors" (array of 2-4 brand colours as hex codes or names), '
             .'"google_search_keywords" (array of EXACTLY 4 high-intent Google Search ad keyword phrases a '
             .'customer would type to find this business), '
-            .'"ad_concepts" (array of 6 Google DISPLAY ad concepts tailored to THIS specific business — each '
+            ."\"ad_concepts\" (array of {$adCount} Google DISPLAY ad concepts tailored to THIS specific business — each "
             .'an object with "headline" (max 6 words, benefit-driven and specific to what they actually do; '
             .'NOT generic retail copy like "shop the collection") and "cta" (a 2-3 word button label that '
             .'fits the business, e.g. "Get started", "Book a demo", "Try it free", "Get a quote", "Learn '

@@ -94,14 +94,17 @@ class BrandKitSpec
             .'Composition: one clear focal path — the supplied logo as the brand anchor (kept small, top-left '
             .'or a tidy lockup), the headline as the dominant element, then the button. Confident asymmetric '
             .'layout with generous negative space; keep all content inside a safe margin so nothing is cropped. '
-            // logo fidelity (hard constraint)
-            .'Reproduce the supplied logo EXACTLY — identical shapes, letters, colours and proportions; do NOT '
-            .'redraw, restyle, recolour or crop it. '
+            // logo fidelity — the user's TOP priority; keep it emphatic
+            .'CRITICAL — DO NOT CHANGE THE LOGO: the supplied logo must appear EXACTLY as provided, '
+            .'pixel-for-pixel identical in shapes, letterforms, colours, proportions and spacing. Do NOT '
+            .'redraw, restyle, recolour, re-letter, crop, rotate, distort, add effects to, or regenerate it '
+            .'in any way — place it unaltered. '
             // palette + typography-as-personality
             ."Build the design from {$colours}, cohesive and high-contrast. Set the headline \"{$headline}\" in "
             .'a bold, characterful modern sans with strong weight and deliberate spacing — the headline carries '
-            ."the personality. Add one solid rounded call-to-action button, high-contrast, labelled exactly "
-            ."\"{$cta}\". "
+            ."the personality. Add one solid rectangular call-to-action button with sharp square corners, "
+            ."high-contrast, labelled exactly \"{$cta}\". Use sharp rectangular geometry throughout — NO "
+            ."rounded corners anywhere (button, panels, dividers or image frame). "
             // restraint + strict text rules
             .'Restraint: one signature element; keep everything else quiet and disciplined — no clutter, no '
             .'busy patterns. The ONLY text in the image is that headline and that button label — no other '
