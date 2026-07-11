@@ -27,9 +27,9 @@ class BrandKitSpec
         $all = [
             ['key' => 'mug',     'label' => 'Ceramic mug',    'slug' => 'custom-mugs',                       'decoration' => 'print',      'scene' => 'a plain white ceramic coffee mug'],
             ['key' => 'tumbler', 'label' => 'Steel tumbler',  'slug' => '20-oz-tumbler',                     'decoration' => 'laser',      'scene' => 'a brushed stainless-steel insulated tumbler with a lid'],
-            ['key' => 'tote',    'label' => 'Canvas tote',    'slug' => 'custom-canvas-tote-bags',           'decoration' => 'print',      'scene' => 'a natural cotton-canvas tote bag standing upright'],
+            ['key' => 'tote',    'label' => 'Canvas tote',    'slug' => 'custom-canvas-tote-bags',           'decoration' => 'print',      'scene' => 'a natural cotton-canvas tote bag standing upright on the table'],
             ['key' => 'tshirt',  'label' => 'T-shirt',        'slug' => 'gildan-softstyle-unisex-t-shirt',   'decoration' => 'print',      'scene' => 'a t-shirt laid flat and shown from the front', 'placement' => 'in the upper-left chest area (left-breast / pocket position), small'],
-            ['key' => 'hoodie',  'label' => 'Hoodie',         'slug' => 'jerzees-nublend-hooded-sweatshirt', 'decoration' => 'embroidery', 'scene' => 'a folded pullover hoodie'],
+            ['key' => 'hoodie',  'label' => 'Hoodie',         'slug' => 'jerzees-nublend-hooded-sweatshirt', 'decoration' => 'embroidery', 'scene' => 'a pullover hoodie laid flat and shown from the front', 'placement' => 'in the upper-left chest area (left-breast position), small'],
             ['key' => 'cap',     'label' => 'Cap',            'slug' => 'embroidered-hats',                  'decoration' => 'embroidery', 'scene' => 'a structured baseball cap, three-quarter view'],
 
             // Showcase products with bespoke scenes (decoration = custom → uses its own prompt).
@@ -83,12 +83,12 @@ class BrandKitSpec
             [
                 'key' => 'sticker', 'label' => 'Kiss-cut sticker', 'slug' => 'kiss-cut-stickers', 'decoration' => 'custom',
                 'prompt' => 'A close-up product shot of the back lid of a modern laptop on a light natural-wood table, with a '
-                    .'single kiss-cut vinyl sticker of the provided logo applied to it. The sticker is die-cut '
-                    .'to follow the logo\'s own contour/silhouette — a tight outline hugging the logo with a '
-                    .'thin white sticker border — lying flat on the laptop lid at a realistic size, at a '
-                    .'slight angle, with soft realistic lighting.',
+                    .'single kiss-cut vinyl sticker of the provided logo applied to the BOTTOM-LEFT corner of '
+                    .'the laptop lid (not centred), at a small size. The sticker is die-cut to follow the '
+                    .'logo\'s own contour/silhouette — a tight outline hugging the logo with a thin white '
+                    .'sticker border — lying flat on the lid, at a slight angle, with soft realistic lighting.',
             ],
-            ['key' => 'doorhanger', 'label' => 'Door hanger', 'slug' => 'door-hangers', 'decoration' => 'print', 'scene' => 'a printed door hanger with a rounded top and a die-cut hole for a door handle, lying flat on the table', 'placement' => 'centred — just the logo, nothing else'],
+            ['key' => 'doorhanger', 'label' => 'Door hanger', 'slug' => 'door-hangers', 'decoration' => 'print', 'scene' => 'a printed door hanger with a rounded top and a die-cut hole for a door handle, laid flat resting on the table surface (lying down, not floating)', 'placement' => 'centred — just the logo, nothing else'],
             [
                 'key' => 'mousepad', 'label' => 'Mouse pad', 'slug' => 'mouse-pads', 'decoration' => 'custom', 'logo_render' => 'white',
                 'prompt' => 'A studio product shot of a dark charcoal rectangular cloth mouse pad lying flat on '
