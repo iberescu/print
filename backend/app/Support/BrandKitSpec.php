@@ -43,17 +43,19 @@ class BrandKitSpec
             ],
             [
                 'key' => 'infinity', 'label' => 'Infinity-mirror LED', 'slug' => 'led-infinity-mirror', 'decoration' => 'custom',
-                'prompt' => 'Ultra-realistic infinity-mirror sign SHAPED like the provided logo. The whole '
-                    .'panel is die-cut to follow the logo\'s outline — its outer contour hugs the shape of the '
-                    .'logo (icon and lettering as one silhouette); it is NOT a rectangle, square or framed '
-                    .'box. Thick 3D construction with glossy black sides that follow the logo contour, a '
-                    .'semi-transparent two-way mirror front and a mirrored back. Continuous diffused LED '
-                    .'lighting traces the logo\'s edges in the brand\'s own colours (matching the logo) and '
-                    .'reflects into dozens of nested reflections creating infinite depth inside the '
-                    .'logo-shaped body, with a soft neon edge glow around the contour. A floating '
-                    .'wall-mounted, logo-shaped sign in premium acrylic and aluminium, ray-traced '
-                    .'reflections, cinematic lighting, hyper-detailed, luxury modern product photography, '
-                    .'photorealistic, 8K.',
+                'prompt' => 'Ultra-realistic 3D infinity-mirror sign die-cut to the exact shape of the '
+                    .'provided logo — a channel-letter style sign whose outer contour hugs the logo '
+                    .'silhouette (icon and lettering as one shape), NOT a rectangle, square or framed box. '
+                    .'Glossy black 3D sides follow the logo outline; a two-way mirror face reveals an '
+                    .'infinity-mirror tunnel INSIDE the logo shape: the logo\'s OWN OUTLINE is repeated as '
+                    .'many CRISP, sharp, evenly-spaced concentric neon outlines that shrink and recede '
+                    .'straight back into deep black infinite depth — a clean tunnel built from the logo\'s '
+                    .'own shape, NOT random wavy or diffuse lines. Bright, well-defined neon LED tube '
+                    .'lighting in the brand\'s own colours (matching the logo) on the faces, with a vivid '
+                    .'glowing rim-light along the raised 3D edges/returns and a soft neon halo on the dark '
+                    .'wall behind. Floating wall-mounted, premium acrylic and aluminium, ray-traced '
+                    .'reflections, cinematic moody lighting, hyper-detailed, luxury modern product '
+                    .'photography, photorealistic, 8K.',
             ],
             [
                 'key' => 'wordcloud', 'label' => 'Word-cloud canvas', 'slug' => 'framed-canvas-prints', 'decoration' => 'custom',
