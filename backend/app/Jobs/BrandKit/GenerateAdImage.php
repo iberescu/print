@@ -39,6 +39,9 @@ class GenerateAdImage implements ShouldQueue
         $company = $kit->company ?: ($summary['company'] ?? '');
         $palette = ! empty($summary['colors']) ? implode(', ', (array) $summary['colors']) : null;
 
+        // Give each ad a distinct look (vibrant / professional / minimalist / futuristic)
+        $styleIndex = (int) preg_replace('/\D/', '', (string) ($this->ad['key'] ?? 'ad0'));
+
         $img = $gemini->generateImage(
             BrandKitSpec::adPrompt(
                 (string) ($this->ad['headline'] ?? ''),
@@ -46,6 +49,7 @@ class GenerateAdImage implements ShouldQueue
                 (string) $company,
                 $palette,
                 (string) ($summary['description'] ?? ''),
+                BrandKitSpec::adStyle($styleIndex),
             ),
             [$logo],
             config('shop.internal_engine.ad_image_model'),

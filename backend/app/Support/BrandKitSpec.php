@@ -196,20 +196,34 @@ class BrandKitSpec
      * grounded in the brand summary (company + what they do + colours) that Gemini
      * produced from the crawled website — so the banner is on-brand and relevant.
      */
-    public static function adPrompt(string $headline, string $cta, string $company, ?string $palette, string $description = ''): string
+    /**
+     * Four distinct visual styles cycled across the display ads so they don't
+     * look alike: vibrant, professional, minimalist, futuristic.
+     */
+    public static function adStyle(int $i): string
+    {
+        return [
+            'Make it BOLD, CREATIVE and VIBRANT — energetic saturated colour, a dynamic diagonal composition and playful confident shapes; eye-catching and lively (still tasteful and on-brand).',
+            'Make it POLISHED and PROFESSIONAL — a refined corporate look, calm restrained palette, a clean structured grid; ordered, trustworthy, enterprise-grade.',
+            'Make it MINIMALIST — maximum negative space, one small focal element, only one or two colours; quiet, elegant, essentials only.',
+            'Make it FUTURISTIC and high-tech — sleek and modern with subtle glow, gradient depth and an abstract tech/3D motif; a cutting-edge, premium sci-fi feel.',
+        ][(($i % 4) + 4) % 4];
+    }
+
+    public static function adPrompt(string $headline, string $cta, string $company, ?string $palette, string $description = '', string $style = ''): string
     {
         $headline = str_replace('{company}', $company ?: 'us', $headline);
         $colours = $palette
             ? "the brand's own colours ({$palette}) — taken from its logo and website — as the DOMINANT palette"
             : "the brand's own colours (taken directly from its logo) as the DOMINANT palette";
         $about = trim($description) !== '' ? "{$company} — {$description}" : ($company ?: 'this business');
+        $style = $style ?: 'Polished, professional B2B brand ad — corporate, credible, enterprise-grade.';
 
         return "Design a premium, modern Google Display ad banner in landscape (about 1.9:1), art-directed like "
-            ."a real agency creative for {$about}. Make it a professional B2B brand ad — corporate, credible "
-            .'and enterprise-grade, not a consumer retail sale. '
+            ."a real agency creative for {$about}. {$style} "
             // subject-grounded signature (avoid generic AI-ad clichés)
             .'Draw the mood and ONE tasteful visual motif from this business\'s actual world — evocative of '
-            .'what they do — not generic stock photography, and not abstract gradient blobs or swooshes. '
+            .'what they do — not generic stock photography, and not lazy abstract blobs or generic swooshes. '
             // clear focal hierarchy + confident layout
             .'Composition: one clear focal path — the supplied logo as the brand anchor (kept small, top-left '
             .'or a tidy lockup), the headline as the dominant element, then the button. Confident asymmetric '
