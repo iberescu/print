@@ -148,9 +148,11 @@ class BuildBrandKit implements ShouldQueue
     }
 
     /**
-     * Make the logo production-ready: upscale it via Gemini when it's low-res
+     * Make the logo production-ready: upscale it via Gemini ONLY when it's low-res
      * (kept pixel-faithful — no restyle), then centre it on a square canvas so
-     * downstream mockups don't inherit a wide wordmark's aspect ratio.
+     * downstream mockups don't inherit a wide wordmark's aspect ratio. A logo that
+     * already has good resolution is left untouched — any redraw risks drifting
+     * from the original, so we only accept that risk when the logo is too small.
      */
     private function enhanceLogo(GeminiClient $gemini, BrandKit $kit): void
     {
@@ -160,15 +162,18 @@ class BuildBrandKit implements ShouldQueue
         }
         $bytes = base64_decode($input['data']);
         $dims = @getimagesizefromstring($bytes) ?: [0, 0];
+        $minPx = (int) config('shop.internal_engine.logo_min_px', 512);
 
-        if ($dims[0] > 0 && max($dims[0], $dims[1]) < 512) {
+        // Only upscale when the largest side is under the threshold; good-res
+        // logos skip this and are used exactly as supplied.
+        if ($dims[0] > 0 && max($dims[0], $dims[1]) < $minPx) {
             try {
                 $up = $gemini->generateImage(
                     'Upscale this logo to a high-resolution version. Reproduce it PIXEL-FAITHFULLY — the exact '
                     .'same shapes, letters, colours, spacing and proportions — only sharper and larger. Do NOT '
                     .'restyle, recolour, add, remove, crop or redraw anything. Plain solid white background.',
                     [$input],
-                    config('shop.internal_engine.image_model'),
+                    config('shop.internal_engine.logo_model'),
                 );
                 $bytes = $up['data'];
             } catch (\Throwable) {

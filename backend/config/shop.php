@@ -86,6 +86,14 @@ return [
     'internal_engine' => [
         'image_model'    => env('INTERNAL_ENGINE_IMAGE_MODEL', env('GEMINI_IMAGE_MODEL_FAST', 'gemini-3.1-flash-image')),
         'ad_image_model' => env('INTERNAL_ENGINE_AD_IMAGE_MODEL', env('GEMINI_IMAGE_MODEL', 'gemini-3-pro-image')),
+        // Low-res logo upscale uses the pro tier too — it must stay faithful to the
+        // original (the Lite tier redraws it), and every downstream mockup/ad
+        // inherits this logo, so fidelity here matters most.
+        'logo_model'     => env('INTERNAL_ENGINE_LOGO_MODEL', env('GEMINI_IMAGE_MODEL', 'gemini-3-pro-image')),
+        // Only upscale a logo when its largest side is under this many pixels.
+        // Good-resolution logos are used as-is — upscaling would redraw them and
+        // any redraw risks drifting from the original, so we avoid it when we can.
+        'logo_min_px'    => (int) env('INTERNAL_ENGINE_LOGO_MIN_PX', 512),
         // Cap how many product mockups / display ads to generate per capture
         // (0 = all). Ads default to 4 — enough variety, keeps the pro-tier cost sane.
         'max_products' => (int) env('INTERNAL_ENGINE_MAX_PRODUCTS', 0),

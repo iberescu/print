@@ -98,7 +98,9 @@ class BrandKitSpec
             .'CRITICAL — DO NOT CHANGE THE LOGO: the supplied logo must appear EXACTLY as provided, '
             .'pixel-for-pixel identical in shapes, letterforms, colours, proportions and spacing. Do NOT '
             .'redraw, restyle, recolour, re-letter, crop, rotate, distort, add effects to, or regenerate it '
-            .'in any way — place it unaltered. '
+            .'in any way — place it unaltered. Keep its ORIGINAL colours — never recolour it to white, black '
+            .'or any other colour for contrast. If the area behind it would be dark or busy, sit the logo on '
+            .'a clean solid light or white panel so it stays legible in its true, original colours. '
             // palette + typography-as-personality
             ."Build the design from {$colours}, cohesive and high-contrast. Set the headline \"{$headline}\" in "
             .'a bold, characterful modern sans with strong weight and deliberate spacing — the headline carries '
