@@ -201,25 +201,33 @@ class Cart
     }
 
     /**
-     * The fixed shipping methods with their effective price for this cart — the
-     * base method is free once the order clears the free-shipping threshold.
+     * The fixed shipping methods with their effective price for this cart.
+     * Shipping is charged PER PRODUCT, so price = unit price × number of
+     * products. The base method is free once the order clears the free-shipping
+     * threshold. Each method also carries an estimated delivery date computed as
+     * today + N business days.
      *
-     * @return array<int,array{code:string,label:string,eta:string,price:float,free:bool}>
+     * @return array<int,array{code:string,label:string,eta:string,deliver_by:string,unit_price:float,price:float,free:bool}>
      */
     public function methods(): array
     {
-        $base = config('shop.shipping_base_method', 'economy');
+        $base = config('shop.shipping_base_method', 'standard');
         $qualifies = $this->qualifiesFreeShipping();
+        $count = max(1, $this->count()); // shipping is per product
 
-        return array_map(function ($m) use ($base, $qualifies) {
+        return array_map(function ($m) use ($base, $qualifies, $count) {
             $free = $m['code'] === $base && $qualifies;
+            $unit = (float) $m['price'];
+            $date = now()->addWeekdays((int) ($m['days'] ?? 0));
 
             return [
-                'code'  => $m['code'],
-                'label' => $m['label'],
-                'eta'   => $m['eta'],
-                'price' => $free ? 0.0 : (float) $m['price'],
-                'free'  => $free,
+                'code'       => $m['code'],
+                'label'      => $m['label'],
+                'eta'        => 'Delivery as soon as '.$date->format('D, M j').'*',
+                'deliver_by' => $date->toDateString(),
+                'unit_price' => $unit,
+                'price'      => $free ? 0.0 : round($unit * $count, 2),
+                'free'       => $free,
             ];
         }, config('shop.shipping_methods', []));
     }

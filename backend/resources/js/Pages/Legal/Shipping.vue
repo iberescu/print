@@ -11,7 +11,7 @@ const money = (n) => '$' + Number(n).toFixed(0);
         <p>Orders are custom-produced after you approve your design. Standard production takes <strong>2–4 business days</strong>; many products offer a 2-day production option at checkout. Production time is separate from transit time.</p>
 
         <h2>Free shipping</h2>
-        <p>Orders with a subtotal of <strong>{{ money(threshold) }}</strong> or more ship <strong>free</strong> (Economy). For orders below {{ money(threshold) }}, a flat shipping rate is calculated and shown at checkout before you pay.</p>
+        <p>Orders with a subtotal of <strong>{{ money(threshold) }}</strong> or more ship <strong>free</strong> (Standard). Shipping is charged per product below that threshold. For orders below {{ money(threshold) }}, a flat shipping rate is calculated and shown at checkout before you pay.</p>
 
         <h2>Delivery estimates</h2>
         <p>Once produced, most orders are delivered within 3–7 business days by our carriers, depending on your location and the shipping method selected. Estimated delivery windows are shown at checkout and are not guaranteed dates.</p>

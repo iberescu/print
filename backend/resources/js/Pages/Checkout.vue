@@ -22,6 +22,7 @@ const selectedMethod = computed(() => methods.value.find((m) => m.code === form.
 const shippingCost = computed(() => (selectedMethod.value ? Number(selectedMethod.value.price) : Number(props.summary.shipping || 0)));
 const orderTotal = computed(() => Math.max(0, Number(props.summary.subtotal || 0) - Number(props.summary.discount || 0) + shippingCost.value));
 const remainingForFree = computed(() => Math.max(0, Number(props.summary.threshold || 0) - Number(props.summary.subtotal || 0)));
+const itemCount = computed(() => props.items.length);
 
 const submit = () => form.post('/checkout');
 const field = 'mt-1 w-full rounded-lg border border-paper-300 px-3 py-2.5 text-ink focus:border-brand-600 focus:outline-none focus:ring-2 focus:ring-brand-600/15';
@@ -71,9 +72,12 @@ const field = 'mt-1 w-full rounded-lg border border-paper-300 px-3 py-2.5 text-i
                                 <span class="block text-sm font-semibold text-ink">{{ m.label }}</span>
                                 <span class="block text-xs text-ink/55">{{ m.eta }}</span>
                             </span>
-                            <span class="text-sm font-semibold" :class="m.free ? 'text-brand-700' : 'text-ink'">{{ m.free || m.price === 0 ? 'FREE' : money(m.price) }}</span>
+                            <span class="text-right">
+                                <span class="block text-sm font-semibold" :class="m.free ? 'text-brand-700' : 'text-ink'">{{ m.free || m.price === 0 ? 'FREE' : money(m.price) }}</span>
+                                <span v-if="!m.free && m.price > 0 && itemCount > 1" class="block text-[11px] text-ink/45">{{ money(m.unit_price) }}/item × {{ itemCount }}</span>
+                            </span>
                         </label>
-                        <p v-if="remainingForFree > 0" class="pt-1 text-xs text-ink/50">Add <strong class="text-ink">{{ money(remainingForFree) }}</strong> more to unlock free Economy shipping.</p>
+                        <p v-if="remainingForFree > 0" class="pt-1 text-xs text-ink/50">Add <strong class="text-ink">{{ money(remainingForFree) }}</strong> more to unlock free Standard shipping.</p>
                         <p class="pt-1 text-[11px] text-ink/40">*Estimated delivery timeframe, not a guaranteed date.</p>
                     </div>
 
@@ -87,7 +91,9 @@ const field = 'mt-1 w-full rounded-lg border border-paper-300 px-3 py-2.5 text-i
                     <h2 class="font-display text-lg font-semibold">Order summary</h2>
                     <div class="mt-3 space-y-2">
                         <div v-for="it in items" :key="it.id" class="flex justify-between gap-3 text-sm">
-                            <span class="text-ink/70">{{ it.name }} <span class="text-ink/40">×{{ it.quantity }}</span></span>
+                            <span class="text-ink/70">{{ it.name }} <span class="text-ink/40">×{{ it.quantity }}</span>
+                                <span v-if="selectedMethod" class="block text-[11px] text-ink/45">🚚 {{ selectedMethod.eta }}</span>
+                            </span>
                             <span class="shrink-0 font-medium">{{ money(it.line_total) }}</span>
                         </div>
                     </div>

@@ -85,7 +85,7 @@ FACTS YOU MAY USE (the only source of truth — never invent anything beyond thi
 {$catalogue}
 - Exact prices depend on quantity and options (paper stock, finish, …) and are shown live
   on each product page. Larger quantities cost less per unit.
-- Shipping: free Economy shipping on orders of \${$threshold} or more; below that a flat \$4.99.
+- Shipping: charged per product; free Standard shipping on orders of \${$threshold} or more.
 - How ordering works: pick a product → design it online in our free browser editor
   (200+ professional templates, no design skills needed) or upload your own artwork
   (PDF/images supported) → review and approve the design → fine-tune quantity and paper

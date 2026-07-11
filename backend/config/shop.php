@@ -6,16 +6,18 @@ return [
     */
     'free_shipping_threshold' => (float) env('FREE_SHIPPING_THRESHOLD', 100),
 
-    // Fixed shipping methods (Vistaprint-style). The base method ('economy') is
-    // free once the order clears the free-shipping threshold above; faster
-    // methods are paid upgrades and always cost their fixed price.
-    'shipping_base_method' => 'economy',
+    // Fixed shipping methods (Vistaprint-style). Shipping is charged PER PRODUCT
+    // (method price × number of products in the cart). The base method
+    // ('standard') is free once the order clears the free-shipping threshold
+    // above; the others are paid upgrades. 'days' = business days from today,
+    // used to show an estimated delivery date at checkout.
+    'shipping_base_method' => 'standard',
     'shipping_methods' => [
-        ['code' => 'economy',  'label' => 'Economy',  'eta' => 'Delivery as soon as 8 business days*', 'price' => 7.99],
-        ['code' => 'standard', 'label' => 'Standard', 'eta' => 'Delivery as soon as 6 business days*', 'price' => 12.99],
-        ['code' => 'express',  'label' => 'Express',  'eta' => 'Delivery as soon as 3 business days*', 'price' => 24.99],
+        ['code' => 'economy',  'label' => 'Economy',  'days' => 8, 'price' => 7.99],
+        ['code' => 'standard', 'label' => 'Standard', 'days' => 6, 'price' => 12.99],
+        ['code' => 'express',  'label' => 'Express',  'days' => 3, 'price' => 24.99],
         // code kept as 'nextday' so live carts/orders that stored it still resolve
-        ['code' => 'nextday',  'label' => 'Rush',     'eta' => 'Delivery in 2 business days*',         'price' => 44.99],
+        ['code' => 'nextday',  'label' => 'Rush',     'days' => 2, 'price' => 44.99],
     ],
 
     /*
