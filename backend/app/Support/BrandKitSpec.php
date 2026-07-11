@@ -12,8 +12,9 @@ namespace App\Support;
 class BrandKitSpec
 {
     /** Common product-photo framing appended to every merch prompt. */
-    private const PHOTO = 'Professional e-commerce product photo on a clean white table with a soft white '
-        .'wall behind, bright even lighting, soft natural shadows, crisp focus, centred, generous margins.';
+    private const PHOTO = 'Professional e-commerce product photo: the product sitting on a light '
+        .'natural-wood table with a soft light wall behind, a soft contact shadow under the product, bright '
+        .'even lighting, crisp focus, centred, generous margins.';
 
     /**
      * Merch products. decoration: print|laser|embroidery. slug maps to a real
@@ -35,7 +36,7 @@ class BrandKitSpec
             [
                 'key' => 'letterhead', 'label' => 'Letterhead', 'slug' => 'company-letterhead', 'decoration' => 'custom',
                 'prompt' => 'A professional printed A4 letterhead / company stationery sheet, portrait '
-                    .'orientation, photographed flat (top-down) on a clean white table with soft shadows. The '
+                    .'orientation, lying flat (top-down) on a light natural-wood table with a soft shadow. The '
                     .'provided logo is printed once in the HEADER at the top of the sheet, at a realistic size. '
                     .'Below it a clean, elegant letterhead: a thin brand-coloured rule under the header and a '
                     .'small placeholder contact line, the rest of the page left blank and white — do NOT fill '
@@ -75,23 +76,23 @@ class BrandKitSpec
             [
                 'key' => 'pen', 'label' => 'Pen', 'slug' => 'custom-pens', 'decoration' => 'custom',
                 'prompt' => 'A studio product shot of a single sleek promotional pen lying HORIZONTALLY '
-                    .'(landscape) on a clean white table with soft shadows. Show the ENTIRE pen fully '
+                    .'(landscape) on a light natural-wood table with a soft shadow. Show the ENTIRE pen fully '
                     .'within the frame from tip to end — not cropped — with generous margins around it. The '
                     .'provided logo is printed small along the barrel of the pen in landscape orientation.',
             ],
             [
                 'key' => 'sticker', 'label' => 'Kiss-cut sticker', 'slug' => 'kiss-cut-stickers', 'decoration' => 'custom',
-                'prompt' => 'A close-up product shot of the back lid of a modern laptop on a clean white table, with a '
+                'prompt' => 'A close-up product shot of the back lid of a modern laptop on a light natural-wood table, with a '
                     .'single kiss-cut vinyl sticker of the provided logo applied to it. The sticker is die-cut '
                     .'to follow the logo\'s own contour/silhouette — a tight outline hugging the logo with a '
                     .'thin white sticker border — lying flat on the laptop lid at a realistic size, at a '
                     .'slight angle, with soft realistic lighting.',
             ],
-            ['key' => 'doorhanger', 'label' => 'Door hanger', 'slug' => 'door-hangers', 'decoration' => 'print', 'scene' => 'a printed door hanger with a rounded top and a die-cut hole for a door handle, shown flat', 'placement' => 'centred — just the logo, nothing else'],
+            ['key' => 'doorhanger', 'label' => 'Door hanger', 'slug' => 'door-hangers', 'decoration' => 'print', 'scene' => 'a printed door hanger with a rounded top and a die-cut hole for a door handle, lying flat on the table', 'placement' => 'centred — just the logo, nothing else'],
             [
                 'key' => 'mousepad', 'label' => 'Mouse pad', 'slug' => 'mouse-pads', 'decoration' => 'custom', 'logo_render' => 'white',
                 'prompt' => 'A studio product shot of a dark charcoal rectangular cloth mouse pad lying flat on '
-                    .'a clean white table, shown from a slight top-down angle. The provided logo is printed small in '
+                    .'a light natural-wood table, shown from a slight top-down angle. The provided logo is printed small in '
                     .'ONE CORNER of the mouse pad.',
             ],
         ];
