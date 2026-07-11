@@ -43,35 +43,41 @@ class BrandKitSpec
             ],
             [
                 'key' => 'infinity', 'label' => 'Infinity-mirror LED', 'slug' => 'led-infinity-mirror', 'decoration' => 'custom',
-                'prompt' => 'Ultra-realistic 3D infinity-mirror sign die-cut to the exact shape of the '
-                    .'provided logo — a channel-letter style sign whose outer contour hugs the logo '
-                    .'silhouette (icon and lettering as one shape), NOT a rectangle, square or framed box. '
-                    .'Glossy black 3D sides follow the logo outline; a two-way mirror face reveals an '
-                    .'infinity-mirror tunnel INSIDE the logo shape: the logo\'s OWN OUTLINE is repeated as '
-                    .'many CRISP, sharp, evenly-spaced concentric neon outlines that shrink and recede '
-                    .'straight back into deep black infinite depth — a clean tunnel built from the logo\'s '
-                    .'own shape, NOT random wavy or diffuse lines. Bright, well-defined neon LED tube '
-                    .'lighting in the brand\'s own colours (matching the logo) on the faces, with a vivid '
-                    .'glowing rim-light along the raised 3D edges/returns and a soft neon halo on the dark '
-                    .'wall behind. Floating wall-mounted, premium acrylic and aluminium, ray-traced '
-                    .'reflections, cinematic moody lighting, hyper-detailed, luxury modern product '
-                    .'photography, photorealistic, 8K.',
+                'prompt' => 'Ultra-realistic 3D infinity-mirror sign die-cut to the shape of the provided '
+                    .'logo. IMPORTANT: if the logo has a distinct icon, symbol or graphic mark alongside '
+                    .'text, use ONLY that icon/shape and OMIT the text/wordmark entirely; only if the logo '
+                    .'is purely a text wordmark with no icon, use the text. It is a channel-letter style '
+                    .'sign whose outer contour hugs that shape — NOT a rectangle, square or framed box. '
+                    .'Glossy black 3D sides follow the outline; a two-way mirror face reveals an '
+                    .'infinity-mirror tunnel INSIDE the shape: the shape\'s OWN OUTLINE repeated as many '
+                    .'CRISP, sharp, evenly-spaced concentric neon outlines that shrink and recede straight '
+                    .'back into deep black infinite depth — a clean tunnel built from the shape itself, NOT '
+                    .'random wavy or diffuse lines. Bright, well-defined neon LED tube lighting in the '
+                    .'brand\'s own colours (matching the logo) on the faces, with a vivid glowing rim-light '
+                    .'along the raised 3D edges/returns and a soft neon halo on the dark wall behind. '
+                    .'Floating wall-mounted, premium acrylic and aluminium, ray-traced reflections, '
+                    .'cinematic moody lighting, hyper-detailed, luxury modern product photography, '
+                    .'photorealistic, 8K.',
             ],
             [
                 'key' => 'wordcloud', 'label' => 'Word-cloud canvas', 'slug' => 'framed-canvas-prints', 'decoration' => 'custom',
                 'prompt' => 'A framed canvas art print hanging on a clean interior wall, photographed straight '
-                    .'on. The canvas shows a word cloud that COMPLETELY FILLS the silhouette of the provided '
-                    .'logo — the words are sized and packed to fill the logo\'s outline so the entire logo '
-                    .'shape is formed out of words. Use ONLY these brand words: {keywords}. Set them in the '
-                    .'brand colours on a clean background, keeping the overall logo shape clearly recognisable.',
+                    .'on. The canvas shows a word cloud that COMPLETELY FILLS the shape of the provided logo. '
+                    .'IMPORTANT: if the logo has a distinct icon or symbol alongside text, fill ONLY that '
+                    .'icon/shape with the words and OMIT the text/wordmark; only if the logo is purely text '
+                    .'(no icon), fill the text shape. The words are sized and packed to fill that outline so '
+                    .'the shape is formed entirely out of words. Use ONLY these brand words: {keywords}. Set '
+                    .'them in the brand colours on a clean background, keeping the shape clearly recognisable.',
             ],
             [
                 'key' => 'ledrhombus', 'label' => 'LED rhombus panel', 'slug' => 'led-panel', 'decoration' => 'custom',
                 'prompt' => 'A wall-mounted decorative LED panel built from many small illuminated rhombus '
-                    .'(diamond) tiles fitted together like a mosaic, photographed straight on. The lit rhombus '
-                    .'tiles are arranged and coloured to approximate the shape of the provided logo as closely '
-                    .'as the diamond grid allows — like a low-resolution diamond-pixel display of the logo — '
-                    .'glowing in the logo\'s colours.',
+                    .'(diamond) tiles fitted together like a mosaic, photographed straight on. IMPORTANT: if '
+                    .'the logo has a distinct icon or symbol alongside text, reproduce ONLY that icon/shape '
+                    .'and OMIT the text/wordmark; only if the logo is purely text (no icon), use the text. '
+                    .'The lit rhombus tiles are arranged and coloured to approximate that shape as closely as '
+                    .'the diamond grid allows — like a low-resolution diamond-pixel display of the logo — '
+                    .'glowing in the brand\'s colours (matching the logo).',
             ],
             [
                 'key' => 'pen', 'label' => 'Pen', 'slug' => 'custom-pens', 'decoration' => 'custom',
