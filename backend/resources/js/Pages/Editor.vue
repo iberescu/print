@@ -105,7 +105,8 @@ const urlTimers = {};
 function checkUrlField(field, value) {
     const v = (value || '').trim();
     clearTimeout(urlTimers[field]);
-    if (!v || !v.includes('.')) { urlTick[field].state = ''; urlTick[field].msg = ''; return; }
+    // ignore empties and the untouched placeholder URL
+    if (!v || !v.includes('.') || /^(https?:\/\/)?(www\.)?yourcompany\.com\/?$/i.test(v) || /^your\s*company/i.test(v)) { urlTick[field].state = ''; urlTick[field].msg = ''; return; }
     urlTick[field].state = 'checking';
     urlTimers[field] = setTimeout(async () => {
         try {
@@ -233,8 +234,7 @@ function syncSelection() {
         sel.italic = o.fontStyle === 'italic';
         sel.align = o.textAlign || 'left';
     }
-    if (selIsUrl.value) checkUrlField('design', o.text ?? '');
-    else { urlTick.design.state = ''; urlTick.design.msg = ''; }
+    if (!selIsUrl.value) { urlTick.design.state = ''; urlTick.design.msg = ''; }
 }
 
 function fitCanvas() {
@@ -319,7 +319,8 @@ onMounted(() => {
         ['object:added', 'object:removed', 'object:modified', 'text:changed'].forEach((ev) => canvas.on(ev, markDirty));
         ['object:added', 'object:removed', 'object:modified', 'text:changed'].forEach((ev) => canvas.on(ev, recordHistory));
         // validate the URL element live while it's edited directly on the canvas
-        canvas.on('text:changed', (e) => { if (e.target?.rmpRole === 'url') { selIsUrl.value = true; checkUrlField('design', e.target.text ?? ''); } });
+        // check the design's URL only when editing finishes (on blur), not per keystroke
+        canvas.on('text:editing:exited', (e) => { if (e.target?.rmpRole === 'url') checkUrlField('design', e.target.text ?? ''); });
     }, 2000);
     window.addEventListener('keydown', onHistoryKeys);
 
@@ -533,7 +534,7 @@ const setColor = (c) => { sel.fill = c; apply('fill', c); };
 const toggleBold = () => { sel.bold = !sel.bold; apply('fontWeight', sel.bold ? 'bold' : 'normal'); };
 const toggleItalic = () => { sel.italic = !sel.italic; apply('fontStyle', sel.italic ? 'italic' : 'normal'); };
 const setAlign = (a) => { sel.align = a; apply('textAlign', a); };
-const setText = (v) => { sel.text = v; apply('text', v); if (selIsUrl.value) checkUrlField('design', v); };
+const setText = (v) => { sel.text = v; apply('text', v); };
 const setBg = (c) => { canvas.backgroundColor = c; canvas.requestRenderAll(); };
 
 function newText() {
@@ -889,7 +890,7 @@ function goToReview() {
 
             <template v-if="isText">
                 <div class="relative shrink-0">
-                    <input :value="sel.text" @input="setText($event.target.value)" :placeholder="selIsUrl ? 'yourcompany.com' : 'Edit text'"
+                    <input :value="sel.text" @input="setText($event.target.value)" @blur="selIsUrl && checkUrlField('design', sel.text)" :placeholder="selIsUrl ? 'yourcompany.com' : 'Edit text'"
                            class="w-32 rounded-md bg-white/10 px-2 py-1.5 text-sm text-paper placeholder:text-paper/40 focus:outline-none sm:w-44" :class="selIsUrl ? 'pr-8' : ''" />
                     <span v-if="selIsUrl && urlTick.design.state" class="absolute right-2 top-1/2 -translate-y-1/2" :title="urlTick.design.msg">
                         <svg v-if="urlTick.design.state === 'checking'" class="h-4 w-4 animate-spin text-paper/50" viewBox="0 0 24 24" fill="none"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.4 0 0 5.4 0 12h4z"/></svg>
@@ -1055,7 +1056,7 @@ function goToReview() {
                 </div>
                 <div class="mt-4 space-y-3">
                     <div v-if="qr.type === 'url'" class="relative">
-                        <input v-model="qr.url" @input="checkUrlField('url', qr.url)" type="text" placeholder="yourcompany.com" class="w-full rounded-xl border border-paper-300 px-3.5 py-2.5 pr-9 text-sm focus:border-brand-400 focus:outline-none" />
+                        <input v-model="qr.url" @blur="checkUrlField('url', qr.url)" type="text" placeholder="yourcompany.com" class="w-full rounded-xl border border-paper-300 px-3.5 py-2.5 pr-9 text-sm focus:border-brand-400 focus:outline-none" />
                         <span v-if="urlTick.url.state" class="absolute right-3 top-1/2 -translate-y-1/2" :title="urlTick.url.msg">
                             <svg v-if="urlTick.url.state === 'checking'" class="h-4 w-4 animate-spin text-ink/40" viewBox="0 0 24 24" fill="none"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.4 0 0 5.4 0 12h4z"/></svg>
                             <svg v-else-if="urlTick.url.state === 'valid'" class="h-4 w-4 text-emerald-600" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.7 5.3a1 1 0 010 1.4l-7.5 7.5a1 1 0 01-1.4 0L3.3 9.7a1 1 0 011.4-1.4l3.1 3.1 6.8-6.8a1 1 0 011.4 0z" clip-rule="evenodd"/></svg>
@@ -1069,7 +1070,7 @@ function goToReview() {
                             <input v-model="qr.email" type="email" placeholder="Email" class="w-full rounded-xl border border-paper-300 px-3.5 py-2.5 text-sm focus:border-brand-400 focus:outline-none" />
                         </div>
                         <div class="relative">
-                            <input v-model="qr.site" @input="checkUrlField('site', qr.site)" type="text" placeholder="Website" class="w-full rounded-xl border border-paper-300 px-3.5 py-2.5 pr-9 text-sm focus:border-brand-400 focus:outline-none" />
+                            <input v-model="qr.site" @blur="checkUrlField('site', qr.site)" type="text" placeholder="Website" class="w-full rounded-xl border border-paper-300 px-3.5 py-2.5 pr-9 text-sm focus:border-brand-400 focus:outline-none" />
                             <span v-if="urlTick.site.state" class="absolute right-3 top-1/2 -translate-y-1/2" :title="urlTick.site.msg">
                                 <svg v-if="urlTick.site.state === 'checking'" class="h-4 w-4 animate-spin text-ink/40" viewBox="0 0 24 24" fill="none"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.4 0 0 5.4 0 12h4z"/></svg>
                                 <svg v-else-if="urlTick.site.state === 'valid'" class="h-4 w-4 text-emerald-600" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.7 5.3a1 1 0 010 1.4l-7.5 7.5a1 1 0 01-1.4 0L3.3 9.7a1 1 0 011.4-1.4l3.1 3.1 6.8-6.8a1 1 0 011.4 0z" clip-rule="evenodd"/></svg>
