@@ -72,18 +72,6 @@ class BrandKitSpec
                     .'{keywords}. Set them in the brand colours; keep the shape clearly recognisable.',
             ],
             [
-                'key' => 'ledrhombus', 'label' => 'LED rhombus panel', 'slug' => 'led-panel', 'decoration' => 'custom',
-                'prompt' => 'A wall-mounted LED sign made ONLY from small illuminated rhombus (diamond) tiles '
-                    .'fitted together to form the shape of the provided logo — NO surrounding panel, box, '
-                    .'frame or background board; just the logo-shaped cluster of glowing diamond tiles '
-                    .'mounted directly on the bare wall, photographed straight on. IMPORTANT: if the logo has '
-                    .'a distinct icon or symbol alongside text, reproduce ONLY that icon/shape and OMIT the '
-                    .'text/wordmark; only if the logo is purely text (no icon), use the text. The lit rhombus '
-                    .'tiles are arranged and coloured to approximate that shape as closely as the diamond '
-                    .'grid allows — like a diamond-pixel display of the logo — glowing in the brand\'s '
-                    .'colours (matching the logo).',
-            ],
-            [
                 'key' => 'pen', 'label' => 'Pen', 'slug' => 'custom-pens', 'decoration' => 'custom',
                 'prompt' => 'A studio product shot of a single sleek promotional pen lying HORIZONTALLY '
                     .'(landscape) on a clean light-grey surface with soft shadows. Show the ENTIRE pen fully '
