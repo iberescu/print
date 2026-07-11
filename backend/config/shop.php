@@ -11,10 +11,11 @@ return [
     // methods are paid upgrades and always cost their fixed price.
     'shipping_base_method' => 'economy',
     'shipping_methods' => [
-        ['code' => 'economy',  'label' => 'Economy',  'eta' => '7–10 business days',     'price' => 7.99],
-        ['code' => 'standard', 'label' => 'Standard', 'eta' => '5–7 business days',       'price' => 12.99],
-        ['code' => 'express',  'label' => 'Express',  'eta' => '2 business days (48 hr)', 'price' => 24.99],
-        ['code' => 'nextday',  'label' => 'Next Day', 'eta' => 'Next business day',       'price' => 44.99],
+        ['code' => 'economy',  'label' => 'Economy',  'eta' => 'Delivery as soon as 8 business days*', 'price' => 7.99],
+        ['code' => 'standard', 'label' => 'Standard', 'eta' => 'Delivery as soon as 6 business days*', 'price' => 12.99],
+        ['code' => 'express',  'label' => 'Express',  'eta' => 'Delivery as soon as 3 business days*', 'price' => 24.99],
+        // code kept as 'nextday' so live carts/orders that stored it still resolve
+        ['code' => 'nextday',  'label' => 'Rush',     'eta' => 'Delivery in 2 business days*',         'price' => 44.99],
     ],
 
     /*

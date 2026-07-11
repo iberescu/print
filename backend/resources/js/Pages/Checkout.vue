@@ -74,6 +74,7 @@ const field = 'mt-1 w-full rounded-lg border border-paper-300 px-3 py-2.5 text-i
                             <span class="text-sm font-semibold" :class="m.free ? 'text-brand-700' : 'text-ink'">{{ m.free || m.price === 0 ? 'FREE' : money(m.price) }}</span>
                         </label>
                         <p v-if="remainingForFree > 0" class="pt-1 text-xs text-ink/50">Add <strong class="text-ink">{{ money(remainingForFree) }}</strong> more to unlock free Economy shipping.</p>
+                        <p class="pt-1 text-[11px] text-ink/40">*Estimated delivery timeframe, not a guaranteed date.</p>
                     </div>
 
                     <button :disabled="form.processing" class="w-full rounded-full bg-brand-600 px-6 py-3.5 font-semibold text-white transition hover:bg-brand-700 disabled:opacity-60">
