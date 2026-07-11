@@ -60,24 +60,28 @@ class BrandKitSpec
                     .'photorealistic, 8K.',
             ],
             [
-                'key' => 'wordcloud', 'label' => 'Word-cloud canvas', 'slug' => 'framed-canvas-prints', 'decoration' => 'custom',
-                'prompt' => 'A framed canvas art print hanging on a clean interior wall, photographed straight '
-                    .'on. The canvas shows a word cloud that COMPLETELY FILLS the shape of the provided logo. '
-                    .'IMPORTANT: if the logo has a distinct icon or symbol alongside text, fill ONLY that '
-                    .'icon/shape with the words and OMIT the text/wordmark; only if the logo is purely text '
-                    .'(no icon), fill the text shape. The words are sized and packed to fill that outline so '
-                    .'the shape is formed entirely out of words. Use ONLY these brand words: {keywords}. Set '
-                    .'them in the brand colours on a clean background, keeping the shape clearly recognisable.',
+                'key' => 'wordcloud', 'label' => 'Word-cloud wall art', 'slug' => 'canvas-prints', 'decoration' => 'custom',
+                'prompt' => 'A LARGE word-cloud wall-art piece displayed directly on a clean interior wall — '
+                    .'NO frame and no border — filling a big area of the wall, photographed straight on. The '
+                    .'words COMPLETELY FILL the shape of the provided logo. IMPORTANT: if the logo has a '
+                    .'distinct icon or symbol alongside text, fill ONLY that icon/shape with the words and '
+                    .'OMIT the text/wordmark; only if the logo is purely text (no icon), fill the text shape. '
+                    .'Use a real word-cloud style: mix a few LARGE words with many SMALLER ones, set at varied '
+                    .'orientations — horizontal, diagonal AND vertical, rotated at assorted angles — packed '
+                    .'densely in random positions to fill the whole shape. Use ONLY these brand words: '
+                    .'{keywords}. Set them in the brand colours; keep the shape clearly recognisable.',
             ],
             [
                 'key' => 'ledrhombus', 'label' => 'LED rhombus panel', 'slug' => 'led-panel', 'decoration' => 'custom',
-                'prompt' => 'A wall-mounted decorative LED panel built from many small illuminated rhombus '
-                    .'(diamond) tiles fitted together like a mosaic, photographed straight on. IMPORTANT: if '
-                    .'the logo has a distinct icon or symbol alongside text, reproduce ONLY that icon/shape '
-                    .'and OMIT the text/wordmark; only if the logo is purely text (no icon), use the text. '
-                    .'The lit rhombus tiles are arranged and coloured to approximate that shape as closely as '
-                    .'the diamond grid allows — like a low-resolution diamond-pixel display of the logo — '
-                    .'glowing in the brand\'s colours (matching the logo).',
+                'prompt' => 'A wall-mounted LED sign made ONLY from small illuminated rhombus (diamond) tiles '
+                    .'fitted together to form the shape of the provided logo — NO surrounding panel, box, '
+                    .'frame or background board; just the logo-shaped cluster of glowing diamond tiles '
+                    .'mounted directly on the bare wall, photographed straight on. IMPORTANT: if the logo has '
+                    .'a distinct icon or symbol alongside text, reproduce ONLY that icon/shape and OMIT the '
+                    .'text/wordmark; only if the logo is purely text (no icon), use the text. The lit rhombus '
+                    .'tiles are arranged and coloured to approximate that shape as closely as the diamond '
+                    .'grid allows — like a diamond-pixel display of the logo — glowing in the brand\'s '
+                    .'colours (matching the logo).',
             ],
             [
                 'key' => 'pen', 'label' => 'Pen', 'slug' => 'custom-pens', 'decoration' => 'custom',
