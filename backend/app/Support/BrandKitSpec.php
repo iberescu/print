@@ -219,15 +219,24 @@ class BrandKitSpec
         $about = trim($description) !== '' ? "{$company} — {$description}" : ($company ?: 'this business');
         $style = $style ?: 'Polished, professional B2B brand ad — corporate, credible, enterprise-grade.';
 
-        return "Design a premium, modern Google Display ad banner in landscape (about 1.9:1), art-directed like "
-            ."a real agency creative for {$about}. {$style} "
-            // subject-grounded signature (avoid generic AI-ad clichés)
-            .'Draw the mood and ONE tasteful visual motif from this business\'s actual world — evocative of '
-            .'what they do — not generic stock photography, and not lazy abstract blobs or generic swooshes. '
-            // clear focal hierarchy + confident layout
-            .'Composition: one clear focal path — the supplied logo as the brand anchor (kept small, top-left '
-            .'or a tidy lockup), the headline as the dominant element, then the button. Confident asymmetric '
-            .'layout with generous negative space; keep all content inside a safe margin so nothing is cropped. '
+        return "Design a striking, studio-grade Google Display ad banner (landscape ~1.9:1) for {$about} — the "
+            ."work of a designer with real taste, NOT a template assembled from defaults. {$style} "
+            // hierarchy
+            ."HIERARCHY: one thing dominates — the headline \"{$headline}\" set BIG and confident (3-6x the "
+            .'size of any supporting text), in a bold, characterful modern sans that carries the personality; '
+            .'then the CTA; then the small logo. If everything is the same weight there is no design. '
+            // composition + depth + frame-breaking
+            .'COMPOSITION: deliberate and asymmetric — NOT a centred stack with equal margins. Off-grid '
+            .'placement, intentional imbalance, and generous INTENTIONAL negative space (crowded is amateur — '
+            .'let it breathe). Build layered depth (background → a mid-ground motif/shape → type on top) and '
+            .'break the frame with confidence — let a background shape or the motif crop at / bleed past an '
+            .'edge. But ALL TEXT and the logo stay fully inside a safe margin and completely readable — never '
+            .'let the headline, CTA or logo touch or run off an edge or get clipped. '
+            // subject-grounded, editorial, anti-cliché, no people
+            ."MOTIF: ONE tasteful visual element drawn from {$company}'s actual world (its objects, materials, "
+            .'environment, or an abstract form tied to what they do) — editorial and cinematic, dramatic '
+            .'off-angle lighting. NOT generic stock, NOT lazy gradient blobs or swooshes, NOT the most-obvious '
+            .'cliché image of this industry. NO people, faces, hands or crowds. '
             // logo fidelity — the user's TOP priority; keep it emphatic
             .'CRITICAL — DO NOT CHANGE THE LOGO: treat the supplied logo as a fixed image asset and place it '
             .'AS-IS (as if pasting the original file), never recreated. It must appear pixel-for-pixel '
@@ -238,16 +247,16 @@ class BrandKitSpec
             .'crop, rotate, distort or add effects. If the area behind it would be dark or busy, sit the logo '
             .'on a clean solid light or white panel so it stays legible in its true colours. '
             // palette + typography-as-personality
-            ."Build the design from {$colours}, used across the whole banner — background, shapes, accents and "
-            ."the CTA — cohesive and high-contrast. Set the headline \"{$headline}\" in "
-            .'a bold, characterful modern sans with strong weight and deliberate spacing — the headline carries '
-            ."the personality. Add one solid rectangular call-to-action button with sharp square corners, "
-            ."high-contrast, labelled exactly \"{$cta}\". Use sharp rectangular geometry throughout — NO "
-            ."rounded corners anywhere (button, panels, dividers or image frame). "
-            // restraint + strict text rules
-            .'Restraint: one signature element; keep everything else quiet and disciplined — no clutter, no '
-            .'busy patterns. The ONLY text in the image is that headline and that button label — no other '
-            .'words, no gibberish or placeholder lettering, no watermark, no extra logos, no phone/laptop/'
-            .'device mockups, no browser or app UI. Crisp, high-resolution, professional print-ad quality.';
+            ."COLOUR: build from {$colours}. Harmonious and intentional — one dominant colour over the most "
+            .'surface with the accent used sparingly; get contrast from VALUE (light vs dark) and scale, not '
+            .'saturation wars; avoid neon and clashing primaries. '
+            // CTA (display-ad button, sharp corners)
+            ."CTA: one solid rectangular call-to-action block with SHARP SQUARE corners (never rounded or "
+            ."pill-shaped), high-contrast, labelled exactly \"{$cta}\". "
+            // strict text rules
+            .'STRICT: the ONLY text in the image is that headline and that CTA label — no other words, no '
+            .'gibberish or placeholder lettering, no watermark, no extra logos, no phone/laptop/device '
+            .'mockups, no browser or app UI, and NO scattered decorative accents (dots, plus-signs, confetti). '
+            .'Crisp, high-resolution, art-directed ad-creative quality.';
     }
 }
