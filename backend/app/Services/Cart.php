@@ -213,23 +213,61 @@ class Cart
     {
         $base = config('shop.shipping_base_method', 'standard');
         $qualifies = $this->qualifiesFreeShipping();
-        $count = max(1, $this->count()); // shipping is per product
 
-        return array_map(function ($m) use ($base, $qualifies, $count) {
-            $free = $m['code'] === $base && $qualifies;
-            $unit = (float) $m['price'];
+        return array_map(function ($m) use ($base, $qualifies) {
             $date = now()->addWeekdays((int) ($m['days'] ?? 0));
 
             return [
-                'code'       => $m['code'],
-                'label'      => $m['label'],
-                'eta'        => 'Delivery as soon as '.$date->format('D, M j').'*',
-                'deliver_by' => $date->toDateString(),
-                'unit_price' => $unit,
-                'price'      => $free ? 0.0 : round($unit * $count, 2),
-                'free'       => $free,
+                'code'          => $m['code'],
+                'label'         => $m['label'],
+                'eta'           => 'Delivery as soon as '.$date->format('D, M j').'*',
+                'deliver_by'    => $date->toDateString(),
+                'unit_price'    => (float) $m['price'],
+                'free_eligible' => $m['code'] === $base && $qualifies,
             ];
         }, config('shop.shipping_methods', []));
+    }
+
+    /** First configured method code — the per-item default. */
+    public function defaultShipCode(): string
+    {
+        return (string) (config('shop.shipping_methods.0.code') ?? 'economy');
+    }
+
+    /** The chosen (or default) shipping code for a single line item. */
+    public function itemShipCode(array $item): string
+    {
+        $codes = array_column(config('shop.shipping_methods', []), 'code');
+
+        return in_array($item['ship'] ?? null, $codes, true) ? $item['ship'] : $this->defaultShipCode();
+    }
+
+    /** Set the delivery-speed method for one cart line item. */
+    public function setItemShipping(string $id, string $code): void
+    {
+        $codes = array_column(config('shop.shipping_methods', []), 'code');
+        $cart = session(self::KEY, []);
+        if (isset($cart[$id]) && in_array($code, $codes, true)) {
+            $cart[$id]['ship'] = $code;
+            session([self::KEY => $cart]);
+        }
+    }
+
+    /** Shipping cost for one line item (0 if its method is free-eligible). */
+    public function itemShipping(array $item): float
+    {
+        $base = config('shop.shipping_base_method', 'standard');
+        $code = $this->itemShipCode($item);
+        if ($code === $base && $this->qualifiesFreeShipping()) {
+            return 0.0;
+        }
+        foreach (config('shop.shipping_methods', []) as $m) {
+            if ($m['code'] === $code) {
+                return (float) $m['price'];
+            }
+        }
+
+        return 0.0;
     }
 
     /** Selected shipping method code, defaulting to the first configured method. */
@@ -251,7 +289,11 @@ class Cart
 
     public function shippingLabel(): string
     {
-        $code = $this->shippingMethod();
+        $codes = collect($this->items())->map(fn ($it) => $this->itemShipCode($it))->unique()->values();
+        if ($codes->count() > 1) {
+            return 'Per product';
+        }
+        $code = $codes->first() ?? $this->defaultShipCode();
         foreach (config('shop.shipping_methods', []) as $m) {
             if ($m['code'] === $code) {
                 return $m['label'];
@@ -266,14 +308,8 @@ class Cart
         if ($this->subtotal() <= 0) {
             return 0.0;
         }
-        $code = $this->shippingMethod();
-        foreach ($this->methods() as $m) {
-            if ($m['code'] === $code) {
-                return (float) $m['price'];
-            }
-        }
 
-        return 0.0;
+        return round(array_sum(array_map(fn ($it) => $this->itemShipping($it), $this->items())), 2);
     }
 
     public function total(): float

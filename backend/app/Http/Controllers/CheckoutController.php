@@ -46,6 +46,8 @@ class CheckoutController extends Controller
             'postal'         => ['required', 'string', 'max:20'],
             'country'        => ['required', 'string', 'max:60'],
             'shippingMethod' => ['nullable', 'string', 'max:40'],
+            'itemMethods'    => ['nullable', 'array'],
+            'itemMethods.*'  => ['string', 'max:40'],
             'billingSame'    => ['boolean'],
             'billingName'    => [$billingRequired, 'string', 'max:120'],
             'billingCompany' => ['nullable', 'string', 'max:120'],
@@ -75,9 +77,9 @@ class CheckoutController extends Controller
             'country' => $data['billingCountry'],
         ];
 
-        // Lock in the chosen shipping method before any total is computed.
-        if (! empty($data['shippingMethod'])) {
-            $this->cart->setShippingMethod($data['shippingMethod']);
+        // Lock in each product's chosen delivery speed before any total is computed.
+        foreach ((array) ($data['itemMethods'] ?? []) as $id => $code) {
+            $this->cart->setItemShipping((string) $id, (string) $code);
         }
 
         // First-order codes are enforced here, where the email is finally known.
