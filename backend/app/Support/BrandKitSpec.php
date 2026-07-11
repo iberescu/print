@@ -213,9 +213,9 @@ class BrandKitSpec
     public static function adPrompt(string $headline, string $cta, string $company, ?string $palette, string $description = '', string $style = ''): string
     {
         $headline = str_replace('{company}', $company ?: 'us', $headline);
-        $colours = $palette
-            ? "the brand's own colours ({$palette}) — taken from its logo and website — as the DOMINANT palette"
-            : "the brand's own colours (taken directly from its logo) as the DOMINANT palette";
+        $colours = "the colours OF THE SUPPLIED LOGO as the DOMINANT palette — match the logo's own actual "
+            .'colours (that is the brand colour)'
+            .($palette ? ", and use {$palette} ONLY as light secondary accents; an accent colour must never dominate over the logo's colour" : '');
         $about = trim($description) !== '' ? "{$company} — {$description}" : ($company ?: 'this business');
         $style = $style ?: 'Polished, professional B2B brand ad — corporate, credible, enterprise-grade.';
 
