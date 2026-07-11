@@ -280,4 +280,26 @@ class Cart
     {
         return round($this->subtotal() - $this->discount() + $this->shipping(), 2);
     }
+
+    // ---- estimated US sales tax (per shipping state) -------------------------
+
+    /** @return array<string,float> state code => percent rate */
+    public function taxRates(): array
+    {
+        return (array) config('shop.tax_rates', []);
+    }
+
+    /** Percent rate for a US state (0 if unknown / no statewide tax). */
+    public function taxRate(?string $state): float
+    {
+        return (float) ($this->taxRates()[strtoupper(trim((string) $state))] ?? 0);
+    }
+
+    /** Estimated tax on the taxable base (subtotal − discount) for a state. */
+    public function tax(?string $state): float
+    {
+        $base = max(0, $this->subtotal() - $this->discount());
+
+        return round($base * $this->taxRate($state) / 100, 2);
+    }
 }

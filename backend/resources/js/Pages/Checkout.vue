@@ -24,7 +24,10 @@ const US_STATES = ['AL','AK','AZ','AR','CA','CO','CT','DE','DC','FL','GA','HI','
 
 const selectedMethod = computed(() => methods.value.find((m) => m.code === form.shippingMethod) || methods.value[0]);
 const shippingCost = computed(() => (selectedMethod.value ? Number(selectedMethod.value.price) : Number(props.summary.shipping || 0)));
-const orderTotal = computed(() => Math.max(0, Number(props.summary.subtotal || 0) - Number(props.summary.discount || 0) + shippingCost.value));
+const taxRate = computed(() => Number(props.summary.tax_rates?.[form.state] ?? 0));
+const taxable = computed(() => Math.max(0, Number(props.summary.subtotal || 0) - Number(props.summary.discount || 0)));
+const taxAmount = computed(() => Math.round(taxable.value * taxRate.value) / 100);
+const orderTotal = computed(() => Math.max(0, taxable.value + shippingCost.value + taxAmount.value));
 const remainingForFree = computed(() => Math.max(0, Number(props.summary.threshold || 0) - Number(props.summary.subtotal || 0)));
 const itemCount = computed(() => props.items.length);
 
@@ -154,6 +157,10 @@ const field = 'mt-1 w-full rounded-lg border border-paper-300 px-3 py-2.5 text-i
                         <div class="flex justify-between">
                             <dt class="text-ink/60">Shipping <span class="text-ink/40">· {{ selectedMethod?.label }}</span></dt>
                             <dd>{{ shippingCost > 0 ? money(shippingCost) : 'FREE' }}</dd>
+                        </div>
+                        <div class="flex justify-between">
+                            <dt class="text-ink/60">Estimated tax <span v-if="form.state" class="text-ink/40">· {{ form.state }} {{ taxRate }}%</span></dt>
+                            <dd>{{ form.state ? money(taxAmount) : '—' }}</dd>
                         </div>
                         <div class="flex justify-between border-t border-paper-300 pt-2 text-base font-semibold"><dt>Total</dt><dd>{{ money(orderTotal) }}</dd></div>
                     </dl>

@@ -88,6 +88,7 @@ class CheckoutController extends Controller
             return redirect()->route('checkout')->with('error', "The code {$coupon->code} is for first orders only — it was removed.");
         }
 
+        $tax = $this->cart->tax($data['state']);
         $order = Order::create([
             'number'      => 'RMP-'.strtoupper(Str::random(8)),
             'email'       => $data['email'],
@@ -100,7 +101,8 @@ class CheckoutController extends Controller
             'discount'        => $this->cart->discount(),
             'shipping'        => $this->cart->shipping(),
             'shipping_method' => $this->cart->shippingLabel(),
-            'total'           => $this->cart->total(),
+            'tax'             => $tax,
+            'total'           => round($this->cart->total() + $tax, 2),
             'status'          => 'pending',
         ]);
 
@@ -134,6 +136,12 @@ class CheckoutController extends Controller
         if ($this->cart->shipping() > 0) {
             $lineItems[] = [
                 'price_data' => ['currency' => 'usd', 'product_data' => ['name' => 'Shipping — '.$this->cart->shippingLabel()], 'unit_amount' => (int) round($this->cart->shipping() * 100)],
+                'quantity'   => 1,
+            ];
+        }
+        if ($tax > 0) {
+            $lineItems[] = [
+                'price_data' => ['currency' => 'usd', 'product_data' => ['name' => 'Estimated sales tax'], 'unit_amount' => (int) round($tax * 100)],
                 'quantity'   => 1,
             ];
         }
@@ -237,6 +245,7 @@ class CheckoutController extends Controller
             'threshold'       => $this->cart->threshold(),
             'methods'         => $this->cart->methods(),
             'shipping_method' => $this->cart->shippingMethod(),
+            'tax_rates'       => $this->cart->taxRates(),
         ];
     }
 }

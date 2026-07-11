@@ -14,6 +14,7 @@ class Order extends Model
         'items'    => 'array',
         'subtotal' => 'decimal:2',
         'shipping' => 'decimal:2',
+        'tax'      => 'decimal:2',
         'total'    => 'decimal:2',
     ];
 
