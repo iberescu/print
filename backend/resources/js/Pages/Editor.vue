@@ -237,6 +237,13 @@ function syncSelection() {
     if (!selIsUrl.value) { urlTick.design.state = ''; urlTick.design.msg = ''; }
 }
 
+// Clicking in the stage but outside the canvas deselects the active object.
+function onStageMouseDown(e) {
+    if (!canvas || !canvas.getActiveObject()) return;
+    const wrap = canvas.wrapperEl;
+    if (wrap && !wrap.contains(e.target)) { canvas.discardActiveObject(); canvas.requestRenderAll(); }
+}
+
 function fitCanvas() {
     if (!canvas || !stageEl.value) return;
     // Fit by BOTH width and height so portrait/tall formats (A4, banners) stay in view.
@@ -919,7 +926,7 @@ function goToReview() {
             <span v-else class="px-2 text-sm text-paper/45">Select an element to edit its text style</span>
         </div>
 
-        <div ref="stageEl" class="relative flex flex-1 flex-col items-center justify-center gap-4 overflow-auto p-4 sm:gap-6 sm:p-8">
+        <div ref="stageEl" class="relative flex flex-1 flex-col items-center justify-center gap-4 overflow-auto p-4 sm:gap-6 sm:p-8" @mousedown="onStageMouseDown">
             <div class="flex flex-col items-center gap-2">
                 <p class="text-sm font-medium text-ink/50">
                     {{ side === 'front' ? 'Front' : 'Back' }} design<span class="hidden text-ink/40 sm:inline"> · every copy will print exactly like this</span>
