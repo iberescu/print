@@ -64,6 +64,13 @@ class CrawlAndSummarize implements ShouldQueue
             foreach (array_values($summary['ad_concepts'] ?? []) as $i => $concept) {
                 GenerateAdImage::dispatch($this->key, ['key' => 'ad'.$i] + $concept);
             }
+            // Products whose scene needs the crawl keywords (word-cloud) — dispatch now
+            // that the summary exists, so they don't fall back to the company name.
+            foreach (BrandKitSpec::products() as $p) {
+                if (BrandKitSpec::needsSummary($p)) {
+                    GenerateProductImage::dispatch($this->key, $p);
+                }
+            }
         } else {
             $kit->markStage('ads', 'skipped');
         }
@@ -170,7 +177,8 @@ class CrawlAndSummarize implements ShouldQueue
             .'advertising campaign, with EXACTLY these keys: '
             .'"company" (string, the business name), '
             .'"description" (2-3 sentence plain-English summary of what they do), '
-            .'"keywords" (array of 6-10 relevant descriptive keywords), '
+            .'"keywords" (array of 12-20 short keywords or phrases describing the business, its products, '
+            .'services and industry — these fill a brand word-cloud, so make them specific and varied), '
             .'"fonts" (array of 1-3 font families the site appears to use — best guess), '
             .'"colors" (array of 2-4 brand colours as hex codes or names), '
             .'"google_search_keywords" (array of EXACTLY 4 high-intent Google Search ad keyword phrases a '

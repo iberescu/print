@@ -44,9 +44,11 @@ class BrandKitSpec
             [
                 'key' => 'infinity', 'label' => 'Infinity-mirror LED', 'slug' => 'led-infinity-mirror', 'decoration' => 'custom',
                 'prompt' => 'A modern infinity-mirror LED wall panel mounted on a dark interior wall, '
-                    .'photographed straight on in a dimly lit room. The glowing LED light forms the exact '
-                    .'shape of the provided logo and repeats into infinite receding depth (infinity-mirror '
-                    .'effect), glowing in the logo\'s own colours against a deep black mirror.',
+                    .'photographed straight on in a dimly lit room. The glowing LED light forms the provided '
+                    .'logo exactly ONCE, centred at the front of the panel; behind it the infinity-mirror '
+                    .'makes a tunnel of small receding light points for depth. Show the logo only once — do '
+                    .'NOT duplicate, repeat or mirror the logo itself — glowing in the logo\'s own colours '
+                    .'against a deep black mirror.',
             ],
             [
                 'key' => 'wordcloud', 'label' => 'Word-cloud canvas', 'slug' => 'framed-canvas-prints', 'decoration' => 'custom',
@@ -66,14 +68,25 @@ class BrandKitSpec
             ],
             [
                 'key' => 'pen', 'label' => 'Pen', 'slug' => 'custom-pens', 'decoration' => 'custom',
-                'prompt' => 'A studio close-up product shot of a single sleek promotional pen lying '
-                    .'HORIZONTALLY (landscape) on a clean light-grey surface with soft shadows. The provided '
-                    .'logo is printed small along the barrel of the pen in landscape orientation.',
+                'prompt' => 'A studio product shot of a single sleek promotional pen lying HORIZONTALLY '
+                    .'(landscape) on a clean light-grey surface with soft shadows. Show the ENTIRE pen fully '
+                    .'within the frame from tip to end — not cropped — with generous margins around it. The '
+                    .'provided logo is printed small along the barrel of the pen in landscape orientation.',
             ],
         ];
         $cap = (int) config('shop.internal_engine.max_products', 0);
 
         return $cap > 0 ? array_slice($all, 0, $cap) : $all;
+    }
+
+    /**
+     * Whether a product's scene needs the crawl summary (e.g. the word-cloud
+     * canvas uses the brand keywords). These are dispatched AFTER the summary is
+     * ready, not in the initial logo-only fan-out.
+     */
+    public static function needsSummary(array $p): bool
+    {
+        return str_contains((string) ($p['prompt'] ?? ''), '{keywords}');
     }
 
     /**
@@ -92,7 +105,7 @@ class BrandKitSpec
             $prompt = (string) ($p['prompt'] ?? '');
             if (str_contains($prompt, '{keywords}')) {
                 $kw = array_values(array_filter(array_map('trim', (array) ($ctx['keywords'] ?? []))));
-                $words = $kw ? implode(', ', array_slice($kw, 0, 18)) : (trim((string) ($ctx['company'] ?? '')) ?: 'the brand');
+                $words = $kw ? implode(', ', array_slice($kw, 0, 20)) : (trim((string) ($ctx['company'] ?? '')) ?: 'the brand');
                 $prompt = str_replace('{keywords}', $words, $prompt);
             }
 

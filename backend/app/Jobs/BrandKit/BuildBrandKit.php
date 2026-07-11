@@ -61,6 +61,9 @@ class BuildBrandKit implements ShouldQueue
         if ($hasLogo) {
             $kit->markStage('products', 'running');
             foreach (BrandKitSpec::products() as $p) {
+                if (BrandKitSpec::needsSummary($p)) {
+                    continue; // word-cloud etc. — dispatched after the summary/keywords exist
+                }
                 GenerateProductImage::dispatch($this->key, $p);
             }
         } else {
@@ -89,6 +92,12 @@ class BuildBrandKit implements ShouldQueue
                 $kit->markStage('ads', 'running');
                 foreach (array_values($concepts) as $i => $concept) {
                     GenerateAdImage::dispatch($this->key, ['key' => 'ad'.$i] + $concept);
+                }
+                // keyword-dependent products (word-cloud) now that the summary exists
+                foreach (BrandKitSpec::products() as $p) {
+                    if (BrandKitSpec::needsSummary($p)) {
+                        GenerateProductImage::dispatch($this->key, $p);
+                    }
                 }
             } else {
                 $kit->markStage('ads', 'skipped');
