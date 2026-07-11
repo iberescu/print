@@ -35,6 +35,14 @@ class AccountController extends Controller
         return Inertia::render('Account', ['orders' => $orders, 'designs' => $designs]);
     }
 
+    /** Printable HTML invoice for one of the buyer's own orders. */
+    public function invoice(Order $order, Request $request)
+    {
+        abort_unless($order->email === $request->user()->email, 403);
+
+        return response()->view('invoice', ['order' => $order]);
+    }
+
     /** Rebuild the cart from a past order at CURRENT prices (print = repeat business). */
     public function reorder(\App\Models\Order $order, Request $request, \App\Services\Cart $cart, \App\Services\Pricing $pricing)
     {

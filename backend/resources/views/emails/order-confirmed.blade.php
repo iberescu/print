@@ -19,10 +19,11 @@
         @if ((float) $order->discount > 0)
             <tr><td style="padding:0 14px 10px;font-size:14px;color:#2f6b4f;">Discount ({{ $order->coupon_code }})</td><td align="right" style="padding:0 14px 10px;font-size:14px;color:#2f6b4f;">−${{ number_format((float) $order->discount, 2) }}</td></tr>
         @endif
-        <tr><td style="padding:0 14px 10px;font-size:14px;color:#5c5749;">Shipping</td><td align="right" style="padding:0 14px 10px;font-size:14px;">{{ (float) $order->shipping > 0 ? '$'.number_format((float) $order->shipping, 2) : 'Free' }}</td></tr>
+        <tr><td style="padding:0 14px 10px;font-size:14px;color:#5c5749;">Shipping{{ $order->shipping_method ? ' ('.$order->shipping_method.')' : '' }}</td><td align="right" style="padding:0 14px 10px;font-size:14px;">{{ (float) $order->shipping > 0 ? '$'.number_format((float) $order->shipping, 2) : 'Free' }}</td></tr>
+        <tr><td style="padding:0 14px 10px;font-size:14px;color:#5c5749;">Estimated tax</td><td align="right" style="padding:0 14px 10px;font-size:14px;">${{ number_format((float) $order->tax, 2) }}</td></tr>
         <tr><td style="padding:12px 14px;border-top:1px solid #e6e1d4;font-size:15px;font-weight:700;">Total</td><td align="right" style="padding:12px 14px;border-top:1px solid #e6e1d4;font-size:15px;font-weight:700;">${{ number_format((float) $order->total, 2) }}</td></tr>
     </table>
 
-    <p style="margin:18px 0 0;color:#5c5749;font-size:14px;">Shipping to: {{ $order->address['line'] ?? '' }}, {{ $order->address['city'] ?? '' }} {{ $order->address['postal'] ?? '' }}, {{ $order->address['country'] ?? '' }}</p>
-    <p style="margin:14px 0 0;"><a href="{{ url('/account') }}" style="color:#398aff;">Track your order →</a></p>
+    <p style="margin:18px 0 0;color:#5c5749;font-size:14px;">Shipping to: {{ $order->address['line'] ?? '' }}, {{ $order->address['city'] ?? '' }} {{ $order->address['state'] ?? '' }} {{ $order->address['postal'] ?? '' }}, {{ $order->address['country'] ?? '' }}</p>
+    <p style="margin:14px 0 0;"><a href="{{ route('account.invoice', $order->number) }}" style="color:#398aff;">View / print invoice →</a> &nbsp;·&nbsp; <a href="{{ url('/account') }}" style="color:#398aff;">Track your order →</a></p>
 @endsection

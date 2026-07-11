@@ -67,6 +67,7 @@ Route::get('/auth/google/callback', [CustomerAuth::class, 'handleGoogleCallback'
 Route::post('/logout', [CustomerAuth::class, 'logout'])->middleware('auth')->name('logout');
 Route::get('/account', [AccountController::class, 'show'])->middleware('auth')->name('account');
 Route::post('/account/orders/{order}/reorder', [AccountController::class, 'reorder'])->middleware('auth')->name('account.reorder');
+Route::get('/account/orders/{order}/invoice', [AccountController::class, 'invoice'])->middleware('auth')->name('account.invoice');
 
 // Checkout + Stripe (req 14) — must be signed in to check out
 Route::middleware('auth')->group(function () {

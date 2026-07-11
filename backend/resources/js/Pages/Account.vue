@@ -61,7 +61,10 @@ const reorder = (o) => router.post(`/account/orders/${o.number}/reorder`);
                             <td class="px-5 py-3 font-medium text-ink">{{ money(o.total) }}</td>
                             <td class="px-5 py-3"><span class="rounded-full px-2.5 py-0.5 text-xs font-semibold capitalize" :class="statusClass(o.status)">{{ o.status }}</span></td>
                             <td class="hidden px-5 py-3 text-xs text-ink/50 sm:table-cell">{{ o.date }}</td>
-                            <td class="px-5 py-3 text-right"><button class="text-sm font-medium text-brand-700 hover:underline" @click="reorder(o)">Reorder</button></td>
+                            <td class="px-5 py-3 text-right">
+                                <a :href="`/account/orders/${o.number}/invoice`" target="_blank" class="text-sm font-medium text-ink/60 hover:underline">Invoice</a>
+                                <button class="ml-3 text-sm font-medium text-brand-700 hover:underline" @click="reorder(o)">Reorder</button>
+                            </td>
                         </tr>
                         <tr v-if="!orders.length"><td colspan="6" class="px-5 py-12 text-center text-ink/50">No orders yet. <Link href="/" class="font-medium text-brand-700 hover:underline">Start shopping →</Link></td></tr>
                     </tbody>
