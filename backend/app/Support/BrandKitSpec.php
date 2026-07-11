@@ -78,6 +78,21 @@ class BrandKitSpec
                     .'within the frame from tip to end — not cropped — with generous margins around it. The '
                     .'provided logo is printed small along the barrel of the pen in landscape orientation.',
             ],
+            [
+                'key' => 'sticker', 'label' => 'Kiss-cut sticker', 'slug' => 'kiss-cut-stickers', 'decoration' => 'custom',
+                'prompt' => 'A close-up product shot of the back lid of a modern laptop on a clean desk, with a '
+                    .'single kiss-cut vinyl sticker of the provided logo applied to it. The sticker is die-cut '
+                    .'to follow the logo\'s own contour/silhouette — a tight outline hugging the logo with a '
+                    .'thin white sticker border — lying flat on the laptop lid at a realistic size, at a '
+                    .'slight angle, with soft realistic lighting.',
+            ],
+            ['key' => 'doorhanger', 'label' => 'Door hanger', 'slug' => 'door-hangers', 'decoration' => 'print', 'scene' => 'a printed door hanger with a rounded top and a die-cut hole for a door handle, shown flat', 'placement' => 'centred — just the logo, nothing else'],
+            [
+                'key' => 'mousepad', 'label' => 'Mouse pad', 'slug' => 'mouse-pads', 'decoration' => 'custom', 'logo_render' => 'white',
+                'prompt' => 'A studio product shot of a dark charcoal rectangular cloth mouse pad lying flat on '
+                    .'a light desk, shown from a slight top-down angle. The provided logo is printed small in '
+                    .'ONE CORNER of the mouse pad.',
+            ],
         ];
         $cap = (int) config('shop.internal_engine.max_products', 0);
 
@@ -114,7 +129,14 @@ class BrandKitSpec
                 $prompt = str_replace('{keywords}', $words, $prompt);
             }
 
-            return $prompt.' '.$logoFidelity.' No watermark and no random gibberish text.';
+            $fidelity = match ($p['logo_render'] ?? 'full') {
+                'white' => 'Keep the logo\'s exact shapes, letterforms and proportions — do NOT redraw, '
+                    .'re-letter or distort it — but render it in solid WHITE (a clean single-colour white '
+                    .'version of the logo).',
+                default => $logoFidelity,
+            };
+
+            return $prompt.' '.$fidelity.' No watermark and no random gibberish text.';
         }
 
         $placement = $p['placement'] ?? 'centred';
