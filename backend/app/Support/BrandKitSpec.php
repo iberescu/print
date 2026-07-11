@@ -68,8 +68,8 @@ class BrandKitSpec
             ],
             [
                 'key' => 'wordcloud', 'label' => 'Word-cloud wall art', 'slug' => 'canvas-prints', 'decoration' => 'custom',
-                'prompt' => 'A LARGE word-cloud wall-art piece displayed directly on a clean white wall — '
-                    .'NO frame and no border — filling a big area of the wall, photographed straight on. The '
+                'prompt' => 'A word-cloud art print on a gallery-wrapped canvas (a canvas panel, no external '
+                    .'frame) hanging on a clean white wall, photographed straight on. The '
                     .'words COMPLETELY FILL the shape of the provided logo. IMPORTANT: if the logo has a '
                     .'distinct icon or symbol alongside text, fill ONLY that icon/shape with the words and '
                     .'OMIT the text/wordmark; only if the logo is purely text (no icon), fill the text shape. '
@@ -93,7 +93,7 @@ class BrandKitSpec
                     .'logo\'s own contour/silhouette — a tight outline hugging the logo with a thin white '
                     .'sticker border — lying flat on the lid, at a slight angle, with soft realistic lighting.',
             ],
-            ['key' => 'doorhanger', 'label' => 'Door hanger', 'slug' => 'door-hangers', 'decoration' => 'print', 'scene' => 'a printed door hanger with a rounded top and a die-cut hole for a door handle', 'placement' => 'centred — just the logo, nothing else', 'flat' => true],
+            ['key' => 'doorhanger', 'label' => 'Door hanger', 'slug' => 'door-hangers', 'decoration' => 'print', 'scene' => 'a printed door hanger with a rounded top and a die-cut keyhole at the top — a round hole with a small narrow slit cut from the hole up to the top edge (so it slips onto a door handle); the slit must always be present', 'placement' => 'centred — just the logo, nothing else', 'flat' => true],
             [
                 'key' => 'mousepad', 'label' => 'Mouse pad', 'slug' => 'mouse-pads', 'decoration' => 'custom', 'logo_render' => 'white',
                 'prompt' => 'A studio product shot of a dark charcoal rectangular cloth mouse pad lying flat on '
