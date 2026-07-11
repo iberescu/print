@@ -23,7 +23,7 @@ class BrandKitSpec
      */
     public static function products(): array
     {
-        return [
+        $all = [
             ['key' => 'mug',     'label' => 'Ceramic mug',    'slug' => 'custom-mugs',                     'decoration' => 'print',      'scene' => 'a plain white ceramic coffee mug'],
             ['key' => 'tumbler', 'label' => 'Steel tumbler',  'slug' => '20-oz-tumbler',                   'decoration' => 'laser',      'scene' => 'a brushed stainless-steel insulated tumbler with a lid'],
             ['key' => 'tote',    'label' => 'Canvas tote',    'slug' => 'custom-canvas-tote-bags',         'decoration' => 'print',      'scene' => 'a natural cotton-canvas tote bag standing upright'],
@@ -31,6 +31,9 @@ class BrandKitSpec
             ['key' => 'hoodie',  'label' => 'Hoodie',         'slug' => 'jerzees-nublend-hooded-sweatshirt', 'decoration' => 'embroidery', 'scene' => 'a folded navy pullover hoodie'],
             ['key' => 'cap',     'label' => 'Cap',            'slug' => 'embroidered-hats',                'decoration' => 'embroidery', 'scene' => 'a structured baseball cap, three-quarter view'],
         ];
+        $cap = (int) config('shop.internal_engine.max_products', 0);
+
+        return $cap > 0 ? array_slice($all, 0, $cap) : $all;
     }
 
     /** Build the merch image prompt for a product spec. */
@@ -58,7 +61,7 @@ class BrandKitSpec
      */
     public static function ads(): array
     {
-        return [
+        $all = [
             ['key' => 'brand',   'headline' => '{company}'],
             ['key' => 'quality', 'headline' => 'Quality you can trust'],
             ['key' => 'shop',    'headline' => 'Shop the collection'],
@@ -66,6 +69,9 @@ class BrandKitSpec
             ['key' => 'pro',     'headline' => 'Made for professionals'],
             ['key' => 'discover','headline' => 'Discover {company}'],
         ];
+        $cap = (int) config('shop.internal_engine.max_ads', 0);
+
+        return $cap > 0 ? array_slice($all, 0, $cap) : $all;
     }
 
     /** Build a Google Display banner prompt (logo supplied as an input image). */

@@ -78,6 +78,9 @@ return [
     // Internal engine image model — the fast/"Lite" nano-banana tier.
     'internal_engine' => [
         'image_model' => env('INTERNAL_ENGINE_IMAGE_MODEL', env('GEMINI_IMAGE_MODEL_FAST', 'gemini-3.1-flash-image')),
+        // Cap how many product mockups / display ads to generate per capture (0 = all).
+        'max_products' => (int) env('INTERNAL_ENGINE_MAX_PRODUCTS', 0),
+        'max_ads'      => (int) env('INTERNAL_ENGINE_MAX_ADS', 0),
     ],
 
     // Cloudflare Browser Rendering — renders JS/SPA + bot-walled sites to clean
