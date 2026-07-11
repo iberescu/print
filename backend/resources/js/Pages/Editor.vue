@@ -100,7 +100,7 @@ const QR_COLORS = ['000000', '2b3b55', '1d4ed8', '166534', '7f1d1d'];
 
 // Live URL validity check for the QR url/website fields: debounced GET to the
 // backend, then a green/red tick with the reason as a hover tooltip (no inline text).
-const urlTick = reactive({ url: { state: '', msg: '' }, site: { state: '', msg: '' } });
+const urlTick = reactive({ url: { state: '', msg: '' }, site: { state: '', msg: '' }, design: { state: '', msg: '' } });
 const urlTimers = {};
 function checkUrlField(field, value) {
     const v = (value || '').trim();
@@ -170,6 +170,7 @@ function ensureFonts() {
 
 const hasSel = ref(false);
 const isText = ref(false);
+const selIsUrl = ref(false); // the selected text object is the design's URL element
 const sel = reactive({ text: '', fontFamily: 'Playfair Display', fontSize: 40, fill: '#0c1f17', bold: false, italic: false, align: 'left' });
 
 function addText(text, opts = {}) {
@@ -222,6 +223,7 @@ function syncSelection() {
     const o = canvas.getActiveObject();
     hasSel.value = !!o;
     isText.value = !!o && (o.type === 'i-text' || o.type === 'textbox');
+    selIsUrl.value = isText.value && o.rmpRole === 'url';
     if (o && isText.value) {
         sel.text = o.text ?? '';
         sel.fontFamily = o.fontFamily || sel.fontFamily;
@@ -231,6 +233,8 @@ function syncSelection() {
         sel.italic = o.fontStyle === 'italic';
         sel.align = o.textAlign || 'left';
     }
+    if (selIsUrl.value) checkUrlField('design', o.text ?? '');
+    else { urlTick.design.state = ''; urlTick.design.msg = ''; }
 }
 
 function fitCanvas() {
@@ -280,7 +284,7 @@ onMounted(() => {
     canvas.on('object:added', (e) => keepAspect(e.target));
     canvas.on('selection:created', syncSelection);
     canvas.on('selection:updated', syncSelection);
-    canvas.on('selection:cleared', () => { hasSel.value = false; isText.value = false; });
+    canvas.on('selection:cleared', () => { hasSel.value = false; isText.value = false; selIsUrl.value = false; urlTick.design.state = ''; });
 
     // A plain click on a logo (placeholder or uploaded) opens the replace popup;
     // any move/scale/rotate between press and release means the user was editing,
@@ -314,6 +318,8 @@ onMounted(() => {
         historyBaseline();
         ['object:added', 'object:removed', 'object:modified', 'text:changed'].forEach((ev) => canvas.on(ev, markDirty));
         ['object:added', 'object:removed', 'object:modified', 'text:changed'].forEach((ev) => canvas.on(ev, recordHistory));
+        // validate the URL element live while it's edited directly on the canvas
+        canvas.on('text:changed', (e) => { if (e.target?.rmpRole === 'url') { selIsUrl.value = true; checkUrlField('design', e.target.text ?? ''); } });
     }, 2000);
     window.addEventListener('keydown', onHistoryKeys);
 
@@ -527,7 +533,7 @@ const setColor = (c) => { sel.fill = c; apply('fill', c); };
 const toggleBold = () => { sel.bold = !sel.bold; apply('fontWeight', sel.bold ? 'bold' : 'normal'); };
 const toggleItalic = () => { sel.italic = !sel.italic; apply('fontStyle', sel.italic ? 'italic' : 'normal'); };
 const setAlign = (a) => { sel.align = a; apply('textAlign', a); };
-const setText = (v) => { sel.text = v; apply('text', v); };
+const setText = (v) => { sel.text = v; apply('text', v); if (selIsUrl.value) checkUrlField('design', v); };
 const setBg = (c) => { canvas.backgroundColor = c; canvas.requestRenderAll(); };
 
 function newText() {
@@ -882,8 +888,15 @@ function goToReview() {
             <div class="mx-1 h-6 w-px bg-white/15"></div>
 
             <template v-if="isText">
-                <input :value="sel.text" @input="setText($event.target.value)" placeholder="Edit text"
-                       class="w-32 shrink-0 rounded-md bg-white/10 px-2 py-1.5 text-sm text-paper placeholder:text-paper/40 focus:outline-none sm:w-44" />
+                <div class="relative shrink-0">
+                    <input :value="sel.text" @input="setText($event.target.value)" :placeholder="selIsUrl ? 'yourcompany.com' : 'Edit text'"
+                           class="w-32 rounded-md bg-white/10 px-2 py-1.5 text-sm text-paper placeholder:text-paper/40 focus:outline-none sm:w-44" :class="selIsUrl ? 'pr-8' : ''" />
+                    <span v-if="selIsUrl && urlTick.design.state" class="absolute right-2 top-1/2 -translate-y-1/2" :title="urlTick.design.msg">
+                        <svg v-if="urlTick.design.state === 'checking'" class="h-4 w-4 animate-spin text-paper/50" viewBox="0 0 24 24" fill="none"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.4 0 0 5.4 0 12h4z"/></svg>
+                        <svg v-else-if="urlTick.design.state === 'valid'" class="h-4 w-4 text-emerald-400" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.7 5.3a1 1 0 010 1.4l-7.5 7.5a1 1 0 01-1.4 0L3.3 9.7a1 1 0 011.4-1.4l3.1 3.1 6.8-6.8a1 1 0 011.4 0z" clip-rule="evenodd"/></svg>
+                        <svg v-else class="h-4 w-4 text-red-400" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 8.6 5.7 4.3 4.3 5.7 8.6 10l-4.3 4.3 1.4 1.4L10 11.4l4.3 4.3 1.4-1.4L11.4 10l4.3-4.3-1.4-1.4z" clip-rule="evenodd"/></svg>
+                    </span>
+                </div>
                 <select :value="sel.fontFamily" class="rounded-md bg-white/10 px-2 py-1.5 text-sm focus:outline-none" @change="setFont($event.target.value)">
                     <option v-for="f in fonts" :key="f" :value="f" class="text-ink">{{ f }}</option>
                 </select>
