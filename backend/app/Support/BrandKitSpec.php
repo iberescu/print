@@ -82,17 +82,30 @@ class BrandKitSpec
     public static function adPrompt(string $headline, string $cta, string $company, ?string $palette, string $description = ''): string
     {
         $headline = str_replace('{company}', $company ?: 'us', $headline);
-        $colours = $palette ? "the brand's colours ({$palette})" : "the brand's colours";
-        $about = trim($description) !== ''
-            ? " The business: {$company} — {$description}. Make the banner's mood, imagery and styling fit that business."
-            : '';
+        $colours = $palette ? "the brand palette ({$palette}) plus tasteful tints and neutrals of it" : "the brand's own colours plus tasteful neutrals";
+        $about = trim($description) !== '' ? "{$company} — {$description}" : ($company ?: 'this business');
 
-        return 'A clean, modern, premium Google Display ad banner in landscape format for this business.'
-            .$about.' Feature the provided logo prominently and reproduce it EXACTLY — do not redraw, restyle '
-            ."or recolour it. Tasteful background using {$colours} with subtle depth and a polished, "
-            ."professional look. One short punchy headline reading \"{$headline}\" in bold modern type, and a "
-            ."small rounded call-to-action button labelled \"{$cta}\". Strong visual hierarchy, generous "
-            .'margins, advertising-creative quality. Only that headline and the button label as text — no '
-            .'other words, no gibberish lettering, no watermark, no phone or laptop mockups.';
+        return "Design a premium, modern Google Display ad banner in landscape (about 1.9:1), art-directed like "
+            ."a real agency creative for {$about}. "
+            // subject-grounded signature (avoid generic AI-ad clichés)
+            .'Draw the mood and ONE tasteful visual motif from this business\'s actual world — evocative of '
+            .'what they do — not generic stock photography, and not abstract gradient blobs or swooshes. '
+            // clear focal hierarchy + confident layout
+            .'Composition: one clear focal path — the supplied logo as the brand anchor (kept small, top-left '
+            .'or a tidy lockup), the headline as the dominant element, then the button. Confident asymmetric '
+            .'layout with generous negative space; keep all content inside a safe margin so nothing is cropped. '
+            // logo fidelity (hard constraint)
+            .'Reproduce the supplied logo EXACTLY — identical shapes, letters, colours and proportions; do NOT '
+            .'redraw, restyle, recolour or crop it. '
+            // palette + typography-as-personality
+            ."Build the design from {$colours}, cohesive and high-contrast. Set the headline \"{$headline}\" in "
+            .'a bold, characterful modern sans with strong weight and deliberate spacing — the headline carries '
+            ."the personality. Add one solid rounded call-to-action button, high-contrast, labelled exactly "
+            ."\"{$cta}\". "
+            // restraint + strict text rules
+            .'Restraint: one signature element; keep everything else quiet and disciplined — no clutter, no '
+            .'busy patterns. The ONLY text in the image is that headline and that button label — no other '
+            .'words, no gibberish or placeholder lettering, no watermark, no extra logos, no phone/laptop/'
+            .'device mockups, no browser or app UI. Crisp, high-resolution, professional print-ad quality.';
     }
 }
