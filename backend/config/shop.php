@@ -68,6 +68,18 @@ return [
     | of generated product mockups. The default client UUID is their manual-test
     | one — set PQSG_CLIENT_UUID to the real per-source UUID for production.
     */
+    /*
+    | Upsell brand-kit engine: 'pqsg' (third-party pqSmartGenerator, default) or
+    | 'internal' (our own Gemini-powered pipeline — crawl + brand summary +
+    | logo-on-products + display ads). Flip with UPSELL_ENGINE.
+    */
+    'upsell_engine' => env('UPSELL_ENGINE', 'pqsg'),
+
+    // Internal engine image model — the fast/"Lite" nano-banana tier.
+    'internal_engine' => [
+        'image_model' => env('INTERNAL_ENGINE_IMAGE_MODEL', env('GEMINI_IMAGE_MODEL_FAST', 'gemini-3.1-flash-image')),
+    ],
+
     'pqsg' => [
         'enabled'     => (bool) env('PQSG_ENABLED', true),
         'api_base'    => rtrim(env('PQSG_API_BASE', 'https://printbrothers-kickoff-clone.cloudlab-internal.com/api/pqsmartgenerator'), '/'),

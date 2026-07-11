@@ -217,6 +217,11 @@ class DesignController extends Controller
      */
     private function dispatchPqsgCapture(?array $brand, ?string $preview = null): ?string
     {
+        // In-house engine: build a BrandKit instead of a third-party capture.
+        if (config('shop.upsell_engine') === 'internal') {
+            return $this->dispatchBrandKit($brand, $preview);
+        }
+
         if (! config('shop.pqsg.enabled')) {
             return null;
         }
@@ -294,6 +299,55 @@ class DesignController extends Controller
         }
 
         return session('pqsg.key'); // nothing to send; maybe an older capture exists
+    }
+
+    /**
+     * In-house engine capture (mirrors dispatchPqsgCapture's decision structure):
+     * real logo/website → fresh BrandKit; else reuse a strong kit this session;
+     * else extract the brand from the approved design preview.
+     */
+    private function dispatchBrandKit(?array $brand, ?string $preview): ?string
+    {
+        $logo = $brand['logo'] ?? null;
+        if ($logo && str_contains($logo, 'logo-placeholder')) {
+            $logo = null;
+        }
+
+        $website = trim((string) ($brand['url'] ?? ''));
+        if (preg_match('/^(www\.)?yourcompany\.com$/i', $website)) {
+            $website = '';
+        }
+        if ($website !== '' && ! preg_match('#^https?://#i', $website)) {
+            $website = 'https://'.$website;
+        }
+
+        $company = trim((string) ($brand['companyName'] ?? $brand['name'] ?? '')) ?: null;
+        $capture = app(\App\Services\BrandKitCapture::class);
+
+        if ($logo || $website !== '') {
+            return $capture->capture([
+                'source'     => 'designer',
+                'logoUrl'    => $logo,
+                'website'    => $website !== '' ? $website : null,
+                'company'    => $company,
+                'sourceFile' => $logo ? null : $preview, // no logo → isolate one from the design
+            ]);
+        }
+
+        if ($strong = session('pqsg.strong')) {
+            if (\App\Models\BrandKit::where('key', $strong)->exists()) {
+                session(['pqsg.key' => $strong]);
+
+                return $strong;
+            }
+            session()->forget(['pqsg.strong', 'pqsg.strong_at']);
+        }
+
+        if ($preview) {
+            return $capture->capture(['source' => 'designer', 'sourceFile' => $preview, 'company' => $company]);
+        }
+
+        return session('pqsg.key');
     }
 
     /** @return int[] */

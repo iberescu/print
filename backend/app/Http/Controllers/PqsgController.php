@@ -79,6 +79,17 @@ class PqsgController extends Controller
         // preview and let the customer position each page on the canvas.
         $pages = $isPdf ? \App\Support\PdfToImage::pages($disk->path($path)) : [];
 
+        // In-house engine: extract the brand from the uploaded image (or the PDF's
+        // first rendered page) and build a BrandKit instead of a third-party capture.
+        if (config('shop.upsell_engine') === 'internal') {
+            $key = app(\App\Services\BrandKitCapture::class)->capture([
+                'source'     => $isPdf ? 'pdf' : 'image',
+                'sourceFile' => $isPdf ? ($pages[0] ?? null) : $url,
+            ]);
+
+            return response()->json(['key' => $key, 'pages' => $pages]);
+        }
+
         // One key PER capture — it doubles as the engine's idempotency key, so
         // reuse replays the previous capture (stale logo in the funnel). The
         // session carries the latest for Review/the funnel; 'strong' marks it
@@ -99,6 +110,11 @@ class PqsgController extends Controller
     public function status(string $key): JsonResponse
     {
         abort_unless(Str::isUuid($key), 404);
+
+        // Internal engine has no third-party uuid — the key itself is the handle.
+        if (config('shop.upsell_engine') === 'internal') {
+            return response()->json(['uuid' => \App\Models\BrandKit::where('key', $key)->exists() ? $key : null]);
+        }
 
         return response()->json(['uuid' => $this->resolveUuid($key)]);
     }
@@ -130,6 +146,10 @@ class PqsgController extends Controller
     public function feed(string $key, Request $request): JsonResponse
     {
         abort_unless(Str::isUuid($key), 404);
+
+        if (config('shop.upsell_engine') === 'internal') {
+            return $this->internalFeed($key, (string) $request->query('set'));
+        }
 
         $uuid = $this->resolveUuid($key, $request->query('uuid'));
         if (! $uuid) {
@@ -213,6 +233,22 @@ class PqsgController extends Controller
     {
         abort_unless(Str::isUuid($key), 404);
 
+        if (config('shop.upsell_engine') === 'internal') {
+            $kit = \App\Models\BrandKit::where('key', $key)->first();
+            $s = $kit?->summary ?? [];
+            $stage = $kit?->stages['summary'] ?? 'pending';
+            $ready = in_array($stage, ['done', 'skipped'], true) && ! empty($s);
+
+            return response()->json([
+                'ready'       => $ready,
+                'status'      => $ready ? 'complete' : 'pending',
+                'company'     => $s['company'] ?? $kit?->company,
+                'description' => $s['description'] ?? null,
+                'keywords'    => array_values(array_filter((array) ($s['google_search_keywords'] ?? []))),
+                'logo'        => $kit?->logo_url,
+            ]);
+        }
+
         $uuid = $this->resolveUuid($key, $request->query('uuid'));
         if (! $uuid) {
             return response()->json(['ready' => false, 'status' => 'pending']);
@@ -237,5 +273,46 @@ class PqsgController extends Controller
             'keywords'    => array_values(array_filter((array) $keywords)),
             'logo'        => $data['main_logo']['url'] ?? null,
         ]);
+    }
+
+    /** In-house engine feed — serves the BrandKit's products (?set=merch) or ads (?set=ads). */
+    private function internalFeed(string $key, string $set): JsonResponse
+    {
+        $kit = \App\Models\BrandKit::where('key', $key)->first();
+        if (! $kit) {
+            return response()->json(['done' => false, 'images' => []]);
+        }
+        // Safety net so the gallery always settles even if a job dies.
+        $stale = $kit->updated_at && $kit->updated_at->lt(now()->subMinutes(6));
+        $stages = $kit->stages ?? [];
+
+        if ($set === 'ads') {
+            $images = collect($kit->ads ?? [])->values()->map(fn ($a, $i) => [
+                'key' => $a['key'] ?? 'ad-'.$i, 'img' => $a['img'], 'label' => 'Ad concept '.($i + 1), 'product' => null,
+            ])->all();
+            $done = ($stages['ads'] ?? 'pending') === 'skipped'
+                || count($images) >= count(\App\Support\BrandKitSpec::ads()) || $stale;
+
+            return response()->json(['done' => $done, 'images' => $images]);
+        }
+
+        $slugs = collect($kit->products ?? [])->pluck('product_slug')->filter()->all();
+        $shop = \App\Models\Product::whereIn('slug', $slugs)->where('is_active', true)
+            ->get(['slug', 'name', 'from_price'])->keyBy('slug');
+
+        $images = collect($kit->products ?? [])->map(function ($p) use ($shop) {
+            $prod = $shop->get($p['product_slug'] ?? '');
+
+            return [
+                'key'     => $p['key'],
+                'img'     => $p['img'],
+                'label'   => $p['label'] ?? 'Your logo, mocked up',
+                'product' => $prod ? ['slug' => $prod->slug, 'name' => $prod->name, 'fromPrice' => (float) $prod->from_price] : null,
+            ];
+        })->all();
+        $done = ($stages['products'] ?? 'pending') === 'skipped'
+            || count($images) >= count(\App\Support\BrandKitSpec::products()) || $stale;
+
+        return response()->json(['done' => $done, 'images' => $images]);
     }
 }

@@ -16,6 +16,15 @@ class GeminiClient
     {
         return Http::timeout(240)
             ->acceptJson()
+            // Retry transient rate-limit / server errors with backoff — the internal
+            // engine fires many concurrent generations per capture and Gemini 429s.
+            ->retry(4, 1500, function ($exception) {
+                $status = $exception instanceof \Illuminate\Http\Client\RequestException
+                    ? $exception->response->status() : null;
+
+                return $exception instanceof \Illuminate\Http\Client\ConnectionException
+                    || in_array($status, [408, 429, 500, 502, 503, 529], true);
+            }, throw: false)
             ->withQueryParameters(['key' => (string) config('shop.gemini.api_key')]);
     }
 

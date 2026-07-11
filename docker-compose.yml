@@ -30,6 +30,24 @@ services:
       - redis
     networks: [rmp]
 
+  # Queue workers for the in-house upsell engine (brand-kit generation).
+  # Several parallel queue:work processes so a capture's crawl/summary/image
+  # jobs run concurrently (speed matters). Idle unless UPSELL_ENGINE=internal.
+  worker:
+    build:
+      context: .
+      dockerfile: docker/php/Dockerfile
+    container_name: rmp_worker
+    working_dir: /var/www/html
+    command: sh -c 'for i in $$(seq 1 6); do php artisan queue:work redis --queue=brandkit --sleep=1 --tries=2 --timeout=300 --max-time=1800 & done; wait'
+    restart: unless-stopped
+    volumes:
+      - ./backend:/var/www/html
+    depends_on:
+      - db
+      - redis
+    networks: [rmp]
+
   web:
     image: nginx:1.27-alpine
     container_name: rmp_web
