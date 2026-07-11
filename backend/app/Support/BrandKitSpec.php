@@ -62,29 +62,37 @@ class BrandKitSpec
     public static function ads(): array
     {
         $all = [
-            ['key' => 'brand',   'headline' => '{company}'],
-            ['key' => 'quality', 'headline' => 'Quality you can trust'],
-            ['key' => 'shop',    'headline' => 'Shop the collection'],
-            ['key' => 'new',     'headline' => 'New. Now available.'],
-            ['key' => 'pro',     'headline' => 'Made for professionals'],
-            ['key' => 'discover','headline' => 'Discover {company}'],
+            ['headline' => '{company}',                'cta' => 'Learn more'],
+            ['headline' => 'Trusted by professionals', 'cta' => 'Learn more'],
+            ['headline' => 'Get started today',        'cta' => 'Get started'],
+            ['headline' => 'See what we can do',       'cta' => 'Explore'],
+            ['headline' => 'Quality you can rely on',  'cta' => 'Learn more'],
+            ['headline' => 'Discover {company}',        'cta' => 'Visit site'],
         ];
         $cap = (int) config('shop.internal_engine.max_ads', 0);
 
         return $cap > 0 ? array_slice($all, 0, $cap) : $all;
     }
 
-    /** Build a Google Display banner prompt (logo supplied as an input image). */
-    public static function adPrompt(array $ad, string $company, ?string $palette): string
+    /**
+     * Build a Google Display banner prompt from a tailored {headline, cta} concept,
+     * grounded in the brand summary (company + what they do + colours) that Gemini
+     * produced from the crawled website — so the banner is on-brand and relevant.
+     */
+    public static function adPrompt(string $headline, string $cta, string $company, ?string $palette, string $description = ''): string
     {
-        $headline = str_replace('{company}', $company ?: 'our brand', $ad['headline']);
+        $headline = str_replace('{company}', $company ?: 'us', $headline);
         $colours = $palette ? "the brand's colours ({$palette})" : "the brand's colours";
+        $about = trim($description) !== ''
+            ? " The business: {$company} — {$description}. Make the banner's mood, imagery and styling fit that business."
+            : '';
 
-        return 'A clean, modern Google Display ad banner in landscape format. Feature the provided logo '
-            .'prominently and reproduce it EXACTLY — do not redraw, restyle or recolour it. Tasteful '
-            ."background using {$colours}, a single short punchy headline reading \"{$headline}\", and a "
-            .'small rounded "Shop now" button. Professional advertising-creative aesthetic, balanced '
-            .'composition, generous margins. Only that one headline and the button label as text — no other '
-            .'words, no gibberish lettering, no watermark.';
+        return 'A clean, modern, premium Google Display ad banner in landscape format for this business.'
+            .$about.' Feature the provided logo prominently and reproduce it EXACTLY — do not redraw, restyle '
+            ."or recolour it. Tasteful background using {$colours} with subtle depth and a polished, "
+            ."professional look. One short punchy headline reading \"{$headline}\" in bold modern type, and a "
+            ."small rounded call-to-action button labelled \"{$cta}\". Strong visual hierarchy, generous "
+            .'margins, advertising-creative quality. Only that headline and the button label as text — no '
+            .'other words, no gibberish lettering, no watermark, no phone or laptop mockups.';
     }
 }

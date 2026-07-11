@@ -57,11 +57,12 @@ class CrawlAndSummarize implements ShouldQueue
         ]);
         $kit->markStage('summary', 'done');
 
-        // now that keywords/company exist, generate the display ads (need the logo)
+        // now that the brand summary exists, generate display ads from its tailored
+        // concepts (need the logo). Each ad job also reads the summary for context.
         if ($this->logoInput($kit)) {
             $kit->markStage('ads', 'running');
-            foreach (BrandKitSpec::ads() as $ad) {
-                GenerateAdImage::dispatch($this->key, $ad);
+            foreach (array_values($summary['ad_concepts'] ?? []) as $i => $concept) {
+                GenerateAdImage::dispatch($this->key, ['key' => 'ad'.$i] + $concept);
             }
         } else {
             $kit->markStage('ads', 'skipped');
@@ -172,7 +173,13 @@ class CrawlAndSummarize implements ShouldQueue
             .'"fonts" (array of 1-3 font families the site appears to use — best guess), '
             .'"colors" (array of 2-4 brand colours as hex codes or names), '
             .'"google_search_keywords" (array of EXACTLY 4 high-intent Google Search ad keyword phrases a '
-            ."customer would type to find this business). Website text:\n\n".Str::limit($text, 12000, '');
+            .'customer would type to find this business), '
+            .'"ad_concepts" (array of 6 Google DISPLAY ad concepts tailored to THIS specific business — each '
+            .'an object with "headline" (max 6 words, benefit-driven and specific to what they actually do; '
+            .'NOT generic retail copy like "shop the collection") and "cta" (a 2-3 word button label that '
+            .'fits the business, e.g. "Get started", "Book a demo", "Try it free", "Get a quote", "Learn '
+            .'more"; use "Shop now" ONLY for an actual online shop that sells products). '
+            ."Website text:\n\n".Str::limit($text, 12000, '');
     }
 
     /** Guarantee the shape/counts the storefront relies on, with sensible fallbacks. */
@@ -192,6 +199,22 @@ class CrawlAndSummarize implements ShouldQueue
             }
         }
 
+        // Tailored display-ad concepts (headline + cta); fall back to neutral ones.
+        $concepts = [];
+        foreach ((array) ($s['ad_concepts'] ?? []) as $c) {
+            $h = trim((string) ($c['headline'] ?? ''));
+            if ($h !== '') {
+                $concepts[] = ['headline' => $h, 'cta' => trim((string) ($c['cta'] ?? '')) ?: 'Learn more'];
+            }
+        }
+        if (count($concepts) < 2) {
+            $concepts = BrandKitSpec::ads();
+        }
+        $adCap = (int) config('shop.internal_engine.max_ads', 0);
+        if ($adCap > 0) {
+            $concepts = array_slice($concepts, 0, $adCap);
+        }
+
         return [
             'company'                => $company,
             'description'            => (string) ($s['description'] ?? ''),
@@ -199,6 +222,7 @@ class CrawlAndSummarize implements ShouldQueue
             'fonts'                  => array_values(array_filter(array_map('trim', (array) ($s['fonts'] ?? [])))),
             'colors'                 => array_values(array_filter(array_map('trim', (array) ($s['colors'] ?? [])))),
             'google_search_keywords' => array_slice($kw, 0, 4),
+            'ad_concepts'            => array_values($concepts),
         ];
     }
 }

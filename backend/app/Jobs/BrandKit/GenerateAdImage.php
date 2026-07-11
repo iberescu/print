@@ -40,7 +40,13 @@ class GenerateAdImage implements ShouldQueue
         $palette = ! empty($summary['colors']) ? implode(', ', (array) $summary['colors']) : null;
 
         $img = $gemini->generateImage(
-            BrandKitSpec::adPrompt($this->ad, (string) $company, $palette),
+            BrandKitSpec::adPrompt(
+                (string) ($this->ad['headline'] ?? ''),
+                (string) ($this->ad['cta'] ?? 'Learn more'),
+                (string) $company,
+                $palette,
+                (string) ($summary['description'] ?? ''),
+            ),
             [$logo],
             config('shop.internal_engine.image_model'),
         );

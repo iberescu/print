@@ -52,4 +52,36 @@ class Img
 
         return $out !== false && $out !== '' ? $out : $data;
     }
+
+    /**
+     * Center a logo on a square white canvas. Normalises odd aspect ratios (a
+     * wide wordmark, a tall stack) so downstream generation produces square
+     * product shots instead of inheriting the logo's aspect. Returns webp.
+     */
+    public static function square(string $data, int $size = 1024): string
+    {
+        $im = @imagecreatefromstring($data);
+        if ($im === false) {
+            return $data;
+        }
+        $w = imagesx($im);
+        $h = imagesy($im);
+
+        $canvas = imagecreatetruecolor($size, $size);
+        imagefilledrectangle($canvas, 0, 0, $size, $size, imagecolorallocate($canvas, 255, 255, 255));
+
+        $box = (int) ($size * 0.82);
+        $scale = min($box / $w, $box / $h);
+        $nw = max(1, (int) round($w * $scale));
+        $nh = max(1, (int) round($h * $scale));
+        imagecopyresampled($canvas, $im, (int) (($size - $nw) / 2), (int) (($size - $nh) / 2), 0, 0, $nw, $nh, $w, $h);
+
+        ob_start();
+        imagewebp($canvas, null, 92);
+        $out = ob_get_clean();
+        imagedestroy($im);
+        imagedestroy($canvas);
+
+        return $out !== false && $out !== '' ? $out : $data;
+    }
 }

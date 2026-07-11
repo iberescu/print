@@ -290,8 +290,9 @@ class PqsgController extends Controller
             $images = collect($kit->ads ?? [])->values()->map(fn ($a, $i) => [
                 'key' => $a['key'] ?? 'ad-'.$i, 'img' => $a['img'], 'label' => 'Ad concept '.($i + 1), 'product' => null,
             ])->all();
+            $expected = count($kit->summary['ad_concepts'] ?? []) ?: count(\App\Support\BrandKitSpec::ads());
             $done = ($stages['ads'] ?? 'pending') === 'skipped'
-                || count($images) >= count(\App\Support\BrandKitSpec::ads()) || $stale;
+                || count($images) >= $expected || $stale;
 
             return response()->json(['done' => $done, 'images' => $images]);
         }

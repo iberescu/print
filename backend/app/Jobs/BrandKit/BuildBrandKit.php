@@ -48,6 +48,12 @@ class BuildBrandKit implements ShouldQueue
             $kit->refresh();
         }
 
+        // Upscale low-res logos + normalise aspect so mockups are crisp and square.
+        if ($kit->logo_path || $kit->logo_url) {
+            $this->enhanceLogo($gemini, $kit);
+            $kit->refresh();
+        }
+
         $hasLogo = (bool) ($kit->logo_path || $kit->logo_url);
         $hasUrl = (bool) $kit->website;
 
@@ -67,6 +73,7 @@ class BuildBrandKit implements ShouldQueue
         } else {
             // No URL: company-based summary, and ads straight away if we have a logo.
             $company = (string) ($kit->company ?? '');
+            $concepts = BrandKitSpec::ads();
             $kit->update(['summary' => [
                 'company'                => $company,
                 'description'            => $company ? "{$company} — custom print and promotional products." : '',
@@ -74,13 +81,14 @@ class BuildBrandKit implements ShouldQueue
                 'fonts'                  => [],
                 'colors'                 => [],
                 'google_search_keywords' => $this->fallbackKeywords($company),
+                'ad_concepts'            => $concepts,
             ]]);
             $kit->markStage('summary', $company ? 'done' : 'skipped');
 
             if ($hasLogo) {
                 $kit->markStage('ads', 'running');
-                foreach (BrandKitSpec::ads() as $ad) {
-                    GenerateAdImage::dispatch($this->key, $ad);
+                foreach (array_values($concepts) as $i => $concept) {
+                    GenerateAdImage::dispatch($this->key, ['key' => 'ad'.$i] + $concept);
                 }
             } else {
                 $kit->markStage('ads', 'skipped');
@@ -137,6 +145,40 @@ class BuildBrandKit implements ShouldQueue
         }
 
         $kit->markStage('extract', 'done');
+    }
+
+    /**
+     * Make the logo production-ready: upscale it via Gemini when it's low-res
+     * (kept pixel-faithful — no restyle), then centre it on a square canvas so
+     * downstream mockups don't inherit a wide wordmark's aspect ratio.
+     */
+    private function enhanceLogo(GeminiClient $gemini, BrandKit $kit): void
+    {
+        $input = $this->logoInput($kit);
+        if (! $input) {
+            return;
+        }
+        $bytes = base64_decode($input['data']);
+        $dims = @getimagesizefromstring($bytes) ?: [0, 0];
+
+        if ($dims[0] > 0 && max($dims[0], $dims[1]) < 512) {
+            try {
+                $up = $gemini->generateImage(
+                    'Upscale this logo to a high-resolution version. Reproduce it PIXEL-FAITHFULLY — the exact '
+                    .'same shapes, letters, colours, spacing and proportions — only sharper and larger. Do NOT '
+                    .'restyle, recolour, add, remove, crop or redraw anything. Plain solid white background.',
+                    [$input],
+                    config('shop.internal_engine.image_model'),
+                );
+                $bytes = $up['data'];
+            } catch (\Throwable) {
+                // keep the original bytes
+            }
+        }
+
+        $path = "brandkits/{$this->key}/logo-hd.webp";
+        Storage::disk('public')->put($path, Img::square($bytes, 1024));
+        $kit->update(['logo_path' => $path, 'logo_url' => Storage::disk('public')->url($path)]);
     }
 
     /** @return array<int,string> */

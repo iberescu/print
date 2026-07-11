@@ -321,7 +321,11 @@ class DesignController extends Controller
             $website = 'https://'.$website;
         }
 
-        $company = trim((string) ($brand['companyName'] ?? $brand['name'] ?? '')) ?: null;
+        $company = trim((string) ($brand['companyName'] ?? $brand['name'] ?? ''));
+        // Drop unfilled designer placeholders so the crawl-derived name wins instead.
+        if ($company === '' || preg_match('/^(company( name)?|your company|your business|business name|brand( name)?)$/i', $company)) {
+            $company = null;
+        }
         $capture = app(\App\Services\BrandKitCapture::class);
 
         if ($logo || $website !== '') {
