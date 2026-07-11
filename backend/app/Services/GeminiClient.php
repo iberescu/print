@@ -16,9 +16,12 @@ class GeminiClient
     {
         return Http::timeout(240)
             ->acceptJson()
-            // Retry transient rate-limit / server errors with backoff — the internal
-            // engine fires many concurrent generations per capture and Gemini 429s.
-            ->retry(4, 1500, function ($exception) {
+            // Exponential backoff on transient rate-limit / server errors — the
+            // internal engine fires many concurrent generations and Gemini 429s;
+            // waits long enough (up to ~30s) to clear a per-minute rate window.
+            ->retry(6, function (int $attempt) {
+                return (int) min(30000, 500 * (2 ** $attempt)); // 1s,2s,4s,8s,16s,30s
+            }, function ($exception) {
                 $status = $exception instanceof \Illuminate\Http\Client\RequestException
                     ? $exception->response->status() : null;
 
@@ -26,6 +29,23 @@ class GeminiClient
                     || in_array($status, [408, 429, 500, 502, 503, 529], true);
             }, throw: false)
             ->withQueryParameters(['key' => (string) config('shop.gemini.api_key')]);
+    }
+
+    /**
+     * POST to a model, but funnel through a Redis semaphore so no more than
+     * config('shop.gemini.max_concurrency') Gemini calls run at once across all
+     * workers — this is what stops parallel captures from 429-ing each other.
+     */
+    private function call(string $model, array $body): \Illuminate\Http\Client\Response
+    {
+        $run = fn () => $this->http()->post($this->url($model), $body)->throw();
+        $limit = (int) config('shop.gemini.max_concurrency', 0);
+        if ($limit <= 0) {
+            return $run();
+        }
+
+        return \Illuminate\Support\Facades\Redis::funnel('gemini-api')
+            ->limit($limit)->block(120)->then($run, $run);
     }
 
     private function url(string $model): string
@@ -46,10 +66,10 @@ class GeminiClient
             $parts[] = ['inlineData' => ['mimeType' => $img['mime'], 'data' => $img['data']]];
         }
 
-        $resp = $this->http()->post($this->url($model ?? config('shop.gemini.image_model')), [
+        $resp = $this->call($model ?? config('shop.gemini.image_model'), [
             'contents'         => [['parts' => $parts]],
             'generationConfig' => ['responseModalities' => ['IMAGE']],
-        ])->throw();
+        ]);
 
         foreach ($resp->json('candidates.0.content.parts', []) as $part) {
             $inline = $part['inlineData'] ?? $part['inline_data'] ?? null;
@@ -67,9 +87,9 @@ class GeminiClient
     /** Generate plain text. */
     public function generateText(string $prompt, ?string $model = null): string
     {
-        $resp = $this->http()->post($this->url($model ?? config('shop.gemini.text_model')), [
+        $resp = $this->call($model ?? config('shop.gemini.text_model'), [
             'contents' => [['parts' => [['text' => $prompt]]]],
-        ])->throw();
+        ]);
 
         return (string) $resp->json('candidates.0.content.parts.0.text', '');
     }
@@ -81,10 +101,10 @@ class GeminiClient
      */
     public function generateJson(string $prompt, ?string $model = null): array
     {
-        $resp = $this->http()->post($this->url($model ?? config('shop.gemini.text_model')), [
+        $resp = $this->call($model ?? config('shop.gemini.text_model'), [
             'contents'         => [['parts' => [['text' => $prompt]]]],
             'generationConfig' => ['responseMimeType' => 'application/json'],
-        ])->throw();
+        ]);
 
         $text = (string) $resp->json('candidates.0.content.parts.0.text', '{}');
 
@@ -99,7 +119,7 @@ class GeminiClient
      */
     public function inspectImage(string $prompt, array $image, ?string $model = null): array
     {
-        $resp = $this->http()->post($this->url($model ?? config('shop.gemini.vision_model')), [
+        $resp = $this->call($model ?? config('shop.gemini.vision_model'), [
             'contents' => [[
                 'parts' => [
                     ['text' => $prompt],
@@ -107,7 +127,7 @@ class GeminiClient
                 ],
             ]],
             'generationConfig' => ['responseMimeType' => 'application/json'],
-        ])->throw();
+        ]);
 
         $text = (string) $resp->json('candidates.0.content.parts.0.text', '{}');
 

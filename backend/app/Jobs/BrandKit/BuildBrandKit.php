@@ -27,7 +27,7 @@ class BuildBrandKit implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, ReadsImages, SerializesModels;
 
     public int $tries = 2;
-    public int $timeout = 180;
+    public int $timeout = 300;
 
     public function __construct(public string $key)
     {
@@ -103,9 +103,12 @@ class BuildBrandKit implements ShouldQueue
 
         try {
             $info = $gemini->inspectImage(
-                'This is a business card / brand artwork. Extract its brand details as JSON with keys: '
-                .'"company" (business name), "website" (url if present, else null), "tagline", '
-                .'"email", "phone". Use null for anything not present.',
+                'This is a business card / brand artwork. Read ALL text on it carefully. Return JSON: '
+                .'"company" (the brand/business name — usually the most prominent wordmark or the name shown '
+                .'in the logo; extract it even if it is also a common English word), '
+                .'"website" (ANY web address on the card — a www. or https:// string or a bare domain like '
+                .'example.com or example.io; return just the host), '
+                .'"tagline", "email", "phone". Use null ONLY when a field is genuinely absent.',
                 $src,
             );
             $kit->update([

@@ -19,7 +19,7 @@ class GenerateProductImage implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, ReadsImages, SerializesModels;
 
     public int $tries = 2;
-    public int $timeout = 240;
+    public int $timeout = 300;
 
     /** @param array{key:string,label:string,slug:string,decoration:string,scene:string} $spec */
     public function __construct(public string $key, public array $spec)

@@ -24,7 +24,7 @@ class CrawlAndSummarize implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, ReadsImages, SerializesModels;
 
     public int $tries = 2;
-    public int $timeout = 120;
+    public int $timeout = 300;
 
     public function __construct(public string $key)
     {
