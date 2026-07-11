@@ -35,8 +35,13 @@ class GenerateProductImage implements ShouldQueue
             return;
         }
 
+        $summary = $kit->summary ?? [];
         $img = $gemini->generateImage(
-            BrandKitSpec::productPrompt($this->spec),
+            BrandKitSpec::productPrompt($this->spec, [
+                'keywords' => $summary['keywords'] ?? [],
+                'company'  => $kit->company ?: ($summary['company'] ?? ''),
+                'colors'   => $summary['colors'] ?? [],
+            ]),
             [$logo],
             config('shop.internal_engine.image_model'),
         );
