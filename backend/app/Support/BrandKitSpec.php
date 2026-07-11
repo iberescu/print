@@ -68,15 +68,16 @@ class BrandKitSpec
             ],
             [
                 'key' => 'wordcloud', 'label' => 'Word-cloud wall art', 'slug' => 'canvas-prints', 'decoration' => 'custom',
-                'prompt' => 'A word-cloud art print on a gallery-wrapped canvas (a canvas panel, no external '
-                    .'frame) hanging on a clean white wall, photographed straight on. The '
-                    .'words COMPLETELY FILL the shape of the provided logo. IMPORTANT: if the logo has a '
-                    .'distinct icon or symbol alongside text, fill ONLY that icon/shape with the words and '
-                    .'OMIT the text/wordmark; only if the logo is purely text (no icon), fill the text shape. '
-                    .'Use a real word-cloud style: mix a few LARGE words with many SMALLER ones, set at varied '
-                    .'orientations — horizontal, diagonal AND vertical, rotated at assorted angles — packed '
-                    .'densely in random positions to fill the whole shape. Use ONLY these brand words: '
-                    .'{keywords}. Set them in the brand colours; keep the shape clearly recognisable.',
+                'prompt' => 'A LARGE gallery-wrapped canvas (a big statement piece that fills most of the wall) '
+                    .'hanging on a clean white wall, photographed straight on. A dense word cloud COMPLETELY '
+                    .'FILLS the shape of the provided logo. IMPORTANT: if the logo has a distinct icon or '
+                    .'symbol alongside text, fill ONLY that icon/shape with the words and OMIT the '
+                    .'text/wordmark; only if the logo is purely text (no icon), fill the text shape. Pack it '
+                    .'DENSELY with ABOUT 100 words in total — a few large focal words and MANY small ones — at '
+                    .'varied orientations (horizontal, diagonal AND vertical, rotated at assorted angles) in '
+                    .'random positions, leaving almost no empty space inside the shape. Use ONLY these brand '
+                    .'words, repeating them at different sizes to reach ~100 words: {keywords}. Set them in the '
+                    .'brand colours; keep the overall shape clearly recognisable.',
             ],
             [
                 'key' => 'pen', 'label' => 'Pen', 'slug' => 'custom-pens', 'decoration' => 'custom',
@@ -132,7 +133,7 @@ class BrandKitSpec
             $prompt = (string) ($p['prompt'] ?? '');
             if (str_contains($prompt, '{keywords}')) {
                 $kw = array_values(array_filter(array_map('trim', (array) ($ctx['keywords'] ?? []))));
-                $words = $kw ? implode(', ', array_slice($kw, 0, 20)) : (trim((string) ($ctx['company'] ?? '')) ?: 'the brand');
+                $words = $kw ? implode(', ', array_slice($kw, 0, 30)) : (trim((string) ($ctx['company'] ?? '')) ?: 'the brand');
                 $prompt = str_replace('{keywords}', $words, $prompt);
             }
 

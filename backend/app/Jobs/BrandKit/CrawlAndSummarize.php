@@ -183,7 +183,7 @@ class CrawlAndSummarize implements ShouldQueue
             .'advertising campaign, with EXACTLY these keys: '
             .'"company" (string, the business name), '
             .'"description" (2-3 sentence plain-English summary of what they do), '
-            .'"keywords" (array of 12-20 short keywords or phrases describing the business, its products, '
+            .'"keywords" (array of 20-30 short keywords or phrases describing the business, its products, '
             .'services and industry — these fill a brand word-cloud, so make them specific and varied), '
             .'"fonts" (array of 1-3 font families the site appears to use — best guess), '
             .'"colors" (array of 2-4 brand colours as hex codes or names), '
