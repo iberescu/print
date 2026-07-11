@@ -128,7 +128,7 @@ const field = 'mt-1 w-full rounded-lg border border-paper-300 px-3 py-2.5 text-i
                             </span>
                             <span class="text-right">
                                 <span class="block text-sm font-semibold" :class="m.free ? 'text-brand-700' : 'text-ink'">{{ m.free || m.price === 0 ? 'FREE' : money(m.price) }}</span>
-                                <span v-if="!m.free && m.price > 0 && itemCount > 1" class="block text-[11px] text-ink/45">{{ money(m.unit_price) }}/item × {{ itemCount }}</span>
+                                <span v-if="!m.free && m.unit_price > 0" class="block text-[11px] text-ink/45">{{ money(m.unit_price) }}/item<template v-if="itemCount > 1"> × {{ itemCount }}</template></span>
                             </span>
                         </label>
                         <p v-if="remainingForFree > 0" class="pt-1 text-xs text-ink/50">Add <strong class="text-ink">{{ money(remainingForFree) }}</strong> more to unlock free Standard shipping.</p>
@@ -146,7 +146,7 @@ const field = 'mt-1 w-full rounded-lg border border-paper-300 px-3 py-2.5 text-i
                     <div class="mt-3 space-y-2">
                         <div v-for="it in items" :key="it.id" class="flex justify-between gap-3 text-sm">
                             <span class="text-ink/70">{{ it.name }} <span class="text-ink/40">×{{ it.quantity }}</span>
-                                <span v-if="selectedMethod" class="block text-[11px] text-ink/45">🚚 {{ selectedMethod.eta }}</span>
+                                <span v-if="selectedMethod" class="block text-[11px] text-ink/45">🚚 {{ selectedMethod.eta }} · {{ selectedMethod.free || selectedMethod.unit_price === 0 ? 'free shipping' : '+' + money(selectedMethod.unit_price) + ' shipping' }}</span>
                             </span>
                             <span class="shrink-0 font-medium">{{ money(it.line_total) }}</span>
                         </div>
@@ -155,7 +155,9 @@ const field = 'mt-1 w-full rounded-lg border border-paper-300 px-3 py-2.5 text-i
                         <div class="flex justify-between"><dt class="text-ink/60">Subtotal</dt><dd>{{ money(summary.subtotal) }}</dd></div>
                         <div v-if="summary.discount > 0" class="flex justify-between text-brand-700"><dt>Discount{{ summary.coupon ? ` (${summary.coupon})` : '' }}</dt><dd>−{{ money(summary.discount) }}</dd></div>
                         <div class="flex justify-between">
-                            <dt class="text-ink/60">Shipping <span class="text-ink/40">· {{ selectedMethod?.label }}</span></dt>
+                            <dt class="text-ink/60">Shipping <span class="text-ink/40">· {{ selectedMethod?.label }}</span>
+                                <span v-if="shippingCost > 0 && selectedMethod" class="block text-[11px] text-ink/40">{{ money(selectedMethod.unit_price) }}/item × {{ itemCount }} {{ itemCount === 1 ? 'product' : 'products' }}</span>
+                            </dt>
                             <dd>{{ shippingCost > 0 ? money(shippingCost) : 'FREE' }}</dd>
                         </div>
                         <div class="flex justify-between">
