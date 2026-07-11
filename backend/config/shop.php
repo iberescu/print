@@ -93,7 +93,7 @@ return [
         // Only upscale a logo when its largest side is under this many pixels.
         // Good-resolution logos are used as-is — upscaling would redraw them and
         // any redraw risks drifting from the original, so we avoid it when we can.
-        'logo_min_px'    => (int) env('INTERNAL_ENGINE_LOGO_MIN_PX', 512),
+        'logo_min_px'    => (int) env('INTERNAL_ENGINE_LOGO_MIN_PX', 256),
         // Cap how many product mockups / display ads to generate per capture
         // (0 = all). Ads default to 4 — enough variety, keeps the pro-tier cost sane.
         'max_products' => (int) env('INTERNAL_ENGINE_MAX_PRODUCTS', 0),

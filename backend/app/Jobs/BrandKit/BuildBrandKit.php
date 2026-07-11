@@ -162,7 +162,7 @@ class BuildBrandKit implements ShouldQueue
         }
         $bytes = base64_decode($input['data']);
         $dims = @getimagesizefromstring($bytes) ?: [0, 0];
-        $minPx = (int) config('shop.internal_engine.logo_min_px', 512);
+        $minPx = (int) config('shop.internal_engine.logo_min_px', 256);
 
         // Only upscale when the largest side is under the threshold; good-res
         // logos skip this and are used exactly as supplied.
