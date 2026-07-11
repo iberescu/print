@@ -12,8 +12,8 @@ namespace App\Support;
 class BrandKitSpec
 {
     /** Common product-photo framing appended to every merch prompt. */
-    private const PHOTO = 'Professional e-commerce product photo on a clean, softly-lit light-grey studio '
-        .'background, soft realistic shadows, crisp focus, centred, generous margins.';
+    private const PHOTO = 'Professional e-commerce product photo on a clean white table with a soft white '
+        .'wall behind, bright even lighting, soft natural shadows, crisp focus, centred, generous margins.';
 
     /**
      * Merch products. decoration: print|laser|embroidery. slug maps to a real
@@ -35,7 +35,7 @@ class BrandKitSpec
             [
                 'key' => 'letterhead', 'label' => 'Letterhead', 'slug' => 'company-letterhead', 'decoration' => 'custom',
                 'prompt' => 'A professional printed A4 letterhead / company stationery sheet, portrait '
-                    .'orientation, photographed flat (top-down) on a clean light desk with soft shadows. The '
+                    .'orientation, photographed flat (top-down) on a clean white table with soft shadows. The '
                     .'provided logo is printed once in the HEADER at the top of the sheet, at a realistic size. '
                     .'Below it a clean, elegant letterhead: a thin brand-coloured rule under the header and a '
                     .'small placeholder contact line, the rest of the page left blank and white — do NOT fill '
@@ -54,14 +54,15 @@ class BrandKitSpec
                     .'back into deep black infinite depth — a clean tunnel built from the shape itself, NOT '
                     .'random wavy or diffuse lines. Bright, well-defined neon LED tube lighting in the '
                     .'brand\'s own colours (matching the logo) on the faces, with a vivid glowing rim-light '
-                    .'along the raised 3D edges/returns and a soft neon halo on the dark wall behind. '
-                    .'Floating wall-mounted, premium acrylic and aluminium, ray-traced reflections, '
-                    .'cinematic moody lighting, hyper-detailed, luxury modern product photography, '
+                    .'along the raised 3D edges/returns and a soft neon halo on the clean white wall behind. '
+                    .'Floating, mounted on a clean white wall in a bright room, premium acrylic and aluminium, '
+                    .'ray-traced reflections, clean bright lighting, hyper-detailed, luxury modern product '
+                    .'photography, '
                     .'photorealistic, 8K.',
             ],
             [
                 'key' => 'wordcloud', 'label' => 'Word-cloud wall art', 'slug' => 'canvas-prints', 'decoration' => 'custom',
-                'prompt' => 'A LARGE word-cloud wall-art piece displayed directly on a clean interior wall — '
+                'prompt' => 'A LARGE word-cloud wall-art piece displayed directly on a clean white wall — '
                     .'NO frame and no border — filling a big area of the wall, photographed straight on. The '
                     .'words COMPLETELY FILL the shape of the provided logo. IMPORTANT: if the logo has a '
                     .'distinct icon or symbol alongside text, fill ONLY that icon/shape with the words and '
@@ -74,13 +75,13 @@ class BrandKitSpec
             [
                 'key' => 'pen', 'label' => 'Pen', 'slug' => 'custom-pens', 'decoration' => 'custom',
                 'prompt' => 'A studio product shot of a single sleek promotional pen lying HORIZONTALLY '
-                    .'(landscape) on a clean light-grey surface with soft shadows. Show the ENTIRE pen fully '
+                    .'(landscape) on a clean white table with soft shadows. Show the ENTIRE pen fully '
                     .'within the frame from tip to end — not cropped — with generous margins around it. The '
                     .'provided logo is printed small along the barrel of the pen in landscape orientation.',
             ],
             [
                 'key' => 'sticker', 'label' => 'Kiss-cut sticker', 'slug' => 'kiss-cut-stickers', 'decoration' => 'custom',
-                'prompt' => 'A close-up product shot of the back lid of a modern laptop on a clean desk, with a '
+                'prompt' => 'A close-up product shot of the back lid of a modern laptop on a clean white table, with a '
                     .'single kiss-cut vinyl sticker of the provided logo applied to it. The sticker is die-cut '
                     .'to follow the logo\'s own contour/silhouette — a tight outline hugging the logo with a '
                     .'thin white sticker border — lying flat on the laptop lid at a realistic size, at a '
@@ -90,7 +91,7 @@ class BrandKitSpec
             [
                 'key' => 'mousepad', 'label' => 'Mouse pad', 'slug' => 'mouse-pads', 'decoration' => 'custom', 'logo_render' => 'white',
                 'prompt' => 'A studio product shot of a dark charcoal rectangular cloth mouse pad lying flat on '
-                    .'a light desk, shown from a slight top-down angle. The provided logo is printed small in '
+                    .'a clean white table, shown from a slight top-down angle. The provided logo is printed small in '
                     .'ONE CORNER of the mouse pad.',
             ],
         ];
