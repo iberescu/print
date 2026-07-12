@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed, watch, onBeforeUnmount } from 'vue';
 
 // Shared AI logo builder: used by the standalone /logo-maker page and by the
 // online designer (modal). Each round generates four concepts via Replicate
@@ -135,6 +135,13 @@ const results = ref([]);       // {path, url, variant}
 const pending = ref(0);        // in-flight generations (skeleton tiles)
 const error = ref('');
 
+// Time-based progress bar for AI generation. Replicate gives no real percentage,
+// so we ease a bar from ~1s toward the ~45s mark while concepts are in flight,
+// hold near the end, then snap to 100% when they all land.
+const genProgress = ref(0);
+let genTimer = null;
+let genStart = 0;
+
 // every round covers four concept lanes (matches the server's variant map)
 const conceptLabel = (v) => ['Industry', 'Your name', 'Abstract', form.value.tagline.trim() ? 'Tagline' : 'Name + industry'][(v ?? 0) % 4];
 
@@ -206,6 +213,26 @@ function moreLike(r) {
     generateOne(r.variant ?? 0);
     generateOne(r.variant ?? 0);
 }
+
+// Drive the progress bar off the in-flight count: fill over ~45s, then complete.
+watch(pending, (n, prev) => {
+    if (n > 0 && prev === 0) {
+        genStart = Date.now();
+        genProgress.value = 2;
+        clearInterval(genTimer);
+        genTimer = setInterval(() => {
+            const elapsed = Date.now() - genStart;
+            genProgress.value = Math.min(97, 2 + (elapsed / 45000) * 95); // ~1s -> 45s, then hold near the end
+        }, 200);
+    } else if (n === 0 && prev > 0) {
+        clearInterval(genTimer);
+        genTimer = null;
+        genProgress.value = 100;                 // all concepts landed
+        setTimeout(() => { if (pending.value === 0) genProgress.value = 0; }, 700);
+    }
+});
+
+onBeforeUnmount(() => clearInterval(genTimer));
 </script>
 
 <template>
@@ -276,6 +303,14 @@ function moreLike(r) {
         </button>
         <p v-if="error" class="mt-2 text-sm text-red-600">{{ error }} — please try again.</p>
 
+        <!-- AI generation progress (time-based estimate, ~45s) -->
+        <div v-if="genProgress > 0" class="mt-4">
+            <div class="h-2 w-full overflow-hidden rounded-full bg-paper-200">
+                <div class="h-full rounded-full bg-brand-blue transition-[width] duration-200 ease-linear" :style="{ width: genProgress + '%' }"></div>
+            </div>
+            <p class="mt-1.5 text-xs text-ink/50">Designing your logo concepts… {{ Math.round(genProgress) }}%</p>
+        </div>
+
         <!-- results -->
         <div v-if="results.length || pending" class="mt-7 grid gap-4" :class="compact ? 'grid-cols-2' : 'grid-cols-2 md:grid-cols-3 lg:grid-cols-4'">
             <div v-for="i in pending" :key="`skeleton-${i}`" class="aspect-square animate-pulse rounded-2xl border border-paper-300 bg-paper-200"></div>
@@ -293,6 +328,5 @@ function moreLike(r) {
                 </button>
             </div>
         </div>
-        <p v-if="pending" class="mt-3 text-xs text-ink/50">Drawing vector shapes — this takes about 15 seconds per concept.</p>
     </div>
 </template>
