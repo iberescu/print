@@ -959,10 +959,10 @@ function goToReview() {
             <div class="mx-1 h-6 w-px bg-white/15"></div>
 
             <template v-if="isText">
-                <div class="relative shrink-0">
+                <div class="flex items-center gap-1.5 shrink-0">
                     <input :value="sel.text" @input="setText($event.target.value)" @blur="selIsUrl && checkUrlField('design', sel.text)" :placeholder="selIsUrl ? 'yourcompany.com' : 'Edit text'"
-                           class="w-32 rounded-md bg-white/10 px-2 py-1.5 text-sm text-paper placeholder:text-paper/40 focus:outline-none sm:w-44" :class="selIsUrl ? 'pr-8' : ''" />
-                    <span v-if="selIsUrl && urlTick.design.state" class="absolute right-2 top-1/2 -translate-y-1/2" :title="urlTick.design.msg">
+                           class="w-32 rounded-md bg-white/10 px-2 py-1.5 text-sm text-paper placeholder:text-paper/40 focus:outline-none sm:w-44" />
+                    <span v-if="selIsUrl && urlTick.design.state" class="shrink-0" :title="urlTick.design.msg">
                         <svg v-if="urlTick.design.state === 'checking'" class="h-4 w-4 animate-spin text-paper/50" viewBox="0 0 24 24" fill="none"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.4 0 0 5.4 0 12h4z"/></svg>
                         <svg v-else-if="urlTick.design.state === 'valid'" class="h-4 w-4 text-emerald-400" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.7 5.3a1 1 0 010 1.4l-7.5 7.5a1 1 0 01-1.4 0L3.3 9.7a1 1 0 011.4-1.4l3.1 3.1 6.8-6.8a1 1 0 011.4 0z" clip-rule="evenodd"/></svg>
                         <svg v-else class="h-4 w-4 text-red-400" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 8.6 5.7 4.3 4.3 5.7 8.6 10l-4.3 4.3 1.4 1.4L10 11.4l4.3 4.3 1.4-1.4L11.4 10l4.3-4.3-1.4-1.4z" clip-rule="evenodd"/></svg>
@@ -1125,9 +1125,9 @@ function goToReview() {
                             @click="qr.type = t[0]">{{ t[1] }}</button>
                 </div>
                 <div class="mt-4 space-y-3">
-                    <div v-if="qr.type === 'url'" class="relative">
-                        <input v-model="qr.url" @blur="checkUrlField('url', qr.url)" type="text" placeholder="yourcompany.com" class="w-full rounded-xl border border-paper-300 px-3.5 py-2.5 pr-9 text-sm focus:border-brand-400 focus:outline-none" />
-                        <span v-if="urlTick.url.state" class="absolute right-3 top-1/2 -translate-y-1/2" :title="urlTick.url.msg">
+                    <div v-if="qr.type === 'url'" class="flex items-center gap-2">
+                        <input v-model="qr.url" @blur="checkUrlField('url', qr.url)" type="text" placeholder="yourcompany.com" class="min-w-0 flex-1 rounded-xl border border-paper-300 px-3.5 py-2.5 text-sm focus:border-brand-400 focus:outline-none" />
+                        <span v-if="urlTick.url.state" class="shrink-0" :title="urlTick.url.msg">
                             <svg v-if="urlTick.url.state === 'checking'" class="h-4 w-4 animate-spin text-ink/40" viewBox="0 0 24 24" fill="none"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.4 0 0 5.4 0 12h4z"/></svg>
                             <svg v-else-if="urlTick.url.state === 'valid'" class="h-4 w-4 text-emerald-600" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.7 5.3a1 1 0 010 1.4l-7.5 7.5a1 1 0 01-1.4 0L3.3 9.7a1 1 0 011.4-1.4l3.1 3.1 6.8-6.8a1 1 0 011.4 0z" clip-rule="evenodd"/></svg>
                             <svg v-else class="h-4 w-4 text-red-500" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 8.6 5.7 4.3 4.3 5.7 8.6 10l-4.3 4.3 1.4 1.4L10 11.4l4.3 4.3 1.4-1.4L11.4 10l4.3-4.3-1.4-1.4z" clip-rule="evenodd"/></svg>
@@ -1139,9 +1139,9 @@ function goToReview() {
                             <input v-model="qr.phone" type="text" placeholder="Phone" class="w-full rounded-xl border border-paper-300 px-3.5 py-2.5 text-sm focus:border-brand-400 focus:outline-none" />
                             <input v-model="qr.email" type="email" placeholder="Email" class="w-full rounded-xl border border-paper-300 px-3.5 py-2.5 text-sm focus:border-brand-400 focus:outline-none" />
                         </div>
-                        <div class="relative">
-                            <input v-model="qr.site" @blur="checkUrlField('site', qr.site)" type="text" placeholder="Website" class="w-full rounded-xl border border-paper-300 px-3.5 py-2.5 pr-9 text-sm focus:border-brand-400 focus:outline-none" />
-                            <span v-if="urlTick.site.state" class="absolute right-3 top-1/2 -translate-y-1/2" :title="urlTick.site.msg">
+                        <div class="flex items-center gap-2">
+                            <input v-model="qr.site" @blur="checkUrlField('site', qr.site)" type="text" placeholder="Website" class="min-w-0 flex-1 rounded-xl border border-paper-300 px-3.5 py-2.5 text-sm focus:border-brand-400 focus:outline-none" />
+                            <span v-if="urlTick.site.state" class="shrink-0" :title="urlTick.site.msg">
                                 <svg v-if="urlTick.site.state === 'checking'" class="h-4 w-4 animate-spin text-ink/40" viewBox="0 0 24 24" fill="none"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.4 0 0 5.4 0 12h4z"/></svg>
                                 <svg v-else-if="urlTick.site.state === 'valid'" class="h-4 w-4 text-emerald-600" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.7 5.3a1 1 0 010 1.4l-7.5 7.5a1 1 0 01-1.4 0L3.3 9.7a1 1 0 011.4-1.4l3.1 3.1 6.8-6.8a1 1 0 011.4 0z" clip-rule="evenodd"/></svg>
                                 <svg v-else class="h-4 w-4 text-red-500" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 8.6 5.7 4.3 4.3 5.7 8.6 10l-4.3 4.3 1.4 1.4L10 11.4l4.3 4.3 1.4-1.4L11.4 10l4.3-4.3-1.4-1.4z" clip-rule="evenodd"/></svg>
