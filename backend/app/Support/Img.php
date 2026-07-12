@@ -79,7 +79,8 @@ class Img
             for ($x = 0; $x < $w; $x += 2) {
                 $rgb = imagecolorat($b, $x, $y);
                 $r = ($rgb >> 16) & 0xFF; $g = ($rgb >> 8) & 0xFF; $bl = $rgb & 0xFF;
-                if ($r > 170 && $g < 110 && $bl > 170) { // magenta-ish
+                // magenta/pink: red + blue both high, green clearly the lowest channel
+                if ($r > 120 && $bl > 120 && $g + 45 < $r && $g + 45 < $bl) {
                     if ($x < $minX) { $minX = $x; }
                     if ($x > $maxX) { $maxX = $x; }
                     if ($y < $minY) { $minY = $y; }
