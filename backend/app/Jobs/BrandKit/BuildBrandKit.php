@@ -4,6 +4,7 @@ namespace App\Jobs\BrandKit;
 
 use App\Models\BrandKit;
 use App\Services\GeminiClient;
+use App\Services\ReplicateClient;
 use App\Support\BrandKitSpec;
 use App\Support\Img;
 use Illuminate\Bus\Queueable;
@@ -34,7 +35,7 @@ class BuildBrandKit implements ShouldQueue
         $this->onQueue('brandkit');
     }
 
-    public function handle(GeminiClient $gemini): void
+    public function handle(GeminiClient $gemini, ReplicateClient $replicate): void
     {
         $kit = BrandKit::where('key', $this->key)->first();
         if (! $kit) {
@@ -48,9 +49,9 @@ class BuildBrandKit implements ShouldQueue
             $kit->refresh();
         }
 
-        // Upscale low-res logos + normalise aspect so mockups are crisp and square.
+        // Keep the original, size the working logo sanely, super-resolve only if tiny.
         if ($kit->logo_path || $kit->logo_url) {
-            $this->enhanceLogo($gemini, $kit);
+            $this->enhanceLogo($replicate, $kit);
             $kit->refresh();
         }
 
@@ -157,46 +158,67 @@ class BuildBrandKit implements ShouldQueue
     }
 
     /**
-     * Make the logo production-ready: upscale it via Gemini ONLY when it's low-res
-     * (kept pixel-faithful — no restyle), then centre it on a square canvas so
-     * downstream mockups don't inherit a wide wordmark's aspect ratio. A logo that
-     * already has good resolution is left untouched — any redraw risks drifting
-     * from the original, so we only accept that risk when the logo is too small.
+     * Make the logo production-ready, faithfully:
+     *   1. keep the pristine original untouched (logo_original_path),
+     *   2. downscale an over-large working copy to a sane max side,
+     *   3. upscale ONLY genuinely tiny logos, via Replicate real-esrgan (a true
+     *      super-resolution model — not a generative redraw), capped to a max side,
+     *   4. pad to a square at the working resolution (no upscaling) for mockups.
+     * A logo in the normal range is used exactly as supplied.
      */
-    private function enhanceLogo(GeminiClient $gemini, BrandKit $kit): void
+    private function enhanceLogo(ReplicateClient $replicate, BrandKit $kit): void
     {
         $input = $this->logoInput($kit);
         if (! $input) {
             return;
         }
-        $bytes = base64_decode($input['data']);
-        $dims = @getimagesizefromstring($bytes) ?: [0, 0];
-        $minPx = (int) config('shop.internal_engine.logo_min_px', 256);
+        $disk = Storage::disk('public');
+        $orig = base64_decode($input['data']);
 
-        // Only upscale when the largest side is under the threshold; good-res
-        // logos skip this and are used exactly as supplied.
-        if ($dims[0] > 0 && max($dims[0], $dims[1]) < $minPx) {
+        // 1. keep the original, exactly as supplied
+        $ext = strtolower(explode('/', $input['mime'])[1] ?? 'png');
+        $ext = preg_replace('/[^a-z0-9]/', '', $ext) ?: 'png';
+        $origPath = "brandkits/{$this->key}/logo-original.{$ext}";
+        $disk->put($origPath, $orig);
+
+        $dims = @getimagesizefromstring($orig) ?: [0, 0];
+        $maxSide = max($dims[0], $dims[1]);
+        $below = (int) config('shop.internal_engine.logo_upscale_below_px', 125);
+        $to = (int) config('shop.internal_engine.logo_upscale_to_px', 512);
+        $resize = (int) config('shop.internal_engine.logo_resize_px', 800);
+
+        $bytes = $orig;
+        if ($maxSide > 0 && $maxSide < $below) {
+            // 3. genuinely tiny — super-resolve with real-esrgan, then cap to max side
             try {
-                $up = $gemini->generateImage(
-                    'Upscale this exact logo to a sharper, higher-resolution version. Treat the supplied logo '
-                    .'as a fixed asset to reproduce PIXEL-FAITHFULLY — identical shapes, letterforms, colours, '
-                    .'spacing and proportions, only cleaner and larger. Keep every FILLED/solid area exactly as '
-                    .'filled — do NOT convert filled shapes into outlines or add strokes. Keep the EXACT '
-                    .'original colours — do NOT brighten, lighten, saturate or shift any hue (dark navy stays '
-                    .'dark navy, never a brighter blue). Do NOT restyle, recolour, re-letter, add, remove, crop '
-                    .'or redraw anything. Output only the logo, centred on a plain solid white background.',
-                    [$input],
-                    config('shop.internal_engine.logo_model'),
+                $up = $replicate->runImage(
+                    (string) config('shop.internal_engine.esrgan_model', 'nightmareai/real-esrgan'),
+                    [
+                        'image'        => 'data:'.$input['mime'].';base64,'.$input['data'],
+                        'scale'        => (int) config('shop.internal_engine.esrgan_scale', 4),
+                        'face_enhance' => false,
+                    ],
+                    90,
                 );
-                $bytes = $up['data'];
+                if ($up) {
+                    $bytes = Img::cap($up, $to);
+                }
             } catch (\Throwable) {
-                // keep the original bytes
+                // real-esrgan unavailable — fall back to the original bytes
             }
+        } elseif ($maxSide > $resize) {
+            // 2. too big — faithful downscale to the working max side
+            $bytes = Img::cap($orig, $resize);
         }
+        // else: normal range — used exactly as supplied
 
         $path = "brandkits/{$this->key}/logo-hd.webp";
-        Storage::disk('public')->put($path, Img::square($bytes, 1024));
-        $kit->update(['logo_path' => $path, 'logo_url' => Storage::disk('public')->url($path)]);
+        $disk->put($path, Img::squarePad($bytes));
+        $kit->update([
+            'logo_path'          => $path,
+            'logo_url'           => $disk->url($path),
+            'logo_original_path' => $origPath,
+        ]);
     }
 
     /** @return array<int,string> */

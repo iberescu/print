@@ -53,6 +53,59 @@ class Img
         return $out !== false && $out !== '' ? $out : $data;
     }
 
+    /** Cap the LARGEST side to $maxSide (downscale only, never upscales), webp. */
+    public static function cap(string $data, int $maxSide): string
+    {
+        $im = @imagecreatefromstring($data);
+        if ($im === false) {
+            return $data;
+        }
+        $w = imagesx($im);
+        $h = imagesy($im);
+        $big = max($w, $h);
+        if ($big > $maxSide) {
+            $scaled = imagescale($im, (int) round($w * $maxSide / $big), (int) round($h * $maxSide / $big));
+            if ($scaled !== false) {
+                imagedestroy($im);
+                $im = $scaled;
+            }
+        }
+        ob_start();
+        imagewebp($im, null, 90);
+        $out = ob_get_clean();
+        imagedestroy($im);
+
+        return $out !== false && $out !== '' ? $out : $data;
+    }
+
+    /**
+     * Pad a logo onto a square white canvas at its OWN resolution (no scaling) so
+     * downstream generation gets a square input without ever upscaling the art.
+     * Canvas side = the logo's larger dimension. Returns webp.
+     */
+    public static function squarePad(string $data): string
+    {
+        $im = @imagecreatefromstring($data);
+        if ($im === false) {
+            return $data;
+        }
+        $w = imagesx($im);
+        $h = imagesy($im);
+        $size = max($w, $h);
+
+        $canvas = imagecreatetruecolor($size, $size);
+        imagefilledrectangle($canvas, 0, 0, $size, $size, imagecolorallocate($canvas, 255, 255, 255));
+        imagecopy($canvas, $im, (int) (($size - $w) / 2), (int) (($size - $h) / 2), 0, 0, $w, $h);
+
+        ob_start();
+        imagewebp($canvas, null, 92);
+        $out = ob_get_clean();
+        imagedestroy($im);
+        imagedestroy($canvas);
+
+        return $out !== false && $out !== '' ? $out : $data;
+    }
+
     /**
      * Center a logo on a square white canvas. Normalises odd aspect ratios (a
      * wide wordmark, a tall stack) so downstream generation produces square

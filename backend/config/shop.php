@@ -106,13 +106,15 @@ return [
     'internal_engine' => [
         'image_model'    => env('INTERNAL_ENGINE_IMAGE_MODEL', env('GEMINI_IMAGE_MODEL_FAST', 'gemini-3.1-flash-image')),
         'ad_image_model' => env('INTERNAL_ENGINE_AD_IMAGE_MODEL', env('GEMINI_IMAGE_MODEL_FAST', 'gemini-3.1-flash-image')),
-        // Low-res logo upscale — also on flash for speed. The upscale prompt keeps
-        // it pixel-faithful, and every downstream mockup/ad inherits this logo.
-        'logo_model'     => env('INTERNAL_ENGINE_LOGO_MODEL', env('GEMINI_IMAGE_MODEL_FAST', 'gemini-3.1-flash-image')),
-        // Only upscale a logo when its largest side is under this many pixels.
-        // Good-resolution logos are used as-is — upscaling would redraw them and
-        // any redraw risks drifting from the original, so we avoid it when we can.
-        'logo_min_px'    => (int) env('INTERNAL_ENGINE_LOGO_MIN_PX', 256),
+        // Logo handling: always keep the original, downscale an over-large working
+        // copy to a sane max side, and only upscale genuinely tiny logos — via
+        // Replicate real-esrgan (a true super-resolution model, faithful, unlike a
+        // generative redraw). Every downstream mockup/ad inherits the working logo.
+        'logo_resize_px'        => (int) env('INTERNAL_ENGINE_LOGO_RESIZE_PX', 800),        // downscale big logos to this max side
+        'logo_upscale_below_px' => (int) env('INTERNAL_ENGINE_LOGO_UPSCALE_BELOW_PX', 125), // only upscale when the max side is under this
+        'logo_upscale_to_px'    => (int) env('INTERNAL_ENGINE_LOGO_UPSCALE_TO_PX', 512),    // cap the upscaled result to this max side
+        'esrgan_model'          => env('INTERNAL_ENGINE_ESRGAN_MODEL', 'nightmareai/real-esrgan'),
+        'esrgan_scale'          => (int) env('INTERNAL_ENGINE_ESRGAN_SCALE', 4),
         // Cap how many product mockups / display ads to generate per capture
         // (0 = all). Ads default to 4 — enough variety, keeps the pro-tier cost sane.
         'max_products' => (int) env('INTERNAL_ENGINE_MAX_PRODUCTS', 0),
