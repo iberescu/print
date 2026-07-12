@@ -45,7 +45,7 @@ class DesignController extends Controller
             'product'   => $product->only('id', 'name', 'slug', 'decoration'),
             'category'  => ['name' => $product->category->name, 'slug' => $product->category->slug],
             'mode'      => $request->query('mode') === 'upload' ? 'upload' : 'design',
-            'templates' => $this->templatesFor($product),
+            'templates' => $this->templatesFor($product, $opts),
             'template'  => $request->query('template'),   // pre-apply this template ref (from the gallery)
             'project'   => $projectId,
             'savedDesign' => $saved,
@@ -68,7 +68,7 @@ class DesignController extends Controller
         return Inertia::render('Templates', [
             'product'   => $product->only('id', 'name', 'slug'),
             'category'  => ['name' => $product->category->name, 'slug' => $product->category->slug],
-            'templates' => $this->templatesFor($product),
+            'templates' => $this->templatesFor($product, $opts),
             'canvas'    => $this->geometry($product, $opts),
             'selection' => [
                 'quantityId'     => ((int) $request->query('qty')) ?: null,
@@ -360,14 +360,33 @@ class DesignController extends Controller
         return array_values(array_filter(array_map('intval', (array) $request->query('opts', []))));
     }
 
-    /** Templates for the product's category (business-card designs exist today). */
-    private function templatesFor(Product $product): array
+    /** Templates for this product: product-specific ones first, then legacy
+     *  category-wide ones (product_slug null). Scoped to the surface orientation
+     *  (a template authored for landscape mis-fits a portrait canvas), while
+     *  orientation-less legacy templates always show. Only the picker's light columns. */
+    private function templatesFor(Product $product, array $opts = []): array
     {
-        // Only the columns the picker needs — never the heavy `data` (embedded base64 images).
+        $g = $this->geometry($product, $opts);
+        $orientation = ($g['trimW'] ?? 0) > ($g['trimH'] ?? 0)
+            ? 'landscape'
+            : ((($g['trimH'] ?? 0) > ($g['trimW'] ?? 0)) ? 'portrait' : 'square');
+
         return Template::where('is_active', true)
-            ->where('category', $product->category->slug)
+            ->where(function ($q) use ($product) {
+                $q->where('product_slug', $product->slug)
+                    ->orWhere(function ($q2) use ($product) {
+                        $q2->whereNull('product_slug')->where('category', $product->category->slug);
+                    });
+            })
+            // only templates that fit this orientation; legacy (null) ones are orientation-agnostic.
+            // 'square' is the neutral fallback surface, so don't constrain there — show everything.
+            ->when($orientation !== 'square', function ($q) use ($orientation) {
+                $q->where(function ($q2) use ($orientation) {
+                    $q2->where('orientation', $orientation)->orWhereNull('orientation');
+                });
+            })
             ->orderByDesc('score')->orderBy('sort_order')
-            ->take(60)->get(['ref', 'name', 'preview_path'])
+            ->take(120)->get(['ref', 'name', 'preview_path'])
             ->map(fn (Template $t) => ['ref' => $t->ref, 'name' => $t->name, 'preview' => $t->previewUrl()])
             ->all();
     }

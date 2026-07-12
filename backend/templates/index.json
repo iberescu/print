@@ -1,1202 +1,4472 @@
 [
     {
         "id": "002",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Elegant Gold & Navy Law B2B Balanced Edition",
         "style": "Elegant Gold & Navy Law B2B - Balanced Edition",
         "font": "Cormorant Garamond",
         "score": 8.5
     },
     {
         "id": "004",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Warm Minimal Clinic",
         "style": "warm minimal clinic",
         "font": "Lora",
         "score": 7.5
     },
     {
         "id": "001",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Modern Tech Startup Dark Premium",
         "style": "Modern Tech Startup Dark Premium",
         "font": "Sora",
         "score": 7.5
     },
     {
         "id": "003",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Bold Energetic Studio Minimal",
         "style": "Bold Energetic Studio Minimal",
         "font": "League Spartan",
         "score": 7
     },
     {
         "id": "005",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Premium B2B Split Variation 5",
         "style": "Premium B2B Split - Variation 5",
         "font": "Montserrat",
         "score": 9
     },
     {
         "id": "007",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Minimal Monochrome Sidebar",
         "style": "Minimal Monochrome Sidebar",
         "font": "Montserrat",
         "score": 5.5
     },
     {
         "id": "006",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Creative Split Block",
         "style": "Creative Split Block",
         "font": "Space Grotesk",
         "score": 8.5
     },
     {
         "id": "008",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Vibrant Construction Sidebar Premium Architectural Grid V8",
         "style": "Vibrant Construction Sidebar - Premium Architectural Grid v8",
         "font": "Montserrat",
         "score": 8
     },
     {
         "id": "009",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Premium Restaurant Hospitality",
         "style": "premium restaurant hospitality",
         "font": "Cormorant Garamond",
         "score": 8
     },
     {
         "id": "010",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Elegant Top Banner Consulting",
         "style": "elegant-top-banner-consulting",
         "font": "Playfair Display",
         "score": 8
     },
     {
         "id": "011",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Bold & Energetic Creative Studio",
         "style": "bold & energetic creative studio",
         "font": "Archivo Black",
         "score": 6.5
     },
     {
         "id": "012",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Warm Athletic Modernism",
         "style": "Warm Athletic Modernism",
         "font": "League Spartan",
         "score": 8.5
     },
     {
         "id": "013",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Refined Architectural Monogram Distinct Gold Edge",
         "style": "Refined Architectural Monogram - Distinct Gold Edge",
         "font": "Cormorant Garamond",
         "score": 8
     },
     {
         "id": "014",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Playful Modern Monogram",
         "style": "Playful Modern Monogram",
         "font": "Space Grotesk",
         "score": 8
     },
     {
         "id": "015",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Minimal Monochrome Geometric",
         "style": "Minimal Monochrome Geometric",
         "font": "Montserrat",
         "score": 8
     },
     {
         "id": "016",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Vibrant Dental Premium",
         "style": "Vibrant Dental Premium",
         "font": "Raleway",
         "score": 8.5
     },
     {
         "id": "017",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Premium Beauty Salon Minimalist",
         "style": "Premium Beauty Salon Minimalist",
         "font": "Playfair Display",
         "score": 7.5
     },
     {
         "id": "018",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Premium Auto Fleet",
         "style": "Premium Auto Fleet",
         "font": "Oswald",
         "score": 8
     },
     {
         "id": "019",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Bold & Energetic Minimalist",
         "style": "Bold & Energetic Minimalist",
         "font": "League Spartan",
         "score": 8
     },
     {
         "id": "020",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Warm Minimalist Craft Brewery",
         "style": "Warm Minimalist Craft Brewery",
         "font": "Cormorant Garamond",
         "score": 7.5
     },
     {
         "id": "022",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Creative Law Split",
         "style": "Creative Law Split",
         "font": "Space Grotesk",
         "score": 9
     },
     {
         "id": "021",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "B2B Tech Premium Split",
         "style": "B2B Tech Premium Split",
         "font": "Sora",
         "score": 8
     },
     {
         "id": "023",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Minimal Monochrome Sidebar",
         "style": "Minimal Monochrome Sidebar",
         "font": "Raleway",
         "score": 8
     },
     {
         "id": "024",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Vibrant Single Accent Medical",
         "style": "vibrant single-accent medical",
         "font": "Montserrat",
         "score": 8.5
     },
     {
         "id": "025",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Premium Dark Gold Financial",
         "style": "Premium Dark Gold Financial",
         "font": "Playfair Display",
         "score": 5.5
     },
     {
         "id": "026",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Elegant Top Banner Real Estate",
         "style": "Elegant Top-Banner Real Estate",
         "font": "Playfair Display",
         "score": 8.5
     },
     {
         "id": "027",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Bold Typographic Dynamic",
         "style": "Bold Typographic Dynamic",
         "font": "League Spartan",
         "score": 8.5
     },
     {
         "id": "028",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Warm Bold Construction",
         "style": "warm bold construction",
         "font": "Space Grotesk",
         "score": 8
     },
     {
         "id": "029",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Premium Corporate Dining B2B",
         "style": "Premium Corporate Dining B2B",
         "font": "Cormorant Garamond",
         "score": 7
     },
     {
         "id": "031",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Minimal Monochrome",
         "style": "minimal monochrome",
         "font": "Playfair Display",
         "score": 8.5
     },
     {
         "id": "030",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Modern Monogram Creative B2B",
         "style": "Modern Monogram Creative B2B",
         "font": "Space Grotesk",
         "score": 8
     },
     {
         "id": "032",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Vibrant Sport Premium",
         "style": "Vibrant Sport Premium",
         "font": "Barlow Condensed",
         "score": 7.5
     },
     {
         "id": "033",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Modern Architectural Premium",
         "style": "Modern Architectural Premium",
         "font": "Cormorant Garamond",
         "score": 8.5
     },
     {
         "id": "035",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Bold Energetic B2B Centered Minimal",
         "style": "Bold Energetic B2B Centered Minimal",
         "font": "League Spartan",
         "score": 8
     },
     {
         "id": "034",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Elegant Split Gold & Navy",
         "style": "Elegant Split Gold & Navy",
         "font": "Libre Baskerville",
         "score": 8
     },
     {
         "id": "036",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Warm & Approachable Dental B2B",
         "style": "Warm & Approachable Dental B2B",
         "font": "Poppins",
         "score": 8
     },
     {
         "id": "038",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Creative Auto Split",
         "style": "Creative Auto Split",
         "font": "Archivo Black",
         "score": 8
     },
     {
         "id": "037",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Premium B2B Beauty Split Layout",
         "style": "Premium B2B Beauty Split Layout",
         "font": "Playfair Display",
         "score": 7.5
     },
     {
         "id": "039",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Premium Monochrome Sidebar",
         "style": "Premium Monochrome Sidebar",
         "font": "Cormorant Garamond",
         "score": 7.5
     },
     {
         "id": "040",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Vibrant Craft Gold Sidebar",
         "style": "Vibrant craft gold sidebar",
         "font": "League Spartan",
         "score": 8
     },
     {
         "id": "041",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Modern Tech Top Banner",
         "style": "Modern Tech Top-Banner",
         "font": "Sora",
         "score": 7.5
     },
     {
         "id": "042",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Premium Law Firm Top Banner",
         "style": "Premium Law Firm Top Banner",
         "font": "Cormorant Garamond",
         "score": 8
     },
     {
         "id": "043",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Bold Split Panel Creative Studio Card",
         "style": "Bold split-panel creative studio card",
         "font": "League Spartan",
         "score": 7
     },
     {
         "id": "044",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Modern Editorial Split",
         "style": "Modern Editorial Split",
         "font": "Lora",
         "score": 8.5
     },
     {
         "id": "045",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Premium Monogram Corporate",
         "style": "premium monogram corporate",
         "font": "Cinzel",
         "score": 8
     },
     {
         "id": "046",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Playful Premium Real Estate",
         "style": "Playful Premium Real Estate",
         "font": "Space Grotesk",
         "score": 8
     },
     {
         "id": "047",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Minimal Monochrome Geometric",
         "style": "Minimal Monochrome Geometric",
         "font": "Montserrat",
         "score": 7.5
     },
     {
         "id": "048",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Vibrant Industrial Geometric",
         "style": "Vibrant Industrial Geometric",
         "font": "Playfair Display",
         "score": 7.5
     },
     {
         "id": "050",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Elegant Premium B2b",
         "style": "elegant premium b2b",
         "font": "Cormorant Garamond",
         "score": 7.5
     },
     {
         "id": "049",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Premium Restaurant B2B Classic",
         "style": "Premium Restaurant B2B Classic",
         "font": "Playfair Display",
         "score": 8.5
     },
     {
         "id": "051",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Bold Centered Studio",
         "style": "Bold Centered Studio",
         "font": "League Spartan",
         "score": 8
     },
     {
         "id": "052",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Warm Minimalist Fitness Coaching",
         "style": "warm minimalist fitness coaching",
         "font": "Outfit",
         "score": 8.5
     },
     {
         "id": "055",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Minimal Monochrome Sidebar",
         "style": "Minimal Monochrome Sidebar",
         "font": "Raleway",
         "score": 8
     },
     {
         "id": "053",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Premium Dark Architect Split",
         "style": "Premium Dark Architect Split",
         "font": "Montserrat",
         "score": 7.5
     },
     {
         "id": "054",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Creative Split Block",
         "style": "Creative Split-Block",
         "font": "Space Grotesk",
         "score": 8.5
     },
     {
         "id": "056",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Modern Dental B2B",
         "style": "Modern Dental B2B",
         "font": "Montserrat",
         "score": 8.5
     },
     {
         "id": "060",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Warm Bold Typographic",
         "style": "Warm Bold Typographic",
         "font": "DM Serif Display",
         "score": 8.5
     },
     {
         "id": "057",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Modern & Clean Beauty Top Banner",
         "style": "modern & clean beauty top banner",
         "font": "Playfair Display",
         "score": 8
     },
     {
         "id": "059",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Bold & Energetic Landscaping B2B",
         "style": "Bold & Energetic Landscaping B2B",
         "font": "League Spartan",
         "score": 7.5
     },
     {
         "id": "058",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Premium Automotive Top Banner",
         "style": "Premium Automotive Top Banner",
         "font": "Oswald",
         "score": 7.5
     },
     {
         "id": "063",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Minimal Monochrome Geometric",
         "style": "Minimal Monochrome Geometric",
         "font": "Space Grotesk",
         "score": 7.5
     },
     {
         "id": "064",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Vibrant Medical Geometric",
         "style": "Vibrant Medical Geometric",
         "font": "Manrope",
         "score": 8.5
     },
     {
         "id": "062",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Creative Monogram Law",
         "style": "Creative Monogram Law",
         "font": "DM Serif Display",
         "score": 7
     },
     {
         "id": "061",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "B2B Tech Monogram Premium Balanced Split Layout",
         "style": "B2B Tech Monogram Premium - Balanced Split Layout",
         "font": "Sora",
         "score": 7.5
     },
     {
         "id": "068",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Warm Minimalist B2B",
         "style": "Warm Minimalist B2B",
         "font": "Montserrat",
         "score": 9
     },
     {
         "id": "066",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Variation 66 Premium Real Estate",
         "style": "variation-66-premium-real-estate",
         "font": "Playfair Display",
         "score": 8
     },
     {
         "id": "065",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Modern Premium Financial Left Aligned",
         "style": "Modern Premium Financial Left-Aligned",
         "font": "Playfair Display",
         "score": 7.5
     },
     {
         "id": "067",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Bold Minimalist Energetic",
         "style": "Bold Minimalist Energetic",
         "font": "League Spartan",
         "score": 7.5
     },
     {
         "id": "070",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Playful Split Block B2B",
         "style": "Playful Split Block B2B",
         "font": "Space Grotesk",
         "score": 8
     },
     {
         "id": "069",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Premium Split Block",
         "style": "premium split-block",
         "font": "Playfair Display",
         "score": 7.5
     },
     {
         "id": "071",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Minimal Monochrome Sidebar",
         "style": "Minimal Monochrome Sidebar",
         "font": "Playfair Display",
         "score": 8
     },
     {
         "id": "072",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Vibrant Volt Sidebar",
         "style": "Vibrant Volt Sidebar",
         "font": "League Spartan",
         "score": 8
     },
     {
         "id": "074",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Elegant B2B Top Banner",
         "style": "Elegant B2B Top-Banner",
         "font": "Libre Baskerville",
         "score": 8
     },
     {
         "id": "073",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Premium Dark Architectural B2B",
         "style": "premium dark architectural B2B",
         "font": "Raleway",
         "score": 8
     },
     {
         "id": "076",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Warm Approachable Bold Dental",
         "style": "warm approachable bold dental",
         "font": "Poppins",
         "score": 8.5
     },
     {
         "id": "075",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Bold E Commerce Tech",
         "style": "Bold E-Commerce Tech",
         "font": "League Spartan",
         "score": 7.5
     },
     {
         "id": "078",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Creative & Playful Monogram Auto",
         "style": "Creative & Playful Monogram Auto",
         "font": "Outfit",
         "score": 8.5
     },
     {
         "id": "077",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Monogram B2B Beauty",
         "style": "monogram B2B beauty",
         "font": "Playfair Display",
         "score": 6
     },
     {
         "id": "079",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Minimal Monochrome Geometric",
         "style": "Minimal Monochrome Geometric",
         "font": "Cormorant Garamond",
         "score": 8.5
     },
     {
         "id": "080",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Vibrant Craft Modern",
         "style": "Vibrant Craft Modern",
         "font": "League Spartan",
         "score": 8
     },
     {
         "id": "082",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Premium B2B Law Firm",
         "style": "Premium B2B Law Firm",
         "font": "Cormorant Garamond",
         "score": 8.5
     },
     {
         "id": "081",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Modern Tech B2B Classic",
         "style": "Modern Tech B2B Classic",
         "font": "Sora",
         "score": 8
     },
     {
         "id": "083",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Bold Energetic Kinetic Studio",
         "style": "bold energetic kinetic studio",
         "font": "League Spartan",
         "score": 7
     },
     {
         "id": "084",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Warm Minimalist Clinic Split Premium",
         "style": "Warm Minimalist Clinic - Split Premium",
         "font": "Lora",
         "score": 7.5
     },
     {
         "id": "085",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Corporate Split Layout",
         "style": "Corporate Split Layout",
         "font": "Montserrat",
         "score": 8
     },
     {
         "id": "086",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Creative Modern Split",
         "style": "Creative Modern Split",
         "font": "League Spartan",
         "score": 7.5
     },
     {
         "id": "087",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Minimal Monochrome",
         "style": "Minimal Monochrome",
         "font": "Montserrat",
         "score": 8.5
     },
     {
         "id": "088",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Vibrant Industrial Accent",
         "style": "vibrant industrial accent",
         "font": "Oswald",
         "score": 8
     },
     {
         "id": "089",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Modern Dark Culinary B2B",
         "style": "Modern Dark Culinary B2B",
         "font": "Cormorant Garamond",
         "score": 8
     },
     {
         "id": "090",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Elegant Premium B2B",
         "style": "Elegant Premium B2B",
         "font": "Playfair Display",
         "score": 8
     },
     {
         "id": "091",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Bold & Energetic Studio",
         "style": "Bold & Energetic Studio",
         "font": "League Spartan",
         "score": 8
     },
     {
         "id": "092",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Warm Athletic Premium",
         "style": "Warm Athletic Premium",
         "font": "League Spartan",
         "score": 6.5
     },
     {
         "id": "093",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Architectural Luxury Noir",
         "style": "Architectural Luxury Noir",
         "font": "Cormorant Garamond",
         "score": 8
     },
     {
         "id": "095",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Minimal Monochrome Geometric",
         "style": "Minimal monochrome geometric",
         "font": "Playfair Display",
         "score": 7.5
     },
     {
         "id": "094",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Creative Playful Monogram",
         "style": "Creative Playful Monogram",
         "font": "Space Grotesk",
         "score": 8
     },
     {
         "id": "096",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Modern Clinical B2B",
         "style": "Modern Clinical B2B",
         "font": "Outfit",
         "score": 8
     },
     {
         "id": "097",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Elegant Luxury Salon B2B",
         "style": "Elegant Luxury Salon B2B",
         "font": "Playfair Display",
         "score": 8
     },
     {
         "id": "098",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Premium Auto Salon",
         "style": "Premium Auto Salon",
         "font": "Montserrat",
         "score": 8.5
     },
     {
         "id": "099",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Bold & Energetic Minimalist",
         "style": "Bold & Energetic Minimalist",
         "font": "Oswald",
         "score": 7.5
     },
     {
         "id": "100",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Warm Minimalist Brewery",
         "style": "Warm Minimalist Brewery",
         "font": "DM Serif Display",
         "score": 8.5
     },
     {
         "id": "102",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Creative Split Block Law Business Card",
         "style": "Creative Split-Block Law Business Card",
         "font": "Playfair Display",
         "score": 9.5
     },
     {
         "id": "101",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Modern Tech Split B2B",
         "style": "Modern Tech Split B2B",
         "font": "Sora",
         "score": 7
     },
     {
         "id": "104",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Modern Medical Accent",
         "style": "Modern Medical Accent",
         "font": "Plus Jakarta Sans",
         "score": 8.5
     },
     {
         "id": "103",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Minimal Monochrome Studio",
         "style": "Minimal Monochrome Studio",
         "font": "Raleway",
         "score": 7.5
     },
     {
         "id": "105",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Financial Advisory Gold Premium Variation #105",
         "style": "Financial Advisory Gold - Premium Variation #105",
         "font": "Cormorant Garamond",
         "score": 8
     },
     {
         "id": "106",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Premium Top Banner Real Estate",
         "style": "Premium Top-Banner Real Estate",
         "font": "Playfair Display",
         "score": 8.5
     },
     {
         "id": "108",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Warm Structural Bold",
         "style": "Warm Structural Bold",
         "font": "Work Sans",
         "score": 8.5
     },
     {
         "id": "107",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Bold Energetic B2B",
         "style": "Bold Energetic B2B",
         "font": "League Spartan",
         "score": 7
     },
     {
         "id": "109",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Premium B2B Restaurant Group",
         "style": "Premium B2B Restaurant Group",
         "font": "Playfair Display",
         "score": 8.5
     },
     {
         "id": "110",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Creative Playful Monogram",
         "style": "Creative Playful Monogram",
         "font": "Space Grotesk",
         "score": 7.5
     },
     {
         "id": "111",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Minimal Monochrome Geometric",
         "style": "Minimal Monochrome Geometric",
         "font": "Cormorant Garamond",
         "score": 8.5
     },
     {
         "id": "112",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Vibrant Athletic Premium",
         "style": "Vibrant Athletic Premium",
         "font": "League Spartan",
         "score": 8
     },
     {
         "id": "113",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Modern Architecture Classic",
         "style": "Modern Architecture Classic",
         "font": "Montserrat",
         "score": 8.5
     },
     {
         "id": "115",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Bold Energetic Minimalist",
         "style": "Bold Energetic Minimalist",
         "font": "League Spartan",
         "score": 8
     },
     {
         "id": "114",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Elegant Slate & Gold Classic",
         "style": "Elegant Slate & Gold Classic",
         "font": "Cormorant Garamond",
         "score": 8
     },
     {
         "id": "116",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Warm & Approachable Premium Dental",
         "style": "warm & approachable premium dental",
         "font": "Cormorant Garamond",
         "score": 8.5
     },
     {
         "id": "117",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Premium Editorial Split Layout",
         "style": "Premium Editorial Split Layout",
         "font": "Playfair Display",
         "score": 7.5
     },
     {
         "id": "119",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Minimal Monochrome Sidebar",
         "style": "minimal monochrome sidebar",
         "font": "Cormorant Garamond",
         "score": 8
     },
     {
         "id": "118",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Playful Split Block",
         "style": "Playful Split Block",
         "font": "Space Grotesk",
         "score": 7.5
     },
     {
         "id": "120",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Vibrant Craft Brewery Left Sidebar B2B",
         "style": "Vibrant Craft Brewery Left-Sidebar B2B",
         "font": "Oswald",
         "score": 7
     },
     {
         "id": "122",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Classic Premium Law Firm",
         "style": "Classic Premium Law Firm",
         "font": "Playfair Display",
         "score": 8.5
     },
     {
         "id": "121",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Modern Tech Top Banner",
         "style": "Modern Tech Top-Banner",
         "font": "Sora",
         "score": 8.5
     },
     {
         "id": "124",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Warm Clinical Minimalist",
         "style": "Warm Clinical Minimalist",
         "font": "Cormorant Garamond",
         "score": 8.5
     },
     {
         "id": "123",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Bold & Energetic Studio",
         "style": "Bold & Energetic Studio",
         "font": "Space Grotesk",
         "score": 8
     },
     {
         "id": "126",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Creative & Playful Premium Real Estate",
         "style": "Creative & Playful Premium Real Estate",
         "font": "Outfit",
         "score": 8
     },
     {
         "id": "127",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Minimal Monochrome Geometric",
         "style": "Minimal Monochrome Geometric",
         "font": "Space Grotesk",
         "score": 7.5
     },
     {
         "id": "125",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Corporate Premium Gold",
         "style": "Corporate Premium Gold",
         "font": "Montserrat",
         "score": 8.5
     },
     {
         "id": "128",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Vibrant Construction Accent",
         "style": "Vibrant Construction Accent",
         "font": "Oswald",
         "score": 8
     },
     {
         "id": "129",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Premium B2B Restaurant Supplier Classic Left Aligned",
         "style": "Premium B2B Restaurant Supplier - Classic Left-Aligned",
         "font": "Cormorant Garamond",
         "score": 8
     },
     {
         "id": "130",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Premium B2B Elegant",
         "style": "Premium B2B Elegant",
         "font": "Cormorant Garamond",
         "score": 8
     },
     {
         "id": "131",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Bold Energetic Studio",
         "style": "Bold Energetic Studio",
         "font": "League Spartan",
         "score": 6
     },
     {
         "id": "132",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Warm & Approachable Split Minimal",
         "style": "Warm & Approachable Split Minimal",
         "font": "League Spartan",
         "score": 8.5
     },
     {
         "id": "133",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Premium Architect Split Color Block",
         "style": "Premium Architect Split Color Block",
         "font": "Playfair Display",
         "score": 7.5
     },
     {
         "id": "134",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Playful Modern Split",
         "style": "Playful Modern Split",
         "font": "Space Grotesk",
         "score": 8.5
     },
     {
         "id": "135",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Minimal Monochrome Sidebar",
         "style": "Minimal Monochrome Sidebar",
         "font": "Montserrat",
         "score": 8.5
     },
     {
         "id": "136",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Vibrant Clinical Left Sidebar",
         "style": "vibrant clinical left-sidebar",
         "font": "Playfair Display",
         "score": 8.5
     },
     {
         "id": "137",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Luxury B2B Beauty Salon",
         "style": "Luxury B2B Beauty Salon",
         "font": "Playfair Display",
         "score": 8.5
     },
     {
         "id": "138",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Premium Auto Fleet B2B",
         "style": "Premium Auto Fleet B2B",
         "font": "Oswald",
         "score": 7
     },
     {
         "id": "139",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Bold & Energetic B2B",
         "style": "Bold & Energetic B2B",
         "font": "League Spartan",
         "score": 8.5
     },
     {
         "id": "140",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Warm Craft Editorial",
         "style": "Warm Craft Editorial",
         "font": "DM Serif Display",
         "score": 7.5
     },
     {
         "id": "141",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Premium B2B Monogram Tech",
         "style": "Premium B2B Monogram Tech",
         "font": "Sora",
         "score": 8
     },
     {
         "id": "143",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Minimal Monochrome Geometric",
         "style": "Minimal Monochrome Geometric",
         "font": "Manrope",
         "score": 8
     },
     {
         "id": "142",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Creative Monogram Law",
         "style": "Creative Monogram Law",
         "font": "Playfair Display",
         "score": 5.5
     },
     {
         "id": "144",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Vibrant Clinical Split",
         "style": "Vibrant Clinical Split",
         "font": "Montserrat",
         "score": 7.5
     },
     {
         "id": "146",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Elegant Premium Real Estate",
         "style": "Elegant Premium Real Estate",
         "font": "Playfair Display",
         "score": 8
     },
     {
         "id": "145",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Premium Classic Financial",
         "style": "premium classic financial",
         "font": "Cormorant Garamond",
         "score": 8
     },
     {
         "id": "147",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Bold Energetic Minimal B2B",
         "style": "bold energetic minimal B2B",
         "font": "League Spartan",
         "score": 7.5
     },
     {
         "id": "148",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Warm Minimalist Construction B2B",
         "style": "Warm Minimalist Construction B2B",
         "font": "Montserrat",
         "score": 7.5
     },
     {
         "id": "150",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Creative Split B2B",
         "style": "Creative Split B2B",
         "font": "Space Grotesk",
         "score": 8.5
     },
     {
         "id": "152",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Vibrant Left Sidebar Fitness B2B",
         "style": "Vibrant Left Sidebar Fitness B2B",
         "font": "Barlow Condensed",
         "score": 4.5
     },
     {
         "id": "151",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Minimal Monochrome Sidebar",
         "style": "Minimal Monochrome Sidebar",
         "font": "Playfair Display",
         "score": 8
     },
     {
         "id": "149",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Premium Dark Restaurant B2B",
         "style": "Premium Dark Restaurant B2B",
         "font": "Playfair Display",
         "score": 7.5
     },
     {
         "id": "154",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Premium Accounting Banner Layout",
         "style": "Premium Accounting Banner Layout",
         "font": "Cormorant Garamond",
         "score": 9
     },
     {
         "id": "153",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Modern Architecture Premium",
         "style": "Modern Architecture Premium",
         "font": "Raleway",
         "score": 8.5
     },
     {
         "id": "156",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Warm Professional Dental",
         "style": "warm professional dental",
         "font": "Lora",
         "score": 8.5
     },
     {
         "id": "155",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Bold E Commerce Premium",
         "style": "Bold E-commerce Premium",
         "font": "League Spartan",
         "score": 8
     },
     {
         "id": "158",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Creative Monogram Auto",
         "style": "Creative Monogram Auto",
         "font": "Space Grotesk",
         "score": 8
     },
     {
         "id": "157",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Premium Monogram B2B",
         "style": "Premium Monogram B2B",
         "font": "Playfair Display",
         "score": 6
     },
     {
         "id": "160",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Vibrant Single Accent Business Card For A Craft Brewery, With A Geometric Accent Shapes Layout. Design Variation #160 \u2014 Make It Visually Distinct.",
         "style": "vibrant single-accent business card for a craft brewery, with a geometric accent shapes layout. Design variation #160 \u2014 make it visually distinct.",
         "font": null,
         "score": 3
     },
     {
         "id": "159",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Minimal Monochrome Geometric",
         "style": "Minimal Monochrome Geometric",
         "font": "Montserrat",
         "score": 8.5
     },
     {
         "id": "162",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Premium Law Firm Classic",
         "style": "Premium Law Firm Classic",
         "font": "Playfair Display",
         "score": 8.5
     },
     {
         "id": "161",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Modern B2B Tech Startup",
         "style": "Modern B2B Tech Startup",
         "font": "Sora",
         "score": 8
     },
     {
         "id": "163",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Bold Energetic Centered Minimal",
         "style": "Bold Energetic Centered Minimal",
         "font": "League Spartan",
         "score": 8
     },
     {
         "id": "164",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Warm Minimalist Clinic",
         "style": "Warm Minimalist Clinic",
         "font": "Lora",
         "score": 7.5
     },
     {
         "id": "166",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Creative Split Block Real Estate",
         "style": "Creative Split-Block Real Estate",
         "font": "Poppins",
         "score": 8
     },
     {
         "id": "165",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Corporate Premium Split",
         "style": "Corporate Premium Split",
         "font": "Playfair Display",
         "score": 7.5
     },
     {
         "id": "167",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Minimal Monochrome",
         "style": "Minimal Monochrome",
         "font": "Manrope",
         "score": 7.5
     },
     {
         "id": "168",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Modern Construction B2B",
         "style": "Modern Construction B2B",
         "font": "Montserrat",
         "score": 8
     },
     {
         "id": "170",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Premium B2B Consulting",
         "style": "Premium B2B Consulting",
         "font": "Cormorant Garamond",
         "score": 8
     },
     {
         "id": "169",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Modern Restaurant Executive",
         "style": "Modern Restaurant Executive",
         "font": "Playfair Display",
         "score": 7.5
     },
     {
         "id": "171",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Bold & Energetic Photography",
         "style": "Bold & Energetic Photography",
         "font": "League Spartan",
         "score": 7.5
     },
     {
         "id": "172",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Warm Professional Fitness",
         "style": "Warm Professional Fitness",
         "font": "Barlow Condensed",
         "score": 8
     },
     {
         "id": "174",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Modern Playful Monogram",
         "style": "Modern Playful Monogram",
         "font": "Space Grotesk",
         "score": 8
     },
     {
         "id": "173",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Premium Architect Monogram",
         "style": "Premium Architect Monogram",
         "font": "Montserrat",
         "score": 8.5
     },
     {
         "id": "175",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Premium Monochrome E Commerce",
         "style": "Premium Monochrome E-commerce",
         "font": "Manrope",
         "score": 8.5
     },
     {
         "id": "176",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Vibrant Teal Geometric Dental",
         "style": "Vibrant Teal Geometric Dental",
         "font": "Outfit",
         "score": 8
     },
     {
         "id": "177",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Modern Luxury B2B Salon",
         "style": "Modern Luxury B2B Salon",
         "font": "Playfair Display",
         "score": 8.5
     },
     {
         "id": "178",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Premium Auto B2B Classic",
         "style": "Premium Auto B2B Classic",
         "font": "Montserrat",
         "score": 7.5
     },
     {
         "id": "179",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Bold Centered Landscaping",
         "style": "Bold Centered Landscaping",
         "font": "League Spartan",
         "score": 6
     },
     {
         "id": "180",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Warm Minimal Craft Brewery",
         "style": "warm minimal craft brewery",
         "font": "DM Serif Display",
         "score": 7.5
     },
     {
         "id": "182",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Creative Split Block Law Firm",
         "style": "Creative Split-Block Law Firm",
         "font": "Playfair Display",
         "score": 8.5
     },
     {
         "id": "181",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Corporate Tech Split Premium",
         "style": "Corporate Tech Split Premium",
         "font": "Sora",
         "score": 7.5
     },
     {
         "id": "183",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Minimal Monochrome B2B Design Studio Layout",
         "style": "Minimal monochrome B2B design studio layout",
         "font": "Space Grotesk",
         "score": 8
     },
     {
         "id": "184",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Vibrant Teal Sidebar Clinic Premium",
         "style": "Vibrant Teal Sidebar Clinic Premium",
         "font": "Montserrat",
         "score": 8
     },
     {
         "id": "186",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Premium Real Estate Banner Layout",
         "style": "Premium Real Estate Banner Layout",
         "font": "Playfair Display",
         "score": 8
     },
     {
         "id": "185",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Premium B2B Financial Advisory Visual Variation #185",
         "style": "Premium B2B Financial Advisory - Visual Variation #185",
         "font": "Playfair Display",
         "score": 8
     },
     {
         "id": "187",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Bold & Energetic B2B",
         "style": "Bold & Energetic B2B",
         "font": "League Spartan",
         "score": 8
     },
     {
         "id": "188",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Warm Typographic Construction",
         "style": "Warm Typographic Construction",
         "font": "Oswald",
         "score": 8
     },
     {
         "id": "190",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Creative Monogram",
         "style": "Creative Monogram",
         "font": "Space Grotesk",
         "score": 8.5
     },
     {
         "id": "189",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Premium Monogram B2B",
         "style": "Premium Monogram B2B",
         "font": "Cormorant Garamond",
         "score": 8
     },
     {
         "id": "191",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Minimal Monochrome Geometric",
         "style": "Minimal Monochrome Geometric",
         "font": "Cormorant Garamond",
         "score": 7.5
     },
     {
         "id": "192",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Modern Athletic B2B",
         "style": "Modern Athletic B2B",
         "font": "Barlow Condensed",
         "score": 8.5
     },
     {
         "id": "193",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Modern Architectural Premium",
         "style": "Modern Architectural Premium",
         "font": "Cormorant Garamond",
         "score": 8
     },
     {
         "id": "194",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Elegant Premium B2B Accounting",
         "style": "Elegant Premium B2B Accounting",
         "font": "Playfair Display",
         "score": 8.5
     },
     {
         "id": "195",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Bold E Commerce Left Aligned",
         "style": "Bold E-commerce Left-Aligned",
         "font": "League Spartan",
         "score": 7.5
     },
     {
         "id": "196",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Warm Minimal Dental",
         "style": "warm minimal dental",
         "font": "Cormorant Garamond",
         "score": 8.5
     },
     {
         "id": "199",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Minimal Monochrome Landscape Architect",
         "style": "Minimal monochrome landscape architect",
         "font": "Cormorant Garamond",
         "score": 8
     },
     {
         "id": "198",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Playful Auto Split",
         "style": "Playful Auto Split",
         "font": "Archivo Black",
         "score": 7
     },
     {
         "id": "197",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Modern Luxury Split",
         "style": "Modern Luxury Split",
         "font": "Playfair Display",
         "score": 8
     },
     {
         "id": "200",
+        "product": null,
+        "orientation": null,
+        "category": "business-cards",
+        "name": "Vibrant Brewery B2B",
         "style": "Vibrant Brewery B2B",
         "font": "League Spartan",
         "score": 8
+    },
+    {
+        "id": "banner-001-portrait",
+        "product": "retractable-banners",
+        "orientation": "portrait",
+        "category": "signs-banners",
+        "name": "Corporate Tech",
+        "style": "Corporate Tech",
+        "font": "Montserrat",
+        "score": 10
+    },
+    {
+        "id": "banner-002-portrait",
+        "product": "retractable-banners",
+        "orientation": "portrait",
+        "category": "signs-banners",
+        "name": "Dynamic Corporate",
+        "style": "Dynamic Corporate",
+        "font": "Montserrat",
+        "score": 9
+    },
+    {
+        "id": "banner-003-portrait",
+        "product": "retractable-banners",
+        "orientation": "portrait",
+        "category": "signs-banners",
+        "name": "Bold Geo-Slice",
+        "style": "Bold Geo-Slice",
+        "font": "Outfit",
+        "score": 9
+    },
+    {
+        "id": "banner-004-portrait",
+        "product": "retractable-banners",
+        "orientation": "portrait",
+        "category": "signs-banners",
+        "name": "Diagonal Slash",
+        "style": "Diagonal Slash",
+        "font": "Outfit",
+        "score": 9
+    },
+    {
+        "id": "banner-005-portrait",
+        "product": "retractable-banners",
+        "orientation": "portrait",
+        "category": "signs-banners",
+        "name": "Tech Vibrant",
+        "style": "Tech Vibrant",
+        "font": "Space Grotesk",
+        "score": 9
+    },
+    {
+        "id": "banner-006-portrait",
+        "product": "retractable-banners",
+        "orientation": "portrait",
+        "category": "signs-banners",
+        "name": "Tech Corporate",
+        "style": "Tech Corporate",
+        "font": "Space Grotesk",
+        "score": 9
+    },
+    {
+        "id": "banner-007-portrait",
+        "product": "retractable-banners",
+        "orientation": "portrait",
+        "category": "signs-banners",
+        "name": "Tech Angular",
+        "style": "Tech Angular",
+        "font": "Outfit",
+        "score": 10
+    },
+    {
+        "id": "banner-008-portrait",
+        "product": "retractable-banners",
+        "orientation": "portrait",
+        "category": "signs-banners",
+        "name": "Dynamic Precision",
+        "style": "Dynamic Precision",
+        "font": "Space Grotesk",
+        "score": 10
+    },
+    {
+        "id": "banner-009-portrait",
+        "product": "retractable-banners",
+        "orientation": "portrait",
+        "category": "signs-banners",
+        "name": "Geometric Corporate",
+        "style": "Geometric Corporate",
+        "font": "Space Grotesk",
+        "score": 9
+    },
+    {
+        "id": "banner-010-portrait",
+        "product": "retractable-banners",
+        "orientation": "portrait",
+        "category": "signs-banners",
+        "name": "Tech Corporate Split",
+        "style": "Tech Corporate Split",
+        "font": "Outfit",
+        "score": 9
+    },
+    {
+        "id": "banner-011-portrait",
+        "product": "retractable-banners",
+        "orientation": "portrait",
+        "category": "signs-banners",
+        "name": "Corporate Tech Edge",
+        "style": "Corporate Tech Edge",
+        "font": "Space Grotesk",
+        "score": 9
+    },
+    {
+        "id": "banner-012-portrait",
+        "product": "retractable-banners",
+        "orientation": "portrait",
+        "category": "signs-banners",
+        "name": "Dynamic Angles",
+        "style": "Dynamic Angles",
+        "font": "League Spartan",
+        "score": 9
+    },
+    {
+        "id": "banner-013-portrait",
+        "product": "retractable-banners",
+        "orientation": "portrait",
+        "category": "signs-banners",
+        "name": "Dark Tech",
+        "style": "Dark Tech",
+        "font": "Outfit",
+        "score": 9
+    },
+    {
+        "id": "banner-014-portrait",
+        "product": "retractable-banners",
+        "orientation": "portrait",
+        "category": "signs-banners",
+        "name": "Futuristic Tech",
+        "style": "Futuristic Tech",
+        "font": "Space Grotesk",
+        "score": 9
+    },
+    {
+        "id": "banner-015-portrait",
+        "product": "retractable-banners",
+        "orientation": "portrait",
+        "category": "signs-banners",
+        "name": "Tech Edge Dark",
+        "style": "Tech Edge Dark",
+        "font": "Outfit",
+        "score": 9
+    },
+    {
+        "id": "banner-017-portrait",
+        "product": "retractable-banners",
+        "orientation": "portrait",
+        "category": "signs-banners",
+        "name": "Tech Grid Edge",
+        "style": "Tech Grid Edge",
+        "font": "Outfit",
+        "score": 9
+    },
+    {
+        "id": "banner-018-portrait",
+        "product": "retractable-banners",
+        "orientation": "portrait",
+        "category": "signs-banners",
+        "name": "Dark Tech / SaaS",
+        "style": "Dark Tech / SaaS",
+        "font": "Space Grotesk",
+        "score": 9
+    },
+    {
+        "id": "banner-020-portrait",
+        "product": "retractable-banners",
+        "orientation": "portrait",
+        "category": "signs-banners",
+        "name": "Modern Card",
+        "style": "Modern Card",
+        "font": "Urbanist",
+        "score": 9
+    },
+    {
+        "id": "banner-024-portrait",
+        "product": "retractable-banners",
+        "orientation": "portrait",
+        "category": "signs-banners",
+        "name": "Geometric Tech",
+        "style": "Geometric Tech",
+        "font": "Space Grotesk",
+        "score": 9
+    },
+    {
+        "id": "banner-025-portrait",
+        "product": "retractable-banners",
+        "orientation": "portrait",
+        "category": "signs-banners",
+        "name": "Cybernetic B2B",
+        "style": "Cybernetic B2B",
+        "font": "Space Grotesk",
+        "score": 9
+    },
+    {
+        "id": "banner-026-portrait",
+        "product": "retractable-banners",
+        "orientation": "portrait",
+        "category": "signs-banners",
+        "name": "Dark Cyan B2B",
+        "style": "Dark Cyan B2B",
+        "font": "Outfit",
+        "score": 9
+    },
+    {
+        "id": "banner-027-portrait",
+        "product": "retractable-banners",
+        "orientation": "portrait",
+        "category": "signs-banners",
+        "name": "Industrial Precision",
+        "style": "Industrial Precision",
+        "font": "Oswald",
+        "score": 9
+    },
+    {
+        "id": "banner-028-portrait",
+        "product": "retractable-banners",
+        "orientation": "portrait",
+        "category": "signs-banners",
+        "name": "Dynamic Corporate Diagonal",
+        "style": "Dynamic Corporate Diagonal",
+        "font": "Outfit",
+        "score": 8
+    },
+    {
+        "id": "banner-029-portrait",
+        "product": "retractable-banners",
+        "orientation": "portrait",
+        "category": "signs-banners",
+        "name": "Dark Tech",
+        "style": "Dark Tech",
+        "font": "Space Grotesk",
+        "score": 9
+    },
+    {
+        "id": "banner-030-portrait",
+        "product": "retractable-banners",
+        "orientation": "portrait",
+        "category": "signs-banners",
+        "name": "Slanted Corporate Accent",
+        "style": "Slanted Corporate Accent",
+        "font": "Outfit",
+        "score": 9
+    },
+    {
+        "id": "bcard-001-landscape",
+        "product": "matte-business-cards",
+        "orientation": "landscape",
+        "category": "business-cards",
+        "name": "Dark Corporate",
+        "style": "Dark Corporate",
+        "font": "Montserrat",
+        "score": 9
+    },
+    {
+        "id": "bcard-001-square",
+        "product": "matte-business-cards",
+        "orientation": "square",
+        "category": "business-cards",
+        "name": "Dark Corporate",
+        "style": "Dark Corporate",
+        "font": "Montserrat",
+        "score": 9
+    },
+    {
+        "id": "bcard-002-landscape",
+        "product": "matte-business-cards",
+        "orientation": "landscape",
+        "category": "business-cards",
+        "name": "Modern Dark",
+        "style": "Modern Dark",
+        "font": "Space Grotesk",
+        "score": 9
+    },
+    {
+        "id": "bcard-003-landscape",
+        "product": "matte-business-cards",
+        "orientation": "landscape",
+        "category": "business-cards",
+        "name": "Dark Tech Geometric",
+        "style": "Dark Tech Geometric",
+        "font": "Space Grotesk",
+        "score": 9
+    },
+    {
+        "id": "bcard-003-square",
+        "product": "matte-business-cards",
+        "orientation": "square",
+        "category": "business-cards",
+        "name": "Dark Tech Geometric",
+        "style": "Dark Tech Geometric",
+        "font": "Space Grotesk",
+        "score": 8
+    },
+    {
+        "id": "bcard-004-landscape",
+        "product": "matte-business-cards",
+        "orientation": "landscape",
+        "category": "business-cards",
+        "name": "Modern Tech Split",
+        "style": "Modern Tech Split",
+        "font": "Outfit",
+        "score": 9
+    },
+    {
+        "id": "bcard-004-square",
+        "product": "matte-business-cards",
+        "orientation": "square",
+        "category": "business-cards",
+        "name": "Modern Tech Split",
+        "style": "Modern Tech Split",
+        "font": "Outfit",
+        "score": 10
+    },
+    {
+        "id": "bcard-005-landscape",
+        "product": "matte-business-cards",
+        "orientation": "landscape",
+        "category": "business-cards",
+        "name": "Dark Minimal",
+        "style": "Dark Minimal",
+        "font": "Space Grotesk",
+        "score": 9
+    },
+    {
+        "id": "bcard-005-square",
+        "product": "matte-business-cards",
+        "orientation": "square",
+        "category": "business-cards",
+        "name": "Dark Minimal",
+        "style": "Dark Minimal",
+        "font": "Space Grotesk",
+        "score": 9
+    },
+    {
+        "id": "bcard-006-landscape",
+        "product": "matte-business-cards",
+        "orientation": "landscape",
+        "category": "business-cards",
+        "name": "Dark Cyber Geometric",
+        "style": "Dark Cyber Geometric",
+        "font": "Space Grotesk",
+        "score": 9
+    },
+    {
+        "id": "bcard-006-square",
+        "product": "matte-business-cards",
+        "orientation": "square",
+        "category": "business-cards",
+        "name": "Dark Cyber Geometric",
+        "style": "Dark Cyber Geometric",
+        "font": "Space Grotesk",
+        "score": 9
+    },
+    {
+        "id": "bcard-007-landscape",
+        "product": "matte-business-cards",
+        "orientation": "landscape",
+        "category": "business-cards",
+        "name": "Dark Corporate Geometric",
+        "style": "Dark Corporate Geometric",
+        "font": "Sora",
+        "score": 9
+    },
+    {
+        "id": "bcard-007-square",
+        "product": "matte-business-cards",
+        "orientation": "square",
+        "category": "business-cards",
+        "name": "Dark Corporate Geometric",
+        "style": "Dark Corporate Geometric",
+        "font": "Sora",
+        "score": 9
+    },
+    {
+        "id": "bcard-008-landscape",
+        "product": "matte-business-cards",
+        "orientation": "landscape",
+        "category": "business-cards",
+        "name": "Tech Accent Split",
+        "style": "Tech Accent Split",
+        "font": "Space Grotesk",
+        "score": 8
+    },
+    {
+        "id": "bcard-013-landscape",
+        "product": "matte-business-cards",
+        "orientation": "landscape",
+        "category": "business-cards",
+        "name": "Dark Tech",
+        "style": "Dark Tech",
+        "font": "Outfit",
+        "score": 9
+    },
+    {
+        "id": "bcard-013-square",
+        "product": "matte-business-cards",
+        "orientation": "square",
+        "category": "business-cards",
+        "name": "Dark Tech",
+        "style": "Dark Tech",
+        "font": "Outfit",
+        "score": 9
+    },
+    {
+        "id": "bcard-014-landscape",
+        "product": "matte-business-cards",
+        "orientation": "landscape",
+        "category": "business-cards",
+        "name": "Modern Tech Card",
+        "style": "Modern Tech Card",
+        "font": "Space Grotesk",
+        "score": 9
+    },
+    {
+        "id": "bcard-015-landscape",
+        "product": "matte-business-cards",
+        "orientation": "landscape",
+        "category": "business-cards",
+        "name": "Dark Edge Tech",
+        "style": "Dark Edge Tech",
+        "font": "Figtree",
+        "score": 9
+    },
+    {
+        "id": "bcard-015-square",
+        "product": "matte-business-cards",
+        "orientation": "square",
+        "category": "business-cards",
+        "name": "Dark Edge Tech",
+        "style": "Dark Edge Tech",
+        "font": "Figtree",
+        "score": 9
+    },
+    {
+        "id": "bcard-016-landscape",
+        "product": "matte-business-cards",
+        "orientation": "landscape",
+        "category": "business-cards",
+        "name": "Asymmetric Swiss",
+        "style": "Asymmetric Swiss",
+        "font": "Figtree",
+        "score": 9
+    },
+    {
+        "id": "bcard-016-square",
+        "product": "matte-business-cards",
+        "orientation": "square",
+        "category": "business-cards",
+        "name": "Asymmetric Swiss",
+        "style": "Asymmetric Swiss",
+        "font": "Figtree",
+        "score": 9
+    },
+    {
+        "id": "bcard-017-landscape",
+        "product": "matte-business-cards",
+        "orientation": "landscape",
+        "category": "business-cards",
+        "name": "Monochrome Precision",
+        "style": "Monochrome Precision",
+        "font": "Space Grotesk",
+        "score": 9
+    },
+    {
+        "id": "bcard-017-square",
+        "product": "matte-business-cards",
+        "orientation": "square",
+        "category": "business-cards",
+        "name": "Monochrome Precision",
+        "style": "Monochrome Precision",
+        "font": "Space Grotesk",
+        "score": 9
+    },
+    {
+        "id": "bcard-018-landscape",
+        "product": "matte-business-cards",
+        "orientation": "landscape",
+        "category": "business-cards",
+        "name": "Tech Modern",
+        "style": "Tech Modern",
+        "font": "Space Grotesk",
+        "score": 10
+    },
+    {
+        "id": "bcard-018-square",
+        "product": "matte-business-cards",
+        "orientation": "square",
+        "category": "business-cards",
+        "name": "Tech Modern",
+        "style": "Tech Modern",
+        "font": "Space Grotesk",
+        "score": 9
+    },
+    {
+        "id": "bcard-019-landscape",
+        "product": "matte-business-cards",
+        "orientation": "landscape",
+        "category": "business-cards",
+        "name": "Dark Cyber",
+        "style": "Dark Cyber",
+        "font": "Space Grotesk",
+        "score": 9
+    },
+    {
+        "id": "bcard-020-landscape",
+        "product": "matte-business-cards",
+        "orientation": "landscape",
+        "category": "business-cards",
+        "name": "Tech Modern",
+        "style": "Tech Modern",
+        "font": "Manrope",
+        "score": 9
+    },
+    {
+        "id": "bcard-021-landscape",
+        "product": "matte-business-cards",
+        "orientation": "landscape",
+        "category": "business-cards",
+        "name": "Dark Tech",
+        "style": "Dark Tech",
+        "font": "Space Grotesk",
+        "score": 9
+    },
+    {
+        "id": "bcard-021-square",
+        "product": "matte-business-cards",
+        "orientation": "square",
+        "category": "business-cards",
+        "name": "Dark Tech",
+        "style": "Dark Tech",
+        "font": "Space Grotesk",
+        "score": 10
+    },
+    {
+        "id": "bcard-022-landscape",
+        "product": "matte-business-cards",
+        "orientation": "landscape",
+        "category": "business-cards",
+        "name": "Modern Corporate Split",
+        "style": "Modern Corporate Split",
+        "font": "Space Grotesk",
+        "score": 9
+    },
+    {
+        "id": "bcard-022-square",
+        "product": "matte-business-cards",
+        "orientation": "square",
+        "category": "business-cards",
+        "name": "Modern Corporate Split",
+        "style": "Modern Corporate Split",
+        "font": "Space Grotesk",
+        "score": 9
+    },
+    {
+        "id": "bcard-023-landscape",
+        "product": "matte-business-cards",
+        "orientation": "landscape",
+        "category": "business-cards",
+        "name": "Geometric Split",
+        "style": "Geometric Split",
+        "font": "Figtree",
+        "score": 9
+    },
+    {
+        "id": "bcard-023-square",
+        "product": "matte-business-cards",
+        "orientation": "square",
+        "category": "business-cards",
+        "name": "Geometric Split",
+        "style": "Geometric Split",
+        "font": "Figtree",
+        "score": 9
+    },
+    {
+        "id": "bcard-024-landscape",
+        "product": "matte-business-cards",
+        "orientation": "landscape",
+        "category": "business-cards",
+        "name": "Corporate Split",
+        "style": "Corporate Split",
+        "font": "Archivo",
+        "score": 8
+    },
+    {
+        "id": "bcard-025-landscape",
+        "product": "matte-business-cards",
+        "orientation": "landscape",
+        "category": "business-cards",
+        "name": "Dark Tech Elegant",
+        "style": "Dark Tech Elegant",
+        "font": "Space Grotesk",
+        "score": 9
+    },
+    {
+        "id": "bcard-025-square",
+        "product": "matte-business-cards",
+        "orientation": "square",
+        "category": "business-cards",
+        "name": "Dark Tech Elegant",
+        "style": "Dark Tech Elegant",
+        "font": "Space Grotesk",
+        "score": 9
+    },
+    {
+        "id": "bcard-026-landscape",
+        "product": "matte-business-cards",
+        "orientation": "landscape",
+        "category": "business-cards",
+        "name": "Tech Minimal Split",
+        "style": "Tech Minimal Split",
+        "font": "Space Grotesk",
+        "score": 9
+    },
+    {
+        "id": "bcard-026-square",
+        "product": "matte-business-cards",
+        "orientation": "square",
+        "category": "business-cards",
+        "name": "Tech Minimal Split",
+        "style": "Tech Minimal Split",
+        "font": "Space Grotesk",
+        "score": 9
+    },
+    {
+        "id": "bcard-027-landscape",
+        "product": "matte-business-cards",
+        "orientation": "landscape",
+        "category": "business-cards",
+        "name": "Dark Geometric Tech",
+        "style": "Dark Geometric Tech",
+        "font": "Outfit",
+        "score": 9
+    },
+    {
+        "id": "bcard-027-square",
+        "product": "matte-business-cards",
+        "orientation": "square",
+        "category": "business-cards",
+        "name": "Dark Geometric Tech",
+        "style": "Dark Geometric Tech",
+        "font": "Outfit",
+        "score": 10
+    },
+    {
+        "id": "bcard-028-landscape",
+        "product": "matte-business-cards",
+        "orientation": "landscape",
+        "category": "business-cards",
+        "name": "Corporate Split",
+        "style": "Corporate Split",
+        "font": "Outfit",
+        "score": 9
+    },
+    {
+        "id": "bcard-028-square",
+        "product": "matte-business-cards",
+        "orientation": "square",
+        "category": "business-cards",
+        "name": "Corporate Split",
+        "style": "Corporate Split",
+        "font": "Outfit",
+        "score": 8
+    },
+    {
+        "id": "bcard-029-landscape",
+        "product": "matte-business-cards",
+        "orientation": "landscape",
+        "category": "business-cards",
+        "name": "Modern Tech",
+        "style": "Modern Tech",
+        "font": "Outfit",
+        "score": 8
+    },
+    {
+        "id": "bcard-029-square",
+        "product": "matte-business-cards",
+        "orientation": "square",
+        "category": "business-cards",
+        "name": "Modern Tech",
+        "style": "Modern Tech",
+        "font": "Outfit",
+        "score": 9
+    },
+    {
+        "id": "bcard-030-landscape",
+        "product": "matte-business-cards",
+        "orientation": "landscape",
+        "category": "business-cards",
+        "name": "Modern Tech Split",
+        "style": "Modern Tech Split",
+        "font": "Sora",
+        "score": 9
+    },
+    {
+        "id": "bcard-030-square",
+        "product": "matte-business-cards",
+        "orientation": "square",
+        "category": "business-cards",
+        "name": "Modern Tech Split",
+        "style": "Modern Tech Split",
+        "font": "Sora",
+        "score": 8
+    },
+    {
+        "id": "flyer-002-portrait",
+        "product": "flyers",
+        "orientation": "portrait",
+        "category": "marketing-materials",
+        "name": "Overlapping Card Design",
+        "style": "Overlapping Card Design",
+        "font": "Space Grotesk",
+        "score": 9
+    },
+    {
+        "id": "flyer-002-landscape",
+        "product": "flyers",
+        "orientation": "landscape",
+        "category": "marketing-materials",
+        "name": "Overlapping Card Design",
+        "style": "Overlapping Card Design",
+        "font": "Space Grotesk",
+        "score": 9
+    },
+    {
+        "id": "flyer-002-square",
+        "product": "flyers",
+        "orientation": "square",
+        "category": "marketing-materials",
+        "name": "Overlapping Card Design",
+        "style": "Overlapping Card Design",
+        "font": "Space Grotesk",
+        "score": 9
+    },
+    {
+        "id": "flyer-004-portrait",
+        "product": "flyers",
+        "orientation": "portrait",
+        "category": "marketing-materials",
+        "name": "Dark Tech Corporate",
+        "style": "Dark Tech Corporate",
+        "font": "Space Grotesk",
+        "score": 9
+    },
+    {
+        "id": "flyer-004-landscape",
+        "product": "flyers",
+        "orientation": "landscape",
+        "category": "marketing-materials",
+        "name": "Dark Tech Corporate",
+        "style": "Dark Tech Corporate",
+        "font": "Space Grotesk",
+        "score": 9
+    },
+    {
+        "id": "flyer-008-portrait",
+        "product": "flyers",
+        "orientation": "portrait",
+        "category": "marketing-materials",
+        "name": "Futuristic Tech B2B",
+        "style": "Futuristic Tech B2B",
+        "font": "Space Grotesk",
+        "score": 10
+    },
+    {
+        "id": "flyer-008-landscape",
+        "product": "flyers",
+        "orientation": "landscape",
+        "category": "marketing-materials",
+        "name": "Futuristic Tech B2B",
+        "style": "Futuristic Tech B2B",
+        "font": "Space Grotesk",
+        "score": 10
+    },
+    {
+        "id": "flyer-008-square",
+        "product": "flyers",
+        "orientation": "square",
+        "category": "marketing-materials",
+        "name": "Futuristic Tech B2B",
+        "style": "Futuristic Tech B2B",
+        "font": "Space Grotesk",
+        "score": 9
+    },
+    {
+        "id": "flyer-010-portrait",
+        "product": "flyers",
+        "orientation": "portrait",
+        "category": "marketing-materials",
+        "name": "Corporate Dark Mode",
+        "style": "Corporate Dark Mode",
+        "font": "Space Grotesk",
+        "score": 9
+    },
+    {
+        "id": "flyer-010-landscape",
+        "product": "flyers",
+        "orientation": "landscape",
+        "category": "marketing-materials",
+        "name": "Corporate Dark Mode",
+        "style": "Corporate Dark Mode",
+        "font": "Space Grotesk",
+        "score": 9
+    },
+    {
+        "id": "flyer-011-square",
+        "product": "flyers",
+        "orientation": "square",
+        "category": "marketing-materials",
+        "name": "Tech Blueprint",
+        "style": "Tech Blueprint",
+        "font": "Space Grotesk",
+        "score": 9
+    },
+    {
+        "id": "flyer-013-portrait",
+        "product": "flyers",
+        "orientation": "portrait",
+        "category": "marketing-materials",
+        "name": "Structured Dark Mode",
+        "style": "Structured Dark Mode",
+        "font": "Space Grotesk",
+        "score": 9
+    },
+    {
+        "id": "flyer-013-landscape",
+        "product": "flyers",
+        "orientation": "landscape",
+        "category": "marketing-materials",
+        "name": "Structured Dark Mode",
+        "style": "Structured Dark Mode",
+        "font": "Space Grotesk",
+        "score": 10
+    },
+    {
+        "id": "flyer-013-square",
+        "product": "flyers",
+        "orientation": "square",
+        "category": "marketing-materials",
+        "name": "Structured Dark Mode",
+        "style": "Structured Dark Mode",
+        "font": "Space Grotesk",
+        "score": 10
+    },
+    {
+        "id": "flyer-014-portrait",
+        "product": "flyers",
+        "orientation": "portrait",
+        "category": "marketing-materials",
+        "name": "Modern Corporate Asymmetric",
+        "style": "Modern Corporate Asymmetric",
+        "font": "Space Grotesk",
+        "score": 9
+    },
+    {
+        "id": "flyer-014-square",
+        "product": "flyers",
+        "orientation": "square",
+        "category": "marketing-materials",
+        "name": "Modern Corporate Asymmetric",
+        "style": "Modern Corporate Asymmetric",
+        "font": "Space Grotesk",
+        "score": 9
+    },
+    {
+        "id": "flyer-015-portrait",
+        "product": "flyers",
+        "orientation": "portrait",
+        "category": "marketing-materials",
+        "name": "Modern Grid Asymmetric",
+        "style": "Modern Grid Asymmetric",
+        "font": "Sora",
+        "score": 9
+    },
+    {
+        "id": "flyer-015-landscape",
+        "product": "flyers",
+        "orientation": "landscape",
+        "category": "marketing-materials",
+        "name": "Modern Grid Asymmetric",
+        "style": "Modern Grid Asymmetric",
+        "font": "Sora",
+        "score": 9
+    },
+    {
+        "id": "flyer-015-square",
+        "product": "flyers",
+        "orientation": "square",
+        "category": "marketing-materials",
+        "name": "Modern Grid Asymmetric",
+        "style": "Modern Grid Asymmetric",
+        "font": "Sora",
+        "score": 9
+    },
+    {
+        "id": "flyer-016-portrait",
+        "product": "flyers",
+        "orientation": "portrait",
+        "category": "marketing-materials",
+        "name": "Dark Tech Corporate",
+        "style": "Dark Tech Corporate",
+        "font": "Space Grotesk",
+        "score": 10
+    },
+    {
+        "id": "flyer-016-landscape",
+        "product": "flyers",
+        "orientation": "landscape",
+        "category": "marketing-materials",
+        "name": "Dark Tech Corporate",
+        "style": "Dark Tech Corporate",
+        "font": "Space Grotesk",
+        "score": 10
+    },
+    {
+        "id": "flyer-016-square",
+        "product": "flyers",
+        "orientation": "square",
+        "category": "marketing-materials",
+        "name": "Dark Tech Corporate",
+        "style": "Dark Tech Corporate",
+        "font": "Space Grotesk",
+        "score": 9
+    },
+    {
+        "id": "flyer-017-portrait",
+        "product": "flyers",
+        "orientation": "portrait",
+        "category": "marketing-materials",
+        "name": "TechGeometric",
+        "style": "TechGeometric",
+        "font": "Space Grotesk",
+        "score": 9
+    },
+    {
+        "id": "flyer-017-square",
+        "product": "flyers",
+        "orientation": "square",
+        "category": "marketing-materials",
+        "name": "TechGeometric",
+        "style": "TechGeometric",
+        "font": "Space Grotesk",
+        "score": 9
+    },
+    {
+        "id": "flyer-019-portrait",
+        "product": "flyers",
+        "orientation": "portrait",
+        "category": "marketing-materials",
+        "name": "Modern Tech Corporate",
+        "style": "Modern Tech Corporate",
+        "font": "Space Grotesk",
+        "score": 9
+    },
+    {
+        "id": "flyer-019-landscape",
+        "product": "flyers",
+        "orientation": "landscape",
+        "category": "marketing-materials",
+        "name": "Modern Tech Corporate",
+        "style": "Modern Tech Corporate",
+        "font": "Space Grotesk",
+        "score": 9
+    },
+    {
+        "id": "flyer-019-square",
+        "product": "flyers",
+        "orientation": "square",
+        "category": "marketing-materials",
+        "name": "Modern Tech Corporate",
+        "style": "Modern Tech Corporate",
+        "font": "Space Grotesk",
+        "score": 10
+    },
+    {
+        "id": "flyer-020-portrait",
+        "product": "flyers",
+        "orientation": "portrait",
+        "category": "marketing-materials",
+        "name": "Dark Tech Edge",
+        "style": "Dark Tech Edge",
+        "font": "Space Grotesk",
+        "score": 9
+    },
+    {
+        "id": "flyer-020-landscape",
+        "product": "flyers",
+        "orientation": "landscape",
+        "category": "marketing-materials",
+        "name": "Dark Tech Edge",
+        "style": "Dark Tech Edge",
+        "font": "Space Grotesk",
+        "score": 9
+    },
+    {
+        "id": "flyer-021-portrait",
+        "product": "flyers",
+        "orientation": "portrait",
+        "category": "marketing-materials",
+        "name": "Dark Tech Corporate",
+        "style": "Dark Tech Corporate",
+        "font": "Space Grotesk",
+        "score": 9
+    },
+    {
+        "id": "flyer-022-portrait",
+        "product": "flyers",
+        "orientation": "portrait",
+        "category": "marketing-materials",
+        "name": "Dark Corporate Tech",
+        "style": "Dark Corporate Tech",
+        "font": "Outfit",
+        "score": 9
+    },
+    {
+        "id": "flyer-022-landscape",
+        "product": "flyers",
+        "orientation": "landscape",
+        "category": "marketing-materials",
+        "name": "Dark Corporate Tech",
+        "style": "Dark Corporate Tech",
+        "font": "Outfit",
+        "score": 9
+    },
+    {
+        "id": "flyer-026-portrait",
+        "product": "flyers",
+        "orientation": "portrait",
+        "category": "marketing-materials",
+        "name": "Dark Tech Neo-Corporate",
+        "style": "Dark Tech Neo-Corporate",
+        "font": "Space Grotesk",
+        "score": 9
+    },
+    {
+        "id": "flyer-026-square",
+        "product": "flyers",
+        "orientation": "square",
+        "category": "marketing-materials",
+        "name": "Dark Tech Neo-Corporate",
+        "style": "Dark Tech Neo-Corporate",
+        "font": "Space Grotesk",
+        "score": 9
+    },
+    {
+        "id": "flyer-027-portrait",
+        "product": "flyers",
+        "orientation": "portrait",
+        "category": "marketing-materials",
+        "name": "Geometric Tech",
+        "style": "Geometric Tech",
+        "font": "Space Grotesk",
+        "score": 9
+    },
+    {
+        "id": "flyer-027-landscape",
+        "product": "flyers",
+        "orientation": "landscape",
+        "category": "marketing-materials",
+        "name": "Geometric Tech",
+        "style": "Geometric Tech",
+        "font": "Space Grotesk",
+        "score": 9
+    },
+    {
+        "id": "flyer-027-square",
+        "product": "flyers",
+        "orientation": "square",
+        "category": "marketing-materials",
+        "name": "Geometric Tech",
+        "style": "Geometric Tech",
+        "font": "Space Grotesk",
+        "score": 9
+    },
+    {
+        "id": "flyer-028-portrait",
+        "product": "flyers",
+        "orientation": "portrait",
+        "category": "marketing-materials",
+        "name": "Corporate Edge",
+        "style": "Corporate Edge",
+        "font": "Space Grotesk",
+        "score": 9
+    },
+    {
+        "id": "flyer-028-square",
+        "product": "flyers",
+        "orientation": "square",
+        "category": "marketing-materials",
+        "name": "Corporate Edge",
+        "style": "Corporate Edge",
+        "font": "Space Grotesk",
+        "score": 9
+    },
+    {
+        "id": "flyer-030-square",
+        "product": "flyers",
+        "orientation": "square",
+        "category": "marketing-materials",
+        "name": "Sidebar Overlay Corporate",
+        "style": "Sidebar Overlay Corporate",
+        "font": "League Spartan",
+        "score": 10
+    },
+    {
+        "id": "letterhead-002-portrait",
+        "product": "company-letterhead",
+        "orientation": "portrait",
+        "category": "stationery",
+        "name": "Corporate Executive Asymmetrical",
+        "style": "Corporate Executive Asymmetrical",
+        "font": "Montserrat",
+        "score": 9
+    },
+    {
+        "id": "letterhead-003-portrait",
+        "product": "company-letterhead",
+        "orientation": "portrait",
+        "category": "stationery",
+        "name": "Dark Accent Minimal",
+        "style": "Dark Accent Minimal",
+        "font": "Space Grotesk",
+        "score": 9
+    },
+    {
+        "id": "letterhead-004-portrait",
+        "product": "company-letterhead",
+        "orientation": "portrait",
+        "category": "stationery",
+        "name": "Corporate Geometric",
+        "style": "Corporate Geometric",
+        "font": "Outfit",
+        "score": 9
+    },
+    {
+        "id": "letterhead-006-portrait",
+        "product": "company-letterhead",
+        "orientation": "portrait",
+        "category": "stationery",
+        "name": "Modern Slate",
+        "style": "Modern Slate",
+        "font": "Outfit",
+        "score": 9
+    },
+    {
+        "id": "letterhead-007-portrait",
+        "product": "company-letterhead",
+        "orientation": "portrait",
+        "category": "stationery",
+        "name": "Dark Geometric Header",
+        "style": "Dark Geometric Header",
+        "font": "Montserrat",
+        "score": 10
+    },
+    {
+        "id": "letterhead-008-portrait",
+        "product": "company-letterhead",
+        "orientation": "portrait",
+        "category": "stationery",
+        "name": "Modern Asymmetric Corporate",
+        "style": "Modern Asymmetric Corporate",
+        "font": "Figtree",
+        "score": 9
+    },
+    {
+        "id": "letterhead-009-portrait",
+        "product": "company-letterhead",
+        "orientation": "portrait",
+        "category": "stationery",
+        "name": "Cyber Corporate",
+        "style": "Cyber Corporate",
+        "font": "Space Grotesk",
+        "score": 10
+    },
+    {
+        "id": "letterhead-011-portrait",
+        "product": "company-letterhead",
+        "orientation": "portrait",
+        "category": "stationery",
+        "name": "Modern Corporate Footer",
+        "style": "Modern Corporate Footer",
+        "font": "Outfit",
+        "score": 9
+    },
+    {
+        "id": "letterhead-012-portrait",
+        "product": "company-letterhead",
+        "orientation": "portrait",
+        "category": "stationery",
+        "name": "Modern Dark Tech",
+        "style": "Modern Dark Tech",
+        "font": "Space Grotesk",
+        "score": 10
+    },
+    {
+        "id": "letterhead-013-portrait",
+        "product": "company-letterhead",
+        "orientation": "portrait",
+        "category": "stationery",
+        "name": "Tech Corporate",
+        "style": "Tech Corporate",
+        "font": "Space Grotesk",
+        "score": 9
+    },
+    {
+        "id": "letterhead-014-portrait",
+        "product": "company-letterhead",
+        "orientation": "portrait",
+        "category": "stationery",
+        "name": "Distinct Tech Accent",
+        "style": "Distinct Tech Accent",
+        "font": "Outfit",
+        "score": 9
+    },
+    {
+        "id": "letterhead-015-portrait",
+        "product": "company-letterhead",
+        "orientation": "portrait",
+        "category": "stationery",
+        "name": "Geometric B2B Minimal",
+        "style": "Geometric B2B Minimal",
+        "font": "Space Grotesk",
+        "score": 9
+    },
+    {
+        "id": "letterhead-016-portrait",
+        "product": "company-letterhead",
+        "orientation": "portrait",
+        "category": "stationery",
+        "name": "Architectural Tech B2B",
+        "style": "Architectural Tech B2B",
+        "font": "Space Grotesk",
+        "score": 9
+    },
+    {
+        "id": "letterhead-017-portrait",
+        "product": "company-letterhead",
+        "orientation": "portrait",
+        "category": "stationery",
+        "name": "Corporate Geometric",
+        "style": "Corporate Geometric",
+        "font": "Space Grotesk",
+        "score": 9
+    },
+    {
+        "id": "letterhead-018-portrait",
+        "product": "company-letterhead",
+        "orientation": "portrait",
+        "category": "stationery",
+        "name": "Modern Architectural Asymmetry",
+        "style": "Modern Architectural Asymmetry",
+        "font": "Figtree",
+        "score": 9
+    },
+    {
+        "id": "letterhead-019-portrait",
+        "product": "company-letterhead",
+        "orientation": "portrait",
+        "category": "stationery",
+        "name": "Corporate Sidebar",
+        "style": "Corporate Sidebar",
+        "font": "Space Grotesk",
+        "score": 9
+    },
+    {
+        "id": "letterhead-020-portrait",
+        "product": "company-letterhead",
+        "orientation": "portrait",
+        "category": "stationery",
+        "name": "Sleek Corporate Accent",
+        "style": "Sleek Corporate Accent",
+        "font": "Manrope",
+        "score": 9
+    },
+    {
+        "id": "letterhead-021-portrait",
+        "product": "company-letterhead",
+        "orientation": "portrait",
+        "category": "stationery",
+        "name": "Corporate Modern",
+        "style": "Corporate Modern",
+        "font": "Space Grotesk",
+        "score": 9
+    },
+    {
+        "id": "letterhead-022-portrait",
+        "product": "company-letterhead",
+        "orientation": "portrait",
+        "category": "stationery",
+        "name": "Asymmetric Corporate",
+        "style": "Asymmetric Corporate",
+        "font": "Montserrat",
+        "score": 9
+    },
+    {
+        "id": "letterhead-023-portrait",
+        "product": "company-letterhead",
+        "orientation": "portrait",
+        "category": "stationery",
+        "name": "Tech B2B",
+        "style": "Tech B2B",
+        "font": "Space Grotesk",
+        "score": 8
+    },
+    {
+        "id": "letterhead-024-portrait",
+        "product": "company-letterhead",
+        "orientation": "portrait",
+        "category": "stationery",
+        "name": "Tech Corporate",
+        "style": "Tech Corporate",
+        "font": "Space Grotesk",
+        "score": 9
+    },
+    {
+        "id": "letterhead-026-portrait",
+        "product": "company-letterhead",
+        "orientation": "portrait",
+        "category": "stationery",
+        "name": "Structural B2B",
+        "style": "Structural B2B",
+        "font": "Space Grotesk",
+        "score": 9
+    },
+    {
+        "id": "letterhead-027-portrait",
+        "product": "company-letterhead",
+        "orientation": "portrait",
+        "category": "stationery",
+        "name": "Corporate Tech Header",
+        "style": "Corporate Tech Header",
+        "font": "Outfit",
+        "score": 9
+    },
+    {
+        "id": "letterhead-028-portrait",
+        "product": "company-letterhead",
+        "orientation": "portrait",
+        "category": "stationery",
+        "name": "Tech Grid Black",
+        "style": "Tech Grid Black",
+        "font": "Space Grotesk",
+        "score": 10
+    },
+    {
+        "id": "letterhead-029-portrait",
+        "product": "company-letterhead",
+        "orientation": "portrait",
+        "category": "stationery",
+        "name": "Elevated Corporate",
+        "style": "Elevated Corporate",
+        "font": "Space Grotesk",
+        "score": 9
+    },
+    {
+        "id": "letterhead-030-portrait",
+        "product": "company-letterhead",
+        "orientation": "portrait",
+        "category": "stationery",
+        "name": "Modern Tech Edge",
+        "style": "Modern Tech Edge",
+        "font": "Space Grotesk",
+        "score": 9
+    },
+    {
+        "id": "postcard-001-landscape",
+        "product": "standard-postcards",
+        "orientation": "landscape",
+        "category": "marketing-materials",
+        "name": "Modern Corporate Split",
+        "style": "Modern Corporate Split",
+        "font": "Montserrat",
+        "score": 9
+    },
+    {
+        "id": "postcard-001-square",
+        "product": "standard-postcards",
+        "orientation": "square",
+        "category": "marketing-materials",
+        "name": "Modern Corporate Split",
+        "style": "Modern Corporate Split",
+        "font": "Montserrat",
+        "score": 9
+    },
+    {
+        "id": "postcard-002-landscape",
+        "product": "standard-postcards",
+        "orientation": "landscape",
+        "category": "marketing-materials",
+        "name": "Asymmetrical Dark Mode",
+        "style": "Asymmetrical Dark Mode",
+        "font": "Space Grotesk",
+        "score": 9
+    },
+    {
+        "id": "postcard-002-square",
+        "product": "standard-postcards",
+        "orientation": "square",
+        "category": "marketing-materials",
+        "name": "Asymmetrical Dark Mode",
+        "style": "Asymmetrical Dark Mode",
+        "font": "Space Grotesk",
+        "score": 8
+    },
+    {
+        "id": "postcard-003-landscape",
+        "product": "standard-postcards",
+        "orientation": "landscape",
+        "category": "marketing-materials",
+        "name": "Cyber Corporate",
+        "style": "Cyber Corporate",
+        "font": "Space Grotesk",
+        "score": 9
+    },
+    {
+        "id": "postcard-003-portrait",
+        "product": "standard-postcards",
+        "orientation": "portrait",
+        "category": "marketing-materials",
+        "name": "Cyber Corporate",
+        "style": "Cyber Corporate",
+        "font": "Space Grotesk",
+        "score": 10
+    },
+    {
+        "id": "postcard-003-square",
+        "product": "standard-postcards",
+        "orientation": "square",
+        "category": "marketing-materials",
+        "name": "Cyber Corporate",
+        "style": "Cyber Corporate",
+        "font": "Space Grotesk",
+        "score": 9
+    },
+    {
+        "id": "postcard-004-landscape",
+        "product": "standard-postcards",
+        "orientation": "landscape",
+        "category": "marketing-materials",
+        "name": "Staggered Floating Panels",
+        "style": "Staggered Floating Panels",
+        "font": "League Spartan",
+        "score": 9
+    },
+    {
+        "id": "postcard-004-portrait",
+        "product": "standard-postcards",
+        "orientation": "portrait",
+        "category": "marketing-materials",
+        "name": "Staggered Floating Panels",
+        "style": "Staggered Floating Panels",
+        "font": "League Spartan",
+        "score": 9
+    },
+    {
+        "id": "postcard-005-landscape",
+        "product": "standard-postcards",
+        "orientation": "landscape",
+        "category": "marketing-materials",
+        "name": "Tech Modern",
+        "style": "Tech Modern",
+        "font": "Space Grotesk",
+        "score": 9
+    },
+    {
+        "id": "postcard-005-portrait",
+        "product": "standard-postcards",
+        "orientation": "portrait",
+        "category": "marketing-materials",
+        "name": "Tech Modern",
+        "style": "Tech Modern",
+        "font": "Space Grotesk",
+        "score": 9
+    },
+    {
+        "id": "postcard-005-square",
+        "product": "standard-postcards",
+        "orientation": "square",
+        "category": "marketing-materials",
+        "name": "Tech Modern",
+        "style": "Tech Modern",
+        "font": "Space Grotesk",
+        "score": 9
+    },
+    {
+        "id": "postcard-006-landscape",
+        "product": "standard-postcards",
+        "orientation": "landscape",
+        "category": "marketing-materials",
+        "name": "Side-Block Minimal",
+        "style": "Side-Block Minimal",
+        "font": "Space Grotesk",
+        "score": 9
+    },
+    {
+        "id": "postcard-006-portrait",
+        "product": "standard-postcards",
+        "orientation": "portrait",
+        "category": "marketing-materials",
+        "name": "Side-Block Minimal",
+        "style": "Side-Block Minimal",
+        "font": "Space Grotesk",
+        "score": 9
+    },
+    {
+        "id": "postcard-006-square",
+        "product": "standard-postcards",
+        "orientation": "square",
+        "category": "marketing-materials",
+        "name": "Side-Block Minimal",
+        "style": "Side-Block Minimal",
+        "font": "Space Grotesk",
+        "score": 9
+    },
+    {
+        "id": "postcard-007-landscape",
+        "product": "standard-postcards",
+        "orientation": "landscape",
+        "category": "marketing-materials",
+        "name": "Dark Corporate Neon",
+        "style": "Dark Corporate Neon",
+        "font": "Space Grotesk",
+        "score": 7
+    },
+    {
+        "id": "postcard-007-portrait",
+        "product": "standard-postcards",
+        "orientation": "portrait",
+        "category": "marketing-materials",
+        "name": "Dark Corporate Neon",
+        "style": "Dark Corporate Neon",
+        "font": "Space Grotesk",
+        "score": 10
+    },
+    {
+        "id": "postcard-008-landscape",
+        "product": "standard-postcards",
+        "orientation": "landscape",
+        "category": "marketing-materials",
+        "name": "Dark Cyber B2B",
+        "style": "Dark Cyber B2B",
+        "font": "Outfit",
+        "score": 8
+    },
+    {
+        "id": "postcard-008-portrait",
+        "product": "standard-postcards",
+        "orientation": "portrait",
+        "category": "marketing-materials",
+        "name": "Dark Cyber B2B",
+        "style": "Dark Cyber B2B",
+        "font": "Outfit",
+        "score": 9
+    },
+    {
+        "id": "postcard-008-square",
+        "product": "standard-postcards",
+        "orientation": "square",
+        "category": "marketing-materials",
+        "name": "Dark Cyber B2B",
+        "style": "Dark Cyber B2B",
+        "font": "Outfit",
+        "score": 9
+    },
+    {
+        "id": "postcard-009-landscape",
+        "product": "standard-postcards",
+        "orientation": "landscape",
+        "category": "marketing-materials",
+        "name": "Corporate Dark Asymmetric",
+        "style": "Corporate Dark Asymmetric",
+        "font": "Manrope",
+        "score": 9
+    },
+    {
+        "id": "postcard-009-portrait",
+        "product": "standard-postcards",
+        "orientation": "portrait",
+        "category": "marketing-materials",
+        "name": "Corporate Dark Asymmetric",
+        "style": "Corporate Dark Asymmetric",
+        "font": "Manrope",
+        "score": 9
+    },
+    {
+        "id": "postcard-010-landscape",
+        "product": "standard-postcards",
+        "orientation": "landscape",
+        "category": "marketing-materials",
+        "name": "Corporate Tech Blueprint",
+        "style": "Corporate Tech Blueprint",
+        "font": "Space Grotesk",
+        "score": 8
+    },
+    {
+        "id": "postcard-010-portrait",
+        "product": "standard-postcards",
+        "orientation": "portrait",
+        "category": "marketing-materials",
+        "name": "Corporate Tech Blueprint",
+        "style": "Corporate Tech Blueprint",
+        "font": "Space Grotesk",
+        "score": 8
+    },
+    {
+        "id": "postcard-010-square",
+        "product": "standard-postcards",
+        "orientation": "square",
+        "category": "marketing-materials",
+        "name": "Corporate Tech Blueprint",
+        "style": "Corporate Tech Blueprint",
+        "font": "Space Grotesk",
+        "score": 9
+    },
+    {
+        "id": "postcard-011-portrait",
+        "product": "standard-postcards",
+        "orientation": "portrait",
+        "category": "marketing-materials",
+        "name": "Corporate Geometric",
+        "style": "Corporate Geometric",
+        "font": "Space Grotesk",
+        "score": 9
+    },
+    {
+        "id": "postcard-011-square",
+        "product": "standard-postcards",
+        "orientation": "square",
+        "category": "marketing-materials",
+        "name": "Corporate Geometric",
+        "style": "Corporate Geometric",
+        "font": "Space Grotesk",
+        "score": 9
+    },
+    {
+        "id": "postcard-012-landscape",
+        "product": "standard-postcards",
+        "orientation": "landscape",
+        "category": "marketing-materials",
+        "name": "Emerald Corporate Float",
+        "style": "Emerald Corporate Float",
+        "font": "Figtree",
+        "score": 9
+    },
+    {
+        "id": "postcard-012-portrait",
+        "product": "standard-postcards",
+        "orientation": "portrait",
+        "category": "marketing-materials",
+        "name": "Emerald Corporate Float",
+        "style": "Emerald Corporate Float",
+        "font": "Figtree",
+        "score": 9
+    },
+    {
+        "id": "postcard-012-square",
+        "product": "standard-postcards",
+        "orientation": "square",
+        "category": "marketing-materials",
+        "name": "Emerald Corporate Float",
+        "style": "Emerald Corporate Float",
+        "font": "Figtree",
+        "score": 9
+    },
+    {
+        "id": "postcard-013-landscape",
+        "product": "standard-postcards",
+        "orientation": "landscape",
+        "category": "marketing-materials",
+        "name": "Corporate Cyber Tech",
+        "style": "Corporate Cyber Tech",
+        "font": "Outfit",
+        "score": 9
+    },
+    {
+        "id": "postcard-013-portrait",
+        "product": "standard-postcards",
+        "orientation": "portrait",
+        "category": "marketing-materials",
+        "name": "Corporate Cyber Tech",
+        "style": "Corporate Cyber Tech",
+        "font": "Outfit",
+        "score": 9
+    },
+    {
+        "id": "postcard-013-square",
+        "product": "standard-postcards",
+        "orientation": "square",
+        "category": "marketing-materials",
+        "name": "Corporate Cyber Tech",
+        "style": "Corporate Cyber Tech",
+        "font": "Outfit",
+        "score": 10
+    },
+    {
+        "id": "postcard-014-landscape",
+        "product": "standard-postcards",
+        "orientation": "landscape",
+        "category": "marketing-materials",
+        "name": "Modern Tech Split",
+        "style": "Modern Tech Split",
+        "font": "Space Grotesk",
+        "score": 9
+    },
+    {
+        "id": "postcard-014-portrait",
+        "product": "standard-postcards",
+        "orientation": "portrait",
+        "category": "marketing-materials",
+        "name": "Modern Tech Split",
+        "style": "Modern Tech Split",
+        "font": "Space Grotesk",
+        "score": 9
+    },
+    {
+        "id": "postcard-014-square",
+        "product": "standard-postcards",
+        "orientation": "square",
+        "category": "marketing-materials",
+        "name": "Modern Tech Split",
+        "style": "Modern Tech Split",
+        "font": "Space Grotesk",
+        "score": 9
+    },
+    {
+        "id": "postcard-015-landscape",
+        "product": "standard-postcards",
+        "orientation": "landscape",
+        "category": "marketing-materials",
+        "name": "Modern Dark Split",
+        "style": "Modern Dark Split",
+        "font": "Space Grotesk",
+        "score": 9
+    },
+    {
+        "id": "postcard-015-portrait",
+        "product": "standard-postcards",
+        "orientation": "portrait",
+        "category": "marketing-materials",
+        "name": "Modern Dark Split",
+        "style": "Modern Dark Split",
+        "font": "Space Grotesk",
+        "score": 9
+    },
+    {
+        "id": "postcard-015-square",
+        "product": "standard-postcards",
+        "orientation": "square",
+        "category": "marketing-materials",
+        "name": "Modern Dark Split",
+        "style": "Modern Dark Split",
+        "font": "Space Grotesk",
+        "score": 9
+    },
+    {
+        "id": "postcard-016-landscape",
+        "product": "standard-postcards",
+        "orientation": "landscape",
+        "category": "marketing-materials",
+        "name": "Dark Tech Edge",
+        "style": "Dark Tech Edge",
+        "font": "Space Grotesk",
+        "score": 9
+    },
+    {
+        "id": "postcard-016-portrait",
+        "product": "standard-postcards",
+        "orientation": "portrait",
+        "category": "marketing-materials",
+        "name": "Dark Tech Edge",
+        "style": "Dark Tech Edge",
+        "font": "Space Grotesk",
+        "score": 9
+    },
+    {
+        "id": "postcard-017-landscape",
+        "product": "standard-postcards",
+        "orientation": "landscape",
+        "category": "marketing-materials",
+        "name": "Dark Tech Edge",
+        "style": "Dark Tech Edge",
+        "font": "Space Grotesk",
+        "score": 9
+    },
+    {
+        "id": "postcard-017-portrait",
+        "product": "standard-postcards",
+        "orientation": "portrait",
+        "category": "marketing-materials",
+        "name": "Dark Tech Edge",
+        "style": "Dark Tech Edge",
+        "font": "Space Grotesk",
+        "score": 9
+    },
+    {
+        "id": "postcard-017-square",
+        "product": "standard-postcards",
+        "orientation": "square",
+        "category": "marketing-materials",
+        "name": "Dark Tech Edge",
+        "style": "Dark Tech Edge",
+        "font": "Space Grotesk",
+        "score": 9
+    },
+    {
+        "id": "postcard-018-landscape",
+        "product": "standard-postcards",
+        "orientation": "landscape",
+        "category": "marketing-materials",
+        "name": "Tech Minimalist",
+        "style": "Tech Minimalist",
+        "font": "Space Grotesk",
+        "score": 9
+    },
+    {
+        "id": "postcard-018-portrait",
+        "product": "standard-postcards",
+        "orientation": "portrait",
+        "category": "marketing-materials",
+        "name": "Tech Minimalist",
+        "style": "Tech Minimalist",
+        "font": "Space Grotesk",
+        "score": 9
+    },
+    {
+        "id": "postcard-019-landscape",
+        "product": "standard-postcards",
+        "orientation": "landscape",
+        "category": "marketing-materials",
+        "name": "Corporate Tech Split",
+        "style": "Corporate Tech Split",
+        "font": "Manrope",
+        "score": 9
+    },
+    {
+        "id": "postcard-020-portrait",
+        "product": "standard-postcards",
+        "orientation": "portrait",
+        "category": "marketing-materials",
+        "name": "Modern Layered Glass",
+        "style": "Modern Layered Glass",
+        "font": "Space Grotesk",
+        "score": 9
+    },
+    {
+        "id": "postcard-020-square",
+        "product": "standard-postcards",
+        "orientation": "square",
+        "category": "marketing-materials",
+        "name": "Modern Layered Glass",
+        "style": "Modern Layered Glass",
+        "font": "Space Grotesk",
+        "score": 10
+    },
+    {
+        "id": "postcard-021-landscape",
+        "product": "standard-postcards",
+        "orientation": "landscape",
+        "category": "marketing-materials",
+        "name": "Tech Minimalist",
+        "style": "Tech Minimalist",
+        "font": "Space Grotesk",
+        "score": 9
+    },
+    {
+        "id": "postcard-021-portrait",
+        "product": "standard-postcards",
+        "orientation": "portrait",
+        "category": "marketing-materials",
+        "name": "Tech Minimalist",
+        "style": "Tech Minimalist",
+        "font": "Space Grotesk",
+        "score": 9
+    },
+    {
+        "id": "postcard-021-square",
+        "product": "standard-postcards",
+        "orientation": "square",
+        "category": "marketing-materials",
+        "name": "Tech Minimalist",
+        "style": "Tech Minimalist",
+        "font": "Space Grotesk",
+        "score": 9
+    },
+    {
+        "id": "postcard-023-landscape",
+        "product": "standard-postcards",
+        "orientation": "landscape",
+        "category": "marketing-materials",
+        "name": "Dark Tech Geometric",
+        "style": "Dark Tech Geometric",
+        "font": "Space Grotesk",
+        "score": 9
+    },
+    {
+        "id": "postcard-023-portrait",
+        "product": "standard-postcards",
+        "orientation": "portrait",
+        "category": "marketing-materials",
+        "name": "Dark Tech Geometric",
+        "style": "Dark Tech Geometric",
+        "font": "Space Grotesk",
+        "score": 9
+    },
+    {
+        "id": "postcard-023-square",
+        "product": "standard-postcards",
+        "orientation": "square",
+        "category": "marketing-materials",
+        "name": "Dark Tech Geometric",
+        "style": "Dark Tech Geometric",
+        "font": "Space Grotesk",
+        "score": 9
+    },
+    {
+        "id": "postcard-024-landscape",
+        "product": "standard-postcards",
+        "orientation": "landscape",
+        "category": "marketing-materials",
+        "name": "Corporate Asymmetric",
+        "style": "Corporate Asymmetric",
+        "font": "Space Grotesk",
+        "score": 9
+    },
+    {
+        "id": "postcard-024-portrait",
+        "product": "standard-postcards",
+        "orientation": "portrait",
+        "category": "marketing-materials",
+        "name": "Corporate Asymmetric",
+        "style": "Corporate Asymmetric",
+        "font": "Space Grotesk",
+        "score": 9
+    },
+    {
+        "id": "postcard-024-square",
+        "product": "standard-postcards",
+        "orientation": "square",
+        "category": "marketing-materials",
+        "name": "Corporate Asymmetric",
+        "style": "Corporate Asymmetric",
+        "font": "Space Grotesk",
+        "score": 9
+    },
+    {
+        "id": "postcard-025-landscape",
+        "product": "standard-postcards",
+        "orientation": "landscape",
+        "category": "marketing-materials",
+        "name": "Modern Geometric",
+        "style": "Modern Geometric",
+        "font": "Space Grotesk",
+        "score": 9
+    },
+    {
+        "id": "postcard-025-portrait",
+        "product": "standard-postcards",
+        "orientation": "portrait",
+        "category": "marketing-materials",
+        "name": "Modern Geometric",
+        "style": "Modern Geometric",
+        "font": "Space Grotesk",
+        "score": 10
+    },
+    {
+        "id": "postcard-025-square",
+        "product": "standard-postcards",
+        "orientation": "square",
+        "category": "marketing-materials",
+        "name": "Modern Geometric",
+        "style": "Modern Geometric",
+        "font": "Space Grotesk",
+        "score": 10
+    },
+    {
+        "id": "postcard-026-landscape",
+        "product": "standard-postcards",
+        "orientation": "landscape",
+        "category": "marketing-materials",
+        "name": "Arch-Tech Overlay",
+        "style": "Arch-Tech Overlay",
+        "font": "Space Grotesk",
+        "score": 9
+    },
+    {
+        "id": "postcard-028-landscape",
+        "product": "standard-postcards",
+        "orientation": "landscape",
+        "category": "marketing-materials",
+        "name": "Dark Minimalist Split",
+        "style": "Dark Minimalist Split",
+        "font": "Manrope",
+        "score": 9
+    },
+    {
+        "id": "postcard-028-portrait",
+        "product": "standard-postcards",
+        "orientation": "portrait",
+        "category": "marketing-materials",
+        "name": "Dark Minimalist Split",
+        "style": "Dark Minimalist Split",
+        "font": "Manrope",
+        "score": 9
+    },
+    {
+        "id": "postcard-029-landscape",
+        "product": "standard-postcards",
+        "orientation": "landscape",
+        "category": "marketing-materials",
+        "name": "Corporate Asymmetry",
+        "style": "Corporate Asymmetry",
+        "font": "Space Grotesk",
+        "score": 9
+    },
+    {
+        "id": "postcard-029-portrait",
+        "product": "standard-postcards",
+        "orientation": "portrait",
+        "category": "marketing-materials",
+        "name": "Corporate Asymmetry",
+        "style": "Corporate Asymmetry",
+        "font": "Space Grotesk",
+        "score": 9
+    },
+    {
+        "id": "postcard-030-landscape",
+        "product": "standard-postcards",
+        "orientation": "landscape",
+        "category": "marketing-materials",
+        "name": "Cyber Corporate",
+        "style": "Cyber Corporate",
+        "font": "Space Grotesk",
+        "score": 9
+    },
+    {
+        "id": "postcard-030-portrait",
+        "product": "standard-postcards",
+        "orientation": "portrait",
+        "category": "marketing-materials",
+        "name": "Cyber Corporate",
+        "style": "Cyber Corporate",
+        "font": "Space Grotesk",
+        "score": 8
+    },
+    {
+        "id": "postcard-030-square",
+        "product": "standard-postcards",
+        "orientation": "square",
+        "category": "marketing-materials",
+        "name": "Cyber Corporate",
+        "style": "Cyber Corporate",
+        "font": "Space Grotesk",
+        "score": 9
+    },
+    {
+        "id": "poster-001-portrait",
+        "product": "custom-posters",
+        "orientation": "portrait",
+        "category": "signs-banners",
+        "name": "Modern Tech",
+        "style": "Modern Tech",
+        "font": "Space Grotesk",
+        "score": 9
+    },
+    {
+        "id": "poster-001-landscape",
+        "product": "custom-posters",
+        "orientation": "landscape",
+        "category": "signs-banners",
+        "name": "Modern Tech",
+        "style": "Modern Tech",
+        "font": "Space Grotesk",
+        "score": 10
+    },
+    {
+        "id": "poster-002-portrait",
+        "product": "custom-posters",
+        "orientation": "portrait",
+        "category": "signs-banners",
+        "name": "Asymmetric Tech",
+        "style": "Asymmetric Tech",
+        "font": "Space Grotesk",
+        "score": 9
+    },
+    {
+        "id": "poster-003-portrait",
+        "product": "custom-posters",
+        "orientation": "portrait",
+        "category": "signs-banners",
+        "name": "Modern Editorial Split",
+        "style": "Modern Editorial Split",
+        "font": "Outfit",
+        "score": 9
+    },
+    {
+        "id": "poster-005-portrait",
+        "product": "custom-posters",
+        "orientation": "portrait",
+        "category": "signs-banners",
+        "name": "Corporate Premium",
+        "style": "Corporate Premium",
+        "font": "Outfit",
+        "score": 9
+    },
+    {
+        "id": "poster-005-landscape",
+        "product": "custom-posters",
+        "orientation": "landscape",
+        "category": "signs-banners",
+        "name": "Corporate Premium",
+        "style": "Corporate Premium",
+        "font": "Outfit",
+        "score": 10
+    },
+    {
+        "id": "poster-006-portrait",
+        "product": "custom-posters",
+        "orientation": "portrait",
+        "category": "signs-banners",
+        "name": "Dark Geometric Tech",
+        "style": "Dark Geometric Tech",
+        "font": "Space Grotesk",
+        "score": 9
+    },
+    {
+        "id": "poster-006-landscape",
+        "product": "custom-posters",
+        "orientation": "landscape",
+        "category": "signs-banners",
+        "name": "Dark Geometric Tech",
+        "style": "Dark Geometric Tech",
+        "font": "Space Grotesk",
+        "score": 9
+    },
+    {
+        "id": "poster-007-portrait",
+        "product": "custom-posters",
+        "orientation": "portrait",
+        "category": "signs-banners",
+        "name": "Architectural Block",
+        "style": "Architectural Block",
+        "font": "Outfit",
+        "score": 9
+    },
+    {
+        "id": "poster-007-landscape",
+        "product": "custom-posters",
+        "orientation": "landscape",
+        "category": "signs-banners",
+        "name": "Architectural Block",
+        "style": "Architectural Block",
+        "font": "Outfit",
+        "score": 9
+    },
+    {
+        "id": "poster-008-portrait",
+        "product": "custom-posters",
+        "orientation": "portrait",
+        "category": "signs-banners",
+        "name": "Cyber Enterprise",
+        "style": "Cyber Enterprise",
+        "font": "Space Grotesk",
+        "score": 10
+    },
+    {
+        "id": "poster-009-portrait",
+        "product": "custom-posters",
+        "orientation": "portrait",
+        "category": "signs-banners",
+        "name": "Corporate Tech Split",
+        "style": "Corporate Tech Split",
+        "font": "Space Grotesk",
+        "score": 9
+    },
+    {
+        "id": "poster-010-portrait",
+        "product": "custom-posters",
+        "orientation": "portrait",
+        "category": "signs-banners",
+        "name": "Tech Visionary",
+        "style": "Tech Visionary",
+        "font": "Space Grotesk",
+        "score": 9
+    },
+    {
+        "id": "poster-010-landscape",
+        "product": "custom-posters",
+        "orientation": "landscape",
+        "category": "signs-banners",
+        "name": "Tech Visionary",
+        "style": "Tech Visionary",
+        "font": "Space Grotesk",
+        "score": 8
+    },
+    {
+        "id": "poster-011-portrait",
+        "product": "custom-posters",
+        "orientation": "portrait",
+        "category": "signs-banners",
+        "name": "Corporate Geometric",
+        "style": "Corporate Geometric",
+        "font": "Space Grotesk",
+        "score": 9
+    },
+    {
+        "id": "poster-011-landscape",
+        "product": "custom-posters",
+        "orientation": "landscape",
+        "category": "signs-banners",
+        "name": "Corporate Geometric",
+        "style": "Corporate Geometric",
+        "font": "Space Grotesk",
+        "score": 9
+    },
+    {
+        "id": "poster-012-portrait",
+        "product": "custom-posters",
+        "orientation": "portrait",
+        "category": "signs-banners",
+        "name": "Corporate Dynamic",
+        "style": "Corporate Dynamic",
+        "font": "Outfit",
+        "score": 9
+    },
+    {
+        "id": "poster-012-landscape",
+        "product": "custom-posters",
+        "orientation": "landscape",
+        "category": "signs-banners",
+        "name": "Corporate Dynamic",
+        "style": "Corporate Dynamic",
+        "font": "Outfit",
+        "score": 9
+    },
+    {
+        "id": "poster-013-portrait",
+        "product": "custom-posters",
+        "orientation": "portrait",
+        "category": "signs-banners",
+        "name": "Tech Corporate",
+        "style": "Tech Corporate",
+        "font": "Space Grotesk",
+        "score": 9
+    },
+    {
+        "id": "poster-015-portrait",
+        "product": "custom-posters",
+        "orientation": "portrait",
+        "category": "signs-banners",
+        "name": "Architectural Grid",
+        "style": "Architectural Grid",
+        "font": "Space Grotesk",
+        "score": 9
+    },
+    {
+        "id": "poster-015-landscape",
+        "product": "custom-posters",
+        "orientation": "landscape",
+        "category": "signs-banners",
+        "name": "Architectural Grid",
+        "style": "Architectural Grid",
+        "font": "Space Grotesk",
+        "score": 9
+    },
+    {
+        "id": "poster-016-portrait",
+        "product": "custom-posters",
+        "orientation": "portrait",
+        "category": "signs-banners",
+        "name": "Tech Innovator",
+        "style": "Tech Innovator",
+        "font": "Space Grotesk",
+        "score": 9
+    },
+    {
+        "id": "poster-018-portrait",
+        "product": "custom-posters",
+        "orientation": "portrait",
+        "category": "signs-banners",
+        "name": "Industrial B2B",
+        "style": "Industrial B2B",
+        "font": "Oswald",
+        "score": 9
+    },
+    {
+        "id": "poster-018-landscape",
+        "product": "custom-posters",
+        "orientation": "landscape",
+        "category": "signs-banners",
+        "name": "Industrial B2B",
+        "style": "Industrial B2B",
+        "font": "Oswald",
+        "score": 9
+    },
+    {
+        "id": "poster-019-portrait",
+        "product": "custom-posters",
+        "orientation": "portrait",
+        "category": "signs-banners",
+        "name": "Corporate Geo-Split",
+        "style": "Corporate Geo-Split",
+        "font": "Space Grotesk",
+        "score": 9
+    },
+    {
+        "id": "poster-019-landscape",
+        "product": "custom-posters",
+        "orientation": "landscape",
+        "category": "signs-banners",
+        "name": "Corporate Geo-Split",
+        "style": "Corporate Geo-Split",
+        "font": "Space Grotesk",
+        "score": 10
+    },
+    {
+        "id": "poster-020-portrait",
+        "product": "custom-posters",
+        "orientation": "portrait",
+        "category": "signs-banners",
+        "name": "Modern Corporate Card",
+        "style": "Modern Corporate Card",
+        "font": "Space Grotesk",
+        "score": 9
+    },
+    {
+        "id": "poster-020-landscape",
+        "product": "custom-posters",
+        "orientation": "landscape",
+        "category": "signs-banners",
+        "name": "Modern Corporate Card",
+        "style": "Modern Corporate Card",
+        "font": "Space Grotesk",
+        "score": 9
+    },
+    {
+        "id": "poster-021-portrait",
+        "product": "custom-posters",
+        "orientation": "portrait",
+        "category": "signs-banners",
+        "name": "Dark Tech Corporate",
+        "style": "Dark Tech Corporate",
+        "font": "Space Grotesk",
+        "score": 9
+    },
+    {
+        "id": "poster-022-portrait",
+        "product": "custom-posters",
+        "orientation": "portrait",
+        "category": "signs-banners",
+        "name": "Tech Corporate Split",
+        "style": "Tech Corporate Split",
+        "font": "Space Grotesk",
+        "score": 9
+    },
+    {
+        "id": "poster-022-landscape",
+        "product": "custom-posters",
+        "orientation": "landscape",
+        "category": "signs-banners",
+        "name": "Tech Corporate Split",
+        "style": "Tech Corporate Split",
+        "font": "Space Grotesk",
+        "score": 10
+    },
+    {
+        "id": "poster-023-portrait",
+        "product": "custom-posters",
+        "orientation": "portrait",
+        "category": "signs-banners",
+        "name": "Corporate Tech Minimal",
+        "style": "Corporate Tech Minimal",
+        "font": "Space Grotesk",
+        "score": 9
+    },
+    {
+        "id": "poster-025-portrait",
+        "product": "custom-posters",
+        "orientation": "portrait",
+        "category": "signs-banners",
+        "name": "Neon Geometric Minimal",
+        "style": "Neon Geometric Minimal",
+        "font": "Space Grotesk",
+        "score": 9
+    },
+    {
+        "id": "poster-025-landscape",
+        "product": "custom-posters",
+        "orientation": "landscape",
+        "category": "signs-banners",
+        "name": "Neon Geometric Minimal",
+        "style": "Neon Geometric Minimal",
+        "font": "Space Grotesk",
+        "score": 9
+    },
+    {
+        "id": "poster-026-portrait",
+        "product": "custom-posters",
+        "orientation": "portrait",
+        "category": "signs-banners",
+        "name": "Modern Corporate Geometric",
+        "style": "Modern Corporate Geometric",
+        "font": "Space Grotesk",
+        "score": 10
+    },
+    {
+        "id": "poster-026-landscape",
+        "product": "custom-posters",
+        "orientation": "landscape",
+        "category": "signs-banners",
+        "name": "Modern Corporate Geometric",
+        "style": "Modern Corporate Geometric",
+        "font": "Space Grotesk",
+        "score": 10
+    },
+    {
+        "id": "poster-027-portrait",
+        "product": "custom-posters",
+        "orientation": "portrait",
+        "category": "signs-banners",
+        "name": "Tech Corporate Minimal",
+        "style": "Tech Corporate Minimal",
+        "font": "Space Grotesk",
+        "score": 9
+    },
+    {
+        "id": "poster-029-portrait",
+        "product": "custom-posters",
+        "orientation": "portrait",
+        "category": "signs-banners",
+        "name": "Dark Corporate Edge",
+        "style": "Dark Corporate Edge",
+        "font": "Space Grotesk",
+        "score": 9
+    },
+    {
+        "id": "poster-029-landscape",
+        "product": "custom-posters",
+        "orientation": "landscape",
+        "category": "signs-banners",
+        "name": "Dark Corporate Edge",
+        "style": "Dark Corporate Edge",
+        "font": "Space Grotesk",
+        "score": 9
+    },
+    {
+        "id": "poster-030-portrait",
+        "product": "custom-posters",
+        "orientation": "portrait",
+        "category": "signs-banners",
+        "name": "Cyber Corp Dark",
+        "style": "Cyber Corp Dark",
+        "font": "Space Grotesk",
+        "score": 10
+    },
+    {
+        "id": "poster-030-landscape",
+        "product": "custom-posters",
+        "orientation": "landscape",
+        "category": "signs-banners",
+        "name": "Cyber Corp Dark",
+        "style": "Cyber Corp Dark",
+        "font": "Space Grotesk",
+        "score": 9
     }
 ]
