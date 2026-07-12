@@ -85,8 +85,29 @@ class DesignController extends Controller
 
     public function templateData(Template $template): JsonResponse
     {
-        return response()->json(['data' => $template->data]);
+        $data = $template->data;
+
+        // The generated templates were authored on a fixed per-product/orientation canvas
+        // that does not always match the real product surface (which also varies with the
+        // Size option). Ship those authoring dims so the editor can scale the art to the
+        // actual trim box on apply — otherwise right/bottom-anchored text gets clipped.
+        if (is_array($data) && ($dims = self::AUTHOR_DIMS[$template->product_slug][$template->orientation] ?? null)) {
+            $data['aw'] = $dims[0];
+            $data['ah'] = $dims[1];
+        }
+
+        return response()->json(['data' => $data]);
     }
+
+    /** Canvas size (px) each generated template was authored at, per product + orientation. */
+    private const AUTHOR_DIMS = [
+        'matte-business-cards' => ['landscape' => [760, 434], 'square' => [540, 540]],
+        'flyers'               => ['portrait' => [538, 760], 'landscape' => [760, 538], 'square' => [640, 640]],
+        'custom-posters'       => ['portrait' => [570, 760], 'landscape' => [760, 570]],
+        'standard-postcards'   => ['landscape' => [760, 507], 'portrait' => [507, 760], 'square' => [640, 640]],
+        'company-letterhead'   => ['portrait' => [587, 760]],
+        'retractable-banners'  => ['portrait' => [323, 760]],
+    ];
 
     /** Stash the finished design, then show the review step (PRG). */
     public function review(Product $product, Request $request): RedirectResponse
@@ -378,12 +399,11 @@ class DesignController extends Controller
                         $q2->whereNull('product_slug')->where('category', $product->category->slug);
                     });
             })
-            // only templates that fit this orientation; legacy (null) ones are orientation-agnostic.
-            // 'square' is the neutral fallback surface, so don't constrain there — show everything.
-            ->when($orientation !== 'square', function ($q) use ($orientation) {
-                $q->where(function ($q2) use ($orientation) {
-                    $q2->where('orientation', $orientation)->orWhereNull('orientation');
-                });
+            // only templates that fit this orientation (a template authored for another
+            // orientation would have to be stretched onto this canvas); legacy (null) ones
+            // are orientation-agnostic and always show.
+            ->where(function ($q) use ($orientation) {
+                $q->where('orientation', $orientation)->orWhereNull('orientation');
             })
             ->orderByDesc('score')->orderBy('sort_order')
             ->take(120)->get(['ref', 'name', 'preview_path'])

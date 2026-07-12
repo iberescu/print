@@ -151,6 +151,23 @@ function offsetByBleed() {
     });
 }
 
+// Scale a freshly-loaded template from its authoring canvas (aw x ah) to the real trim
+// box, so a template authored at a different size/aspect fits this product exactly rather
+// than clipping right/bottom-anchored elements. Templates are orientation-matched, so the
+// aspect delta is small and the horizontal/vertical rescale stays subtle.
+function fitLoadedToTrim(aw, ah) {
+    if (!aw || !ah) return;
+    const sx = trimW / aw, sy = trimH / ah;
+    if (Math.abs(sx - 1) < 0.005 && Math.abs(sy - 1) < 0.005) return;
+    canvas.getObjects().forEach((o) => {
+        o.left = (o.left || 0) * sx;
+        o.top = (o.top || 0) * sy;
+        o.scaleX = (o.scaleX || 1) * sx;
+        o.scaleY = (o.scaleY || 1) * sy;
+        o.setCoords();
+    });
+}
+
 // Google Fonts only — curated set (loaded from fonts.googleapis.com below).
 const fonts = ['Montserrat', 'Inter', 'Bebas Neue', 'Oswald', 'Poppins', 'Playfair Display', 'Cormorant Garamond', 'DM Serif Display', 'Anton', 'Archivo Black', 'Raleway', 'Rubik', 'Nunito', 'Lora', 'Abril Fatface', 'Barlow Condensed', 'League Spartan', 'Space Grotesk', 'Urbanist', 'Libre Baskerville', 'Merriweather', 'Figtree', 'Manrope', 'Sora', 'Outfit', 'Rajdhani', 'Work Sans', 'Plus Jakarta Sans', 'Great Vibes', 'Pinyon Script', 'Pacifico', 'Caveat', 'Fredericka the Great'];
 const sizes = [12, 14, 16, 18, 20, 24, 28, 32, 40, 48, 56, 64, 72];
@@ -760,6 +777,7 @@ async function applyTemplate(ref) {
         const res = await fetch(`/design/template/${ref}/data`, { headers: { Accept: 'application/json' } });
         const { data } = await res.json();
         await canvas.loadFromJSON(data);
+        if (data.aw && data.ah) fitLoadedToTrim(data.aw, data.ah); // author canvas -> real trim box
         offsetByBleed(); // template art is authored at trim origin; nudge it inside the bleed
         markLogos();
         canvas.requestRenderAll();
