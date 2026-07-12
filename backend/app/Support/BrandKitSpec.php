@@ -203,16 +203,79 @@ class BrandKitSpec
     public static function adStyle(int $i): string
     {
         return [
-            'Make it BOLD, CREATIVE and VIBRANT — energetic saturated colour, a dynamic diagonal composition and playful confident shapes; eye-catching and lively (still tasteful and on-brand).',
+            'Make it LOUD and genuinely VIBRANT — the most colourful, high-energy ad of the set: a bold, richly SATURATED palette, punchy graphic COLOUR-BLOCKING, strong dynamic diagonals and big expressive shapes. Eye-catching and lively; keep the brand colour central and add vivid complementary colour (tasteful and on-brand, never muddy).',
             'Make it POLISHED and PROFESSIONAL — a refined corporate look, calm restrained palette, a clean structured grid; ordered, trustworthy, enterprise-grade.',
-            'Make it MINIMALIST — maximum negative space, one small focal element, only one or two colours; quiet, elegant, essentials only.',
-            'Make it FUTURISTIC and high-tech — sleek and modern with subtle glow, gradient depth and an abstract tech/3D motif; a cutting-edge, premium sci-fi feel.',
+            'Make it IMAGE-LED and minimal — like a premium Airbnb or Apple photo ad: ONE gorgeous editorial photograph fills the ENTIRE banner edge-to-edge as the hero (full-bleed, no colour panels or borders), with the headline set simply and cleanly OVER the image in crisp white or one legible tone, placed on a calmer area of the photo. Strip everything else right back and let the photograph carry the ad — restrained type, no colour-blocking or busy graphics, only a small clean CTA.',
+            'Make it MODERN — a sleek, contemporary app-promo look: a saturated brand-colour gradient, a lively duotone subject and floating square-cornered brand cards.',
         ][(($i % 4) + 4) % 4];
     }
 
-    public static function adPrompt(string $headline, string $cta, string $company, ?string $palette, string $description = '', string $style = ''): string
+    public static function adPrompt(string $headline, string $cta, string $company, ?string $palette, string $description = '', string $style = '', int $styleIndex = -1): string
     {
         $headline = str_replace('{company}', $company ?: 'us', $headline);
+
+        // Image-led (Airbnb-style full-bleed photo) — a distinct layout with no CTA button.
+        if ($styleIndex >= 0 && ((($styleIndex % 4) + 4) % 4) === 2) {
+            $about = trim($description) !== '' ? "{$company} — {$description}" : ($company ?: 'this business');
+
+            return "Design a premium editorial IMAGE-LED display ad for {$about}, art-directed to look EXACTLY "
+                .'like a high-end Airbnb photo ad. ONE beautiful real photograph fills the ENTIRE banner edge-to-'
+                .'edge — full-bleed, with NO borders, frame, panels or colour blocks: a cinematic, natural-light '
+                ."editorial scene from {$company}'s actual world (its real place, objects or product), NOT generic "
+                .'stock and NOT an obvious cliche; no people unless one genuinely belongs, and then only natural '
+                .'and undistorted. '
+                ."HEADLINE: set the text \"{$headline}\" LARGE across the MIDDLE of the image, left-aligned from a "
+                .'comfortable left margin, on ONE line if it fits, in crisp WHITE, using a clean bold GEOMETRIC '
+                .'sans-serif with friendly rounded-geometric letterforms (Airbnb Cereal / Circular / Poppins / '
+                .'Montserrat style) — confident and generous but calm. Sit it over a calmer region of the photo so '
+                .'it stays perfectly legible (only the faintest natural darkening of the photo if truly needed; no '
+                .'solid text box). '
+                .'BOTTOM: a single thin WHITE hairline rule runs horizontally across the lower part of the image. '
+                ."At its LEFT end, a small white line icon that symbolises {$company}'s own business — a simple "
+                .'emblem drawn from its product, tool or industry (NOT a generic map-pin) — with two short lines '
+                .'of small white text '
+                ."beside it — line one the company name \"{$company}\", line two its website or a two-to-three word "
+                .'tagline. At the RIGHT end of that same rule, place the supplied brand logo, small and clean, '
+                .'sitting directly on the photo with NO box or panel behind it. Keep the logo\'s exact shapes, '
+                .'letterforms, proportions and spelling — do NOT redraw, re-letter, restyle, distort or add '
+                .'effects; you MAY render it as a single flat WHITE version so it reads cleanly on the photograph '
+                .'(as premium brands do on photos), but change nothing else about its form. '
+                .'NO call-to-action button and no other graphics, badges or shapes. '
+                .'STRICT: the ONLY text is the headline, those two small label lines and the logo — every word '
+                .'spelled EXACTLY and correctly, no gibberish or placeholder lettering, no extra words, no '
+                .'watermark, exactly ONE logo and no other logos, no device mockups, no app or browser UI, no '
+                .'scattered decorative accents. Crisp, high-resolution, editorial photo-ad quality.';
+        }
+
+        // Modern (Spotify-style gradient + duotone + floating brand cards) — dedicated layout.
+        if ($styleIndex >= 0 && ((($styleIndex % 4) + 4) % 4) === 3) {
+            $about = trim($description) !== '' ? "{$company} — {$description}" : ($company ?: 'this business');
+
+            return "Design a bold, MODERN app-style display ad for {$about}, art-directed to look EXACTLY like a "
+                .'premium Spotify promo. A rich, SATURATED colour gradient built from the brand colour fills the '
+                .'ENTIRE banner (a smooth deep-to-bright two-tone blend), full-bleed with no borders or panels. '
+                .'Place the supplied logo at the TOP-LEFT, small and clean, integrated on the gradient with NO box '
+                .'behind it; you may render it flat WHITE so it reads, but keep its exact shapes, letterforms, '
+                .'proportions and spelling — never redraw or re-letter it. '
+                ."HEADLINE: set the text \"{$headline}\" VERY LARGE in the upper-left, left-aligned, in crisp WHITE, "
+                .'using a clean bold GEOMETRIC sans-serif (Spotify Circular / Poppins / Montserrat style), '
+                .'confident and modern; it may overlap the subject. '
+                ."SUBJECT: a lively, energetic DUOTONE image — a person or a striking motif from {$company}'s actual "
+                .'world — tinted to match the gradient and cut out / blended INTO the background with no rectangle, '
+                .'placed centre-to-upper, full of movement. '
+                .'DYNAMIC SHAPES: across the LOWER third, THREE floating cards with SHARP SQUARE corners (never '
+                .'rounded or pill-shaped) overlap each other '
+                .'(the middle one larger and raised), each showing a small, tasteful image or icon from '
+                ."{$company}'s world — the modern app-card look of the reference, themed to the brand, with soft "
+                .'shadows so they float. Keep the cards clean: at most a single real one-word label each, never '
+                .'gibberish. '
+                ."CTA: one clean call-to-action button centred near the BOTTOM, high-contrast, with SHARP SQUARE "
+                ."corners, labelled exactly \"{$cta}\". "
+                .'STRICT: the only text is the headline, the CTA label, the logo and at most a one-word label per '
+                .'card — every word spelled EXACTLY and correctly, no gibberish or placeholder lettering, no '
+                .'watermark, exactly ONE brand logo and no other logos, no browser or app UI chrome, no scattered '
+                .'decorative accents. Crisp, high-resolution, modern ad quality.';
+        }
         $colours = "the colours OF THE SUPPLIED LOGO as the DOMINANT palette — match the logo's own actual "
             .'colours (that is the brand colour)'
             .($palette ? ", and use {$palette} ONLY as light secondary accents; an accent colour must never dominate over the logo's colour" : '');
@@ -222,8 +285,8 @@ class BrandKitSpec
         return "Design a striking, studio-grade Google Display ad banner (landscape ~1.9:1) for {$about} — the "
             ."work of a designer with real taste, NOT a template assembled from defaults. {$style} "
             // hierarchy
-            ."HIERARCHY: one thing dominates — the headline \"{$headline}\" set BIG and confident (3-6x the "
-            .'size of any supporting text), in a bold, characterful modern sans that carries the personality; '
+            ."HIERARCHY: one thing dominates — the headline \"{$headline}\" set very large and "
+            .'bold so it clearly dominates, in a characterful modern sans that carries the personality; '
             .'then the CTA; then the small logo. If everything is the same weight there is no design. '
             // composition + depth + frame-breaking
             .'COMPOSITION: deliberate and asymmetric — NOT a centred stack with equal margins. Off-grid '
@@ -236,7 +299,9 @@ class BrandKitSpec
             ."MOTIF: ONE tasteful visual element drawn from {$company}'s actual world (its objects, materials, "
             .'environment, or an abstract form tied to what they do) — editorial and cinematic, dramatic '
             .'off-angle lighting. NOT generic stock, NOT lazy gradient blobs or swooshes, NOT the most-obvious '
-            .'cliché image of this industry. NO people, faces, hands or crowds. '
+            .'cliché image of this industry. Avoid generic stock-photo people and crowds; include a person only '
+            .'if it genuinely fits the brand, and then as a bold duotone/editorial figure with a natural, '
+            .'undistorted face and hands. '
             // logo fidelity — the user's TOP priority; keep it emphatic
             .'CRITICAL — DO NOT CHANGE THE LOGO: treat the supplied logo as a fixed image asset and place it '
             .'AS-IS (as if pasting the original file), never recreated. It must appear pixel-for-pixel '
@@ -244,19 +309,30 @@ class BrandKitSpec
             .'shape filled — do NOT turn filled areas into outlines or add strokes. Keep its EXACT original '
             .'colours — do NOT brighten, saturate or shift any hue (dark navy stays dark navy, not a brighter '
             .'blue), and never recolour it to white or black for contrast. Do NOT redraw, restyle, re-letter, '
-            .'crop, rotate, distort or add effects. If the area behind it would be dark or busy, sit the logo '
-            .'on a clean solid light or white panel so it stays legible in its true colours. '
+            .'crop, rotate, distort or add effects, and do NOT re-type or re-draw the wordmark — every letter '
+            .'stays spelled exactly as in the supplied logo. INTEGRATE the logo naturally INTO the composition, '
+            .'never inside an added white or light box, chip, card, badge, pill or panel and with NO rectangle '
+            .'or backing shape behind it. Solve legibility by PLACEMENT, NEVER by recolouring: sit the logo on '
+            .'a plain area of the design whose tone simply contrasts with it (a light or negative-space zone for '
+            .'a dark logo, a darker zone for a light logo) and deliberately compose the layout so such an area '
+            .'exists — it should feel woven into the design, not pasted on top, yet keep its EXACT original '
+            .'colours and letterforms even when integrated. '
             // palette + typography-as-personality
-            ."COLOUR: build from {$colours}. Harmonious and intentional — one dominant colour over the most "
-            .'surface with the accent used sparingly; get contrast from VALUE (light vs dark) and scale, not '
-            .'saturation wars; avoid neon and clashing primaries. '
+            ."COLOUR: build from {$colours}, led by the brand colour. Match the colour energy to the chosen "
+            .'style — a VIBRANT style should be boldly, richly SATURATED and high-contrast with punchy colour-'
+            .'blocking; a minimalist or professional style stays restrained and calm. Keep it cohesive and '
+            .'harmonious; avoid muddy, dull or dirty combinations. '
             // CTA (display-ad button, sharp corners)
             ."CTA: one solid rectangular call-to-action block with SHARP SQUARE corners (never rounded or "
             ."pill-shaped), high-contrast, labelled exactly \"{$cta}\". "
             // strict text rules
             .'STRICT: the ONLY text in the image is that headline and that CTA label — no other words, no '
-            .'gibberish or placeholder lettering, no watermark, no extra logos, no phone/laptop/device '
-            .'mockups, no browser or app UI, and NO scattered decorative accents (dots, plus-signs, confetti). '
+            .'gibberish, misspellings or placeholder lettering; spell the headline and CTA label EXACTLY and '
+            .'correctly, letter for letter. Do NOT render any of these design directions, size notes or '
+            .'guidance words as text in the image (only the real headline and CTA copy are drawn). No watermark. '
+            .'Show the logo EXACTLY ONCE (never duplicated or repeated); no other logos, no phone/laptop/'
+            .'device mockups, no browser or app UI, and NO scattered decorative '
+            .'accents (dots, plus-signs, confetti). '
             .'Crisp, high-resolution, art-directed ad-creative quality.';
     }
 }

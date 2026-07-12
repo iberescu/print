@@ -50,6 +50,7 @@ class GenerateAdImage implements ShouldQueue
                 $palette,
                 (string) ($summary['description'] ?? ''),
                 BrandKitSpec::adStyle($styleIndex),
+                $styleIndex,
             ),
             [$logo],
             config('shop.internal_engine.ad_image_model'),
