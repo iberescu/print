@@ -354,8 +354,8 @@ class AdsSetup extends Command
                         'type' => 'PRODUCT_CATEGORIES', 'priceQualifier' => 'FROM', 'languageCode' => 'en',
                         'priceOfferings' => [
                             $offer('Business Cards', '50 full-colour cards', 750, '/product/standard-business-cards'),
-                            $offer('Flyers', 'Full-colour marketing flyers', 1500, '/category/marketing-materials'),
-                            $offer('Stickers', 'Die-cut & sheet stickers', 900, '/category/stickers-labels'),
+                            $offer('Flyers', 'Full-colour flyers', 1500, '/category/marketing-materials'),
+                            $offer('Stickers', 'Die-cut & sheet', 900, '/category/stickers-labels'),
                             $offer('Posters', 'Large-format posters', 1200, '/category/signs-banners'),
                         ],
                     ],
@@ -370,9 +370,11 @@ class AdsSetup extends Command
     }
 
     /**
-     * Sitelinks (the clickable sub-links) per Search campaign, plus a couple of
-     * image assets for the flagship one. Resolves each campaign by name so it links
-     * onto campaigns from an earlier run too; idempotent by asset name.
+     * Sitelinks (the clickable sub-links) per Search campaign. Resolves each campaign
+     * by name so it links onto campaigns from an earlier run too; idempotent by asset
+     * name. (Search image extensions are eligibility-gated and rejected the campaign
+     * link in v22, so they're intentionally omitted — sitelinks + callouts + the
+     * structured snippet carry the multi-line layout.)
      */
     private function linkSearchAssets(): void
     {
@@ -382,43 +384,31 @@ class AdsSetup extends Command
 
         $plan = [
             'RMP — Business Cards (Search)' => [
-                'sitelinks' => [
-                    ['50 Cards for $7.50', $bc, 'Full-colour, premium stock', 'Designed online in minutes'],
-                    ['Upload Your Design', $bc, 'Print-ready artwork? Upload it', 'We print and ship it fast'],
-                    ['Premium Finishes', $bc, 'Matte, gloss and thick stocks', 'Make your card stand out'],
-                    ['Free Logo Maker', $logo, 'Design a free vector logo', 'Then print it on your cards'],
-                ],
-                'images' => [
-                    ['RMP Search Square', 'products/standard-business-cards.webp', 1200, 1200],
-                    ['RMP Search Landscape', 'heroes/home.webp', 1200, 628],
-                ],
+                ['50 Cards for $7.50', $bc, 'Full-colour, premium stock', 'Designed online in minutes'],
+                ['Upload Your Design', $bc, 'Print-ready artwork? Upload it', 'We print and ship it fast'],
+                ['Premium Finishes', $bc, 'Matte, gloss and thick stocks', 'Make your card stand out'],
+                ['Free Logo Maker', $logo, 'Design a free vector logo', 'Then print it on your cards'],
             ],
             'RMP — QR Code Generator (Search)' => [
-                'sitelinks' => [
-                    ['Website QR Code', $qr, 'Link to your site instantly', 'Free SVG + PNG download'],
-                    ['vCard Contact QR', $qr, 'Scan to save your contact', 'Perfect for business cards'],
-                    ['QR on Business Cards', $bc, 'Print your code on cards', 'From $7.50, ships fast'],
-                    ['Free Logo Maker', $logo, 'Design a free vector logo', 'Pair it with your QR'],
-                ],
-                'images' => [],
+                ['Website QR Code', $qr, 'Link to your site instantly', 'Free SVG + PNG download'],
+                ['vCard Contact QR', $qr, 'Scan to save your contact', 'Perfect for business cards'],
+                ['QR on Business Cards', $bc, 'Print your code on cards', 'From $7.50, ships fast'],
+                ['Free Logo Maker', $logo, 'Design a free vector logo', 'Pair it with your QR'],
             ],
             'RMP — AI Logo Maker (Search)' => [
-                'sitelinks' => [
-                    ['Free AI Logo Maker', $logo, 'Unlimited logos, no signup', 'SVG + PNG, commercial use'],
-                    ['Logo On Products', $logo, 'See it on cards & shirts', 'Preview instantly, free'],
-                    ['Business Cards $7.50', $bc, 'Put your new logo on cards', '50 cards, ships fast'],
-                    ['Free QR Code Maker', $qr, 'Make a matching QR code', 'Free SVG + PNG download'],
-                ],
-                'images' => [],
+                ['Free AI Logo Maker', $logo, 'Unlimited logos, no signup', 'SVG + PNG, commercial use'],
+                ['Logo On Products', $logo, 'See it on cards & shirts', 'Preview instantly, free'],
+                ['Business Cards $7.50', $bc, 'Put your new logo on cards', '50 cards, ships fast'],
+                ['Free QR Code Maker', $qr, 'Make a matching QR code', 'Free SVG + PNG download'],
             ],
         ];
 
-        foreach ($plan as $cname => $cfg) {
+        foreach ($plan as $cname => $sitelinks) {
             $campaign = $this->existing('campaign', $cname);
             if (! $campaign) {
                 continue; // not created (e.g. Shopping skipped) — nothing to link onto
             }
-            foreach ($cfg['sitelinks'] as [$text, $url, $d1, $d2]) {
+            foreach ($sitelinks as [$text, $url, $d1, $d2]) {
                 $aname = "RMP Sitelink · $cname · $text";
                 if ($this->existing('asset', $aname)) {
                     continue;
@@ -431,17 +421,7 @@ class AdsSetup extends Command
                     'campaign' => $campaign, 'asset' => $asset, 'fieldType' => 'SITELINK',
                 ]]]);
             }
-            foreach ($cfg['images'] as [$iname, $path, $w, $h]) {
-                if ($this->existing('asset', $iname)) {
-                    continue; // created + linked on a prior run
-                }
-                if ($asset = $this->imageAsset($iname, $path, $w, $h)) {
-                    $this->mutate('campaignAssets', [['create' => [
-                        'campaign' => $campaign, 'asset' => $asset, 'fieldType' => 'IMAGE',
-                    ]]]);
-                }
-            }
-            $this->line("  assets linked: $cname (".count($cfg['sitelinks']).' sitelinks'.($cfg['images'] ? ' + images' : '').')');
+            $this->line("  sitelinks linked: $cname (".count($sitelinks).')');
         }
     }
 
