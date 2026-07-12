@@ -170,17 +170,22 @@ function fitLoadedToTrim(aw, ah) {
 
 // Safety net: any object still spilling past the trim after the fit (e.g. a text
 // line the generator authored too wide) is scaled down in place so nothing clips.
+// Uses fabric's absolute corner coords (aCoords) so origin/align/scale are handled.
 function clampToTrim() {
+    const m = 3; // keep a hair inside the trim so glyph edges don't kiss the cut line
     canvas.getObjects().forEach((o) => {
-        const w = o.getScaledWidth ? o.getScaledWidth() : (o.width || 0) * (o.scaleX || 1);
-        const h = o.getScaledHeight ? o.getScaledHeight() : (o.height || 0) * (o.scaleY || 1);
+        o.setCoords();
+        const c = o.aCoords;
+        if (!c) return;
+        const xs = [c.tl.x, c.tr.x, c.br.x, c.bl.x];
+        const ys = [c.tl.y, c.tr.y, c.br.y, c.bl.y];
+        const left = Math.min(...xs), right = Math.max(...xs);
+        const top = Math.min(...ys), bottom = Math.max(...ys);
+        const w = right - left, h = bottom - top;
         if (w <= 0 || h <= 0) return;
-        let bx = o.left || 0, by = o.top || 0;
-        if (o.originX === 'center') bx -= w / 2; else if (o.originX === 'right') bx -= w;
-        if (o.originY === 'center') by -= h / 2; else if (o.originY === 'bottom') by -= h;
         let s = 1;
-        if (bx + w > trimW) s = Math.min(s, (trimW - Math.max(0, bx)) / w);
-        if (by + h > trimH) s = Math.min(s, (trimH - Math.max(0, by)) / h);
+        if (right > trimW - m) s = Math.min(s, (trimW - m - Math.max(0, left)) / w);
+        if (bottom > trimH - m) s = Math.min(s, (trimH - m - Math.max(0, top)) / h);
         if (s > 0 && s < 0.997) {
             o.scaleX = (o.scaleX || 1) * s;
             o.scaleY = (o.scaleY || 1) * s;
@@ -810,6 +815,7 @@ async function applyTemplate(ref) {
         canvas.requestRenderAll();
         store[side.value] = canvas.toJSON(['rmpRole']);
         showTemplates.value = false;
+        if (typeof window !== 'undefined') { window.__rmpCanvas = canvas; window.__rmpTrim = { trimW, trimH, bleed }; } // TEMP diag
     } catch (e) { console.error('applyTemplate failed', e); }
     applyingTpl.value = false;
 }
