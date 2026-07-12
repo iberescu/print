@@ -819,6 +819,21 @@ async function applyTemplate(ref) {
     applyingTpl.value = false;
 }
 
+// Capture a logo image at its NATIVE resolution, not its scaled-down on-canvas
+// size. A big logo fitted into a small logo box has a tiny scaleX, so a plain
+// toDataURL() exports it at the shrunk display size (e.g. a 2560px logo -> 150px),
+// which then wrongly trips the low-res upscale downstream. Prefer the pristine
+// original source; else re-render at the source element's true pixel size.
+function logoDataURL(o) {
+    const el = o._originalElement || o._element;
+    const src = (o.getSrc?.() || el?.src || '');
+    if (src.startsWith('data:')) return src; // the uploaded/original file, full-res
+    const natW = el?.naturalWidth || el?.width || 0;
+    const dispW = (o.width || 0) * Math.abs(o.scaleX || 1);
+    const mult = (natW && dispW) ? Math.min(8, Math.max(1, natW / dispW)) : 1;
+    try { return o.toDataURL({ format: 'png', multiplier: mult }); } catch (e) { return src || null; }
+}
+
 function extractBrand() {
     const b = { companyName: '', name: '', title: '', email: '', phone: '', url: '', logo: null };
     const objs = canvas.getObjects();
@@ -830,7 +845,7 @@ function extractBrand() {
             // the seeded "YOUR LOGO HERE" placeholder is not the customer's logo
             const src = o.getSrc?.() || o._originalElement?.src || '';
             if (!src.includes('logo-placeholder')) {
-                try { b.logo = o.toDataURL({ format: 'png' }); } catch (e) { /* tainted/none */ }
+                try { b.logo = logoDataURL(o); } catch (e) { /* tainted/none */ }
             }
         }
     });
@@ -838,7 +853,7 @@ function extractBrand() {
         // any customer image can stand in for a logo — but never the seeded placeholder
         const img = objs.find((o) => o.type === 'image' && o.rmpRole !== 'qr'
             && !((o.getSrc?.() || o._originalElement?.src || '').includes('logo-placeholder')));
-        if (img) { try { b.logo = img.toDataURL({ format: 'png' }); } catch (e) {} }
+        if (img) { try { b.logo = logoDataURL(img); } catch (e) {} }
     }
     return b;
 }
