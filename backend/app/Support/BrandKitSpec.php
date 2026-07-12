@@ -263,12 +263,16 @@ class BrandKitSpec
                 ."SUBJECT: a lively, energetic DUOTONE image — a person or a striking motif from {$company}'s actual "
                 .'world — tinted to match the gradient and cut out / blended INTO the background with no rectangle, '
                 .'placed centre-to-upper, full of movement. '
-                .'DYNAMIC SHAPES: across the LOWER third, THREE floating cards with SHARP SQUARE corners (never '
-                .'rounded or pill-shaped) overlap each other '
-                .'(the middle one larger and raised), each showing a small, tasteful image or icon from '
-                ."{$company}'s world — the modern app-card look of the reference, themed to the brand, with soft "
-                .'shadows so they float. Keep the cards clean: at most a single real one-word label each, never '
-                .'gibberish. '
+                .'DYNAMIC SHAPES: across the LOWER third, THREE overlapping boxes positioned and sized EXACTLY '
+                .'like the reference — one LARGER central box raised higher, flanked by two SMALLER boxes set '
+                .'slightly lower and tucked partly behind it (the outer pair partly overlapped, the far edges '
+                .'cropped), all roughly SQUARE (album-cover proportion). Every box is a HARD-EDGED rectangle with '
+                .'crisp 90-degree RIGHT-ANGLE corners — absolutely NO rounded corners, NO pill shapes, NOT '
+                .'rounded app-card tiles. Give the boxes a NEUTRAL, frosted-glass effect: soft translucent '
+                .'white / light-grey panels (desaturated and calm) floating over the gradient with a gentle drop '
+                ."shadow. INSIDE each box, one simple clean SHAPE or icon drawn from {$company}'s world (its "
+                .'product, tool or motif), also kept in a neutral monochrome tone. At most a single real '
+                .'one-word label per box, never gibberish. '
                 ."CTA: one clean call-to-action button centred near the BOTTOM, high-contrast, with SHARP SQUARE "
                 ."corners, labelled exactly \"{$cta}\". "
                 .'STRICT: the only text is the headline, the CTA label, the logo and at most a one-word label per '
