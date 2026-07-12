@@ -125,28 +125,25 @@ class BrandKitSpec
     }
 
     /**
-     * Paper/print products carrying the QR code. Gemini only draws a flat MAGENTA
-     * placeholder square where the QR goes; the job then composites the REAL,
-     * scannable QR image over it (`qr_overlay`). The real QR already has the logo
-     * in its centre when the buyer uploaded one, so no separate logo is placed here.
+     * Paper/print products carrying the QR code. The QR image is passed to Gemini
+     * as a FIXED asset (exactly like the logo) and placed as-is — it already has the
+     * logo in its centre when the buyer uploaded one, so no separate logo is placed.
      */
     private static function qrPaperProducts(): array
     {
-        $scene = fn (string $desc) => "A clean, print-ready studio mockup of {$desc}. Add tasteful placeholder "
-            .'text (company name / contact details / a short call to action). LEAVE ROOM FOR A QR CODE: draw a '
-            .'plain SOLID MAGENTA (#FF00FF) SQUARE where the QR code will sit — sized like a real QR (about '
-            .'18-26% of the product width), perfectly flat, straight-on, fully visible and unobstructed, in a '
-            .'tasteful spot (a corner or beside the contact details). Do NOT draw an actual QR code or any '
-            .'pattern inside it — just the flat solid magenta square. Realistic lighting, no clutter.';
+        $scene = fn (string $desc) => "A clean, print-ready studio mockup of {$desc}. Place the provided QR code "
+            .'prominently and clearly in a tasteful spot (a corner or beside the contact details), flat and '
+            .'straight-on at a realistic size. Add tasteful placeholder text (company name / contact details / '
+            .'a short call to action). Realistic lighting, no clutter.';
 
         return [
-            ['key' => 'qr-businesscard', 'label' => 'Business card', 'slug' => 'matte-business-cards', 'decoration' => 'custom', 'inputs' => [], 'qr_overlay' => true,
+            ['key' => 'qr-businesscard', 'label' => 'Business card', 'slug' => 'matte-business-cards', 'decoration' => 'custom', 'inputs' => ['qr'],
                 'prompt' => $scene('a professional business card lying flat on a light natural-wood table, photographed straight down')],
-            ['key' => 'qr-letterhead', 'label' => 'Letterhead', 'slug' => 'company-letterhead', 'decoration' => 'custom', 'inputs' => [], 'qr_overlay' => true,
+            ['key' => 'qr-letterhead', 'label' => 'Letterhead', 'slug' => 'company-letterhead', 'decoration' => 'custom', 'inputs' => ['qr'],
                 'prompt' => $scene('an A4 letterhead sheet on a light desk, photographed straight down, with a header/footer layout and faint placeholder body-text lines')],
-            ['key' => 'qr-flyer', 'label' => 'Flyer', 'slug' => 'flyers', 'decoration' => 'custom', 'inputs' => [], 'qr_overlay' => true,
+            ['key' => 'qr-flyer', 'label' => 'Flyer', 'slug' => 'flyers', 'decoration' => 'custom', 'inputs' => ['qr'],
                 'prompt' => $scene('a marketing flyer on a light surface, photographed straight down, with a bold headline')],
-            ['key' => 'qr-poster', 'label' => 'Poster', 'slug' => 'custom-posters', 'decoration' => 'custom', 'inputs' => [], 'qr_overlay' => true,
+            ['key' => 'qr-poster', 'label' => 'Poster', 'slug' => 'custom-posters', 'decoration' => 'custom', 'inputs' => ['qr'],
                 'prompt' => $scene('a poster mounted flat on a clean light wall, photographed straight on, with a strong headline')],
         ];
     }
@@ -183,9 +180,10 @@ class BrandKitSpec
                 };
             }
             if (in_array('qr', $inputs, true)) {
-                $clauses[] = 'Reproduce the provided QR code EXACTLY as supplied — keep it perfectly square, '
-                    .'high-contrast and fully unaltered so it stays scannable; do NOT redraw, recolour, crop, '
-                    .'rotate or distort it.';
+                $clauses[] = 'The provided QR code is a FIXED IMAGE ASSET — treat it exactly like a logo: place '
+                    .'it AS-IS, pixel-for-pixel identical, as if pasting the supplied file. Do NOT redraw, '
+                    .'regenerate, re-pattern, recolour, sharpen, "improve", crop, rotate or distort it; every '
+                    .'module/dot must stay exactly as given so it remains scannable. Keep it perfectly square.';
             }
 
             return $prompt.' '.implode(' ', $clauses).' No watermark and no random gibberish text.';

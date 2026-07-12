@@ -34,19 +34,19 @@ class GenerateProductImage implements ShouldQueue
             return;
         }
 
-        // Composite the images this product's scene calls for (logo and/or QR).
-        // qr_overlay products get only a magenta placeholder from Gemini; the REAL
-        // scannable QR is pasted on afterwards.
+        // Composite the images this product's scene calls for (logo and/or QR). The
+        // QR is passed to Gemini as a fixed asset like the logo — high-res (>500px)
+        // so the model places it as-is instead of trying to "improve"/redraw it.
         $inputs = $this->spec['inputs'] ?? ['logo'];
-        $qrOverlay = ! empty($this->spec['qr_overlay']);
         $imgs = [];
         if (in_array('logo', $inputs, true) && ($logo = $this->logoInput($kit))) {
             $imgs[] = $logo;
         }
-        if (in_array('qr', $inputs, true) && ($qr = $this->qrInput($kit))) {
+        $hasQr = in_array('qr', $inputs, true);
+        if ($hasQr && ($qr = $this->qrInput($kit))) {
             $imgs[] = $qr;
         }
-        if (! $imgs && ! $qrOverlay) {
+        if (! $imgs) {
             return; // nothing to place
         }
 
@@ -60,19 +60,9 @@ class GenerateProductImage implements ShouldQueue
             $imgs,
             config('shop.internal_engine.image_model'),
         );
-        $bytes = $img['data'];
-
-        // Drop the REAL, scannable QR (with the logo already in its centre, when the
-        // buyer uploaded one) onto the magenta placeholder Gemini left for it.
-        if ($qrOverlay && ($qr = $this->qrInput($kit))) {
-            $overlaid = Img::overlayColorKey($bytes, base64_decode($qr['data']));
-            if ($overlaid !== null) {
-                $bytes = $overlaid;
-            }
-        }
 
         $path = "brandkits/{$this->key}/product-{$this->spec['key']}.webp";
-        Storage::disk('public')->put($path, Img::webp($bytes, $qrOverlay ? 1200 : 1000));
+        Storage::disk('public')->put($path, Img::webp($img['data'], $hasQr ? 1200 : 1000));
 
         $kit->appendItems('products', [[
             'key'          => $this->spec['key'],
