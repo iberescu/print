@@ -39,19 +39,29 @@ onMounted(() => {
     if (meta) { prevDesc = meta.getAttribute('content'); meta.setAttribute('content', metaDescription.value); }
     const p = props.product;
     const abs = (u) => (!u ? undefined : u.startsWith('http') ? u : window.location.origin + u);
+    const fromPrice = Number(p.fromPrice || 0);
+    // Google drops the ENTIRE Product snippet when the Offer price is 0/invalid, so
+    // only attach offers when there's a real starting price. (undefined keys are
+    // stripped by JSON.stringify, so a missing image/category just falls away.)
+    const offers = fromPrice > 0 ? {
+        '@type': 'Offer', priceCurrency: 'USD',
+        price: fromPrice.toFixed(2),
+        availability: 'https://schema.org/InStock',
+        itemCondition: 'https://schema.org/NewCondition',
+        priceValidUntil: new Date(Date.now() + 365 * 864e5).toISOString().slice(0, 10),
+        url: window.location.href,
+        seller: { '@type': 'Organization', name: 'RunMyPrint' },
+    } : undefined;
     const graph = [{
         '@context': 'https://schema.org', '@type': 'Product',
         name: p.name,
         description: (seo.value.description || p.tagline || '').replace(/\s+/g, ' ').trim().slice(0, 500),
         category: p.category?.name,
         image: p.image ? [abs(p.image)] : undefined,
+        sku: String(p.id),          // matches the merchant feed g:id
         brand: { '@type': 'Brand', name: 'RunMyPrint' },
-        offers: {
-            '@type': 'Offer', priceCurrency: 'USD',
-            price: Number(p.fromPrice || 0).toFixed(2),
-            availability: 'https://schema.org/InStock',
-            url: window.location.href,
-        },
+        url: window.location.href,
+        offers,
     }];
     if (faq.value.length) {
         graph.push({

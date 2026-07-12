@@ -247,6 +247,13 @@ class AdsSetup extends Command
             ],
             rsa: $rsaLogo,
         );
+
+        // Assets that make the ads render multi-line like the big printers: account-
+        // wide callouts + a structured snippet + prices, plus per-campaign sitelinks
+        // and image assets. Idempotent and campaign-existence-agnostic, so this also
+        // tops up campaigns created by an earlier ads:setup run.
+        $this->accountAssets();
+        $this->linkSearchAssets();
     }
 
     private function searchCampaign(string $name, string $budgetName, int $budgetMicros, int $cpcCeilMicros, string $finalUrl, array $negatives, array $adGroups, array $rsa): void
@@ -294,6 +301,147 @@ class AdsSetup extends Command
                 'ad' => ['finalUrls' => [$finalUrl], 'responsiveSearchAd' => $rsa],
             ]]]);
             $this->line("  ad group ready: $agName (".count($keywords)." keywords + RSA)");
+        }
+    }
+
+    // ---- ad assets (sitelinks / callouts / snippets / prices / images) -------
+
+    /**
+     * Account-wide assets, linked once so every Search campaign inherits them:
+     * callouts and a structured snippet (extra lines under the ad) plus a price
+     * table. Idempotent by asset name — an asset that already exists is assumed
+     * linked and skipped, so reruns are safe.
+     */
+    private function accountAssets(): void
+    {
+        foreach ([
+            'Free Shipping Over $50', 'Design Online In Minutes', 'Premium Paper Stocks',
+            'No Account Needed', 'Satisfaction Guaranteed', 'Your Logo On Products',
+        ] as $text) {
+            $name = 'RMP Callout · '.$text;
+            if ($this->existing('asset', $name)) {
+                continue;
+            }
+            $asset = $this->mutate('assets', [['create' => ['name' => $name, 'calloutAsset' => ['calloutText' => $text]]]])[0];
+            $this->mutate('customerAssets', [['create' => ['asset' => $asset, 'fieldType' => 'CALLOUT']]]);
+        }
+
+        // "Types" is one of Google's approved structured-snippet headers.
+        $snippet = 'RMP Snippet · Types';
+        if (! $this->existing('asset', $snippet)) {
+            $asset = $this->mutate('assets', [['create' => [
+                'name' => $snippet,
+                'structuredSnippetAsset' => ['header' => 'Types', 'values' => [
+                    'Business Cards', 'Flyers', 'Stickers', 'Posters', 'Banners', 'Apparel',
+                ]],
+            ]]])[0];
+            $this->mutate('customerAssets', [['create' => ['asset' => $asset, 'fieldType' => 'STRUCTURED_SNIPPET']]]);
+        }
+
+        // Price table. Wrapped: a non-USD billing account can reject a USD price
+        // offering, and that must not abort the rest of the setup.
+        $prices = 'RMP Prices · Categories';
+        if (! $this->existing('asset', $prices)) {
+            try {
+                $offer = fn ($h, $d, $cents, $path) => [
+                    'header' => $h, 'description' => $d,
+                    'price' => ['amountMicros' => (string) ($cents * 10_000), 'currencyCode' => 'USD'],
+                    'finalUrl' => self::SITE.$path,
+                ];
+                $asset = $this->mutate('assets', [['create' => [
+                    'name' => $prices,
+                    'priceAsset' => [
+                        'type' => 'PRODUCT_CATEGORIES', 'priceQualifier' => 'FROM', 'languageCode' => 'en',
+                        'priceOfferings' => [
+                            $offer('Business Cards', '50 full-colour cards', 750, '/product/standard-business-cards'),
+                            $offer('Flyers', 'Full-colour marketing flyers', 1500, '/category/marketing-materials'),
+                            $offer('Stickers', 'Die-cut & sheet stickers', 900, '/category/stickers-labels'),
+                            $offer('Posters', 'Large-format posters', 1200, '/category/signs-banners'),
+                        ],
+                    ],
+                ]]])[0];
+                $this->mutate('customerAssets', [['create' => ['asset' => $asset, 'fieldType' => 'PRICE']]]);
+            } catch (\Throwable $e) {
+                $this->warn('  price asset skipped (currency/validation): '.$e->getMessage());
+            }
+        }
+
+        $this->info('account assets ready (callouts + structured snippet + prices)');
+    }
+
+    /**
+     * Sitelinks (the clickable sub-links) per Search campaign, plus a couple of
+     * image assets for the flagship one. Resolves each campaign by name so it links
+     * onto campaigns from an earlier run too; idempotent by asset name.
+     */
+    private function linkSearchAssets(): void
+    {
+        $bc = self::SITE.'/product/standard-business-cards';
+        $logo = self::SITE.'/logo-maker';
+        $qr = self::SITE.'/qr-code-generator';
+
+        $plan = [
+            'RMP — Business Cards (Search)' => [
+                'sitelinks' => [
+                    ['50 Cards for $7.50', $bc, 'Full-colour, premium stock', 'Designed online in minutes'],
+                    ['Upload Your Design', $bc, 'Print-ready artwork? Upload it', 'We print and ship it fast'],
+                    ['Premium Finishes', $bc, 'Matte, gloss and thick stocks', 'Make your card stand out'],
+                    ['Free Logo Maker', $logo, 'Design a free vector logo', 'Then print it on your cards'],
+                ],
+                'images' => [
+                    ['RMP Search Square', 'products/standard-business-cards.webp', 1200, 1200],
+                    ['RMP Search Landscape', 'heroes/home.webp', 1200, 628],
+                ],
+            ],
+            'RMP — QR Code Generator (Search)' => [
+                'sitelinks' => [
+                    ['Website QR Code', $qr, 'Link to your site instantly', 'Free SVG + PNG download'],
+                    ['vCard Contact QR', $qr, 'Scan to save your contact', 'Perfect for business cards'],
+                    ['QR on Business Cards', $bc, 'Print your code on cards', 'From $7.50, ships fast'],
+                    ['Free Logo Maker', $logo, 'Design a free vector logo', 'Pair it with your QR'],
+                ],
+                'images' => [],
+            ],
+            'RMP — AI Logo Maker (Search)' => [
+                'sitelinks' => [
+                    ['Free AI Logo Maker', $logo, 'Unlimited logos, no signup', 'SVG + PNG, commercial use'],
+                    ['Logo On Products', $logo, 'See it on cards & shirts', 'Preview instantly, free'],
+                    ['Business Cards $7.50', $bc, 'Put your new logo on cards', '50 cards, ships fast'],
+                    ['Free QR Code Maker', $qr, 'Make a matching QR code', 'Free SVG + PNG download'],
+                ],
+                'images' => [],
+            ],
+        ];
+
+        foreach ($plan as $cname => $cfg) {
+            $campaign = $this->existing('campaign', $cname);
+            if (! $campaign) {
+                continue; // not created (e.g. Shopping skipped) — nothing to link onto
+            }
+            foreach ($cfg['sitelinks'] as [$text, $url, $d1, $d2]) {
+                $aname = "RMP Sitelink · $cname · $text";
+                if ($this->existing('asset', $aname)) {
+                    continue;
+                }
+                $asset = $this->mutate('assets', [['create' => [
+                    'name' => $aname, 'finalUrls' => [$url],
+                    'sitelinkAsset' => ['linkText' => $text, 'description1' => $d1, 'description2' => $d2],
+                ]]])[0];
+                $this->mutate('campaignAssets', [['create' => [
+                    'campaign' => $campaign, 'asset' => $asset, 'fieldType' => 'SITELINK',
+                ]]]);
+            }
+            foreach ($cfg['images'] as [$iname, $path, $w, $h]) {
+                if ($this->existing('asset', $iname)) {
+                    continue; // created + linked on a prior run
+                }
+                if ($asset = $this->imageAsset($iname, $path, $w, $h)) {
+                    $this->mutate('campaignAssets', [['create' => [
+                        'campaign' => $campaign, 'asset' => $asset, 'fieldType' => 'IMAGE',
+                    ]]]);
+                }
+            }
+            $this->line("  assets linked: $cname (".count($cfg['sitelinks']).' sitelinks'.($cfg['images'] ? ' + images' : '').')');
         }
     }
 
