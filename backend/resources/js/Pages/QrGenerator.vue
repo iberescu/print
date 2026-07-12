@@ -348,24 +348,14 @@ const inputCls = 'mt-1.5 w-full rounded-xl border border-paper-300 bg-white px-3
                             </div>
                         </div>
 
-                        <div v-if="preparing" class="mt-6 rounded-2xl border border-paper-300 bg-paper-200/50 px-5 py-4">
-                            <div class="flex items-center justify-between gap-4">
-                                <p class="text-sm font-semibold text-ink">Preparing your print-ready {{ preparing.toUpperCase() }}…</p>
-                                <span class="h-4 w-4 shrink-0 animate-spin rounded-full border-2 border-brand-blue border-t-transparent"></span>
-                            </div>
-                            <div class="mt-2.5 h-2 overflow-hidden rounded-full bg-white">
-                                <div class="qr-prep-bar h-full rounded-full bg-brand-blue"></div>
-                            </div>
-                            <p class="mt-2 text-xs text-ink/50">Your download starts in a few seconds — meanwhile we're placing your brand on real printed products below.</p>
-                        </div>
-                        <div v-else class="mt-6 flex flex-wrap gap-3">
-                            <button type="button" :disabled="!payload" @click="download('svg')"
+                        <div class="mt-6 flex flex-wrap gap-3">
+                            <button type="button" :disabled="!payload || preparing" @click="download('svg')"
                                     class="rounded-full bg-brand-blue px-7 py-3 font-semibold text-white shadow-lg shadow-brand-blue/30 transition hover:bg-[#2f78e0] disabled:cursor-not-allowed disabled:opacity-40">
-                                ↓ Download SVG
+                                {{ preparing === 'svg' ? 'Preparing…' : '↓ Download SVG' }}
                             </button>
-                            <button type="button" :disabled="!payload" @click="download('png')"
+                            <button type="button" :disabled="!payload || preparing" @click="download('png')"
                                     class="rounded-full border border-brand-600 px-7 py-3 font-semibold text-brand-700 transition hover:bg-brand-50 disabled:cursor-not-allowed disabled:opacity-40">
-                                ↓ Download PNG
+                                {{ preparing === 'png' ? 'Preparing…' : '↓ Download PNG' }}
                             </button>
                         </div>
                         <p class="mt-3 text-xs text-ink/45">SVG scales to any print size. PNG exports at 1200 px. Static codes — they never expire.{{ logoUrl ? ' Logo added: error correction bumped to level H so it still scans.' : '' }}</p>
@@ -380,10 +370,22 @@ const inputCls = 'mt-1.5 w-full rounded-xl border border-paper-300 bg-white px-3
         </section>
 
         <!-- post-download gallery: their brand on products -->
-        <section v-if="galleryKey" id="qr-gallery" class="mx-auto max-w-7xl scroll-mt-24 px-6 py-10 sm:px-8">
+        <section v-if="galleryKey || preparing" id="qr-gallery" class="mx-auto max-w-7xl scroll-mt-52 px-6 py-10 sm:px-8">
             <div class="rounded-3xl border border-paper-300 bg-paper-200/50 p-6 sm:p-8">
-                <h2 class="font-display text-2xl font-bold tracking-tight sm:text-3xl">🎉 Your QR is ready — now see your brand printed</h2>
-                <p class="mt-2 max-w-2xl text-ink/60">While you were downloading, we placed your brand on real products — QR business cards, stickers, apparel and more. Every mockup below is printable today.</p>
+                <template v-if="preparing">
+                    <div class="flex items-center justify-between gap-4">
+                        <h2 class="font-display text-2xl font-bold tracking-tight sm:text-3xl">Preparing your file…</h2>
+                        <span class="h-5 w-5 shrink-0 animate-spin rounded-full border-2 border-brand-blue border-t-transparent"></span>
+                    </div>
+                    <p class="mt-2 max-w-2xl text-ink/60">Your {{ preparing.toUpperCase() }} download starts in a few seconds — meanwhile we're placing your brand on real printed products below.</p>
+                    <div class="mt-4 h-2 overflow-hidden rounded-full bg-white">
+                        <div class="qr-prep-bar h-full rounded-full bg-brand-blue"></div>
+                    </div>
+                </template>
+                <template v-else>
+                    <h2 class="font-display text-2xl font-bold tracking-tight sm:text-3xl">🎉 Your QR is ready — now see your brand printed</h2>
+                    <p class="mt-2 max-w-2xl text-ink/60">While you were downloading, we placed your brand on real products — QR business cards, stickers, apparel and more. Every mockup below is printable today.</p>
+                </template>
                 <div v-if="galleryWaiting" class="mt-6 grid place-items-center rounded-2xl border border-dashed border-paper-300 bg-white py-12 text-center">
                     <div>
                         <div class="mx-auto h-8 w-8 animate-spin rounded-full border-2 border-brand-600 border-t-transparent"></div>

@@ -20,7 +20,10 @@ const galleryKey = ref(null);
 const galleryItems = ref([]);   // [{key, img, label, product}] streamed from /pqsg/feed
 const galleryWaiting = ref(true);
 const galleryEmpty = ref(false);
+const preparing = ref(false);   // 10s "preparing your file" hold before the download lands
 let pqsgTimer = null;
+let prepareTimer = null;
+let lastUsedPath = null;        // re-downloading the same logo skips the hold
 
 const xsrf = () => decodeURIComponent((document.cookie.match(/(?:^|;\s*)XSRF-TOKEN=([^;]+)/) || [])[1] || '');
 
@@ -37,11 +40,26 @@ function downloadPng() {
     window.location.assign(`/logo-maker/download?path=${encodeURIComponent(chosen.value.path)}&format=png`);
 }
 
-// Hand the logo to the upsell engine FIRST (so the gallery is committed even
-// if the download hijacks navigation on quirky browsers), then download.
+// Press "Download & continue": hand the logo to the upsell engine, move the user
+// to the "your logo on products" section, and hold ~10s behind a "preparing your
+// file" bar (the engine gets a head start and the gallery builds during the wait)
+// before the file downloads. Re-downloading the same logo skips the theater.
 async function useLogo(logo) {
+    if (preparing.value) return; // a hold is already running
+    const fresh = logo.path !== lastUsedPath;
     adsConversion('logo'); // ads conversion: the free-tool funnel's key event
     chosen.value = logo;
+
+    if (!fresh) {
+        // same logo already captured — no theater, just re-download and jump down
+        document.getElementById('logo-gallery')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        return downloadSvg(logo);
+    }
+    lastUsedPath = logo.path;
+
+    // start the hold now so the CSS bar and the JS timer stay in sync
+    preparing.value = true;
+    prepareTimer = setTimeout(() => { preparing.value = false; downloadSvg(logo); }, 10000);
 
     try {
         const r = await fetch('/logo-maker/finish', {
@@ -55,11 +73,10 @@ async function useLogo(logo) {
             galleryWaiting.value = true;
             galleryEmpty.value = false;
             nextTick(() => initGallery(key));
-            setTimeout(() => document.getElementById('logo-gallery')?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 150);
         }
-    } catch (e) { /* gallery is a bonus — the download below still works */ }
+    } catch (e) { /* gallery is a bonus — the download still fires when the hold ends */ }
 
-    await downloadSvg(logo);
+    nextTick(() => setTimeout(() => document.getElementById('logo-gallery')?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 150));
 }
 
 // Same approach as the designer "your logo on products" step (Upsell.vue): poll
@@ -91,7 +108,7 @@ function initGallery(key) {
     };
     poll();
 }
-onBeforeUnmount(() => { if (pqsgTimer) clearTimeout(pqsgTimer); });
+onBeforeUnmount(() => { if (pqsgTimer) clearTimeout(pqsgTimer); if (prepareTimer) clearTimeout(prepareTimer); });
 
 const faq = [
     { q: 'Is the AI logo maker really free?', a: 'Yes — generating logo concepts is completely free and unlimited. You only pay if you order printed products carrying your new logo.' },
@@ -219,12 +236,24 @@ onBeforeUnmount(() => {
         </section>
 
         <!-- post-download gallery -->
-        <section v-if="galleryKey" id="logo-gallery" class="mx-auto max-w-7xl scroll-mt-24 px-6 pb-14 sm:px-8">
+        <section v-if="galleryKey || preparing" id="logo-gallery" class="mx-auto max-w-7xl scroll-mt-52 px-6 pb-14 sm:px-8">
             <div class="rounded-3xl border border-paper-300 bg-paper-200/50 p-6 sm:p-8">
-                <h2 class="font-display text-2xl font-bold tracking-tight sm:text-3xl">🎉 Your logo is ready — see it on real products</h2>
-                <p class="mt-2 max-w-2xl text-ink/60">Your SVG is downloading. Meanwhile we're placing your new logo on business cards, apparel, drinkware and more — every mockup below is printable today.</p>
+                <template v-if="preparing">
+                    <div class="flex items-center justify-between gap-4">
+                        <h2 class="font-display text-2xl font-bold tracking-tight sm:text-3xl">Preparing your file…</h2>
+                        <span class="h-5 w-5 shrink-0 animate-spin rounded-full border-2 border-brand-blue border-t-transparent"></span>
+                    </div>
+                    <p class="mt-2 max-w-2xl text-ink/60">Your download starts in a few seconds — meanwhile we're placing your new logo on real printed products below.</p>
+                    <div class="mt-4 h-2 overflow-hidden rounded-full bg-white">
+                        <div class="logo-prep-bar h-full rounded-full bg-brand-blue"></div>
+                    </div>
+                </template>
+                <template v-else>
+                    <h2 class="font-display text-2xl font-bold tracking-tight sm:text-3xl">🎉 Your logo is ready — see it on real products</h2>
+                    <p class="mt-2 max-w-2xl text-ink/60">Your SVG is downloading. Meanwhile we're placing your new logo on business cards, apparel, drinkware and more — every mockup below is printable today.</p>
+                </template>
 
-                <div v-if="chosen" class="mt-5 flex flex-wrap items-center gap-4 rounded-2xl border border-paper-300 bg-white p-4">
+                <div v-if="chosen && !preparing" class="mt-5 flex flex-wrap items-center gap-4 rounded-2xl border border-paper-300 bg-white p-4">
                     <img :src="chosen.url" alt="Your chosen logo" class="h-16 w-16 rounded-lg border border-paper-300 bg-white object-contain p-1.5" />
                     <div class="min-w-0 flex-1">
                         <p class="font-semibold text-ink">Your download bundle</p>
@@ -346,3 +375,13 @@ onBeforeUnmount(() => {
         </section>
     </StoreLayout>
 </template>
+
+<style scoped>
+.logo-prep-bar {
+    width: 0;
+    animation: logo-prep 10s linear forwards;
+}
+@keyframes logo-prep {
+    to { width: 100%; }
+}
+</style>
