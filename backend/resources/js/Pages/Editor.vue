@@ -962,10 +962,10 @@ function goToReview() {
                 <div class="flex items-center gap-1.5 shrink-0">
                     <input :value="sel.text" @input="setText($event.target.value)" @blur="selIsUrl && checkUrlField('design', sel.text)" :placeholder="selIsUrl ? 'yourcompany.com' : 'Edit text'"
                            class="w-32 rounded-md bg-white/10 px-2 py-1.5 text-sm text-paper placeholder:text-paper/40 focus:outline-none sm:w-44" />
-                    <span v-if="selIsUrl && urlTick.design.state" class="shrink-0" :title="urlTick.design.msg">
+                    <span v-if="selIsUrl" class="flex h-4 w-4 shrink-0 items-center justify-center" :title="urlTick.design.msg">
                         <svg v-if="urlTick.design.state === 'checking'" class="h-4 w-4 animate-spin text-paper/50" viewBox="0 0 24 24" fill="none"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.4 0 0 5.4 0 12h4z"/></svg>
                         <svg v-else-if="urlTick.design.state === 'valid'" class="h-4 w-4 text-emerald-400" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.7 5.3a1 1 0 010 1.4l-7.5 7.5a1 1 0 01-1.4 0L3.3 9.7a1 1 0 011.4-1.4l3.1 3.1 6.8-6.8a1 1 0 011.4 0z" clip-rule="evenodd"/></svg>
-                        <svg v-else class="h-4 w-4 text-red-400" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 8.6 5.7 4.3 4.3 5.7 8.6 10l-4.3 4.3 1.4 1.4L10 11.4l4.3 4.3 1.4-1.4L11.4 10l4.3-4.3-1.4-1.4z" clip-rule="evenodd"/></svg>
+                        <svg v-else-if="urlTick.design.state === 'invalid'" class="h-4 w-4 text-red-400" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 8.6 5.7 4.3 4.3 5.7 8.6 10l-4.3 4.3 1.4 1.4L10 11.4l4.3 4.3 1.4-1.4L11.4 10l4.3-4.3-1.4-1.4z" clip-rule="evenodd"/></svg>
                     </span>
                 </div>
                 <select :value="sel.fontFamily" class="rounded-md bg-white/10 px-2 py-1.5 text-sm focus:outline-none" @change="setFont($event.target.value)">
