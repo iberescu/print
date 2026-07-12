@@ -158,16 +158,14 @@ function offsetByBleed() {
 function fitLoadedToTrim(aw, ah) {
     if (!aw || !ah) return;
     const sx = trimW / aw, sy = trimH / ah;
-    if (Math.abs(sx - 1) >= 0.005 || Math.abs(sy - 1) >= 0.005) {
-        canvas.getObjects().forEach((o) => {
-            o.left = (o.left || 0) * sx;
-            o.top = (o.top || 0) * sy;
-            o.scaleX = (o.scaleX || 1) * sx;
-            o.scaleY = (o.scaleY || 1) * sy;
-            o.setCoords();
-        });
-    }
-    clampToTrim();
+    if (Math.abs(sx - 1) < 0.005 && Math.abs(sy - 1) < 0.005) return;
+    canvas.getObjects().forEach((o) => {
+        o.left = (o.left || 0) * sx;
+        o.top = (o.top || 0) * sy;
+        o.scaleX = (o.scaleX || 1) * sx;
+        o.scaleY = (o.scaleY || 1) * sy;
+        o.setCoords();
+    });
 }
 
 // Safety net: any object still spilling past the trim after the fit (e.g. a text
@@ -800,14 +798,18 @@ async function applyTemplate(ref) {
         const res = await fetch(`/design/template/${ref}/data`, { headers: { Accept: 'application/json' } });
         const { data } = await res.json();
         await canvas.loadFromJSON(data);
+        // Load the template's webfonts and re-measure each text FIRST — fabric computes
+        // IText widths with the fallback font at load time, so fitting/clamping before the
+        // real font settles uses stale (narrow) widths and lets wide lines clip.
+        await loadCanvasFonts();
+        canvas.getObjects().forEach((o) => { if (['i-text', 'text', 'textbox'].includes(o.type)) fitTextWidth(o); });
         if (data.aw && data.ah) fitLoadedToTrim(data.aw, data.ah); // author canvas -> real trim box
+        clampToTrim(); // catch any text still wider than the trim now that widths are real
         offsetByBleed(); // template art is authored at trim origin; nudge it inside the bleed
         markLogos();
         canvas.requestRenderAll();
         store[side.value] = canvas.toJSON(['rmpRole']);
         showTemplates.value = false;
-        // repaint once fonts settle (non-blocking, so the design shows immediately)
-        loadCanvasFonts().then(() => repaintFonts());
     } catch (e) { console.error('applyTemplate failed', e); }
     applyingTpl.value = false;
 }
