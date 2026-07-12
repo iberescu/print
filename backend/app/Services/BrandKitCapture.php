@@ -27,6 +27,7 @@ class BrandKitCapture
             'status'      => 'pending',
             'logo_url'    => $data['logoUrl'] ?? null,
             'logo_path'   => $this->diskPath($data['logoUrl'] ?? null),
+            'qr_path'     => $this->diskPath($data['qrUrl'] ?? null),
             'website'     => $data['website'] ?? null,
             'company'     => $data['company'] ?? null,
             'source_file' => $this->diskPath($data['sourceFile'] ?? null) ?? ($data['sourceFile'] ?? null),

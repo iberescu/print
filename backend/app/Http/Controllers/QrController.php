@@ -131,6 +131,7 @@ class QrController extends Controller
     public function capture(Request $request)
     {
         $data = $request->validate([
+            'qr'    => ['nullable', 'file', 'image', 'max:5120'], // the rendered QR image, placed on products
             'url'   => ['nullable', 'string', 'max:300'],
             'email' => ['nullable', 'email', 'max:200'],
             'logo'  => ['nullable', 'boolean'],
@@ -144,19 +145,43 @@ class QrController extends Controller
                 $website = $domain;
             }
         }
+        if ($website !== '' && ! preg_match('#^https?://#i', $website)) {
+            $website = 'https://'.$website;
+        }
 
+        // The centre logo, if the buyer uploaded one.
         $logoUrl = null;
         if ($request->boolean('logo') && ($p = session('qr.logo')) && Storage::disk('public')->exists($p)) {
             $logoUrl = Storage::disk('public')->url($p);
         }
 
-        if ($website === '' && ! $logoUrl) {
-            return response()->json(['key' => null]); // phone-only QR — nothing brandable
-        }
-        if ($website !== '' && ! preg_match('#^https?://#i', $website)) {
-            $website = 'https://'.$website;
+        // The rendered QR image itself — placed on the print products (with the logo
+        // when there is one, else on its own).
+        $qrUrl = null;
+        if ($request->hasFile('qr')) {
+            $qrPath = 'qr-captures/'.Str::uuid().'.png';
+            Storage::disk('public')->put($qrPath, file_get_contents($request->file('qr')->getRealPath()));
+            $qrUrl = Storage::disk('public')->url($qrPath);
         }
 
+        if (! $qrUrl && ! $logoUrl && $website === '') {
+            return response()->json(['key' => null]); // nothing brandable
+        }
+
+        // In-house engine: build "your [logo +] QR on products" — the SAME pipeline
+        // as the designer/logo-maker flows (BrandKitCapture → BuildBrandKit).
+        if (config('shop.upsell_engine') === 'internal') {
+            $key = app(\App\Services\BrandKitCapture::class)->capture([
+                'source'  => 'qr-maker',
+                'logoUrl' => $logoUrl,
+                'qrUrl'   => $qrUrl,
+                'website' => $website ?: null,
+            ]);
+
+            return response()->json(['key' => $key]);
+        }
+
+        // Legacy third-party engine.
         $key = (string) Str::uuid();
         session(['pqsg.key' => $key, 'pqsg.strong' => $key, 'pqsg.strong_at' => now()->toIso8601String()]);
         \App\Jobs\SendPqsgCapture::dispatchAfterResponse(

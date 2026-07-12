@@ -114,40 +114,45 @@ onBeforeUnmount(() => { if (prepareTimer) clearTimeout(prepareTimer); });
 // Every download sends the CURRENT url/logo — only exact repeats are skipped
 // (SVG then PNG of the same code shouldn't rebuild an identical gallery).
 const galleryKey = ref(null);
+const galleryItems = ref([]);   // [{key, img, label, product}] streamed from /pqsg/feed
 const galleryWaiting = ref(true);
 const galleryEmpty = ref(false);
 let pqsgTimer = null;
 let lastCaptureSig = null;
 
-/** Current brand signal as a comparable signature; null when nothing brandable. */
+/** The QR itself is the signal — the QR image (+ centre logo, if any) goes on the
+ *  products. Null only before there's a QR; the same QR+logo+style is deduped. */
 function brandSig() {
-    const v = f.value;
-    const url = type.value === 'url' ? v.url.trim() : (type.value === 'vcard' ? v.site.trim() : '');
-    const email = type.value === 'email' ? v.email.trim() : (type.value === 'vcard' ? v.email.trim() : '');
-    if (!url && !email && !logoUrl.value) return null; // phone-only — nothing brandable
-    return [url, email, logoUrl.value ? 'L' + logoV.value : ''].join('|');
+    if (!payload.value) return null;
+    return [payload.value, logoUrl.value ? 'L' + logoV.value : '', style.value, color.value].join('|');
 }
 
 async function registerCapture() {
-    const v = f.value;
-    const body = {
-        url: type.value === 'url' ? v.url.trim() : (type.value === 'vcard' ? v.site.trim() : ''),
-        email: (type.value === 'email' ? v.email.trim() : (type.value === 'vcard' ? v.email.trim() : '')) || undefined,
-        logo: !!logoUrl.value || undefined, // centre logo doubles as the brand signal
-    };
     const sig = brandSig();
-    if (sig === null) return;
-    if (sig === lastCaptureSig) return; // same brand — that gallery is already building
+    if (sig === null || sig === lastCaptureSig) return; // no QR yet, or same QR already building
     lastCaptureSig = sig;
     try {
+        // Send the RENDERED QR image so the engine can place it on the products.
+        const qrRes = await fetch(`/qr/image?data=${encodeURIComponent(payload.value)}&format=png&size=1200${styleParams.value}`, { headers: { Accept: 'image/png' } });
+        const qrBlob = await qrRes.blob();
+        const v = f.value;
+        const fd = new FormData();
+        fd.append('qr', qrBlob, 'qr.png');
+        const url = type.value === 'url' ? v.url.trim() : (type.value === 'vcard' ? v.site.trim() : '');
+        const email = type.value === 'email' ? v.email.trim() : (type.value === 'vcard' ? v.email.trim() : '');
+        if (url) fd.append('url', url);
+        if (email) fd.append('email', email);
+        if (logoUrl.value) fd.append('logo', '1'); // centre logo → logo on the merch products too
+
         const r = await fetch('/qr/capture', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json', Accept: 'application/json', 'X-XSRF-TOKEN': xsrf() },
-            body: JSON.stringify(body),
+            headers: { Accept: 'application/json', 'X-XSRF-TOKEN': xsrf() }, // no Content-Type — the browser sets the multipart boundary
+            body: fd,
         });
         const { key } = await r.json();
         if (key) {
-            galleryKey.value = key; // :key on the widget recreates it — no stale brand mixed in
+            galleryKey.value = key;
+            galleryItems.value = [];
             galleryWaiting.value = true;
             galleryEmpty.value = false;
             nextTick(() => initGallery(key));
@@ -158,46 +163,31 @@ async function registerCapture() {
     } catch (e) { lastCaptureSig = null; /* the gallery is a bonus — downloads still work; retry on next press */ }
 }
 
-const DISPLAY = ['business_card_qr_logo', 'roll_stickers', 'canvas', 'bottle', 'tshirt_words', 'bags',
-    'cloudlab_sortv2', 'glass_logo', 'sticker', 'cloudlab_pix', 'cloudlab_umbrela', 'cloudlab_usb',
-    'chocolate_bar', 'google_v2', 'office', 'hoodie'];
-
+// Same approach as the designer / logo-maker "your logo on products": poll our
+// internal feed proxy and render native product cards as the engine finishes each.
 function initGallery(key) {
-    if (pqsgTimer) clearTimeout(pqsgTimer); // a rebrand mid-poll must not race two polls
-    if (!document.querySelector('script[data-pqsg]')) {
-        const s = document.createElement('script');
-        s.src = props.pqsg.widgetSrc;
-        s.defer = true;
-        s.dataset.pqsg = '1';
-        document.head.appendChild(s);
-    }
-    const el = document.getElementById('pqsg-widget');
-    if (!el) return;
-    el.setAttribute('display-products', JSON.stringify(Object.fromEntries(DISPLAY.map((k) => [k, true]))));
-    el.addEventListener('pqsg:ready', () => { galleryWaiting.value = false; });
-    const settled = (e) => {
-        const wanted = new Set(DISPLAY);
-        const has = (e?.detail?.images || []).some((i) => wanted.has(i.product_key) || wanted.has(i.special_product_key));
-        if (!has) galleryEmpty.value = true;
-        galleryWaiting.value = false;
-    };
-    el.addEventListener('pqsg:complete', settled);
-    el.addEventListener('pqsg:timeout', settled);
-    el.addEventListener('pqsg:update', (e) => { if (e?.detail?.isComplete) settled(e); });
+    if (pqsgTimer) { clearTimeout(pqsgTimer); pqsgTimer = null; } // a rebrand mid-poll must not race two polls
+    galleryItems.value = [];
+    galleryWaiting.value = true;
+    galleryEmpty.value = false;
 
-    let tries = 0;
+    const deadline = Date.now() + 4 * 60 * 1000; // results stream ~1 min; give up quietly after 4
     const poll = async () => {
+        if (galleryKey.value !== key) return; // superseded by a newer QR
+        let done = false;
         try {
-            const r = await fetch(`/pqsg/status/${key}`, { headers: { Accept: 'application/json' } });
-            const { uuid } = await r.json();
-            if (uuid) {
-                el.setAttribute('uuid', uuid);
-                if (typeof el.start === 'function') el.start(uuid);
-                return;
-            }
-        } catch (e) { /* retry */ }
-        if (++tries < 15) pqsgTimer = setTimeout(poll, 2000);
-        else { galleryEmpty.value = true; galleryWaiting.value = false; }
+            const r = await fetch(`/pqsg/feed/${key}?set=merch`, { headers: { Accept: 'application/json' } });
+            const data = await r.json();
+            done = !!data.done;
+            if (data.images?.length) { galleryItems.value = data.images; galleryWaiting.value = false; }
+        } catch (e) { /* best-effort */ }
+
+        if (done || Date.now() > deadline) {
+            galleryWaiting.value = false;
+            if (!galleryItems.value.length) galleryEmpty.value = true;
+            return;
+        }
+        pqsgTimer = setTimeout(poll, 1000);
     };
     poll();
 }
@@ -405,7 +395,14 @@ const inputCls = 'mt-1.5 w-full rounded-xl border border-paper-300 bg-white px-3
                 </p>
                 <div v-show="!galleryWaiting && !galleryEmpty" class="mt-6 overflow-hidden rounded-2xl border border-paper-300 bg-white shadow-sm">
                     <div class="p-3 sm:p-4">
-                        <pq-smart-generator-widget id="pqsg-widget" :key="galleryKey" :api-base="pqsg.apiBase" grid="justified" insert-mode="append" gap="14" justified-row-height="210" class="block w-full"></pq-smart-generator-widget>
+                        <div class="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
+                            <div v-for="it in galleryItems" :key="it.key" class="overflow-hidden rounded-xl border border-paper-300 bg-white">
+                                <div class="aspect-square bg-white">
+                                    <img :src="it.img" :alt="it.label || 'Your QR code on a product'" loading="lazy" class="h-full w-full object-cover" />
+                                </div>
+                                <p v-if="it.label" class="truncate px-2 py-1.5 text-center text-xs font-medium text-ink/70">{{ it.label }}</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

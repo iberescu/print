@@ -30,9 +30,21 @@ class GenerateProductImage implements ShouldQueue
     public function handle(GeminiClient $gemini): void
     {
         $kit = BrandKit::where('key', $this->key)->first();
-        $logo = $kit ? $this->logoInput($kit) : null;
-        if (! $kit || ! $logo) {
+        if (! $kit) {
             return;
+        }
+
+        // Composite the images this product's scene calls for (logo, QR, or both).
+        $inputs = $this->spec['inputs'] ?? ['logo'];
+        $imgs = [];
+        if (in_array('logo', $inputs, true) && ($logo = $this->logoInput($kit))) {
+            $imgs[] = $logo;
+        }
+        if (in_array('qr', $inputs, true) && ($qr = $this->qrInput($kit))) {
+            $imgs[] = $qr;
+        }
+        if (! $imgs) {
+            return; // nothing to place
         }
 
         $summary = $kit->summary ?? [];
@@ -42,7 +54,7 @@ class GenerateProductImage implements ShouldQueue
                 'company'  => $kit->company ?: ($summary['company'] ?? ''),
                 'colors'   => $summary['colors'] ?? [],
             ]),
-            [$logo],
+            $imgs,
             config('shop.internal_engine.image_model'),
         );
 

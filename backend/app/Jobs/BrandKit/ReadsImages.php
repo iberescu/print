@@ -38,4 +38,10 @@ trait ReadsImages
     {
         return $this->imageInput($kit->logo_path) ?? $this->imageInput($kit->logo_url);
     }
+
+    /** The captured QR-code image as an inline image (QR builder flow), if any. */
+    protected function qrInput(BrandKit $kit): ?array
+    {
+        return $this->imageInput($kit->qr_path);
+    }
 }

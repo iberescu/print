@@ -105,6 +105,49 @@ class BrandKitSpec
     }
 
     /**
+     * The QR-builder "your [logo +] QR on products" set. With a logo: the merch
+     * roster (logo) plus the paper set carrying logo + QR. Without a logo: just the
+     * paper set carrying the QR. Paper = business card, letterhead, flyer, poster.
+     *
+     * @return array<int,array<string,mixed>>
+     */
+    public static function qrProducts(bool $hasLogo): array
+    {
+        $paper = self::qrPaperProducts($hasLogo);
+        if (! $hasLogo) {
+            return $paper; // QR only → paper products only
+        }
+        // logo + QR: merch roster (logo) minus letterhead (it moves to the paper set), plus paper (logo+QR)
+        $merch = array_values(array_filter(self::products(), fn ($p) => ($p['key'] ?? '') !== 'letterhead'));
+
+        return array_merge($merch, $paper);
+    }
+
+    /** Paper/print products carrying the QR code (and the logo when present). */
+    private static function qrPaperProducts(bool $hasLogo): array
+    {
+        $inputs = $hasLogo ? ['logo', 'qr'] : ['qr'];
+        $carry = $hasLogo
+            ? 'both the provided logo (as the brand mark) and the provided QR code placed neatly (e.g. a '
+                .'corner or beside the contact details)'
+            : 'the provided QR code, placed prominently and clearly';
+        $scene = fn (string $desc) => "A clean, print-ready studio mockup of {$desc}, carrying {$carry}, with "
+            .'tasteful placeholder text (company name / contact / a short call to action). Realistic lighting, '
+            .'no clutter.';
+
+        return [
+            ['key' => 'qr-businesscard', 'label' => 'Business card', 'slug' => 'matte-business-cards', 'decoration' => 'custom', 'inputs' => $inputs,
+                'prompt' => $scene('a professional business card lying flat on a light natural-wood table, photographed straight down')],
+            ['key' => 'qr-letterhead', 'label' => 'Letterhead', 'slug' => 'company-letterhead', 'decoration' => 'custom', 'inputs' => $inputs,
+                'prompt' => $scene('an A4 letterhead sheet on a light desk, photographed straight down, with a header/footer layout and faint placeholder body-text lines')],
+            ['key' => 'qr-flyer', 'label' => 'Flyer', 'slug' => 'flyers', 'decoration' => 'custom', 'inputs' => $inputs,
+                'prompt' => $scene('a marketing flyer on a light surface, photographed straight down, with a bold headline')],
+            ['key' => 'qr-poster', 'label' => 'Poster', 'slug' => 'custom-posters', 'decoration' => 'custom', 'inputs' => $inputs,
+                'prompt' => $scene('a poster mounted flat on a clean light wall, photographed straight on, with a strong headline')],
+        ];
+    }
+
+    /**
      * Build the merch image prompt for a product spec. $ctx carries brand data
      * from the crawl summary (keywords/company/colors) for the custom scenes.
      *
@@ -124,14 +167,24 @@ class BrandKitSpec
                 $prompt = str_replace('{keywords}', $words, $prompt);
             }
 
-            $fidelity = match ($p['logo_render'] ?? 'full') {
-                'white' => 'Keep the logo\'s exact shapes, letterforms and proportions — do NOT redraw, '
-                    .'re-letter or distort it — but render it in solid WHITE (a clean single-colour white '
-                    .'version of the logo).',
-                default => $logoFidelity,
-            };
+            // What the scene composites — the logo, the QR code, or both.
+            $inputs = $p['inputs'] ?? ['logo'];
+            $clauses = [];
+            if (in_array('logo', $inputs, true)) {
+                $clauses[] = match ($p['logo_render'] ?? 'full') {
+                    'white' => 'Keep the logo\'s exact shapes, letterforms and proportions — do NOT redraw, '
+                        .'re-letter or distort it — but render it in solid WHITE (a clean single-colour white '
+                        .'version of the logo).',
+                    default => $logoFidelity,
+                };
+            }
+            if (in_array('qr', $inputs, true)) {
+                $clauses[] = 'Reproduce the provided QR code EXACTLY as supplied — keep it perfectly square, '
+                    .'high-contrast and fully unaltered so it stays scannable; do NOT redraw, recolour, crop, '
+                    .'rotate or distort it.';
+            }
 
-            return $prompt.' '.$fidelity.' No watermark and no random gibberish text.';
+            return $prompt.' '.implode(' ', $clauses).' No watermark and no random gibberish text.';
         }
 
         $placement = $p['placement'] ?? 'centred';

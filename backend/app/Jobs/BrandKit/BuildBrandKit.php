@@ -58,6 +58,20 @@ class BuildBrandKit implements ShouldQueue
         $hasLogo = (bool) ($kit->logo_path || $kit->logo_url);
         $hasUrl = (bool) $kit->website;
 
+        // QR builder flow: "your [logo +] QR on products". Products only — the paper
+        // set carries the QR (plus the logo when there is one), merch carries the
+        // logo. No crawl/summary/ads (the gallery only shows the product mockups).
+        if ($kit->qr_path) {
+            $kit->markStage('products', 'running');
+            foreach (BrandKitSpec::qrProducts($hasLogo) as $p) {
+                GenerateProductImage::dispatch($this->key, $p);
+            }
+            $kit->markStage('summary', 'skipped');
+            $kit->markStage('ads', 'skipped');
+
+            return;
+        }
+
         // 2. Product mockups — need only the logo, start now (parallel).
         if ($hasLogo) {
             $kit->markStage('products', 'running');
