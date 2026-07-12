@@ -67,19 +67,6 @@ class BrandKitSpec
                     .'photorealistic, 8K.',
             ],
             [
-                'key' => 'wordcloud', 'label' => 'Word-cloud wall art', 'slug' => 'canvas-prints', 'decoration' => 'custom',
-                'prompt' => 'A LARGE gallery-wrapped canvas (a big statement piece that fills most of the wall) '
-                    .'hanging on a clean white wall, photographed straight on. A dense word cloud COMPLETELY '
-                    .'FILLS the shape of the provided logo. IMPORTANT: if the logo has a distinct icon or '
-                    .'symbol alongside text, fill ONLY that icon/shape with the words and OMIT the '
-                    .'text/wordmark; only if the logo is purely text (no icon), fill the text shape. Pack it '
-                    .'DENSELY with ABOUT 100 words in total — a few large focal words and MANY small ones — at '
-                    .'varied orientations (horizontal, diagonal AND vertical, rotated at assorted angles) in '
-                    .'random positions, leaving almost no empty space inside the shape. Use ONLY these brand '
-                    .'words, repeating them at different sizes to reach ~100 words: {keywords}. Set them in the '
-                    .'brand colours; keep the overall shape clearly recognisable.',
-            ],
-            [
                 'key' => 'pen', 'label' => 'Pen', 'slug' => 'custom-pens', 'decoration' => 'custom',
                 'prompt' => 'A studio product shot of a single sleek promotional pen lying HORIZONTALLY '
                     .'(landscape) on a light natural-wood table with a soft shadow. Show the ENTIRE pen fully '
