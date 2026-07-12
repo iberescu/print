@@ -815,7 +815,6 @@ async function applyTemplate(ref) {
         canvas.requestRenderAll();
         store[side.value] = canvas.toJSON(['rmpRole']);
         showTemplates.value = false;
-        if (typeof window !== 'undefined') { window.__rmpCanvas = canvas; window.__rmpTrim = { trimW, trimH, bleed }; } // TEMP diag
     } catch (e) { console.error('applyTemplate failed', e); }
     applyingTpl.value = false;
 }
