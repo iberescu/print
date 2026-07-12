@@ -17,16 +17,12 @@ const props = defineProps({
 
 const chosen = ref(null);
 const galleryKey = ref(null);
+const galleryItems = ref([]);   // [{key, img, label, product}] streamed from /pqsg/feed
 const galleryWaiting = ref(true);
 const galleryEmpty = ref(false);
 let pqsgTimer = null;
 
 const xsrf = () => decodeURIComponent((document.cookie.match(/(?:^|;\s*)XSRF-TOKEN=([^;]+)/) || [])[1] || '');
-
-// The 16-product merch set, same allow-list as the funnel gallery step.
-const DISPLAY = ['business_card_qr_logo', 'roll_stickers', 'canvas', 'bottle', 'tshirt_words', 'bags',
-    'cloudlab_sortv2', 'glass_logo', 'sticker', 'cloudlab_pix', 'cloudlab_umbrela', 'cloudlab_usb',
-    'chocolate_bar', 'google_v2', 'office', 'hoodie'];
 
 // The server sends the file as Content-Disposition: attachment — browsers
 // (including iOS Safari, which navigates away from anchor/blob downloads)
@@ -66,45 +62,32 @@ async function useLogo(logo) {
     await downloadSvg(logo);
 }
 
+// Same approach as the designer "your logo on products" step (Upsell.vue): poll
+// our internal feed proxy and render native product cards as the engine finishes
+// each mockup. The feed already returns the merch set filtered server-side.
 function initGallery(key) {
-    if (!document.querySelector('script[data-pqsg]')) {
-        const s = document.createElement('script');
-        s.src = props.pqsg.widgetSrc;
-        s.defer = true;
-        s.dataset.pqsg = '1';
-        document.head.appendChild(s);
-    }
-    const el = document.getElementById('pqsg-widget');
-    if (!el) return;
-    el.setAttribute('display-products', JSON.stringify(Object.fromEntries(DISPLAY.map((k) => [k, true]))));
-    el.addEventListener('pqsg:ready', () => { galleryWaiting.value = false; });
-    const settled = (e) => {
-        const wanted = new Set(DISPLAY);
-        const has = (e?.detail?.images || []).some((i) => wanted.has(i.product_key) || wanted.has(i.special_product_key));
-        if (!has) galleryEmpty.value = true;
-        galleryWaiting.value = false;
-    };
-    el.addEventListener('pqsg:complete', settled);
-    el.addEventListener('pqsg:timeout', settled);
-    el.addEventListener('pqsg:update', (e) => { if (e?.detail?.isComplete) settled(e); });
+    galleryItems.value = [];
+    galleryWaiting.value = true;
+    galleryEmpty.value = false;
+    if (pqsgTimer) { clearTimeout(pqsgTimer); pqsgTimer = null; }
 
-    let tries = 0;
+    const deadline = Date.now() + 4 * 60 * 1000; // results stream ~1 min; give up quietly after 4
     const poll = async () => {
+        if (galleryKey.value !== key) return; // superseded by a newer selection
+        let done = false;
         try {
-            const r = await fetch(`/pqsg/status/${key}`, { headers: { Accept: 'application/json' } });
-            const { uuid } = await r.json();
-            if (uuid) {
-                el.setAttribute('uuid', uuid);
-                if (typeof el.start === 'function') el.start(uuid);
-                return;
-            }
-        } catch (e) { /* retry */ }
-        if (++tries < 15) {
-            pqsgTimer = setTimeout(poll, 2000);
-        } else {
-            galleryEmpty.value = true;
+            const r = await fetch(`/pqsg/feed/${key}?set=merch`, { headers: { Accept: 'application/json' } });
+            const data = await r.json();
+            done = !!data.done;
+            if (data.images?.length) { galleryItems.value = data.images; galleryWaiting.value = false; }
+        } catch (e) { /* best-effort */ }
+
+        if (done || Date.now() > deadline) {
             galleryWaiting.value = false;
+            if (!galleryItems.value.length) galleryEmpty.value = true;
+            return;
         }
+        pqsgTimer = setTimeout(poll, 1000); // 1s — show every result the moment it exists
     };
     poll();
 }
@@ -270,7 +253,14 @@ onBeforeUnmount(() => {
                         </span>
                     </div>
                     <div class="p-3 sm:p-4">
-                        <pq-smart-generator-widget id="pqsg-widget" :api-base="pqsg.apiBase" grid="justified" insert-mode="append" gap="14" justified-row-height="210" class="block w-full"></pq-smart-generator-widget>
+                        <div class="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
+                            <div v-for="it in galleryItems" :key="it.key" class="overflow-hidden rounded-xl border border-paper-300 bg-white">
+                                <div class="aspect-square bg-white">
+                                    <img :src="it.img" :alt="it.label || 'Your logo on a product'" loading="lazy" class="h-full w-full object-cover" />
+                                </div>
+                                <p v-if="it.label" class="truncate px-2 py-1.5 text-center text-xs font-medium text-ink/70">{{ it.label }}</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

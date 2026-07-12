@@ -180,9 +180,23 @@ class LogoController extends Controller
         $data = $request->validate(['path' => ['required', 'string', 'regex:/^logos\/[0-9a-f-]+\.svg$/']]);
         abort_unless(Storage::disk('public')->exists($data['path']), 404);
 
-        // Fresh key per finished logo (the key is the engine's idempotency key —
-        // reuse would replay the previous capture); marked strong so a later
-        // placeholder-design review reuses THIS capture in the funnel.
+        // In-house engine: build a BrandKit so the buyer sees their logo on products —
+        // the SAME path the designer "your logo on products" step uses (BrandKitCapture
+        // → BuildBrandKit → product mockups). The engine works on rasters, so hand it
+        // the rasterised PNG of the chosen SVG logo. capture() sets the session key.
+        if (config('shop.upsell_engine') === 'internal') {
+            $pngPath = $this->raster($data['path']);
+            $key = app(\App\Services\BrandKitCapture::class)->capture([
+                'source'  => 'logo-maker',
+                'logoUrl' => url(Storage::disk('public')->url($pngPath)),
+            ]);
+
+            return response()->json(['key' => $key]);
+        }
+
+        // Legacy third-party engine. Fresh key per finished logo (the key is the
+        // engine's idempotency key — reuse would replay the previous capture);
+        // marked strong so a later placeholder-design review reuses THIS capture.
         $key = (string) Str::uuid();
         session(['pqsg.key' => $key, 'pqsg.strong' => $key, 'pqsg.strong_at' => now()->toIso8601String()]);
 
