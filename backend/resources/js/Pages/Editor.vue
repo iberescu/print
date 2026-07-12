@@ -158,13 +158,36 @@ function offsetByBleed() {
 function fitLoadedToTrim(aw, ah) {
     if (!aw || !ah) return;
     const sx = trimW / aw, sy = trimH / ah;
-    if (Math.abs(sx - 1) < 0.005 && Math.abs(sy - 1) < 0.005) return;
+    if (Math.abs(sx - 1) >= 0.005 || Math.abs(sy - 1) >= 0.005) {
+        canvas.getObjects().forEach((o) => {
+            o.left = (o.left || 0) * sx;
+            o.top = (o.top || 0) * sy;
+            o.scaleX = (o.scaleX || 1) * sx;
+            o.scaleY = (o.scaleY || 1) * sy;
+            o.setCoords();
+        });
+    }
+    clampToTrim();
+}
+
+// Safety net: any object still spilling past the trim after the fit (e.g. a text
+// line the generator authored too wide) is scaled down in place so nothing clips.
+function clampToTrim() {
     canvas.getObjects().forEach((o) => {
-        o.left = (o.left || 0) * sx;
-        o.top = (o.top || 0) * sy;
-        o.scaleX = (o.scaleX || 1) * sx;
-        o.scaleY = (o.scaleY || 1) * sy;
-        o.setCoords();
+        const w = o.getScaledWidth ? o.getScaledWidth() : (o.width || 0) * (o.scaleX || 1);
+        const h = o.getScaledHeight ? o.getScaledHeight() : (o.height || 0) * (o.scaleY || 1);
+        if (w <= 0 || h <= 0) return;
+        let bx = o.left || 0, by = o.top || 0;
+        if (o.originX === 'center') bx -= w / 2; else if (o.originX === 'right') bx -= w;
+        if (o.originY === 'center') by -= h / 2; else if (o.originY === 'bottom') by -= h;
+        let s = 1;
+        if (bx + w > trimW) s = Math.min(s, (trimW - Math.max(0, bx)) / w);
+        if (by + h > trimH) s = Math.min(s, (trimH - Math.max(0, by)) / h);
+        if (s > 0 && s < 0.997) {
+            o.scaleX = (o.scaleX || 1) * s;
+            o.scaleY = (o.scaleY || 1) * s;
+            o.setCoords();
+        }
     });
 }
 
