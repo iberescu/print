@@ -14,6 +14,10 @@ defineProps({
 
 const remove = (id) => router.post(`/cart/remove/${id}`, {}, { preserveScroll: true });
 
+// Upsell "your logo on" items aren't editable in the designer — pressing Edit reveals a
+// note that the design is finalised after the order. Tracks which line's note is open.
+const editNote = ref(null);
+
 const promo = ref('');
 const applying = ref(false);
 const applyPromo = () => {
@@ -66,9 +70,11 @@ const editHref = (it) => {
                                 <span v-for="(val, key) in it.options" :key="key" class="rounded-full bg-paper-200 px-2.5 py-0.5 text-xs text-ink/70">{{ key }}: {{ val }}</span>
                                 <span v-if="it.design" class="rounded-full bg-brand-50 px-2.5 py-0.5 text-xs font-medium text-brand-700">✎ {{ it.design.mode === 'upload' ? 'Uploaded artwork' : 'Custom design' }}</span>
                             </div>
-                            <div class="mt-auto flex items-center gap-4 pt-2">
+                            <div class="mt-auto flex flex-wrap items-center gap-x-4 gap-y-1 pt-2">
                                 <Link v-if="it.design?.project" :href="editHref(it)" class="text-sm font-medium text-brand-700 transition hover:underline">✎ Edit design</Link>
+                                <button v-else-if="it.upsell" type="button" class="text-sm font-medium text-brand-700 transition hover:underline" @click="editNote = editNote === it.id ? null : it.id">✎ Edit</button>
                                 <button class="text-sm text-ink/45 transition hover:text-red-600" @click="remove(it.id)">Remove</button>
+                                <span v-if="editNote === it.id" class="w-full text-xs text-ink/55">You can edit this product after your order is placed — our team will follow up to finalise the design.</span>
                             </div>
                         </div>
                     </div>

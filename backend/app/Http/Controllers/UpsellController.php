@@ -136,6 +136,7 @@ class UpsellController extends Controller
             'option_value_ids' => $quote['option_value_ids'],
             'design'           => $brand ? ['preview' => null, 'mode' => 'design'] : null,
             'brand'            => $brand ?: null,
+            'upsell'           => (bool) $mockup, // a "your logo on" mockup product — editable after the order
         ]);
 
         return redirect()->route('upsell.show')->with('success', "“{$product->name}” added.");
