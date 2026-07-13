@@ -118,11 +118,16 @@ class UpsellController extends Controller
         $quote = $pricing->quote($product, null, []);
         $brand = $data['brand'] ?? null;
 
+        // Prefer the customer's "your logo on" mockup for this product (from the session
+        // brand kit) so the cart shows their branded preview, not the stock product photo.
+        $mockup = collect(\App\Support\LogoOnProducts::forCurrentSession())
+            ->firstWhere('slug', $product->slug)['img'] ?? null;
+
         $this->cart->add([
             'product_id'       => $product->id,
             'name'             => $product->name,
             'slug'             => $product->slug,
-            'image'            => $this->img($product->image_path),
+            'image'            => $mockup ?: $this->img($product->image_path),
             'quantity'         => $quote['quantity'],
             'quantity_id'      => $quote['quantity_id'],
             'unit_price'       => $quote['unit_price'],
