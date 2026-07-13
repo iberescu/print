@@ -28,7 +28,7 @@ class BusinessCardPricingSeeder extends Seeder
     ];
 
     /** Cheapest-in-market selling price by quantity for the affordable line. */
-    private const HEADLINE = [50 => 6.99, 100 => 9.49, 500 => 15.99];
+    private const HEADLINE = [50 => 6.85, 100 => 9.49, 500 => 15.99];
 
     public function run(): void
     {
