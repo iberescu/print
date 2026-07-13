@@ -1,6 +1,6 @@
 <script setup>
-import { Head } from '@inertiajs/vue3';
-import { ref, onMounted, onBeforeUnmount, nextTick } from 'vue';
+import { Head, usePage } from '@inertiajs/vue3';
+import { ref, computed, onMounted, onBeforeUnmount, nextTick } from 'vue';
 import StoreLayout from '../Layouts/StoreLayout.vue';
 import NewsletterSignup from '../Components/NewsletterSignup.vue';
 import LogoBuilder from '../Components/LogoBuilder.vue';
@@ -14,7 +14,16 @@ const props = defineProps({
     colors: { type: Array, default: () => [] },
     samples: { type: Array, default: () => [] },
     pqsg: { type: Object, default: () => ({}) },
+    captureKey: { type: String, default: null },
 });
+
+const isAuthed = computed(() => !!usePage().props.auth?.user);
+
+// Sign-in required to download: stash the file URL and send them to login (returning here after).
+function gateToLogin(href) {
+    sessionStorage.setItem('rmp.dl.logo', href);
+    window.location.href = '/login?next=' + encodeURIComponent('/logo-maker');
+}
 
 const chosen = ref(null);
 const galleryKey = ref(null);
@@ -33,12 +42,16 @@ const xsrf = () => decodeURIComponent((document.cookie.match(/(?:^|;\s*)XSRF-TOK
 // show the save prompt and keep the page alive. The PNG rasterises
 // server-side too: in-browser SVG→canvas fails silently on old iOS WebKit.
 function downloadSvg(logo) {
-    window.location.assign(`/logo-maker/download?path=${encodeURIComponent(logo.path)}`);
+    const href = `/logo-maker/download?path=${encodeURIComponent(logo.path)}`;
+    if (!isAuthed.value) return gateToLogin(href);
+    window.location.assign(href);
 }
 
 function downloadPng() {
     if (!chosen.value) return;
-    window.location.assign(`/logo-maker/download?path=${encodeURIComponent(chosen.value.path)}&format=png`);
+    const href = `/logo-maker/download?path=${encodeURIComponent(chosen.value.path)}&format=png`;
+    if (!isAuthed.value) return gateToLogin(href);
+    window.location.assign(href);
 }
 
 // Press "Download & continue": hand the logo to the upsell engine, move the user
@@ -50,6 +63,19 @@ async function useLogo(logo) {
     const fresh = logo.path !== lastUsedPath;
     adsConversion('logo'); // ads conversion: the free-tool funnel's key event
     chosen.value = logo;
+
+    // Sign-in required to download — kick off the "your logo on" generation (stored in
+    // the session), then gate to login and resume the download + gallery on return.
+    if (!isAuthed.value) {
+        try {
+            await fetch('/logo-maker/finish', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', Accept: 'application/json', 'X-XSRF-TOKEN': xsrf() },
+                body: JSON.stringify({ path: logo.path }),
+            });
+        } catch (e) { /* download still resumes after login */ }
+        return gateToLogin(`/logo-maker/download?path=${encodeURIComponent(logo.path)}`);
+    }
 
     if (!fresh) {
         // same logo already captured — no theater, just re-download and jump down
@@ -148,6 +174,20 @@ const features = [
 let ldEl = null;
 let prevDesc = null;
 onMounted(() => {
+    // Just signed in from the download gate: resume the file download + the gallery
+    // that generated during login.
+    const pending = sessionStorage.getItem('rmp.dl.logo');
+    if (isAuthed.value && pending) {
+        sessionStorage.removeItem('rmp.dl.logo');
+        setTimeout(() => window.location.assign(pending), 500);
+    }
+    if (props.captureKey) {
+        galleryKey.value = props.captureKey;
+        galleryWaiting.value = true;
+        galleryEmpty.value = false;
+        nextTick(() => initGallery(props.captureKey));
+    }
+
     const meta = document.querySelector('meta[name="description"]');
     const desc = 'Free AI logo maker: generate professional vector logos in seconds, download the SVG and print it on business cards, shirts, mugs and more with RunMyPrint.';
     if (meta) { prevDesc = meta.getAttribute('content'); meta.setAttribute('content', desc); }

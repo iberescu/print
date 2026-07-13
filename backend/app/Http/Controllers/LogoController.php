@@ -48,6 +48,7 @@ class LogoController extends Controller
             ])->values()->all();
 
         return Inertia::render('LogoMaker', [
+            'captureKey'    => session('pqsg.key'), // resume the gallery after a login-gated download
             'heroImage'     => \App\Support\Img::url('heroes/logo-maker'),
             'showcaseImage' => \App\Support\Img::url('promos/logo-maker-showcase'),
             'styles'        => array_keys(self::STYLES),

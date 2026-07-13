@@ -28,13 +28,33 @@ class AuthController extends Controller
         }
     }
 
-    public function showLogin()
+    /** A safe local path to return to after auth (the ?next= gate on the free tools). */
+    private function nextUrl(Request $request): ?string
+    {
+        $next = $request->input('next') ?: session('auth.next');
+
+        return is_string($next) && preg_match('#^/[^/]#', $next) ? $next : null;
+    }
+
+    /** Redirect after a successful auth: the gated ?next= path, else the usual intended/account. */
+    private function afterAuth(Request $request)
+    {
+        $next = $this->nextUrl($request);
+        $request->session()->forget('auth.next');
+
+        return $next ? redirect()->to($next) : redirect()->intended(route('account'));
+    }
+
+    public function showLogin(Request $request)
     {
         if (Auth::check()) {
             return redirect()->route('account');
         }
 
-        return Inertia::render('Auth/Login', ['googleEnabled' => $this->googleEnabled()]);
+        return Inertia::render('Auth/Login', [
+            'googleEnabled' => $this->googleEnabled(),
+            'next'          => $this->nextUrl($request),
+        ]);
     }
 
     public function login(Request $request)
@@ -51,16 +71,19 @@ class AuthController extends Controller
         $request->session()->regenerate();
         $this->claimDesigns();
 
-        return redirect()->intended(route('account'));
+        return $this->afterAuth($request);
     }
 
-    public function showRegister()
+    public function showRegister(Request $request)
     {
         if (Auth::check()) {
             return redirect()->route('account');
         }
 
-        return Inertia::render('Auth/Register', ['googleEnabled' => $this->googleEnabled()]);
+        return Inertia::render('Auth/Register', [
+            'googleEnabled' => $this->googleEnabled(),
+            'next'          => $this->nextUrl($request),
+        ]);
     }
 
     public function register(Request $request)
@@ -82,12 +105,17 @@ class AuthController extends Controller
         $request->session()->regenerate();
         $this->claimDesigns();
 
-        return redirect()->intended(route('account'));
+        return $this->afterAuth($request);
     }
 
-    public function redirectToGoogle()
+    public function redirectToGoogle(Request $request)
     {
         abort_unless($this->googleEnabled(), 404);
+
+        // survive the OAuth round trip so we can return to the gated tool afterwards
+        if ($next = $this->nextUrl($request)) {
+            session(['auth.next' => $next]);
+        }
 
         return Socialite::driver('google')->redirect();
     }
@@ -121,7 +149,7 @@ class AuthController extends Controller
         $request->session()->regenerate();
         $this->claimDesigns();
 
-        return redirect()->intended(route('account'));
+        return $this->afterAuth($request);
     }
 
     public function logout(Request $request)

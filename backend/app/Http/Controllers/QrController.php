@@ -34,6 +34,8 @@ class QrController extends Controller
     public function show()
     {
         return Inertia::render('QrGenerator', [
+            // after a login-gated download, resume the "your logo on" gallery generated during login
+            'captureKey' => session('pqsg.key'),
             'pqsg' => [
                 'apiBase'   => config('shop.pqsg.api_base'),
                 'widgetSrc' => config('shop.pqsg.widget_src'),

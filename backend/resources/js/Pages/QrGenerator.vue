@@ -1,13 +1,16 @@
 <script setup>
 import { ref, computed, onMounted, onBeforeUnmount, nextTick } from 'vue';
-import { Head } from '@inertiajs/vue3';
+import { Head, usePage } from '@inertiajs/vue3';
 import StoreLayout from '../Layouts/StoreLayout.vue';
 import NewsletterSignup from '../Components/NewsletterSignup.vue';
 
 const props = defineProps({
     pqsg: { type: Object, default: () => ({}) },
     useCases: { type: Object, default: () => ({}) },
+    captureKey: { type: String, default: null },
 });
+
+const isAuthed = computed(() => !!usePage().props.auth?.user);
 
 // ---- payload building --------------------------------------------------------
 const TYPES = [
@@ -97,11 +100,19 @@ const previewSrc = computed(() => payload.value
 const preparing = ref(null); // 'svg' | 'png' while the hold runs
 let prepareTimer = null;
 
-function download(format) {
+async function download(format) {
     if (!payload.value || preparing.value) return;
+    const href = `/qr/image?data=${encodeURIComponent(payload.value)}&format=${format}&size=1200&download=1${styleParams.value}`;
+    // Sign-in required to download — fire the "your logo on" generation first so the
+    // products build while they authenticate, then resume the download on return.
+    if (!isAuthed.value) {
+        await registerCapture();
+        sessionStorage.setItem('rmp.dl.qr', href);
+        window.location.href = '/login?next=' + encodeURIComponent('/qr-code-generator');
+        return;
+    }
     const fresh = brandSig() !== null && brandSig() !== lastCaptureSig;
     registerCapture();
-    const href = `/qr/image?data=${encodeURIComponent(payload.value)}&format=${format}&size=1200&download=1${styleParams.value}`;
     if (!fresh) return window.location.assign(href);
     preparing.value = format;
     prepareTimer = setTimeout(() => {
@@ -198,7 +209,7 @@ onBeforeUnmount(() => { if (pqsgTimer) clearTimeout(pqsgTimer); });
 const steps = [
     { t: 'Pick what to share', d: 'A website link, a full contact card (vCard), a pre-addressed email or a tap-to-call phone number.' },
     { t: 'Make it yours', d: 'The code redraws live as you type. Pick rounded dots, a brand colour, or drop your logo in the middle.' },
-    { t: 'Download free', d: 'Vector SVG for print or 1200 px PNG for screens. No account, no watermark, no expiry.' },
+    { t: 'Sign in & download', d: 'Create a free account, then grab the vector SVG for print or 1200 px PNG for screens — no watermark, no expiry.' },
     { t: 'Put it on print', d: 'Add it to business cards, flyers, stickers or signs in our online designer — we print and ship.' },
 ];
 
@@ -226,7 +237,7 @@ const printUseCases = [
 ];
 
 const faq = [
-    { q: 'Is the QR code generator really free?', a: 'Yes — unlimited QR codes, free SVG and PNG downloads, no account and no watermark. You only pay if you print products with us.' },
+    { q: 'Is the QR code generator really free?', a: 'Yes — unlimited QR codes and free SVG and PNG downloads with a free account, no watermark. You only pay if you print products with us.' },
     { q: 'Do the QR codes expire?', a: 'Never. These are static QR codes: the destination is encoded in the pattern itself, so they work forever and do not depend on our servers.' },
     { q: 'What can a QR code point to?', a: 'Your website, a full contact card (vCard) that saves straight into the phone, a pre-addressed email, or a tap-to-call phone number.' },
     { q: 'What is a vCard QR code?', a: 'A QR code that contains a complete contact card — name, company, phone, email and website. Scanning it opens “Add to contacts” on the phone, filled in and ready to save. It is the single most useful thing to print on the back of a business card.' },
@@ -241,8 +252,23 @@ const faq = [
 let ldEl = null;
 let prevDesc = null;
 onMounted(() => {
+    // Just signed in from the download gate: resume the file download + the gallery
+    // that was generating during login.
+    const pending = sessionStorage.getItem('rmp.dl.qr');
+    if (isAuthed.value && pending) {
+        sessionStorage.removeItem('rmp.dl.qr');
+        setTimeout(() => window.location.assign(pending), 500);
+    }
+    if (props.captureKey) {
+        galleryKey.value = props.captureKey;
+        galleryItems.value = [];
+        galleryWaiting.value = true;
+        galleryEmpty.value = false;
+        nextTick(() => initGallery(props.captureKey));
+    }
+
     const meta = document.querySelector('meta[name="description"]');
-    const desc = 'Free QR code generator: create website, vCard contact, email or phone QR codes and download print-ready SVG or PNG — no signup, no watermark, never expires. Then print it on business cards, flyers, stickers and signs.';
+    const desc = 'Free QR code generator: create website, vCard contact, email or phone QR codes and download print-ready SVG or PNG (free account, no watermark, never expires). Then print it on business cards, flyers, stickers and signs.';
     if (meta) { prevDesc = meta.getAttribute('content'); meta.setAttribute('content', desc); }
     ldEl = document.createElement('script');
     ldEl.type = 'application/ld+json';
@@ -278,7 +304,7 @@ const inputCls = 'mt-1.5 w-full rounded-xl border border-paper-300 bg-white px-3
                 <div class="max-w-2xl">
                     <p class="text-sm font-semibold uppercase tracking-widest text-[#9cc6ff]">Free QR code generator</p>
                     <h1 class="mt-3 font-display text-4xl font-extrabold leading-[1.05] tracking-tight sm:text-5xl">Make a QR code in seconds.<br />Print it on anything.</h1>
-                    <p class="mt-4 max-w-lg text-lg text-white/70">Website, contact card, email or phone — with your logo in the middle, rounded dots or brand colours. Free vector SVG and high-res PNG, no signup, no watermark, never expires.</p>
+                    <p class="mt-4 max-w-lg text-lg text-white/70">Website, contact card, email or phone — with your logo in the middle, rounded dots or brand colours. Free vector SVG and high-res PNG — sign in to download, no watermark, never expires.</p>
                 </div>
 
                 <div class="mt-8 grid gap-6 rounded-3xl bg-white p-6 text-ink shadow-2xl shadow-black/30 sm:p-8 lg:grid-cols-[1fr_320px]">
