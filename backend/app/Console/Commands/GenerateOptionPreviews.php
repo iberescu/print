@@ -55,6 +55,27 @@ class GenerateOptionPreviews extends Command
         'standard'  => 'a clean smooth professional print surface',
     ];
 
+    /** Decoration / print-method groups — previewed on FABRIC (not paper) with the method's texture. */
+    private const DECORATION_NAMES = '/decoration|technolog|print method|imprint|application|printing/i';
+
+    private const DECORATION_STYLE = 'Extreme macro close-up photograph of a section of a plain cotton garment '
+        .'(t-shirt / hoodie fleece) filling the frame at a slight three-quarter angle, soft directional studio '
+        .'light raking across the weave to reveal the fabric texture and the decoration finish, shallow depth of '
+        .'field, seamless light-grey studio background, premium apparel e-commerce style. A small minimal abstract '
+        .'deep-navy and white geometric emblem is applied to the fabric via this method — no readable text, no '
+        .'logo, no watermark, no hands, no props.';
+
+    /** Decoration-method texture cues keyed by label keyword. */
+    private const DECORATION_TEXTURES = [
+        'direct-to-garment' => 'a Direct-to-Garment (DTG) print: a soft, finely-detailed full-colour design absorbed INTO the fabric weave, smooth and flat with almost no hand-feel and photographic detail',
+        'dtg'               => 'a Direct-to-Garment (DTG) print: a soft, finely-detailed full-colour design absorbed INTO the fabric weave, smooth and flat with almost no hand-feel and photographic detail',
+        'screen'            => 'a screen print: a bold opaque layer of plastisol ink sitting slightly RAISED on top of the fabric with a smooth semi-matte finish and vivid, flat, solid colours',
+        'embroider'         => 'machine embroidery: raised satin and fill stitches in glossy thread with clearly visible stitch direction and a tactile 3D texture',
+        'vinyl'             => 'heat-transfer vinyl (HTV): a smooth solid vinyl layer with crisp clean-cut edges sitting on top of the fabric, with a slight sheen',
+        'transfer'          => 'a heat transfer: a thin smooth printed layer bonded onto the fabric surface with clean edges',
+        'sublimation'       => 'dye-sublimation: vivid full-colour graphics dyed permanently into the fibres, completely flat with zero hand-feel',
+    ];
+
     public function handle(GeminiClient $gemini): int
     {
         $limit = (int) $this->option('limit');
@@ -72,7 +93,9 @@ class GenerateOptionPreviews extends Command
                 if ($option->affectsSurface() || $option->values->count() < 2) {
                     continue;
                 }
-                if (! $this->option('all') && ! preg_match(self::MATERIAL_NAMES, $option->name)) {
+                if (! $this->option('all')
+                    && ! preg_match(self::MATERIAL_NAMES, $option->name)
+                    && ! preg_match(self::DECORATION_NAMES, $option->name)) {
                     continue;
                 }
 
@@ -118,6 +141,16 @@ class GenerateOptionPreviews extends Command
     private function prompt(Product $product, $option, $value): string
     {
         $item = Str::singular($product->name);
+
+        // Decoration / print-method groups render on FABRIC with the method's own texture.
+        if (preg_match(self::DECORATION_NAMES, $option->name)) {
+            $tex = collect(self::DECORATION_TEXTURES)
+                ->first(fn ($t, $key) => Str::contains(Str::lower($value->label), $key))
+                ?? 'the characteristic finish of this decoration method';
+
+            return "Apparel decoration-method preview for an online print shop: a cotton {$item} decorated with the "
+                ."\"{$value->label}\" method. Show {$tex}. ".self::DECORATION_STYLE;
+        }
 
         $texture = collect(self::TEXTURES)
             ->first(fn ($t, $key) => Str::contains(Str::lower($value->label), $key))
