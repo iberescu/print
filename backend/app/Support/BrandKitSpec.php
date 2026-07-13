@@ -135,11 +135,15 @@ class BrandKitSpec
             [
                 'key' => 'flyer', 'label' => 'Flyer', 'slug' => 'flyers', 'decoration' => 'custom',
                 'after_crawl' => true, 'use_site_shot' => true,
-                'prompt' => 'A realistic studio mockup of a single printed A4 marketing FLYER for {company} — {description} — '
-                    .'lying on a clean surface, photographed straight-on or at a slight angle with soft realistic '
-                    .'lighting. Design it in the brand\'s own visual style — a colour palette, typography and imagery '
-                    .'that genuinely suit this business. It features the logo, a bold brand headline and tasteful '
-                    .'placeholder marketing copy with on-brand imagery. Realistic paper, no clutter.',
+                'prompt' => 'A realistic studio PRODUCT PHOTO of a single printed marketing FLYER (one A4/Letter '
+                    .'paper sheet) for {company} — {description} — lying flat on a light natural-wood table, shot '
+                    .'from above at a slight three-quarter angle with soft realistic lighting and a soft drop '
+                    .'shadow, so it clearly reads as a real printed sheet of paper resting on a table (NOT a flat '
+                    .'full-frame digital graphic and NOT a website screenshot). Show the WHOLE flyer with a little '
+                    .'empty margin of table around it. The flyer is designed in the brand\'s own visual style — '
+                    .'colour palette, typography and imagery that suit this business — with the logo at the top, a '
+                    .'bold brand headline, a hero image and tasteful placeholder marketing copy. Realistic paper '
+                    .'with crisp edges, no clutter.',
             ],
         ];
         $cap = (int) config('shop.internal_engine.max_products', 0);
