@@ -75,21 +75,31 @@ class BrandKitSpec
             ],
             [
                 'key' => 'pen', 'label' => 'Pen', 'slug' => 'custom-pens', 'decoration' => 'custom', 'logo_render' => 'laser',
-                'prompt' => 'A studio product shot of a single sleek promotional pen lying HORIZONTALLY '
-                    .'(landscape) on a light natural-wood table with a soft shadow. The COMPLETE pen must be '
-                    .'visible end to end — the writing tip AND the top/clicker both inside the frame — with clear '
-                    .'empty margin at BOTH ends; do NOT crop or cut off any part of the pen. The pen '
-                    .'barrel is a single solid colour chosen from ONLY these: white, black, blue or red — '
-                    .'pick the one that best complements the logo. The provided logo is laser-engraved small along '
-                    .'the barrel in landscape orientation.',
+                'prompt' => 'A studio product shot showing ONE entire promotional pen, COMPLETE and UNCROPPED, lying '
+                    .'HORIZONTALLY (landscape) on a light natural-wood table with a soft shadow. CRITICAL: frame it '
+                    .'ZOOMED OUT so the WHOLE pen — from the pointed writing tip at one end all the way to the '
+                    .'push-button/cap at the other end — sits fully inside the frame at a small size, with generous '
+                    .'EMPTY margin on ALL FOUR sides. No part of the pen may touch, run off or be cropped by any '
+                    .'edge; both ends of the pen must be clearly visible with space around them. The pen barrel is a '
+                    .'single solid colour chosen from ONLY these: white, black, blue or red — pick the one that best '
+                    .'complements the logo. The provided logo is laser-engraved small along the barrel in landscape '
+                    .'orientation.',
             ],
             [
                 'key' => 'sticker', 'label' => 'Kiss-cut sticker', 'slug' => 'kiss-cut-stickers', 'decoration' => 'custom',
-                'prompt' => 'A close-up product shot of the back lid of a modern laptop on a light natural-wood table, with a '
-                    .'single kiss-cut vinyl sticker of the provided logo applied to the BOTTOM-LEFT corner of '
-                    .'the laptop lid (not centred), at a small size. The sticker is die-cut to follow the '
-                    .'logo\'s own contour/silhouette — a tight outline hugging the logo with a thin white '
-                    .'sticker border — lying flat on the lid, at a slight angle, with soft realistic lighting.',
+                'prompt' => 'A close-up product shot of the closed lid of a modern Apple MacBook (slim silver / '
+                    .'space-grey aluminium unibody) lying on a light natural-wood table, viewed from above with the '
+                    .'front OPENING edge (the side that lifts to open, with the shallow finger scoop) NEAREST the '
+                    .'camera and the hinge along the FAR edge. Make it clearly a MacBook. CRITICAL — orient the '
+                    .'MacBook\'s own centred Apple logo exactly as on a real modern MacBook: seen closed from the '
+                    .'front like this it appears UPSIDE-DOWN to the camera — its leaf/stem points toward the FRONT '
+                    .'opening edge nearest the camera and its rounded base toward the hinge at the back. (On a real '
+                    .'MacBook the Apple logo is right-side-up only to a person facing you when the lid is open.) Do '
+                    .'NOT draw the Apple logo right-side-up to the camera. Separately, a single kiss-cut vinyl '
+                    .'sticker of the PROVIDED logo is applied to the BOTTOM-LEFT corner of the lid (not centred), at '
+                    .'a small size, and it reads UPRIGHT and clearly legible to the camera — die-cut to follow the '
+                    .'logo\'s own contour/silhouette with a thin white sticker border, lying flat, with soft '
+                    .'realistic lighting.',
             ],
             ['key' => 'doorhanger', 'label' => 'Door hanger', 'slug' => 'door-hangers', 'decoration' => 'print', 'scene' => 'a printed door hanger with a rounded top and a die-cut keyhole near the top — a round hole with a small narrow slit cut from the hole out to the LEFT edge; the small cut/slit is ALWAYS on the LEFT side and must always be present', 'placement' => 'centred — just the logo, nothing else', 'flat' => true],
             [
