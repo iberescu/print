@@ -25,7 +25,7 @@ class CartController extends Controller
         }
 
         return Inertia::render('Cart', [
-            'items'         => $this->cart->items(),
+            'items'         => $this->items(),
             'summary'       => $this->summary(),
             'recommended'   => $this->recommended(),
             'brandProducts' => \App\Support\LogoOnProducts::forCurrentSession(),
@@ -102,6 +102,34 @@ class CartController extends Controller
         return back();
     }
 
+    /** In-cart quantity switch: re-price the line at another of the product's tiers. */
+    public function updateQty(string $lineId, Request $request, Pricing $pricing): RedirectResponse
+    {
+        $data = $request->validate(['quantityId' => ['required', 'integer']]);
+
+        $line = $this->cart->item($lineId);
+        $product = $line ? Product::with('quantities')->find($line['product_id']) : null;
+        if (! $product) {
+            return back();
+        }
+
+        // Only accept one of this product's tiers; otherwise keep the current one.
+        $quantityId = $product->quantities->firstWhere('id', (int) $data['quantityId'])?->id
+            ?? $line['quantity_id'] ?? null;
+
+        // Keep the line's existing options — re-price against the new tier only.
+        $quote = $pricing->quote($product, $quantityId, $line['option_value_ids'] ?? []);
+
+        $this->cart->update($lineId, [
+            'quantity'    => $quote['quantity'],
+            'quantity_id' => $quote['quantity_id'],
+            'unit_price'  => $quote['unit_price'],
+            'line_total'  => $quote['line_total'],
+        ]);
+
+        return back();
+    }
+
     public function applyCoupon(Request $request)
     {
         $data = $request->validate(['code' => ['required', 'string', 'max:40']]);
@@ -115,6 +143,28 @@ class CartController extends Controller
         $this->cart->removeCoupon();
 
         return back();
+    }
+
+    /** Cart lines enriched with each product's quantity tiers (for the in-cart qty switch). */
+    private function items(): array
+    {
+        $items = $this->cart->items();
+        $products = Product::with('quantities')
+            ->whereIn('id', collect($items)->pluck('product_id')->filter()->unique()->all())
+            ->get()->keyBy('id');
+
+        return collect($items)->map(function ($it) use ($products) {
+            $tiers = $products->get($it['product_id'] ?? null)?->quantities;
+            $it['quantities'] = $tiers
+                ? $tiers->sortBy('sort_order')->values()->map(fn ($q) => [
+                    'id'       => $q->id,
+                    'quantity' => $q->quantity,
+                    'total'    => (float) $q->totalPrice(),
+                ])->all()
+                : [];
+
+            return $it;
+        })->all();
     }
 
     private function summary(): array

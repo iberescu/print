@@ -34,6 +34,7 @@ Route::get('/design/template/{template}/data', [DesignController::class, 'templa
 Route::get('/cart', [CartController::class, 'show'])->name('cart');
 Route::post('/cart/add/{product}', [CartController::class, 'add'])->name('cart.add');
 Route::post('/cart/remove/{lineId}', [CartController::class, 'remove'])->name('cart.remove');
+Route::post('/cart/qty/{lineId}', [CartController::class, 'updateQty'])->name('cart.qty');
 Route::post('/cart/coupon', [CartController::class, 'applyCoupon'])->middleware('throttle:12,1,coupon')->name('cart.coupon');
 Route::post('/cart/coupon/remove', [CartController::class, 'removeCoupon'])->name('cart.coupon.remove');
 

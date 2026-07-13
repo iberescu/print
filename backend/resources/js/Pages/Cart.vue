@@ -14,6 +14,16 @@ defineProps({
 
 const remove = (id) => router.post(`/cart/remove/${id}`, {}, { preserveScroll: true });
 
+// Per-line quantity switch: pick another of the product's price tiers, re-price server-side.
+const setQty = (id, quantityId) => router.post(`/cart/qty/${id}`, { quantityId }, { preserveScroll: true });
+
+// This line's option surcharge (line total minus the current tier's base) so each tier
+// option in the switch can show its true resulting total, not just the tier base price.
+const optionDelta = (it) => {
+    const cur = (it.quantities || []).find((q) => q.id === it.quantity_id);
+    return cur ? it.line_total - cur.total : 0;
+};
+
 // Upsell "your logo on" items aren't editable in the designer — pressing Edit reveals a
 // note that the design is finalised after the order. Tracks which line's note is open.
 const editNote = ref(null);
@@ -62,7 +72,16 @@ const editHref = (it) => {
                             <div class="flex items-start justify-between gap-3">
                                 <div>
                                     <p class="font-display text-lg font-semibold text-ink">{{ it.name }}</p>
-                                    <p class="text-sm text-ink/50">Qty {{ it.quantity }} · {{ money(it.unit_price) }}/ea</p>
+                                    <div class="mt-1 flex items-center gap-2 text-sm text-ink/50">
+                                        <template v-if="it.quantities && it.quantities.length > 1">
+                                            <label :for="`qty-${it.id}`" class="text-ink/55">Qty</label>
+                                            <select :id="`qty-${it.id}`" :value="it.quantity_id" class="rounded-lg border border-paper-300 bg-white py-1 pl-2 pr-7 text-sm text-ink transition focus:border-brand-400 focus:outline-none" @change="setQty(it.id, $event.target.value)">
+                                                <option v-for="q in it.quantities" :key="q.id" :value="q.id">{{ q.quantity }} — {{ money(q.total + optionDelta(it)) }}</option>
+                                            </select>
+                                            <span class="whitespace-nowrap">{{ money(it.unit_price) }}/ea</span>
+                                        </template>
+                                        <span v-else>Qty {{ it.quantity }} · {{ money(it.unit_price) }}/ea</span>
+                                    </div>
                                 </div>
                                 <p class="font-semibold text-ink">{{ money(it.line_total) }}</p>
                             </div>
