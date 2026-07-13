@@ -14,6 +14,7 @@ const props = defineProps({
     heroImage: { type: String, default: null },
     priceGuaranteeImage: { type: String, default: null },
     freeShippingThreshold: { type: Number, default: 100 },
+    businessCardsFrom: { type: Number, default: null },
 });
 
 // "Your logo on" cross-sell: add the mockup product straight to the cart (default
@@ -27,7 +28,7 @@ const addToCart = (slug) => {
 
 const slides = [
     { eyebrow: 'Premium custom printing', title: 'Everything to launch your brand', text: 'Business cards, flyers, signage, stickers, apparel and more — designed online, printed beautifully, delivered fast.', cta: 'Browse products', href: '#bestsellers', image: props.heroImage },
-    { eyebrow: 'New customer offer', title: 'Business cards from $10', text: '500 premium cards — design online in minutes or upload your own artwork.', cta: 'Shop business cards', href: '/category/business-cards', image: props.heroImage },
+    { eyebrow: 'New customer offer', title: props.businessCardsFrom ? `Business cards from $${Number(props.businessCardsFrom).toFixed(2)}` : 'Custom business cards', text: 'Premium full-colour cards — design online in minutes or upload your own artwork.', cta: 'Shop business cards', href: '/category/business-cards', image: props.heroImage },
     { eyebrow: `Free shipping over $${props.freeShippingThreshold}`, title: 'Your logo, on everything', text: 'Use our free online designer and 200+ ready-made templates.', cta: 'Start designing', href: '/product/standard-business-cards', image: props.heroImage },
 ];
 

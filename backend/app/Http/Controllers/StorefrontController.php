@@ -54,6 +54,11 @@ class StorefrontController extends Controller
             'heroImage'             => \App\Support\Img::url('heroes/home'),
             'priceGuaranteeImage'   => \App\Support\Img::url('promos/price-guarantee'),
             'freeShippingThreshold' => (float) config('shop.free_shipping_threshold'),
+            // Hero "business cards from $X" — the live flagship price, so it tracks the
+            // catalogue/sale (never a hardcoded figure that drifts).
+            'businessCardsFrom'     => (float) (Product::where('slug', 'standard-business-cards')->value('from_price')
+                ?: Product::whereHas('category', fn ($q) => $q->where('slug', 'business-cards'))
+                    ->where('is_active', true)->min('from_price')),
         ]);
     }
 
