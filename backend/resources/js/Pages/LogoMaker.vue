@@ -2,6 +2,7 @@
 import { Head } from '@inertiajs/vue3';
 import { ref, onMounted, onBeforeUnmount, nextTick } from 'vue';
 import StoreLayout from '../Layouts/StoreLayout.vue';
+import NewsletterSignup from '../Components/NewsletterSignup.vue';
 import LogoBuilder from '../Components/LogoBuilder.vue';
 import SmartImage from '../Components/SmartImage.vue';
 import { adsConversion } from '../lib/gads';
@@ -291,6 +292,15 @@ onBeforeUnmount(() => {
                         </div>
                     </div>
                 </div>
+            </div>
+        </section>
+
+        <!-- lead capture: 20% off printing -->
+        <section class="bg-brand-50">
+            <div class="mx-auto flex max-w-3xl flex-col items-center gap-4 px-6 py-12 text-center sm:px-8">
+                <h2 class="font-display text-2xl font-bold tracking-tight text-ink sm:text-3xl">Put your new logo on something — 20% off</h2>
+                <p class="max-w-xl text-ink/60">Drop your email and we'll send a code for 20% off your first order — cards, apparel, signs and more.</p>
+                <NewsletterSignup source="logo-tool" cta="Email my 20% off" />
             </div>
         </section>
 

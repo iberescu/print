@@ -38,6 +38,10 @@ Route::post('/cart/qty/{lineId}', [CartController::class, 'updateQty'])->name('c
 Route::post('/cart/coupon', [CartController::class, 'applyCoupon'])->middleware('throttle:12,1,coupon')->name('cart.coupon');
 Route::post('/cart/coupon/remove', [CartController::class, 'removeCoupon'])->name('cart.coupon.remove');
 
+// Newsletter / lead capture (footer + free tools) → welcome email with WELCOME20
+Route::post('/subscribe', [\App\Http\Controllers\NewsletterController::class, 'store'])
+    ->middleware('throttle:8,1')->name('subscribe');
+
 // Forced upsell steps before the cart (multi-step upsell + card-holder cross-sell)
 Route::get('/upsell', [UpsellController::class, 'show'])->name('upsell.show');
 Route::post('/upsell/add/{product}', [UpsellController::class, 'add'])->name('upsell.add');

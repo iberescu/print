@@ -3,6 +3,7 @@ import { Link, router, usePage } from '@inertiajs/vue3';
 import { computed, ref } from 'vue';
 import AppLogo from '../Components/AppLogo.vue';
 import SupportWidget from '../Components/SupportWidget.vue';
+import NewsletterSignup from '../Components/NewsletterSignup.vue';
 
 const page = usePage();
 const categories = computed(() => page.props.navCategories ?? []);
@@ -148,10 +149,7 @@ const logout = () => router.post('/logout');
                     <h3 class="font-display text-2xl font-semibold text-ink">It's good to be on the list</h3>
                     <p class="mt-1 text-ink/60">Exclusive offers, design tips and new products — straight to your inbox.</p>
                 </div>
-                <form class="flex w-full max-w-md" @submit.prevent>
-                    <input type="email" placeholder="Enter your email" class="w-full border border-ink/20 bg-white px-4 py-3 text-sm focus:outline-none" />
-                    <button class="shrink-0 bg-brand-600 px-6 py-3 text-sm font-semibold text-white transition hover:bg-brand-700">Sign up</button>
-                </form>
+                <NewsletterSignup source="footer" cta="Sign up" class="w-full max-w-md" />
             </div>
         </section>
 
