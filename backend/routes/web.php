@@ -40,6 +40,7 @@ Route::post('/cart/coupon/remove', [CartController::class, 'removeCoupon'])->nam
 
 // Forced upsell steps before the cart (multi-step upsell + card-holder cross-sell)
 Route::get('/upsell', [UpsellController::class, 'show'])->name('upsell.show');
+Route::get('/upsell/options/{product}', [UpsellController::class, 'options'])->name('upsell.options');
 Route::post('/upsell/add/{product}', [UpsellController::class, 'add'])->name('upsell.add');
 Route::post('/upsell/finalize', [UpsellController::class, 'finalize'])->name('upsell.finalize');
 Route::post('/upsell/next', [UpsellController::class, 'next'])->name('upsell.next');

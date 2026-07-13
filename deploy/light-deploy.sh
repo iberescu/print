@@ -28,6 +28,7 @@ if [ "${FRESH:-0}" = "1" ]; then
     docker compose exec -T app php artisan catalog:import --fresh < /dev/null
     docker compose exec -T app php artisan db:seed --class=EmbroiderySeeder --force < /dev/null
     docker compose exec -T app php artisan db:seed --class=ApparelColorsSeeder --force < /dev/null
+    docker compose exec -T app php artisan db:seed --class=ApparelQuantitiesSeeder --force < /dev/null
     docker compose exec -T app php artisan db:seed --class=AccessorySeeder --force < /dev/null
     docker compose exec -T app php artisan db:seed --class=CatalogStructureSeeder --force < /dev/null
     docker compose exec -T app php artisan db:seed --class=BusinessCardPricingSeeder --force < /dev/null

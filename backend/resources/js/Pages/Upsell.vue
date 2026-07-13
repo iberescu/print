@@ -6,6 +6,7 @@ import BrandMockup from '../Components/BrandMockup.vue';
 import FinalStep from '../Components/FinalStep.vue';
 import SmartImage from '../Components/SmartImage.vue';
 import FreeShippingBar from '../Components/FreeShippingBar.vue';
+import UpsellAddModal from '../Components/UpsellAddModal.vue';
 import { money } from '../lib/format';
 
 const props = defineProps({
@@ -195,13 +196,36 @@ onBeforeUnmount(() => {
 });
 // ----------------------------------------------------------------------------
 
-function addItem(p) {
+// The product whose "add to order" popup is open ({ slug, name, img, fromPrice }).
+const modalProduct = ref(null);
+
+// Open the quantity/options popup for a product (fixed-price offers like the ad
+// credit skip it and add straight away).
+function openAdd(p) {
+    if (added.value[p.slug] || busy.value) return;
+    modalProduct.value = p;
+}
+
+// Post the add. `extra` carries the popup's chosen quantityId + optionValueIds.
+function addItem(p, extra = {}) {
     if (added.value[p.slug] || busy.value) return;
     busy.value = p.slug;
-    added.value = { ...added.value, [p.slug]: true }; // optimistic
     router.post(`/upsell/add/${p.slug}`,
-        { brand: props.step === 'brand' ? (props.payload.brand || null) : null },
-        { preserveScroll: true, preserveState: true, onFinish: () => (busy.value = null) });
+        { brand: props.step === 'brand' ? (props.payload.brand || null) : null, ...extra },
+        {
+            preserveScroll: true,
+            preserveState: true,
+            onSuccess: () => {
+                added.value = { ...added.value, [p.slug]: true };
+                modalProduct.value = null;
+            },
+            onFinish: () => (busy.value = null),
+        });
+}
+
+// Confirm from the popup → add with the selected tier + options.
+function confirmAdd(sel) {
+    addItem({ slug: sel.slug }, { quantityId: sel.quantityId, optionValueIds: sel.optionValueIds });
 }
 function next() {
     router.post('/upsell/next');
@@ -281,7 +305,7 @@ function next() {
                                     class="mt-3 w-full rounded-full px-4 py-2.5 text-sm font-semibold transition disabled:opacity-70"
                                     :class="added[it.product.slug] ? 'bg-brand-50 text-brand-700' : 'bg-brand-600 text-white hover:bg-brand-700'"
                                     :disabled="busy === it.product.slug || added[it.product.slug]"
-                                    @click="addItem({ slug: it.product.slug })"
+                                    @click="openAdd({ slug: it.product.slug, name: it.label, img: it.img, fromPrice: it.product.fromPrice })"
                                 >
                                     {{ added[it.product.slug] ? '✓ Added' : busy === it.product.slug ? 'Adding…' : '+ Add to order' }}
                                 </button>
@@ -492,7 +516,7 @@ function next() {
                             class="mt-3 w-full rounded-full px-4 py-2.5 text-sm font-semibold transition disabled:opacity-70"
                             :class="added[p.slug] ? 'bg-brand-50 text-brand-700' : 'bg-brand-600 text-white hover:bg-brand-700'"
                             :disabled="busy === p.slug || added[p.slug]"
-                            @click="addItem(p)"
+                            @click="openAdd({ slug: p.slug, name: p.name, img: p.image, fromPrice: p.fromPrice })"
                         >
                             {{ added[p.slug] ? '✓ Added' : busy === p.slug ? 'Adding…' : '+ Add to order' }}
                         </button>
@@ -511,6 +535,10 @@ function next() {
             </div>
             </template>
         </div>
+
+        <!-- add-to-order popup: pick quantity + print options before adding -->
+        <UpsellAddModal :product="modalProduct" :busy="busy === modalProduct?.slug"
+                        @close="modalProduct = null" @confirm="confirmAdd" />
     </StoreLayout>
 </template>
 
