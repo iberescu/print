@@ -36,12 +36,12 @@ class BrandKitSpec
                 'prompt' => 'A studio product shot of an insulated tumbler with a lid, sitting on a light '
                     .'natural-wood table with a soft light wall behind, a soft contact shadow, bright even '
                     .'lighting, crisp focus, centred with generous margins. The tumbler body is a single solid '
-                    .'colour chosen from ONLY these: white, black, blue, red or silver — pick the one that best '
+                    .'colour chosen from ONLY these: white, black, blue or red — pick the one that best '
                     .'complements the logo. The provided logo is laser-engraved on the front, centred.',
             ],
             ['key' => 'tote',    'label' => 'Canvas tote',    'slug' => 'custom-canvas-tote-bags',           'decoration' => 'print',      'scene' => 'a natural cotton-canvas tote bag neatly laid out flat, front side up', 'flat' => true],
             ['key' => 'tshirt',  'label' => 'T-shirt',        'slug' => 'gildan-softstyle-unisex-t-shirt',   'decoration' => 'print',      'scene' => 'a t-shirt neatly laid out flat, front side up', 'placement' => 'in the upper-left chest area (left-breast / pocket position), small', 'flat' => true],
-            ['key' => 'hoodie',  'label' => 'Hoodie',         'slug' => 'jerzees-nublend-hooded-sweatshirt', 'decoration' => 'embroidery', 'scene' => 'a pullover hoodie neatly laid out flat, front side up', 'placement' => 'in the upper-left chest area (left-breast position), small', 'flat' => true],
+            ['key' => 'hoodie',  'label' => 'Hoodie',         'slug' => 'jerzees-nublend-hooded-sweatshirt', 'decoration' => 'embroidery', 'scene' => 'a pullover hoodie neatly laid out flat, front side up', 'placement' => 'in the upper-left chest area (left-breast position), at a realistic left-chest size (not tiny), close enough to read the stitch texture', 'flat' => true],
             ['key' => 'cap',     'label' => 'Cap',            'slug' => 'embroidered-hats',                  'decoration' => 'embroidery', 'scene' => 'a structured baseball cap, three-quarter view'],
 
             // Showcase products with bespoke scenes (decoration = custom → uses its own prompt).
@@ -76,9 +76,10 @@ class BrandKitSpec
             [
                 'key' => 'pen', 'label' => 'Pen', 'slug' => 'custom-pens', 'decoration' => 'custom', 'logo_render' => 'laser',
                 'prompt' => 'A studio product shot of a single sleek promotional pen lying HORIZONTALLY '
-                    .'(landscape) on a light natural-wood table with a soft shadow. Show the ENTIRE pen fully '
-                    .'within the frame from tip to end — not cropped — with generous margins around it. The pen '
-                    .'barrel is a single solid colour chosen from ONLY these: white, black, blue, red or silver — '
+                    .'(landscape) on a light natural-wood table with a soft shadow. The COMPLETE pen must be '
+                    .'visible end to end — the writing tip AND the top/clicker both inside the frame — with clear '
+                    .'empty margin at BOTH ends; do NOT crop or cut off any part of the pen. The pen '
+                    .'barrel is a single solid colour chosen from ONLY these: white, black, blue or red — '
                     .'pick the one that best complements the logo. The provided logo is laser-engraved small along '
                     .'the barrel in landscape orientation.',
             ],
@@ -205,9 +206,8 @@ class BrandKitSpec
                     'laser' => 'Keep the logo\'s exact shapes, letterforms and proportions — do NOT redraw, '
                         .'re-letter or distort it — but render it as a REALISTIC LASER ENGRAVING on metal: the mark '
                         .'reveals the bare metal under the coating — a natural silvery brushed-metal / frosted-steel '
-                        .'tone, subtly recessed and etched into the surface (NOT a flat white or black print). On a '
-                        .'silver or steel-coloured product make the etch a slightly frosted matte tone so it stays '
-                        .'clearly legible. A single metallic tone, never full colour.',
+                        .'tone, subtly recessed and etched into the surface (NOT a flat white or black print). A '
+                        .'single metallic tone, never full colour.',
                     default => $logoFidelity,
                 };
             }
@@ -228,9 +228,13 @@ class BrandKitSpec
                 .'laser engraving: the mark reveals the bare metal under the coating, a natural silvery brushed-metal '
                 .'/ frosted-steel tone recessed into the surface (never a flat white/black print or full colour); on '
                 .'a silver/steel product use a slightly frosted matte etch so it stays legible.',
-            'embroidery' => "Embroider the provided logo onto it, {$placement}. Keep the logo's exact shapes, "
-                .'letterforms and proportions — do NOT redraw or restyle it — as realistic stitched threads '
-                .'in its original colours.',
+            'embroidery' => "Embroider the provided logo onto it, {$placement}. Keep the logo's shapes, "
+                .'letterforms and colours recognisable — do NOT redraw or restyle it — but render it as an '
+                .'unmistakable REAL EMBROIDERED PATCH: the whole logo built from tightly-packed raised satin/fill '
+                .'embroidery stitches with clearly visible individual thread lines, directional stitch grain and '
+                .'thread sheen, slightly fuzzy thread edges, and a subtle 3D raised relief casting a soft shadow '
+                .'on the fabric. It must read as stitched thread on fabric, absolutely NOT a smooth flat print, '
+                .'transfer or decal (embroidery may slightly thicken the very finest detail into thread).',
             default => "Print the provided logo onto it {$placement}, at a realistic size. {$logoFidelity} "
                 .'Keep full colour.',
         };

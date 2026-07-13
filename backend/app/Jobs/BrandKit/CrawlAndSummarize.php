@@ -43,11 +43,20 @@ class CrawlAndSummarize implements ShouldQueue
         $text = $this->crawl($kit->website);
         $kit->update(['crawl_text' => Str::limit($text, 18000, '')]);
 
+        // Summarise the crawl into a description + tailored ad concepts. Retry a few
+        // times when the model returns nothing usable: a single transient/empty response
+        // would otherwise drop the whole kit to generic ad copy ("Trusted by
+        // professionals") even though the crawl itself succeeded.
         $summary = [];
-        try {
-            $summary = $gemini->generateJson($this->summaryPrompt($kit, $text));
-        } catch (\Throwable) {
-            // fall through to a minimal summary below
+        for ($attempt = 0; $attempt < 3; $attempt++) {
+            try {
+                $summary = $gemini->generateJson($this->summaryPrompt($kit, $text));
+            } catch (\Throwable) {
+                $summary = [];
+            }
+            if (trim((string) ($summary['description'] ?? '')) !== '' || ! empty($summary['ad_concepts'])) {
+                break;
+            }
         }
         $summary = $this->normalize($summary, $kit);
 
