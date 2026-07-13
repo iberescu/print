@@ -53,6 +53,13 @@ class BusinessCardPricingSeeder extends Seeder
             $count++;
         }
 
+        // "From" price must equal the cheapest tier a buyer can actually order,
+        // so the storefront, JSON-LD offer and Google Shopping feed all agree
+        // (the 50-for-$7.50 offer we advertise). Import leaves it stale otherwise.
+        if ($standard) {
+            $standard->update(['from_price' => (float) $standard->quantities()->min('total_price')]);
+        }
+
         $this->command?->info("  repriced {$count} business-card quantity tiers");
     }
 
