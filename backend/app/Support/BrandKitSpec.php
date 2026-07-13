@@ -290,6 +290,35 @@ class BrandKitSpec
         ][(($i % 4) + 4) % 4];
     }
 
+    /**
+     * Website-styled display ad: Gemini gets the brand LOGO (image 1) and a full-page
+     * SCREENSHOT of the brand's website (image 2), and is told to design the ad in the
+     * site's own style + imagery, grounded in the crawled summary. Used for the 2nd ad.
+     */
+    public static function adPromptFromSite(string $headline, string $cta, string $company, string $description = ''): string
+    {
+        $headline = str_replace('{company}', $company ?: 'us', $headline);
+        $about = trim($description) !== '' ? "{$company} — {$description}" : ($company ?: 'this business');
+
+        return "Design a premium Google Display ad banner (landscape ~1.9:1) for {$about}. You are given TWO "
+            .'reference images: image 1 is the brand LOGO, image 2 is a full-page SCREENSHOT of the brand\'s own '
+            .'website. Make the ad look like it clearly BELONGS to this brand by adopting the website\'s visual '
+            .'identity from the screenshot — its colour palette, typography feel, mood, and its real '
+            .'imagery/photography, textures and graphic motifs. Reuse the site\'s own look and picture style so '
+            .'the banner is visually consistent with the website (take STYLE and imagery cues — do NOT paste the '
+            .'raw screenshot, and never show browser chrome, scrollbars, cookie banners or website UI). '
+            ."HIERARCHY: the headline \"{$headline}\" set large, bold and clearly dominant in a typeface matching "
+            ."the site's feel — written EXACTLY ONCE, never repeating a word or line; then a clean call-to-action "
+            ."button with SQUARE corners labelled exactly \"{$cta}\"; then the logo. "
+            .'LOGO: place the supplied logo (image 1) small and clean, reproduced EXACTLY — same shapes, '
+            .'letterforms, colours and proportions, never redrawn, re-lettered or recoloured (only a flat white '
+            .'knockout of the same artwork is allowed if needed for legibility on a dark area). Use ONLY image 1 '
+            .'as the logo — ignore any logo that appears inside the website screenshot. '
+            .'STRICT: every word spelled correctly and exactly once, no gibberish or placeholder lettering, no '
+            .'watermark, exactly ONE logo, no device mockups or app/browser UI. All text and the logo sit fully '
+            .'inside a safe margin and stay perfectly legible. Crisp, high-resolution, on-brand ad quality.';
+    }
+
     public static function adPrompt(string $headline, string $cta, string $company, ?string $palette, string $description = '', string $style = '', int $styleIndex = -1): string
     {
         $headline = str_replace('{company}', $company ?: 'us', $headline);

@@ -36,25 +36,29 @@ class GenerateAdImage implements ShouldQueue
         }
 
         $summary = $kit->summary ?? [];
-        $company = $kit->company ?: ($summary['company'] ?? '');
+        $company = (string) ($kit->company ?: ($summary['company'] ?? ''));
         $palette = ! empty($summary['colors']) ? implode(', ', (array) $summary['colors']) : null;
+        $description = (string) ($summary['description'] ?? '');
+        $headline = (string) ($this->ad['headline'] ?? '');
+        $cta = (string) ($this->ad['cta'] ?? 'Learn more');
 
-        // Give each ad a distinct look (vibrant / professional / minimalist / futuristic)
-        $styleIndex = (int) preg_replace('/\D/', '', (string) ($this->ad['key'] ?? 'ad0'));
+        // The 2nd ad mirrors the brand's real website: hand Gemini the homepage screenshot
+        // as a style + imagery reference alongside the logo, and prompt it to design in that look.
+        $siteShot = ($this->ad['use_site_shot'] ?? false) && $kit->site_shot_path
+            ? $this->imageInput($kit->site_shot_path)
+            : null;
 
-        $img = $gemini->generateImage(
-            BrandKitSpec::adPrompt(
-                (string) ($this->ad['headline'] ?? ''),
-                (string) ($this->ad['cta'] ?? 'Learn more'),
-                (string) $company,
-                $palette,
-                (string) ($summary['description'] ?? ''),
-                BrandKitSpec::adStyle($styleIndex),
-                $styleIndex,
-            ),
-            [$logo],
-            config('shop.internal_engine.ad_image_model'),
-        );
+        if ($siteShot) {
+            $prompt = BrandKitSpec::adPromptFromSite($headline, $cta, $company, $description);
+            $images = [$logo, $siteShot];
+        } else {
+            // Give each ad a distinct look (vibrant / professional / image-led / modern).
+            $styleIndex = (int) preg_replace('/\D/', '', (string) ($this->ad['key'] ?? 'ad0'));
+            $prompt = BrandKitSpec::adPrompt($headline, $cta, $company, $palette, $description, BrandKitSpec::adStyle($styleIndex), $styleIndex);
+            $images = [$logo];
+        }
+
+        $img = $gemini->generateImage($prompt, $images, config('shop.internal_engine.ad_image_model'));
 
         $path = "brandkits/{$this->key}/ad-{$this->ad['key']}.webp";
         Storage::disk('public')->put($path, Img::webp($img['data'], 1200));

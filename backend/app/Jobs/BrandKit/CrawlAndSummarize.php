@@ -5,12 +5,14 @@ namespace App\Jobs\BrandKit;
 use App\Models\BrandKit;
 use App\Services\GeminiClient;
 use App\Support\BrandKitSpec;
+use App\Support\Img;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 /**
@@ -43,6 +45,15 @@ class CrawlAndSummarize implements ShouldQueue
         $text = $this->crawl($kit->website);
         $kit->update(['crawl_text' => Str::limit($text, 18000, '')]);
 
+        // Full-render screenshot of the homepage (css/images/js loaded) — a visual
+        // style + imagery reference for the website-styled display ad below.
+        if ($shot = $this->screenshot($kit->website)) {
+            $shotPath = "brandkits/{$this->key}/site-shot.webp";
+            Storage::disk('public')->put($shotPath, Img::webp($shot, 1280));
+            $kit->update(['site_shot_path' => $shotPath]);
+            $kit->refresh();
+        }
+
         // Summarise the crawl into a description + tailored ad concepts. Retry a few
         // times when the model returns nothing usable: a single transient/empty response
         // would otherwise drop the whole kit to generic ad copy ("Trusted by
@@ -71,7 +82,12 @@ class CrawlAndSummarize implements ShouldQueue
         if ($this->logoInput($kit)) {
             $kit->markStage('ads', 'running');
             foreach (array_values($summary['ad_concepts'] ?? []) as $i => $concept) {
-                GenerateAdImage::dispatch($this->key, ['key' => 'ad'.$i] + $concept);
+                $spec = ['key' => 'ad'.$i] + $concept;
+                // the 2nd and 4th ads mirror the brand's real website — hand them the screenshot
+                if (in_array($i, [1, 3], true) && $kit->site_shot_path) {
+                    $spec['use_site_shot'] = true;
+                }
+                GenerateAdImage::dispatch($this->key, $spec);
             }
             // Products whose scene needs the crawl keywords (word-cloud) — dispatch now
             // that the summary exists, so they don't fall back to the company name.
@@ -121,6 +137,40 @@ class CrawlAndSummarize implements ShouldQueue
             }
         } catch (\Throwable) {
             // fall back to a plain fetch
+        }
+
+        return null;
+    }
+
+    /**
+     * Full-PAGE (scrolled top-to-bottom) full-render screenshot of the homepage via
+     * Cloudflare Browser Rendering. Unlike the markdown crawl this loads css/images/js
+     * (no rejectResourceTypes) so the capture shows the site's real look — a style/imagery
+     * reference for the website-styled display ad. Returns raw PNG bytes, or null.
+     */
+    private function screenshot(string $url): ?string
+    {
+        $account = config('shop.cloudflare.account_id');
+        $token = config('shop.cloudflare.browser_token');
+        if (! $account || ! $token) {
+            return null;
+        }
+
+        try {
+            $r = Http::withToken($token)->timeout(60)->post(
+                "https://api.cloudflare.com/client/v4/accounts/{$account}/browser-rendering/screenshot",
+                [
+                    'url'               => $url,
+                    'viewport'          => ['width' => 1280, 'height' => 900],
+                    'screenshotOptions' => ['type' => 'png', 'fullPage' => true],
+                    'gotoOptions'       => ['waitUntil' => 'networkidle2', 'timeout' => 30000],
+                ],
+            );
+            if ($r->successful() && str_contains((string) $r->header('Content-Type'), 'image')) {
+                return $r->body();
+            }
+        } catch (\Throwable) {
+            // best effort — the ad falls back to its styled prompt with no screenshot
         }
 
         return null;
