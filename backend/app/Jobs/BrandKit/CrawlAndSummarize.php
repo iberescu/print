@@ -42,12 +42,16 @@ class CrawlAndSummarize implements ShouldQueue
 
         $kit->markStage('summary', 'running');
 
-        $text = $this->crawl($kit->website);
+        // ONE Cloudflare Browser Rendering call renders the page WITH css/images/js and
+        // returns BOTH the page content and a full-page screenshot — a single call avoids
+        // the browser-rendering rate limit that two back-to-back calls tripped.
+        [$text, $shot] = $this->snapshot($kit->website);
+        if (trim($text) === '') {
+            $text = $this->plainCrawl($kit->website); // snapshot unavailable → server-side fetch
+        }
         $kit->update(['crawl_text' => Str::limit($text, 18000, '')]);
 
-        // Full-render screenshot of the homepage (css/images/js loaded) — a visual
-        // style + imagery reference for the website-styled display ad below.
-        if ($shot = $this->screenshot($kit->website)) {
+        if ($shot) {
             $shotPath = "brandkits/{$this->key}/site-shot.webp";
             Storage::disk('public')->put($shotPath, Img::webp($shot, 1280));
             $kit->update(['site_shot_path' => $shotPath]);
@@ -101,64 +105,25 @@ class CrawlAndSummarize implements ShouldQueue
         }
     }
 
-    /** Crawl the site: Cloudflare Browser Rendering (JS/SPA + bot-walls) first, plain fetch as fallback. */
-    private function crawl(string $url): string
-    {
-        $markdown = $this->cloudflareMarkdown($url);
-        if (mb_strlen(trim((string) $markdown)) >= 200) {
-            return trim($markdown);
-        }
-
-        return $this->plainCrawl($url);
-    }
-
-    /** Render a URL to clean markdown via Cloudflare Browser Rendering (or null). */
-    private function cloudflareMarkdown(string $url): ?string
-    {
-        $account = config('shop.cloudflare.account_id');
-        $token = config('shop.cloudflare.browser_token');
-        if (! $account || ! $token) {
-            return null;
-        }
-
-        try {
-            $r = Http::withToken($token)->timeout(20)->post(
-                "https://api.cloudflare.com/client/v4/accounts/{$account}/browser-rendering/markdown",
-                [
-                    'url' => $url,
-                    // Text-only crawl: skip images/fonts/CSS/media and don't wait for
-                    // full network-idle — ~40% faster with the same markdown content.
-                    'rejectResourceTypes' => ['image', 'font', 'media', 'stylesheet'],
-                    'gotoOptions'         => ['waitUntil' => 'domcontentloaded', 'timeout' => 15000],
-                ],
-            );
-            if ($r->successful() && $r->json('success') && is_string($r->json('result'))) {
-                return $r->json('result');
-            }
-        } catch (\Throwable) {
-            // fall back to a plain fetch
-        }
-
-        return null;
-    }
-
     /**
-     * Full-PAGE (scrolled top-to-bottom) full-render screenshot of the homepage via
-     * Cloudflare Browser Rendering. Unlike the markdown crawl this loads css/images/js
-     * (no rejectResourceTypes) so the capture shows the site's real look — a style/imagery
-     * reference for the website-styled display ad. Returns raw PNG bytes, or null.
+     * ONE Cloudflare Browser Rendering call: render the page WITH css/images/js and return
+     * BOTH the visible text and a full-PAGE (scrolled) screenshot. A single call keeps us
+     * under the browser-rendering rate limit that two back-to-back calls (markdown then
+     * screenshot) tripped. The screenshot is the style/imagery reference for the ad.
+     *
+     * @return array{0:string,1:?string} [visible text, PNG bytes|null]
      */
-    private function screenshot(string $url): ?string
+    private function snapshot(string $url): array
     {
         $account = config('shop.cloudflare.account_id');
         $token = config('shop.cloudflare.browser_token');
         if (! $account || ! $token) {
-            return null;
+            return ['', null];
         }
 
         try {
-            $r = Http::withToken($token)->timeout(60)->post(
-                "https://api.cloudflare.com/client/v4/accounts/{$account}/browser-rendering/screenshot",
+            $r = Http::withToken($token)->timeout(70)->post(
+                "https://api.cloudflare.com/client/v4/accounts/{$account}/browser-rendering/snapshot",
                 [
                     'url'               => $url,
                     'viewport'          => ['width' => 1280, 'height' => 900],
@@ -166,14 +131,18 @@ class CrawlAndSummarize implements ShouldQueue
                     'gotoOptions'       => ['waitUntil' => 'networkidle2', 'timeout' => 30000],
                 ],
             );
-            if ($r->successful() && str_contains((string) $r->header('Content-Type'), 'image')) {
-                return $r->body();
+            if ($r->successful() && $r->json('success')) {
+                $html = (string) $r->json('result.content');
+                $b64 = (string) $r->json('result.screenshot');
+                $shot = $b64 !== '' ? base64_decode($b64) : null;
+
+                return [$this->htmlToText($html), $shot ?: null];
             }
         } catch (\Throwable) {
-            // best effort — the ad falls back to its styled prompt with no screenshot
+            // best effort — fall back to a plain server-side fetch for text, no screenshot
         }
 
-        return null;
+        return ['', null];
     }
 
     /** Fallback: fetch the homepage + one internal page server-side, return collapsed visible text. */
