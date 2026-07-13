@@ -110,40 +110,6 @@ class UpsellController extends Controller
         return redirect()->route('upsell.show');
     }
 
-    /** Selectable quantity tiers + option groups for the "add to order" popup. */
-    public function options(Product $product)
-    {
-        abort_unless($product->is_active, 404);
-        $product->loadMissing(['quantities', 'options.values']);
-
-        return response()->json([
-            'slug'       => $product->slug,
-            'name'       => $product->name,
-            'fromPrice'  => (float) $product->from_price,
-            'quantities' => $product->quantities->sortBy('sort_order')->values()->map(fn ($q) => [
-                'id'        => $q->id,
-                'quantity'  => $q->quantity,
-                'total'     => (float) $q->totalPrice(),
-                'isDefault' => (bool) $q->is_default,
-            ]),
-            'options' => $product->options->sortBy('sort_order')
-                ->filter(fn ($o) => $o->values->count() > 1)
-                ->values()->map(fn ($o) => [
-                    'id'     => $o->id,
-                    'name'   => $o->name,
-                    'type'   => $o->type,
-                    'values' => $o->values->sortBy('sort_order')->values()->map(fn ($v) => [
-                        'id'         => $v->id,
-                        'label'      => $v->label,
-                        'priceDelta' => (float) $v->price_delta,
-                        'swatch'     => $v->swatch,
-                        'image'      => $this->img($v->image_path),
-                        'isDefault'  => (bool) $v->is_default,
-                    ])->values(),
-                ]),
-        ]);
-    }
-
     public function add(Product $product, Request $request, Pricing $pricing)
     {
         abort_unless($product->is_active, 404);
@@ -157,8 +123,9 @@ class UpsellController extends Controller
 
         $product->loadMissing(['quantities', 'options.values']);
 
-        // Accept only a tier / values that belong to this product; take at most one
-        // value per option group (the popup submits exactly one per group).
+        // The qty picker only sends a tier; options stay at their defaults and are
+        // finalised after the order. Still accept/validate value ids defensively —
+        // only ones that belong to this product, at most one per option group.
         $quantityId = $product->quantities->firstWhere('id', (int) ($data['quantityId'] ?? 0))?->id;
         $submitted = collect($data['optionValueIds'] ?? [])->map(fn ($i) => (int) $i);
         $valueIds = $product->options->flatMap(function ($option) use ($submitted) {
@@ -207,18 +174,30 @@ class UpsellController extends Controller
         $brand = collect($this->cart->items())->reverse()
             ->first(fn ($i) => ! empty($i['brand']))['brand'] ?? null;
 
-        $surfaces = Product::with('category')->whereIn('slug', array_keys(self::BRAND_SURFACES))
+        $surfaces = Product::with(['category', 'quantities'])->whereIn('slug', array_keys(self::BRAND_SURFACES))
             ->where('is_active', true)->orderBy('sort_order')->get();
 
         return [
             'brand'    => $brand,
             'products' => $surfaces->map(fn (Product $p) => [
-                'name'      => $p->name,
-                'slug'      => $p->slug,
-                'fromPrice' => (float) $p->from_price,
-                'mockup'    => self::BRAND_SURFACES[$p->slug] ?? 'flyer',
+                'name'       => $p->name,
+                'slug'       => $p->slug,
+                'fromPrice'  => (float) $p->from_price,
+                'mockup'     => self::BRAND_SURFACES[$p->slug] ?? 'flyer',
+                'quantities' => $this->tierList($p),
             ])->all(),
         ];
+    }
+
+    /** Quantity tiers for a product's "add to order" qty picker. */
+    private function tierList(Product $product): array
+    {
+        return $product->quantities->sortBy('sort_order')->values()->map(fn ($q) => [
+            'id'        => $q->id,
+            'quantity'  => $q->quantity,
+            'total'     => (float) $q->totalPrice(),
+            'isDefault' => (bool) $q->is_default,
+        ])->all();
     }
 
     /** Third-party gallery step: the widget polls with the capture registered at Review. */
@@ -315,16 +294,17 @@ class UpsellController extends Controller
 
     private function relatedPayload(): array
     {
-        $accessories = Product::whereHas('category', fn ($q) => $q->where('slug', 'accessories'))
+        $accessories = Product::with('quantities')->whereHas('category', fn ($q) => $q->where('slug', 'accessories'))
             ->where('is_active', true)->orderBy('sort_order')->get();
 
         return [
             'products' => $accessories->map(fn (Product $p) => [
-                'name'      => $p->name,
-                'slug'      => $p->slug,
-                'tagline'   => $p->tagline,
-                'fromPrice' => (float) $p->from_price,
-                'image'     => $this->img($p->image_path),
+                'name'       => $p->name,
+                'slug'       => $p->slug,
+                'tagline'    => $p->tagline,
+                'fromPrice'  => (float) $p->from_price,
+                'image'      => $this->img($p->image_path),
+                'quantities' => $this->tierList($p),
             ])->all(),
         ];
     }

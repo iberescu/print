@@ -187,11 +187,12 @@ class PqsgController extends Controller
             return response()->json(['done' => $done, 'images' => $images]);
         }
 
-        // the mapped shop products, one indexed query (name + entry price for the card CTA)
+        // the mapped shop products, one indexed query (name + entry price + qty tiers for the card CTA)
         $shop = \App\Models\Product::query()
             ->whereIn('slug', array_values(self::MERCH_TO_PRODUCT))
             ->where('is_active', true)
-            ->get(['slug', 'name', 'from_price'])
+            ->with('quantities')
+            ->get()
             ->keyBy('slug');
 
         $wanted = array_flip(self::MERCH_PRODUCTS);
@@ -212,9 +213,10 @@ class PqsgController extends Controller
                         ?? (preg_match('/cloudlab|pipeline|v\d/i', $engine) ? 'Your brand, mocked up' : $engine),
                     // the REAL product behind the mockup → "+ Add to order"
                     'product' => $mapped ? [
-                        'slug'      => $mapped->slug,
-                        'name'      => $mapped->name,
-                        'fromPrice' => (float) $mapped->from_price,
+                        'slug'       => $mapped->slug,
+                        'name'       => $mapped->name,
+                        'fromPrice'  => (float) $mapped->from_price,
+                        'quantities' => self::tierList($mapped),
                     ] : null,
                 ];
             })
@@ -299,7 +301,7 @@ class PqsgController extends Controller
 
         $slugs = collect($kit->products ?? [])->pluck('product_slug')->filter()->all();
         $shop = \App\Models\Product::whereIn('slug', $slugs)->where('is_active', true)
-            ->get(['slug', 'name', 'from_price'])->keyBy('slug');
+            ->with('quantities')->get()->keyBy('slug');
 
         $images = collect($kit->products ?? [])->map(function ($p) use ($shop) {
             $prod = $shop->get($p['product_slug'] ?? '');
@@ -308,12 +310,28 @@ class PqsgController extends Controller
                 'key'     => $p['key'],
                 'img'     => $p['img'],
                 'label'   => $p['label'] ?? 'Your logo, mocked up',
-                'product' => $prod ? ['slug' => $prod->slug, 'name' => $prod->name, 'fromPrice' => (float) $prod->from_price] : null,
+                'product' => $prod ? [
+                    'slug'       => $prod->slug,
+                    'name'       => $prod->name,
+                    'fromPrice'  => (float) $prod->from_price,
+                    'quantities' => self::tierList($prod),
+                ] : null,
             ];
         })->all();
         $done = ($stages['products'] ?? 'pending') === 'skipped'
             || count($images) >= count(\App\Support\BrandKitSpec::products()) || $stale;
 
         return response()->json(['done' => $done, 'images' => $images]);
+    }
+
+    /** Quantity tiers for a product's "add to order" qty picker. */
+    private static function tierList(\App\Models\Product $product): array
+    {
+        return $product->quantities->sortBy('sort_order')->values()->map(fn ($q) => [
+            'id'        => $q->id,
+            'quantity'  => $q->quantity,
+            'total'     => (float) $q->totalPrice(),
+            'isDefault' => (bool) $q->is_default,
+        ])->all();
     }
 }

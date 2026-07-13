@@ -6,7 +6,6 @@ import BrandMockup from '../Components/BrandMockup.vue';
 import FinalStep from '../Components/FinalStep.vue';
 import SmartImage from '../Components/SmartImage.vue';
 import FreeShippingBar from '../Components/FreeShippingBar.vue';
-import UpsellAddModal from '../Components/UpsellAddModal.vue';
 import { money } from '../lib/format';
 
 const props = defineProps({
@@ -196,36 +195,26 @@ onBeforeUnmount(() => {
 });
 // ----------------------------------------------------------------------------
 
-// The product whose "add to order" popup is open ({ slug, name, img, fromPrice }).
-const modalProduct = ref(null);
-
-// Open the quantity/options popup for a product (fixed-price offers like the ad
-// credit skip it and add straight away).
-function openAdd(p) {
-    if (added.value[p.slug] || busy.value) return;
-    modalProduct.value = p;
+// Per-card quantity choice (slug -> tier id). Size/colour/etc. aren't chosen here —
+// those stay at their defaults and are finalised after the order.
+const qtySel = ref({});
+function qtyOf(p) {
+    if (qtySel.value[p.slug] != null) return qtySel.value[p.slug];
+    const def = (p.quantities || []).find((q) => q.isDefault) || (p.quantities || [])[0];
+    return def ? def.id : null;
 }
 
-// Post the add. `extra` carries the popup's chosen quantityId + optionValueIds.
-function addItem(p, extra = {}) {
+function addItem(p) {
     if (added.value[p.slug] || busy.value) return;
     busy.value = p.slug;
     router.post(`/upsell/add/${p.slug}`,
-        { brand: props.step === 'brand' ? (props.payload.brand || null) : null, ...extra },
+        { brand: props.step === 'brand' ? (props.payload.brand || null) : null, quantityId: qtyOf(p) },
         {
             preserveScroll: true,
             preserveState: true,
-            onSuccess: () => {
-                added.value = { ...added.value, [p.slug]: true };
-                modalProduct.value = null;
-            },
+            onSuccess: () => { added.value = { ...added.value, [p.slug]: true }; },
             onFinish: () => (busy.value = null),
         });
-}
-
-// Confirm from the popup → add with the selected tier + options.
-function confirmAdd(sel) {
-    addItem({ slug: sel.slug }, { quantityId: sel.quantityId, optionValueIds: sel.optionValueIds });
 }
 function next() {
     router.post('/upsell/next');
@@ -300,15 +289,22 @@ function next() {
                                 <p class="font-display text-sm font-semibold text-ink">{{ it.label || 'Your brand, mocked up' }}</p>
                                 <p v-if="it.product" class="text-xs text-ink/55">From {{ money(it.product.fromPrice) }}</p>
                                 <p v-else class="text-xs text-ink/55">Made with your logo</p>
-                                <button
-                                    v-if="it.product"
-                                    class="mt-3 w-full rounded-full px-4 py-2.5 text-sm font-semibold transition disabled:opacity-70"
-                                    :class="added[it.product.slug] ? 'bg-brand-50 text-brand-700' : 'bg-brand-600 text-white hover:bg-brand-700'"
-                                    :disabled="busy === it.product.slug || added[it.product.slug]"
-                                    @click="openAdd({ slug: it.product.slug, name: it.label, img: it.img, fromPrice: it.product.fromPrice })"
-                                >
-                                    {{ added[it.product.slug] ? '✓ Added' : busy === it.product.slug ? 'Adding…' : '+ Add to order' }}
-                                </button>
+                                <div v-if="it.product" class="mt-3 flex items-stretch gap-2">
+                                    <select v-if="it.product.quantities && it.product.quantities.length > 1"
+                                            :value="qtyOf(it.product)" :aria-label="`Quantity for ${it.product.name}`"
+                                            class="shrink-0 rounded-full border border-paper-300 bg-white px-2.5 py-2 text-sm text-ink focus:border-brand-400 focus:outline-none"
+                                            @change="qtySel[it.product.slug] = +$event.target.value">
+                                        <option v-for="q in it.product.quantities" :key="q.id" :value="q.id">{{ q.quantity }}</option>
+                                    </select>
+                                    <button
+                                        class="flex-1 rounded-full px-4 py-2.5 text-sm font-semibold transition disabled:opacity-70"
+                                        :class="added[it.product.slug] ? 'bg-brand-50 text-brand-700' : 'bg-brand-600 text-white hover:bg-brand-700'"
+                                        :disabled="busy === it.product.slug || added[it.product.slug]"
+                                        @click="addItem(it.product)"
+                                    >
+                                        {{ added[it.product.slug] ? '✓ Added' : busy === it.product.slug ? 'Adding…' : '+ Add to order' }}
+                                    </button>
+                                </div>
                             </div>
                         </div>
                         <!-- streaming placeholder keeps the grid feeling alive while the set finishes -->
@@ -512,14 +508,22 @@ function next() {
                     <div class="flex flex-1 flex-col p-3">
                         <p class="font-display text-sm font-semibold text-ink">{{ p.name }}</p>
                         <p class="text-xs text-ink/55">From {{ money(p.fromPrice) }}</p>
-                        <button
-                            class="mt-3 w-full rounded-full px-4 py-2.5 text-sm font-semibold transition disabled:opacity-70"
-                            :class="added[p.slug] ? 'bg-brand-50 text-brand-700' : 'bg-brand-600 text-white hover:bg-brand-700'"
-                            :disabled="busy === p.slug || added[p.slug]"
-                            @click="openAdd({ slug: p.slug, name: p.name, img: p.image, fromPrice: p.fromPrice })"
-                        >
-                            {{ added[p.slug] ? '✓ Added' : busy === p.slug ? 'Adding…' : '+ Add to order' }}
-                        </button>
+                        <div class="mt-3 flex items-stretch gap-2">
+                            <select v-if="p.quantities && p.quantities.length > 1"
+                                    :value="qtyOf(p)" :aria-label="`Quantity for ${p.name}`"
+                                    class="shrink-0 rounded-full border border-paper-300 bg-white px-2.5 py-2 text-sm text-ink focus:border-brand-400 focus:outline-none"
+                                    @change="qtySel[p.slug] = +$event.target.value">
+                                <option v-for="q in p.quantities" :key="q.id" :value="q.id">{{ q.quantity }}</option>
+                            </select>
+                            <button
+                                class="flex-1 rounded-full px-4 py-2.5 text-sm font-semibold transition disabled:opacity-70"
+                                :class="added[p.slug] ? 'bg-brand-50 text-brand-700' : 'bg-brand-600 text-white hover:bg-brand-700'"
+                                :disabled="busy === p.slug || added[p.slug]"
+                                @click="addItem(p)"
+                            >
+                                {{ added[p.slug] ? '✓ Added' : busy === p.slug ? 'Adding…' : '+ Add to order' }}
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -535,10 +539,6 @@ function next() {
             </div>
             </template>
         </div>
-
-        <!-- add-to-order popup: pick quantity + print options before adding -->
-        <UpsellAddModal :product="modalProduct" :busy="busy === modalProduct?.slug"
-                        @close="modalProduct = null" @confirm="confirmAdd" />
     </StoreLayout>
 </template>
 
