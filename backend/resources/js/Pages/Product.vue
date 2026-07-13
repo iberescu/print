@@ -51,11 +51,30 @@ onMounted(() => {
         priceValidUntil: new Date(Date.now() + 365 * 864e5).toISOString().slice(0, 10),
         url: window.location.href,
         seller: { '@type': 'Organization', name: 'RunMyPrint' },
+        // Merchant-listing recommended fields (fixes Search Console warnings).
+        hasMerchantReturnPolicy: {
+            '@type': 'MerchantReturnPolicy',
+            applicableCountry: 'US',
+            returnPolicyCategory: 'https://schema.org/MerchantReturnFiniteReturnWindow',
+            merchantReturnDays: 30,
+            returnMethod: 'https://schema.org/ReturnByMail',
+            returnFees: 'https://schema.org/FreeReturn',
+        },
+        shippingDetails: {
+            '@type': 'OfferShippingDetails',
+            shippingRate: { '@type': 'MonetaryAmount', value: '7.99', currency: 'USD' },
+            shippingDestination: { '@type': 'DefinedRegion', addressCountry: 'US' },
+            deliveryTime: {
+                '@type': 'ShippingDeliveryTime',
+                handlingTime: { '@type': 'QuantitativeValue', minValue: 1, maxValue: 3, unitCode: 'DAY' },
+                transitTime: { '@type': 'QuantitativeValue', minValue: 3, maxValue: 8, unitCode: 'DAY' },
+            },
+        },
     } : undefined;
     const graph = [{
         '@context': 'https://schema.org', '@type': 'Product',
         name: p.name,
-        description: (seo.value.description || p.tagline || '').replace(/\s+/g, ' ').trim().slice(0, 500),
+        description: (seo.value.description || p.tagline || `${p.name} — custom printed by RunMyPrint.`).replace(/\s+/g, ' ').trim().slice(0, 500),
         category: p.category?.name,
         image: p.image ? [abs(p.image)] : undefined,
         sku: String(p.id),          // matches the merchant feed g:id

@@ -157,7 +157,6 @@ onMounted(() => {
             '@context': 'https://schema.org', '@type': 'WebApplication',
             name: 'RunMyPrint AI Logo Maker', applicationCategory: 'DesignApplication',
             operatingSystem: 'Web', url: window.location.href,
-            offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD', availability: 'https://schema.org/InStock' },
             description: desc,
         },
         {
