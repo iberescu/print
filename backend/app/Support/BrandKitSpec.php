@@ -31,7 +31,14 @@ class BrandKitSpec
     {
         $all = [
             ['key' => 'mug',     'label' => 'Ceramic mug',    'slug' => 'custom-mugs',                       'decoration' => 'print',      'scene' => 'a plain white ceramic coffee mug'],
-            ['key' => 'tumbler', 'label' => 'Steel tumbler',  'slug' => '20-oz-tumbler',                     'decoration' => 'laser',      'scene' => 'a brushed stainless-steel insulated tumbler with a lid'],
+            [
+                'key' => 'tumbler', 'label' => 'Tumbler', 'slug' => '20-oz-tumbler', 'decoration' => 'custom', 'logo_render' => 'laser',
+                'prompt' => 'A studio product shot of an insulated tumbler with a lid, sitting on a light '
+                    .'natural-wood table with a soft light wall behind, a soft contact shadow, bright even '
+                    .'lighting, crisp focus, centred with generous margins. The tumbler body is a single solid '
+                    .'colour chosen from ONLY these: white, black, blue, red or silver — pick the one that best '
+                    .'complements the logo. The provided logo is laser-engraved on the front, centred.',
+            ],
             ['key' => 'tote',    'label' => 'Canvas tote',    'slug' => 'custom-canvas-tote-bags',           'decoration' => 'print',      'scene' => 'a natural cotton-canvas tote bag neatly laid out flat, front side up', 'flat' => true],
             ['key' => 'tshirt',  'label' => 'T-shirt',        'slug' => 'gildan-softstyle-unisex-t-shirt',   'decoration' => 'print',      'scene' => 'a t-shirt neatly laid out flat, front side up', 'placement' => 'in the upper-left chest area (left-breast / pocket position), small', 'flat' => true],
             ['key' => 'hoodie',  'label' => 'Hoodie',         'slug' => 'jerzees-nublend-hooded-sweatshirt', 'decoration' => 'embroidery', 'scene' => 'a pullover hoodie neatly laid out flat, front side up', 'placement' => 'in the upper-left chest area (left-breast position), small', 'flat' => true],
@@ -42,10 +49,10 @@ class BrandKitSpec
                 'key' => 'letterhead', 'label' => 'Letterhead', 'slug' => 'company-letterhead', 'decoration' => 'custom',
                 'prompt' => 'A professional printed A4 letterhead / company stationery sheet, portrait '
                     .'orientation, lying flat (top-down) on a light natural-wood table with a soft shadow. The '
-                    .'provided logo is printed once in the HEADER at the top of the sheet, at a realistic size. '
-                    .'Below it a clean, elegant letterhead: a thin brand-coloured rule under the header and a '
-                    .'small placeholder contact line, the rest of the page left blank and white — do NOT fill '
-                    .'the body with paragraphs of text or gibberish words.',
+                    .'provided logo is printed once in the HEADER at the top of the sheet, at a realistic size, '
+                    .'with the company name "{company}" set cleanly beside or beneath it and the website "{url}" '
+                    .'in a small contact line. Below the header a thin brand-coloured rule, then the rest of the '
+                    .'page left blank and white — do NOT fill the body with paragraphs of text or gibberish words.',
             ],
             [
                 'key' => 'infinity', 'label' => 'Infinity-mirror LED', 'slug' => 'led-infinity-mirror', 'decoration' => 'custom',
@@ -67,11 +74,13 @@ class BrandKitSpec
                     .'photorealistic, 8K.',
             ],
             [
-                'key' => 'pen', 'label' => 'Pen', 'slug' => 'custom-pens', 'decoration' => 'custom',
+                'key' => 'pen', 'label' => 'Pen', 'slug' => 'custom-pens', 'decoration' => 'custom', 'logo_render' => 'laser',
                 'prompt' => 'A studio product shot of a single sleek promotional pen lying HORIZONTALLY '
                     .'(landscape) on a light natural-wood table with a soft shadow. Show the ENTIRE pen fully '
-                    .'within the frame from tip to end — not cropped — with generous margins around it. The '
-                    .'provided logo is printed small along the barrel of the pen in landscape orientation.',
+                    .'within the frame from tip to end — not cropped — with generous margins around it. The pen '
+                    .'barrel is a single solid colour chosen from ONLY these: white, black, blue, red or silver — '
+                    .'pick the one that best complements the logo. The provided logo is laser-engraved small along '
+                    .'the barrel in landscape orientation.',
             ],
             [
                 'key' => 'sticker', 'label' => 'Kiss-cut sticker', 'slug' => 'kiss-cut-stickers', 'decoration' => 'custom',
@@ -87,6 +96,18 @@ class BrandKitSpec
                 'prompt' => 'A studio product shot of a dark charcoal rectangular cloth mouse pad lying flat on '
                     .'a light natural-wood table, shown from a slight top-down angle. The provided logo is printed small in '
                     .'ONE CORNER of the mouse pad.',
+            ],
+            [
+                // image-only card for now (slug intentionally maps to no real product, so the
+                // gallery shows just the picture — no price / add-to-cart, and no accessory touched).
+                'key' => 'review-stand', 'label' => 'Google review sign', 'slug' => 'google-review-stand', 'decoration' => 'custom',
+                'prompt' => 'A premium clear-acrylic tabletop sign held upright in a small acrylic base/stand on a '
+                    .'light natural-wood counter, photographed straight-on at a slight angle with soft realistic '
+                    .'lighting. The printed card inside is a "Leave us a Google review" counter sign with a clean, '
+                    .'uncluttered, on-brand layout: the provided logo at the top, then the company name "{company}", '
+                    .'a short line "Scan to leave us a Google review", a QR code printed clearly in the lower half, '
+                    .'and the website "{url}" as a small line at the bottom. If no QR code image is supplied, draw a '
+                    .'realistic placeholder QR code graphic in that spot.',
             ],
         ];
         $cap = (int) config('shop.internal_engine.max_products', 0);
@@ -167,6 +188,11 @@ class BrandKitSpec
                 $words = $kw ? implode(', ', array_slice($kw, 0, 30)) : (trim((string) ($ctx['company'] ?? '')) ?: 'the brand');
                 $prompt = str_replace('{keywords}', $words, $prompt);
             }
+            // Company name + website come from the designer fields / uploaded artwork
+            // (BrandKit) — fall back to placeholders when we don't have them.
+            $company = trim((string) ($ctx['company'] ?? '')) ?: 'Your Company';
+            $url = preg_replace('#^https?://#i', '', rtrim(trim((string) ($ctx['url'] ?? '')), '/')) ?: 'yourcompany.com';
+            $prompt = str_replace(['{company}', '{url}'], [$company, $url], $prompt);
 
             // What the scene composites — the logo, the QR code, or both.
             $inputs = $p['inputs'] ?? ['logo'];
@@ -176,6 +202,12 @@ class BrandKitSpec
                     'white' => 'Keep the logo\'s exact shapes, letterforms and proportions — do NOT redraw, '
                         .'re-letter or distort it — but render it in solid WHITE (a clean single-colour white '
                         .'version of the logo).',
+                    'laser' => 'Keep the logo\'s exact shapes, letterforms and proportions — do NOT redraw, '
+                        .'re-letter or distort it — but render it as a REALISTIC LASER ENGRAVING on metal: the mark '
+                        .'reveals the bare metal under the coating — a natural silvery brushed-metal / frosted-steel '
+                        .'tone, subtly recessed and etched into the surface (NOT a flat white or black print). On a '
+                        .'silver or steel-coloured product make the etch a slightly frosted matte tone so it stays '
+                        .'clearly legible. A single metallic tone, never full colour.',
                     default => $logoFidelity,
                 };
             }
@@ -192,8 +224,10 @@ class BrandKitSpec
         $placement = $p['placement'] ?? 'centred';
         $decoration = match ($p['decoration']) {
             'laser' => "Laser-engrave the provided logo onto the surface, {$placement}. Keep the logo's exact "
-                .'shapes, letterforms and proportions — do NOT redraw or restyle it — rendered as a single '
-                .'dark, monochrome engraving (laser engraving has no colour).',
+                .'shapes, letterforms and proportions — do NOT redraw or restyle it — rendered as a REALISTIC metal '
+                .'laser engraving: the mark reveals the bare metal under the coating, a natural silvery brushed-metal '
+                .'/ frosted-steel tone recessed into the surface (never a flat white/black print or full colour); on '
+                .'a silver/steel product use a slightly frosted matte etch so it stays legible.',
             'embroidery' => "Embroider the provided logo onto it, {$placement}. Keep the logo's exact shapes, "
                 .'letterforms and proportions — do NOT redraw or restyle it — as realistic stitched threads '
                 .'in its original colours.',

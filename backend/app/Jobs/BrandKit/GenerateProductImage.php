@@ -55,6 +55,7 @@ class GenerateProductImage implements ShouldQueue
             BrandKitSpec::productPrompt($this->spec, [
                 'keywords' => $summary['keywords'] ?? [],
                 'company'  => $kit->company ?: ($summary['company'] ?? ''),
+                'url'      => $kit->website ?: ($summary['website'] ?? ''),
                 'colors'   => $summary['colors'] ?? [],
             ]),
             $imgs,

@@ -277,7 +277,11 @@ function syncSelection() {
         sel.italic = o.fontStyle === 'italic';
         sel.align = o.textAlign || 'left';
     }
-    if (!selIsUrl.value) { urlTick.design.state = ''; urlTick.design.msg = ''; }
+    // Validate as soon as a URL element is selected so the tick reflects its
+    // status while it's selected (editing on canvas deselects it, which would
+    // otherwise clear the result before it's seen). Not per-keystroke.
+    if (selIsUrl.value) checkUrlField('design', o.text ?? '');
+    else { urlTick.design.state = ''; urlTick.design.msg = ''; }
 }
 
 // Clicking in the stage but outside the canvas deselects the active object.
