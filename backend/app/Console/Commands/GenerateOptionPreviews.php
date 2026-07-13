@@ -55,8 +55,10 @@ class GenerateOptionPreviews extends Command
         'standard'  => 'a clean smooth professional print surface',
     ];
 
-    /** Decoration / print-method groups — previewed on FABRIC (not paper) with the method's texture. */
-    private const DECORATION_NAMES = '/decoration|technolog|print method|imprint|application|printing/i';
+    /** Apparel decoration groups (e.g. "Decoration Technology") — previewed on FABRIC with the method's
+     *  texture. Kept narrow ("decoration") so generic "printing" options on non-apparel products (card
+     *  holders, flags, tablecloths) are NOT given a garment preview. */
+    private const DECORATION_NAMES = '/decoration/i';
 
     private const DECORATION_STYLE = 'Extreme macro close-up photograph of a section of a plain cotton garment '
         .'(t-shirt / hoodie fleece) filling the frame at a slight three-quarter angle, soft directional studio '
