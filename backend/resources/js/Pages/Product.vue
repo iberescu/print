@@ -243,7 +243,7 @@ function addDirect() {
                                 v-model="selectedQtyId"
                                 class="w-full appearance-none rounded-xl border border-paper-300 bg-white py-3 pl-4 pr-11 text-sm font-medium text-ink shadow-sm transition hover:border-ink/25 focus:border-brand-600 focus:outline-none focus:ring-2 focus:ring-brand-600/20"
                             >
-                                <option v-for="q in product.quantities" :key="q.id" :value="q.id">{{ q.quantity }} units — {{ money(Number(q.total) + optionDeltas) }} · {{ money((Number(q.total) + optionDeltas) / q.quantity) }}/ea</option>
+                                <option v-for="q in product.quantities" :key="q.id" :value="q.id">{{ q.quantity }} units — {{ money(Number(q.total) + optionDeltas) }} · {{ money((Number(q.total) + optionDeltas) / q.quantity) }} / unit</option>
                             </select>
                             <svg class="pointer-events-none absolute right-4 top-1/2 h-4 w-4 -translate-y-1/2 text-ink/45" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6" stroke-linecap="round" stroke-linejoin="round" /></svg>
                         </div>
@@ -257,7 +257,7 @@ function addDirect() {
                             >
                                 <span class="block font-display text-lg font-semibold text-ink">{{ q.quantity }}</span>
                                 <span class="block text-xs text-ink/50">{{ money(Number(q.total) + optionDeltas) }}</span>
-                                <span class="block text-[11px] text-ink/40">{{ money((Number(q.total) + optionDeltas) / q.quantity) }}/ea</span>
+                                <span class="block text-[11px] text-ink/40">{{ money((Number(q.total) + optionDeltas) / q.quantity) }} / unit</span>
                             </button>
                         </div>
                     </div>
