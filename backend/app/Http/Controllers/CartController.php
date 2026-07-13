@@ -25,9 +25,10 @@ class CartController extends Controller
         }
 
         return Inertia::render('Cart', [
-            'items'       => $this->cart->items(),
-            'summary'     => $this->summary(),
-            'recommended' => $this->recommended(),
+            'items'         => $this->cart->items(),
+            'summary'       => $this->summary(),
+            'recommended'   => $this->recommended(),
+            'brandProducts' => $this->brandProducts(),
         ]);
     }
 
@@ -145,6 +146,51 @@ class CartController extends Controller
                 'image'     => $this->img($p->image_path),
                 'category'  => $p->category?->name,
             ])->all();
+    }
+
+    /**
+     * The customer's own "your logo on products" mockups from their brand kit (the
+     * Layout.ai / internal-engine gallery), shown as related products in the cart.
+     * Uses the ALREADY-GENERATED cached images — never regenerates. EVERY mockup with a
+     * cached image is shown: those that map to a real product link to it and show a price,
+     * image-only ones (pen, review stand, …) render as a picture with no buy link.
+     *
+     * @return array<int,array<string,mixed>>
+     */
+    private function brandProducts(): array
+    {
+        $key = session('pqsg.key');
+        if (! $key) {
+            return [];
+        }
+        $kit = \App\Models\BrandKit::where('key', $key)->first();
+        if (! $kit || empty($kit->products)) {
+            return [];
+        }
+
+        $slugs = collect($kit->products)->pluck('product_slug')->filter()->all();
+        $shop = Product::with('category')->whereIn('slug', $slugs)->where('is_active', true)->get()->keyBy('slug');
+
+        return collect($kit->products)
+            ->map(function ($p) use ($shop) {
+                if (empty($p['img'])) {
+                    return null; // need the cached image
+                }
+                $prod = $shop->get($p['product_slug'] ?? '');
+
+                return [
+                    'label'     => $p['label'] ?? ($prod?->name ?? 'Your logo'),
+                    'img'       => $p['img'], // cached, already-generated — shown as-is, no regeneration
+                    'slug'      => $prod?->slug,        // null → image-only card (no buy link)
+                    'name'      => $prod?->name,
+                    'fromPrice' => $prod ? (float) $prod->from_price : null,
+                    'category'  => $prod?->category?->name,
+                ];
+            })
+            ->filter()
+            ->unique(fn ($p) => $p['slug'] ?: $p['label'])
+            ->values()
+            ->all();
     }
 
     /** Which forced upsell steps apply to what was just added (req: multi-step upsell).

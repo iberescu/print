@@ -9,6 +9,7 @@ defineProps({
     items: { type: Array, default: () => [] },
     summary: { type: Object, default: () => ({}) },
     recommended: { type: Array, default: () => [] },
+    brandProducts: { type: Array, default: () => [] },
 });
 
 const remove = (id) => router.post(`/cart/remove/${id}`, {}, { preserveScroll: true });
@@ -92,6 +93,27 @@ const editHref = (it) => {
                     <Link href="/" class="mt-3 block text-center text-sm text-ink/55 transition hover:text-ink">Continue shopping</Link>
                 </aside>
             </div>
+
+            <!-- the customer's own brand: "your logo on" mockups (cached, shown as-is — no regeneration) -->
+            <section v-if="brandProducts.length" class="mt-16">
+                <h2 class="font-display text-2xl font-semibold tracking-tight">Related products</h2>
+                <p class="mt-1.5 text-sm text-ink/55">Your logo, already on them — add one more before you check out.</p>
+                <div class="mt-6 grid grid-cols-2 gap-5 md:grid-cols-4">
+                    <component :is="p.slug ? Link : 'div'" v-for="(p, i) in brandProducts" :key="p.slug || i"
+                               :href="p.slug ? `/product/${p.slug}` : undefined"
+                               class="group overflow-hidden rounded-2xl border border-paper-300 bg-white transition"
+                               :class="p.slug ? 'hover:-translate-y-1 hover:shadow-lg' : ''">
+                        <div class="aspect-square overflow-hidden bg-white">
+                            <img v-if="p.img" :src="p.img" :alt="p.label || p.name" loading="lazy" class="h-full w-full object-cover transition duration-500" :class="p.slug ? 'group-hover:scale-105' : ''" />
+                        </div>
+                        <div class="p-3">
+                            <p v-if="p.category" class="text-[11px] font-semibold uppercase tracking-widest text-brand-700/70">{{ p.category }}</p>
+                            <p class="font-display text-sm font-semibold text-ink">{{ p.name || p.label }}</p>
+                            <p v-if="p.fromPrice != null" class="text-xs text-ink/55">From {{ money(p.fromPrice) }}</p>
+                        </div>
+                    </component>
+                </div>
+            </section>
 
             <!-- req 15: nudge toward free shipping -->
             <section v-if="recommended.length" class="mt-16">
