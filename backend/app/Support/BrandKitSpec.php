@@ -41,7 +41,7 @@ class BrandKitSpec
             ],
             ['key' => 'tote',    'label' => 'Canvas tote',    'slug' => 'custom-canvas-tote-bags',           'decoration' => 'print',      'scene' => 'a natural cotton-canvas tote bag neatly laid out flat, front side up', 'flat' => true],
             ['key' => 'tshirt',  'label' => 'T-shirt',        'slug' => 'gildan-softstyle-unisex-t-shirt',   'decoration' => 'print',      'scene' => 'a t-shirt neatly laid out flat, front side up', 'placement' => 'in the upper-left chest area (left-breast / pocket position), small', 'flat' => true],
-            ['key' => 'hoodie',  'label' => 'Hoodie',         'slug' => 'jerzees-nublend-hooded-sweatshirt', 'decoration' => 'embroidery', 'scene' => 'a pullover hoodie neatly laid out flat, front side up', 'placement' => 'in the upper-left chest area (left-breast position), at a realistic left-chest size (not tiny), close enough to read the stitch texture', 'flat' => true],
+            ['key' => 'hoodie',  'label' => 'Hoodie',         'slug' => 'jerzees-nublend-hooded-sweatshirt', 'decoration' => 'embroidery', 'scene' => 'a pullover hoodie neatly laid out flat, front side up', 'placement' => 'high on the UPPER-LEFT chest, at the left-breast / pocket position — small and clearly toward the TOP-LEFT of the hoodie front, never centred', 'flat' => true],
             ['key' => 'cap',     'label' => 'Cap',            'slug' => 'embroidered-hats',                  'decoration' => 'embroidery', 'scene' => 'a structured baseball cap, three-quarter view'],
 
             // Showcase products with bespoke scenes (decoration = custom → uses its own prompt).
