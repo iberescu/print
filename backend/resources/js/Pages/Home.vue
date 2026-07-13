@@ -1,5 +1,6 @@
 <script setup>
-import { Head, Link } from '@inertiajs/vue3';
+import { ref } from 'vue';
+import { Head, Link, router } from '@inertiajs/vue3';
 import StoreLayout from '../Layouts/StoreLayout.vue';
 import ProductCard from '../Components/ProductCard.vue';
 import SmartImage from '../Components/SmartImage.vue';
@@ -14,6 +15,15 @@ const props = defineProps({
     priceGuaranteeImage: { type: String, default: null },
     freeShippingThreshold: { type: Number, default: 100 },
 });
+
+// "Your logo on" cross-sell: add the mockup product straight to the cart (default
+// quantity — adjustable with the qty switch in the cart).
+const adding = ref(null);
+const addToCart = (slug) => {
+    if (adding.value) return;
+    adding.value = slug;
+    router.post(`/upsell/add/${slug}`, {}, { preserveScroll: true, onFinish: () => (adding.value = null) });
+};
 
 const slides = [
     { eyebrow: 'Premium custom printing', title: 'Everything to launch your brand', text: 'Business cards, flyers, signage, stickers, apparel and more — designed online, printed beautifully, delivered fast.', cta: 'Browse products', href: '#bestsellers', image: props.heroImage },
@@ -143,18 +153,22 @@ const tools = [
                 <p class="mt-1.5 text-ink/60">Mockups made from your logo — add any to your order.</p>
             </div>
             <div class="grid grid-cols-2 gap-4 sm:grid-cols-3 sm:gap-5 md:grid-cols-4">
-                <component :is="p.slug ? Link : 'div'" v-for="(p, i) in logoProducts" :key="p.slug || i"
-                           :href="p.slug ? `/product/${p.slug}` : undefined"
-                           class="group flex flex-col overflow-hidden rounded-2xl border border-paper-300 bg-white shadow-sm transition duration-300"
-                           :class="p.slug ? 'hover:-translate-y-1.5 hover:shadow-[0_28px_55px_-28px_rgba(43,59,85,0.55)]' : ''">
-                    <div class="aspect-square overflow-hidden bg-white">
+                <div v-for="(p, i) in logoProducts" :key="p.slug || i"
+                     class="group flex flex-col overflow-hidden rounded-2xl border border-paper-300 bg-white shadow-sm transition duration-300"
+                     :class="p.slug ? 'hover:-translate-y-1.5 hover:shadow-[0_28px_55px_-28px_rgba(43,59,85,0.55)]' : ''">
+                    <component :is="p.slug ? Link : 'div'" :href="p.slug ? `/product/${p.slug}` : undefined" class="block aspect-square overflow-hidden bg-white">
                         <img v-if="p.img" :src="p.img" :alt="p.label || p.name" loading="lazy" class="h-full w-full object-cover transition duration-500" :class="p.slug ? 'group-hover:scale-105' : ''" />
-                    </div>
+                    </component>
                     <div class="flex flex-1 flex-col p-3.5">
                         <h3 class="font-display text-sm font-semibold leading-snug text-ink sm:text-base">{{ p.name || p.label }}</h3>
                         <p v-if="p.fromPrice != null" class="mt-0.5 text-xs text-ink/60 sm:text-sm">From <span class="font-semibold text-brand-700">${{ Number(p.fromPrice).toFixed(2) }}</span></p>
+                        <button v-if="p.slug" type="button" :disabled="adding === p.slug"
+                                class="mt-3 w-full rounded-full bg-brand-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-brand-700 disabled:opacity-70"
+                                @click="addToCart(p.slug)">
+                            {{ adding === p.slug ? 'Adding…' : '+ Add to cart' }}
+                        </button>
                     </div>
-                </component>
+                </div>
             </div>
         </section>
 

@@ -14,6 +14,15 @@ defineProps({
 
 const remove = (id) => router.post(`/cart/remove/${id}`, {}, { preserveScroll: true });
 
+// "Your logo on" cross-sell: add the mockup product straight to the cart (default
+// quantity — adjustable with the line's qty switch once it's in the cart).
+const adding = ref(null);
+const addToCart = (slug) => {
+    if (adding.value) return;
+    adding.value = slug;
+    router.post(`/upsell/add/${slug}`, {}, { preserveScroll: true, onFinish: () => (adding.value = null) });
+};
+
 // Per-line quantity switch: pick another of the product's price tiers, re-price server-side.
 const setQty = (id, quantityId) => router.post(`/cart/qty/${id}`, { quantityId }, { preserveScroll: true });
 
@@ -124,19 +133,23 @@ const editHref = (it) => {
                 <h2 class="font-display text-2xl font-semibold tracking-tight">Related products</h2>
                 <p class="mt-1.5 text-sm text-ink/55">Your logo, already on them — add one more before you check out.</p>
                 <div class="mt-6 grid grid-cols-2 gap-5 md:grid-cols-4">
-                    <component :is="p.slug ? Link : 'div'" v-for="(p, i) in brandProducts" :key="p.slug || i"
-                               :href="p.slug ? `/product/${p.slug}` : undefined"
-                               class="group overflow-hidden rounded-2xl border border-paper-300 bg-white transition"
-                               :class="p.slug ? 'hover:-translate-y-1 hover:shadow-lg' : ''">
-                        <div class="aspect-square overflow-hidden bg-white">
+                    <div v-for="(p, i) in brandProducts" :key="p.slug || i"
+                         class="group flex flex-col overflow-hidden rounded-2xl border border-paper-300 bg-white transition"
+                         :class="p.slug ? 'hover:-translate-y-1 hover:shadow-lg' : ''">
+                        <component :is="p.slug ? Link : 'div'" :href="p.slug ? `/product/${p.slug}` : undefined" class="block aspect-square overflow-hidden bg-white">
                             <img v-if="p.img" :src="p.img" :alt="p.label || p.name" loading="lazy" class="h-full w-full object-cover transition duration-500" :class="p.slug ? 'group-hover:scale-105' : ''" />
-                        </div>
-                        <div class="p-3">
+                        </component>
+                        <div class="flex flex-1 flex-col p-3">
                             <p v-if="p.category" class="text-[11px] font-semibold uppercase tracking-widest text-brand-700/70">{{ p.category }}</p>
                             <p class="font-display text-sm font-semibold text-ink">{{ p.name || p.label }}</p>
                             <p v-if="p.fromPrice != null" class="text-xs text-ink/55">From {{ money(p.fromPrice) }}</p>
+                            <button v-if="p.slug" type="button" :disabled="adding === p.slug"
+                                    class="mt-3 w-full rounded-full bg-brand-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-brand-700 disabled:opacity-70"
+                                    @click="addToCart(p.slug)">
+                                {{ adding === p.slug ? 'Adding…' : '+ Add to cart' }}
+                            </button>
                         </div>
-                    </component>
+                    </div>
                 </div>
             </section>
 

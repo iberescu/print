@@ -289,10 +289,10 @@ function next() {
                                 <p class="font-display text-sm font-semibold text-ink">{{ it.label || 'Your brand, mocked up' }}</p>
                                 <p v-if="it.product" class="text-xs text-ink/55">From {{ money(it.product.fromPrice) }}</p>
                                 <p v-else class="text-xs text-ink/55">Made with your logo</p>
-                                <div v-if="it.product" class="mt-3 flex items-stretch gap-2">
+                                <div v-if="it.product" class="mt-3 flex flex-col gap-2 sm:flex-row sm:items-stretch">
                                     <select v-if="it.product.quantities && it.product.quantities.length > 1"
                                             :value="qtyOf(it.product)" :aria-label="`Quantity for ${it.product.name}`"
-                                            class="shrink-0 rounded-full border border-paper-300 bg-white px-2.5 py-2 text-sm text-ink focus:border-brand-400 focus:outline-none"
+                                            class="w-full rounded-full border border-paper-300 bg-white px-2.5 py-2 text-sm text-ink focus:border-brand-400 focus:outline-none sm:w-auto sm:shrink-0"
                                             @change="qtySel[it.product.slug] = +$event.target.value">
                                         <option v-for="q in it.product.quantities" :key="q.id" :value="q.id">{{ q.quantity }}</option>
                                     </select>
@@ -508,10 +508,10 @@ function next() {
                     <div class="flex flex-1 flex-col p-3">
                         <p class="font-display text-sm font-semibold text-ink">{{ p.name }}</p>
                         <p class="text-xs text-ink/55">From {{ money(p.fromPrice) }}</p>
-                        <div class="mt-3 flex items-stretch gap-2">
+                        <div class="mt-3 flex flex-col gap-2 sm:flex-row sm:items-stretch">
                             <select v-if="p.quantities && p.quantities.length > 1"
                                     :value="qtyOf(p)" :aria-label="`Quantity for ${p.name}`"
-                                    class="shrink-0 rounded-full border border-paper-300 bg-white px-2.5 py-2 text-sm text-ink focus:border-brand-400 focus:outline-none"
+                                    class="w-full rounded-full border border-paper-300 bg-white px-2.5 py-2 text-sm text-ink focus:border-brand-400 focus:outline-none sm:w-auto sm:shrink-0"
                                     @change="qtySel[p.slug] = +$event.target.value">
                                 <option v-for="q in p.quantities" :key="q.id" :value="q.id">{{ q.quantity }}</option>
                             </select>
