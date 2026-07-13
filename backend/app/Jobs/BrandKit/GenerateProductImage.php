@@ -46,6 +46,13 @@ class GenerateProductImage implements ShouldQueue
         if ($hasQr && ($qr = $this->qrInput($kit))) {
             $imgs[] = $qr;
         }
+        // Website-styled pieces (tri-fold brochure, flyer) also get the homepage
+        // screenshot so Gemini designs them in the brand's real look.
+        $shot = ($this->spec['use_site_shot'] ?? false) && $kit->site_shot_path
+            ? $this->imageInput($kit->site_shot_path) : null;
+        if ($shot) {
+            $imgs[] = $shot;
+        }
         if (! $imgs) {
             return; // nothing to place
         }
@@ -53,17 +60,19 @@ class GenerateProductImage implements ShouldQueue
         $summary = $kit->summary ?? [];
         $img = $gemini->generateImage(
             BrandKitSpec::productPrompt($this->spec, [
-                'keywords' => $summary['keywords'] ?? [],
-                'company'  => $kit->company ?: ($summary['company'] ?? ''),
-                'url'      => $kit->website ?: ($summary['website'] ?? ''),
-                'colors'   => $summary['colors'] ?? [],
+                'keywords'    => $summary['keywords'] ?? [],
+                'company'     => $kit->company ?: ($summary['company'] ?? ''),
+                'url'         => $kit->website ?: ($summary['website'] ?? ''),
+                'description' => $summary['description'] ?? '',
+                'colors'      => $summary['colors'] ?? [],
+                'has_site'    => (bool) $shot,
             ]),
             $imgs,
             config('shop.internal_engine.image_model'),
         );
 
         $path = "brandkits/{$this->key}/product-{$this->spec['key']}.webp";
-        Storage::disk('public')->put($path, Img::webp($img['data'], $hasQr ? 1200 : 1000));
+        Storage::disk('public')->put($path, Img::webp($img['data'], ($hasQr || $shot) ? 1200 : 1000));
 
         $kit->appendItems('products', [[
             'key'          => $this->spec['key'],

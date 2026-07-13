@@ -110,6 +110,27 @@ class BrandKitSpec
                     .'and the website "{url}" as a small line at the bottom. If no QR code image is supplied, draw a '
                     .'realistic placeholder QR code graphic in that spot.',
             ],
+            // Website-styled print pieces — generated LAST and only after the crawl, using the
+            // logo + brand summary + homepage screenshot (see after_crawl + use_site_shot).
+            [
+                'key' => 'brochure', 'label' => 'Tri-fold brochure', 'slug' => 'tri-fold-brochures', 'decoration' => 'custom',
+                'after_crawl' => true, 'use_site_shot' => true,
+                'prompt' => 'A realistic studio mockup of a printed TRI-FOLD brochure for {company} — {description} — '
+                    .'resting on a clean surface at a slight three-quarter angle with soft realistic lighting, its '
+                    .'three panels partly fanned so the folds are clearly visible. Design it in the brand\'s own visual '
+                    .'style — a colour palette, typography and imagery that genuinely suit this business. The front '
+                    .'panel carries the logo and a short brand headline; the inner panels carry tasteful placeholder '
+                    .'marketing copy and on-brand imagery. Realistic paper with natural fold shadows, no clutter.',
+            ],
+            [
+                'key' => 'flyer', 'label' => 'Flyer', 'slug' => 'flyers', 'decoration' => 'custom',
+                'after_crawl' => true, 'use_site_shot' => true,
+                'prompt' => 'A realistic studio mockup of a single printed A4 marketing FLYER for {company} — {description} — '
+                    .'lying on a clean surface, photographed straight-on or at a slight angle with soft realistic '
+                    .'lighting. Design it in the brand\'s own visual style — a colour palette, typography and imagery '
+                    .'that genuinely suit this business. It features the logo, a bold brand headline and tasteful '
+                    .'placeholder marketing copy with on-brand imagery. Realistic paper, no clutter.',
+            ],
         ];
         $cap = (int) config('shop.internal_engine.max_products', 0);
 
@@ -123,7 +144,9 @@ class BrandKitSpec
      */
     public static function needsSummary(array $p): bool
     {
-        return str_contains((string) ($p['prompt'] ?? ''), '{keywords}');
+        // Dispatched AFTER the crawl (they need the summary and/or the screenshot): the
+        // website-styled brochure & flyer, plus any {keywords} scene (dormant word-cloud).
+        return ($p['after_crawl'] ?? false) || str_contains((string) ($p['prompt'] ?? ''), '{keywords}');
     }
 
     /**
@@ -141,7 +164,9 @@ class BrandKitSpec
         }
         // logo + QR: merch roster (logo) minus letterhead (it moves to the paper set), plus the paper set
         // (which carries the real QR — with the logo already in its centre when one was uploaded).
-        $merch = array_values(array_filter(self::products(), fn ($p) => ($p['key'] ?? '') !== 'letterhead'));
+        // exclude letterhead (it moves to the paper set) and the website-styled pieces
+        // (brochure/flyer) — the QR flow has no crawl/screenshot to drive those.
+        $merch = array_values(array_filter(self::products(), fn ($p) => ($p['key'] ?? '') !== 'letterhead' && ! ($p['after_crawl'] ?? false)));
 
         return array_merge($merch, $paper);
     }
@@ -193,7 +218,8 @@ class BrandKitSpec
             // (BrandKit) — fall back to placeholders when we don't have them.
             $company = trim((string) ($ctx['company'] ?? '')) ?: 'Your Company';
             $url = preg_replace('#^https?://#i', '', rtrim(trim((string) ($ctx['url'] ?? '')), '/')) ?: 'yourcompany.com';
-            $prompt = str_replace(['{company}', '{url}'], [$company, $url], $prompt);
+            $description = trim((string) ($ctx['description'] ?? '')) ?: 'a professional business';
+            $prompt = str_replace(['{company}', '{url}', '{description}'], [$company, $url, $description], $prompt);
 
             // What the scene composites — the logo, the QR code, or both.
             $inputs = $p['inputs'] ?? ['logo'];
@@ -216,6 +242,13 @@ class BrandKitSpec
                     .'it AS-IS, pixel-for-pixel identical, as if pasting the supplied file. Do NOT redraw, '
                     .'regenerate, re-pattern, recolour, sharpen, "improve", crop, rotate or distort it; every '
                     .'module/dot must stay exactly as given so it remains scannable. Keep it perfectly square.';
+            }
+            if ($ctx['has_site'] ?? false) {
+                $clauses[] = 'A full-page SCREENSHOT of the brand\'s website is also provided as a reference — match '
+                    .'its colour palette, typography feel and its real imagery/photography and graphic motifs so the '
+                    .'piece looks unmistakably on-brand. Use it ONLY as a style/imagery reference — do NOT paste the '
+                    .'raw screenshot or show any browser chrome, and use the supplied logo image for the logo '
+                    .'(ignore any logo inside the screenshot).';
             }
 
             return $prompt.' '.implode(' ', $clauses).' No watermark and no random gibberish text.';

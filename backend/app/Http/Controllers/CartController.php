@@ -171,6 +171,8 @@ class CartController extends Controller
         $slugs = collect($kit->products)->pluck('product_slug')->filter()->all();
         $shop = Product::with('category')->whereIn('slug', $slugs)->where('is_active', true)->get()->keyBy('slug');
 
+        $first = ['brochure' => 0, 'flyer' => 1]; // website-styled print pieces lead the list (when generated)
+
         return collect($kit->products)
             ->map(function ($p) use ($shop) {
                 if (empty($p['img'])) {
@@ -179,6 +181,7 @@ class CartController extends Controller
                 $prod = $shop->get($p['product_slug'] ?? '');
 
                 return [
+                    'key'       => $p['key'] ?? '',
                     'label'     => $p['label'] ?? ($prod?->name ?? 'Your logo'),
                     'img'       => $p['img'], // cached, already-generated — shown as-is, no regeneration
                     'slug'      => $prod?->slug,        // null → image-only card (no buy link)
@@ -189,6 +192,7 @@ class CartController extends Controller
             })
             ->filter()
             ->unique(fn ($p) => $p['slug'] ?: $p['label'])
+            ->sortBy(fn ($p) => $first[$p['key']] ?? 9)  // brochure & flyer first, rest keep their order
             ->values()
             ->all();
     }
