@@ -246,7 +246,7 @@ onMounted(() => {
     ldEl = document.createElement('script');
     ldEl.type = 'application/ld+json';
     ldEl.text = JSON.stringify([
-        { '@context': 'https://schema.org', '@type': 'WebApplication', name: 'RunMyPrint QR Code Generator', applicationCategory: 'UtilitiesApplication', operatingSystem: 'Web', url: window.location.href, offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' }, description: desc },
+        { '@context': 'https://schema.org', '@type': 'WebApplication', name: 'RunMyPrint QR Code Generator', applicationCategory: 'UtilitiesApplication', operatingSystem: 'Web', url: window.location.href, offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD', availability: 'https://schema.org/InStock' }, description: desc },
         { '@context': 'https://schema.org', '@type': 'HowTo', name: 'How to create a free QR code', step: steps.map((s, i) => ({ '@type': 'HowToStep', position: i + 1, name: s.t, text: s.d })) },
         { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: faq.map((x) => ({ '@type': 'Question', name: x.q, acceptedAnswer: { '@type': 'Answer', text: x.a } })) },
     ]);
