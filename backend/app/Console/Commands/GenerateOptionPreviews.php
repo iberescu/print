@@ -78,6 +78,13 @@ class GenerateOptionPreviews extends Command
         'sublimation'       => 'dye-sublimation: vivid full-colour graphics dyed permanently into the fibres, completely flat with zero hand-feel',
     ];
 
+    /** Back-of-garment print groups (e.g. "Backside": Blank vs Printed) — shown as the garment's back. */
+    private const SIDES_NAMES = '/backside|back side/i';
+
+    private const SIDES_STYLE = 'Product photo of the BACK of a plain cotton t-shirt shown flat and front-on, '
+        .'seamless light-grey studio background, soft even studio lighting, premium apparel e-commerce style. '
+        .'No readable text, no logo, no watermark, no hands, no props.';
+
     public function handle(GeminiClient $gemini): int
     {
         $limit = (int) $this->option('limit');
@@ -97,7 +104,8 @@ class GenerateOptionPreviews extends Command
                 }
                 if (! $this->option('all')
                     && ! preg_match(self::MATERIAL_NAMES, $option->name)
-                    && ! preg_match(self::DECORATION_NAMES, $option->name)) {
+                    && ! preg_match(self::DECORATION_NAMES, $option->name)
+                    && ! preg_match(self::SIDES_NAMES, $option->name)) {
                     continue;
                 }
 
@@ -143,6 +151,15 @@ class GenerateOptionPreviews extends Command
     private function prompt(Product $product, $option, $value): string
     {
         $item = Str::singular($product->name);
+
+        // Back-of-garment print groups render as the garment's back — blank vs printed.
+        if (preg_match(self::SIDES_NAMES, $option->name)) {
+            $back = Str::contains(Str::lower($value->label), 'print')
+                ? 'The back carries a bold minimal abstract deep-navy and white geometric print across the upper back.'
+                : 'The back is completely BLANK — clean empty fabric with no print at all.';
+
+            return "Apparel back-print preview for an online print shop. {$back} ".self::SIDES_STYLE;
+        }
 
         // Decoration / print-method groups render on FABRIC with the method's own texture.
         if (preg_match(self::DECORATION_NAMES, $option->name)) {
