@@ -67,7 +67,8 @@
     <thead><tr><th>Item</th><th class="r">Qty</th><th class="r">Amount</th></tr></thead>
     <tbody>
     @foreach (($order->items ?? []) as $it)
-      <tr><td>{{ $it['name'] ?? 'Item' }}</td><td class="r">{{ $it['quantity'] ?? 1 }}</td><td class="r">${{ number_format((float) ($it['line_total'] ?? 0), 2) }}</td></tr>
+      @php($thumb = $it['design']['preview'] ?? $it['image'] ?? null)
+      <tr><td>@if ($thumb)<img src="{{ $thumb }}" alt="" style="width:36px;height:36px;object-fit:cover;border-radius:4px;vertical-align:middle;margin-right:8px;border:1px solid #ddd;">@endif{{ $it['name'] ?? 'Item' }}</td><td class="r">{{ $it['quantity'] ?? 1 }}</td><td class="r">${{ number_format((float) ($it['line_total'] ?? 0), 2) }}</td></tr>
     @endforeach
     </tbody>
   </table>
