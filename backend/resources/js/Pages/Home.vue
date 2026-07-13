@@ -8,6 +8,7 @@ import HeroSlider from '../Components/HeroSlider.vue';
 const props = defineProps({
     categories: { type: Array, default: () => [] },
     featured: { type: Array, default: () => [] },
+    logoProducts: { type: Array, default: () => [] },
     shopBy: { type: Array, default: () => [] },
     heroImage: { type: String, default: null },
     priceGuaranteeImage: { type: String, default: null },
@@ -107,6 +108,29 @@ const tools = [
     <Head title="Custom Printing for Business" />
     <StoreLayout>
         <HeroSlider :slides="slides" />
+
+        <!-- "Your logo on" — the customer's cached brand-kit mockups; only when generated -->
+        <section v-if="logoProducts.length" class="mx-auto max-w-7xl px-6 py-10 sm:px-8 sm:py-14">
+            <div class="mb-6">
+                <p class="text-sm font-semibold uppercase tracking-widest text-brand-600">Your logo on</p>
+                <h2 class="mt-2 font-display text-2xl font-bold tracking-tight sm:text-3xl">Your brand, already on our products</h2>
+                <p class="mt-1.5 text-ink/60">Mockups made from your logo — add any to your order.</p>
+            </div>
+            <div class="grid grid-cols-2 gap-4 sm:grid-cols-3 sm:gap-5 md:grid-cols-4">
+                <component :is="p.slug ? Link : 'div'" v-for="(p, i) in logoProducts" :key="p.slug || i"
+                           :href="p.slug ? `/product/${p.slug}` : undefined"
+                           class="group flex flex-col overflow-hidden rounded-2xl border border-paper-300 bg-white shadow-sm transition duration-300"
+                           :class="p.slug ? 'hover:-translate-y-1.5 hover:shadow-[0_28px_55px_-28px_rgba(43,59,85,0.55)]' : ''">
+                    <div class="aspect-square overflow-hidden bg-white">
+                        <img v-if="p.img" :src="p.img" :alt="p.label || p.name" loading="lazy" class="h-full w-full object-cover transition duration-500" :class="p.slug ? 'group-hover:scale-105' : ''" />
+                    </div>
+                    <div class="flex flex-1 flex-col p-3.5">
+                        <h3 class="font-display text-sm font-semibold leading-snug text-ink sm:text-base">{{ p.name || p.label }}</h3>
+                        <p v-if="p.fromPrice != null" class="mt-0.5 text-xs text-ink/60 sm:text-sm">From <span class="font-semibold text-brand-700">${{ Number(p.fromPrice).toFixed(2) }}</span></p>
+                    </div>
+                </component>
+            </div>
+        </section>
 
         <!-- shop by product: one tile per popular product type -->
         <section v-if="shopBy.length" class="mx-auto max-w-7xl px-6 py-10 sm:px-8 sm:py-14">

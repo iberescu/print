@@ -49,6 +49,7 @@ class StorefrontController extends Controller
         return Inertia::render('Home', [
             'categories'            => $categories,
             'featured'              => $featured,
+            'logoProducts'          => \App\Support\LogoOnProducts::forCurrentSession(),
             'shopBy'                => $this->shopByTiles(),
             'heroImage'             => \App\Support\Img::url('heroes/home'),
             'priceGuaranteeImage'   => \App\Support\Img::url('promos/price-guarantee'),
