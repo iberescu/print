@@ -103,6 +103,17 @@ class GoogleShoppingFeed
         if ($gpc = self::CATEGORY_GPC[$p->category->name ?? ''] ?? null) {
             $fields['g:google_product_category'] = $gpc;
         }
+
+        // Per-unit price ("$0.15/ct") for pack products — the per-card figure every
+        // competitor shows. The price is for the cheapest tier's pack, so the unit
+        // measure is that pack's count.
+        $tier = $p->quantities->first(fn ($q) => abs((float) $q->totalPrice() - (float) $p->from_price) < 0.01)
+            ?? $p->quantities->sortBy('total_price')->first();
+        if ($tier && (int) $tier->quantity > 1) {
+            $fields['g:unit_pricing_measure'] = (int) $tier->quantity.'ct';
+            $fields['g:unit_pricing_base_measure'] = '1ct';
+        }
+
         $fields['g:identifier_exists'] = 'no';
 
         return $fields;
