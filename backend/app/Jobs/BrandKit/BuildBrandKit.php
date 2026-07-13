@@ -154,7 +154,10 @@ class BuildBrandKit implements ShouldQueue
                 .'{"x":left,"y":top,"w":width,"h":height}, each 0..1. It MUST enclose the COMPLETE logo lockup '
                 .'together — BOTH the icon/symbol AND the full company-name wordmark/text — from its leftmost to '
                 .'rightmost and topmost to bottommost extent; do NOT box only the icon or a single word. Null when '
-                .'has_logo is false). '
+                .'has_logo is false), '
+                .'"logo_quality" ("high" if the logo looks crisp, sharp and high-resolution with clean edges; '
+                .'"low" if it looks blurry, soft, pixelated, jpeg-artifacted or clearly low-resolution; otherwise '
+                .'"medium"; null when has_logo is false). '
                 .'Use null for any text field that is genuinely absent.',
                 $src,
             );
@@ -283,9 +286,14 @@ class BuildBrandKit implements ShouldQueue
             $below = max($below, $to);
         }
 
+        // Super-resolve when the logo is too SMALL, or when the extract inspection judged
+        // it LOW QUALITY (blurry / pixelated / low-res) even at an adequate pixel size.
+        $tooSmall = $maxSide > 0 && $maxSide < $below;
+        $lowQuality = ($kit->extract['logo_quality'] ?? null) === 'low' && $maxSide > 0 && $maxSide <= $resize;
+
         $bytes = $orig;
-        if ($maxSide > 0 && $maxSide < $below) {
-            // 3. genuinely tiny — super-resolve with real-esrgan, then cap to max side
+        if ($tooSmall || $lowQuality) {
+            // real-esrgan — true super-resolution + denoise (never a generative redraw)
             try {
                 $up = $replicate->runImage(
                     (string) config('shop.internal_engine.esrgan_model', 'nightmareai/real-esrgan'),
@@ -297,13 +305,14 @@ class BuildBrandKit implements ShouldQueue
                     90,
                 );
                 if ($up) {
-                    $bytes = Img::cap($up, $to);
+                    // tiny → cap to the upscale target; low-quality-but-sized → keep the working size
+                    $bytes = Img::cap($up, $tooSmall ? $to : $resize);
                 }
             } catch (\Throwable) {
                 // real-esrgan unavailable — fall back to the original bytes
             }
         } elseif ($maxSide > $resize) {
-            // 2. too big — faithful downscale to the working max side
+            // too big — faithful downscale to the working max side
             $bytes = Img::cap($orig, $resize);
         }
         // else: normal range — used exactly as supplied
