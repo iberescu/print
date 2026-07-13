@@ -9,17 +9,26 @@ use Illuminate\Database\Seeder;
 
 /**
  * Business-card promotional pricing:
- *   • Standard Business Cards — 50 for $7.50 (backs the category banner).
  *   • Every business-card product — 25% off all quantity tiers of 100+.
+ *   • Affordable full-color line (standard/matte/glossy/uncoated) — cheapest-in-market
+ *     headline prices at 50/100/500 that undercut GotPrint/HOTCARDS/360/Bizay/VistaPrint.
  *
  * The pre-discount price is captured once in compare_at_total, so the seeder is
  * idempotent (re-running recomputes from the original, never compounding) and the
- * storefront can show a strikethrough + "save 25%".
+ * storefront/feed show a strikethrough + the real "% off".
  */
 class BusinessCardPricingSeeder extends Seeder
 {
     private const BULK_MIN_QTY = 100;
     private const BULK_DISCOUNT = 0.25;
+
+    /** The price-competitive full-color cards that carry the "cheapest" headline. */
+    private const AFFORDABLE = [
+        'standard-business-cards', 'matte-business-cards', 'glossy-business-cards', 'uncoated-business-cards',
+    ];
+
+    /** Cheapest-in-market selling price by quantity for the affordable line. */
+    private const HEADLINE = [50 => 6.99, 100 => 9.49, 500 => 15.99];
 
     public function run(): void
     {
@@ -40,24 +49,23 @@ class BusinessCardPricingSeeder extends Seeder
             $count++;
         }
 
-        // Standard Business Cards headline prices — these override the bulk rule
-        // above (run last, so they win): 50 for $7.50 (banner), 100 for $9.99.
-        $standard = Product::where('slug', 'standard-business-cards')->first();
-        foreach ([50 => 7.50, 100 => 9.99] as $qty => $price) {
-            $tier = $standard?->quantities()->where('quantity', $qty)->first();
-            if (! $tier) {
+        // Cheapest-in-market headline prices for the affordable full-color line at the
+        // quantities buyers compare on (50/100/500). These run last so they win over
+        // the bulk rule, and they undercut GotPrint/HOTCARDS/360/Bizay/VistaPrint.
+        // setHeadline keeps the genuine prior price as compare_at (real "X% OFF").
+        foreach (self::AFFORDABLE as $slug) {
+            $p = Product::where('slug', $slug)->first();
+            if (! $p) {
                 continue;
             }
-            $original = $tier->compare_at_total !== null ? (float) $tier->compare_at_total : (float) $tier->total_price;
-            $this->reprice($tier, $original, $price);
-            $count++;
-        }
-
-        // "From" price must equal the cheapest tier a buyer can actually order,
-        // so the storefront, JSON-LD offer and Google Shopping feed all agree
-        // (the 50-for-$7.50 offer we advertise). Import leaves it stale otherwise.
-        if ($standard) {
-            $standard->update(['from_price' => (float) $standard->quantities()->min('total_price')]);
+            foreach (self::HEADLINE as $qty => $price) {
+                if ($tier = $p->quantities()->where('quantity', $qty)->first()) {
+                    $this->setHeadline($tier, $price);
+                    $count++;
+                }
+            }
+            // "From" price = cheapest orderable tier, so storefront / JSON-LD / feed agree.
+            $p->update(['from_price' => (float) $p->quantities()->min('total_price')]);
         }
 
         $this->command?->info("  repriced {$count} business-card quantity tiers");
@@ -68,6 +76,16 @@ class BusinessCardPricingSeeder extends Seeder
         $q->compare_at_total = $original;                 // capture once, then stable
         $q->total_price = $newTotal;
         $q->unit_price = $q->quantity ? round($newTotal / $q->quantity, 4) : $q->unit_price;
+        $q->save();
+    }
+
+    /** Set an exact selling price, keeping the genuine established price as compare_at ("was"). */
+    private function setHeadline(ProductQuantity $q, float $price): void
+    {
+        $regular = max((float) ($q->compare_at_total ?? 0), (float) $q->total_price, $price);
+        $q->compare_at_total = $regular > $price + 0.001 ? $regular : null;
+        $q->total_price = $price;
+        $q->unit_price = $q->quantity ? round($price / $q->quantity, 4) : $q->unit_price;
         $q->save();
     }
 }
