@@ -88,18 +88,22 @@ class GoogleShoppingFeed
     /** A single "from" item — business cards, marketing, signage, etc. */
     private function single(Product $p): array
     {
+        [$regular, $current, $onSale] = $this->tierPricing($p);
         $fields = [
             'g:id'          => (string) $p->id,
             'g:title'       => $p->name,
             'g:description' => $this->description($p),
             'link'          => route('product.show', $p->slug),
             'g:image_link'  => $this->img($p),
-            'g:price'       => $this->price((float) $p->from_price),
+            'g:price'       => $this->price($regular),
             'g:availability' => 'in_stock',
             'g:condition'   => 'new',
             'g:brand'       => 'RunMyPrint',
             'g:product_type' => $p->category->name ?? '',
         ];
+        if ($onSale) {
+            $fields['g:sale_price'] = $this->price($current);
+        }
         if ($gpc = self::CATEGORY_GPC[$p->category->name ?? ''] ?? null) {
             $fields['g:google_product_category'] = $gpc;
         }
@@ -148,6 +152,7 @@ class GoogleShoppingFeed
         $hasSize = collect($axes)->contains(fn ($a) => $a['attr'] === 'size');
         $groupId = count($combos) > 1 ? (string) $p->id : null;
         $productImg = $this->img($p);
+        [$regular, $current, $onSale] = $this->tierPricing($p);
 
         $items = [];
         foreach ($combos as $combo) {
@@ -174,7 +179,10 @@ class GoogleShoppingFeed
             $fields['g:description'] = $this->description($p);
             $fields['link'] = route('product.show', $p->slug);
             $fields['g:image_link'] = $img ?: $productImg;
-            $fields['g:price'] = $this->price((float) $p->from_price + $delta);
+            $fields['g:price'] = $this->price($regular + $delta);
+            if ($onSale) {
+                $fields['g:sale_price'] = $this->price($current + $delta);
+            }
             $fields['g:availability'] = 'in_stock';
             $fields['g:condition'] = 'new';
             $fields['g:brand'] = 'RunMyPrint';
@@ -203,6 +211,23 @@ class GoogleShoppingFeed
     private function price(float $v): string
     {
         return number_format($v, 2, '.', '').' USD';
+    }
+
+    /**
+     * [regularPrice, currentPrice, onSale] for a product's advertised (cheapest)
+     * tier. It's "on sale" only when that tier carries a genuine higher
+     * compare_at_total — a real prior price we actually charged — so the feed's
+     * g:price/g:sale_price reflect a real markdown, never a fabricated reference.
+     */
+    private function tierPricing(Product $p): array
+    {
+        $tier = $p->quantities->first(fn ($q) => abs((float) $q->totalPrice() - (float) $p->from_price) < 0.01)
+            ?? $p->quantities->sortBy('total_price')->first();
+        $current = (float) $p->from_price;
+        $compare = $tier && $tier->compare_at_total !== null ? (float) $tier->compare_at_total : 0.0;
+        $onSale = $compare > $current + 0.01;
+
+        return [$onSale ? $compare : $current, $current, $onSale];
     }
 
     /** A real product description — the PIM/SEO copy if present, else a clean, honest fallback. */
