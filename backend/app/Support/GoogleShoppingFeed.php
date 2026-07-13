@@ -91,7 +91,7 @@ class GoogleShoppingFeed
         [$regular, $current, $onSale] = $this->tierPricing($p);
         $fields = [
             'g:id'          => (string) $p->id,
-            'g:title'       => $p->name,
+            'g:title'       => $this->specTitle($p),
             'g:description' => $this->description($p),
             'link'          => route('product.show', $p->slug),
             'g:image_link'  => $this->img($p),
@@ -111,8 +111,7 @@ class GoogleShoppingFeed
         // Per-unit price ("$0.15/ct") for pack products — the per-card figure every
         // competitor shows. The price is for the cheapest tier's pack, so the unit
         // measure is that pack's count.
-        $tier = $p->quantities->first(fn ($q) => abs((float) $q->totalPrice() - (float) $p->from_price) < 0.01)
-            ?? $p->quantities->sortBy('total_price')->first();
+        $tier = $this->saleTier($p);
         if ($tier && (int) $tier->quantity > 1) {
             $fields['g:unit_pricing_measure'] = (int) $tier->quantity.'ct';
             $fields['g:unit_pricing_base_measure'] = '1ct';
@@ -221,13 +220,41 @@ class GoogleShoppingFeed
      */
     private function tierPricing(Product $p): array
     {
-        $tier = $p->quantities->first(fn ($q) => abs((float) $q->totalPrice() - (float) $p->from_price) < 0.01)
-            ?? $p->quantities->sortBy('total_price')->first();
+        $tier = $this->saleTier($p);
         $current = (float) $p->from_price;
         $compare = $tier && $tier->compare_at_total !== null ? (float) $tier->compare_at_total : 0.0;
         $onSale = $compare > $current + 0.01;
 
         return [$onSale ? $compare : $current, $current, $onSale];
+    }
+
+    /** The advertised (cheapest / from_price) tier — the one the feed prices. */
+    private function saleTier(Product $p)
+    {
+        return $p->quantities->first(fn ($q) => abs((float) $q->totalPrice() - (float) $p->from_price) < 0.01)
+            ?? $p->quantities->sortBy('total_price')->first();
+    }
+
+    /** Spec-rich Shopping title: "<pack qty> <name> | <size>" (competitor-style, ≤150 chars). */
+    private function specTitle(Product $p): string
+    {
+        $qty = ($tier = $this->saleTier($p)) ? (int) $tier->quantity : 1;
+        $title = $qty > 1 ? "{$qty} {$p->name}" : $p->name;
+        if ($dim = $this->dimension($p)) {
+            $title .= " | {$dim}";
+        }
+
+        return mb_strlen($title) > 150 ? rtrim(mb_substr($title, 0, 150)) : $title;
+    }
+
+    /** The product's default physical size — only when it actually reads like a dimension. */
+    private function dimension(Product $p): ?string
+    {
+        $size = $p->options->first(fn ($o) => strcasecmp($o->name, 'Size') === 0);
+        $label = $size ? ($size->values->firstWhere('is_default', true)?->label ?? $size->values->first()?->label) : null;
+
+        return $label && preg_match('/\d/', $label) && preg_match('/["×]|\bx\b|\bin\b|\bcm\b|\bmm\b/i', $label)
+            ? trim($label) : null;
     }
 
     /** A real product description — the PIM/SEO copy if present, else a clean, honest fallback. */
