@@ -157,23 +157,26 @@ class BrandKitSpec
             [
                 'key' => 'brochure', 'label' => 'Tri-fold brochure', 'slug' => 'tri-fold-brochures', 'decoration' => 'custom',
                 'after_crawl' => true, 'use_site_shot' => true,
-                // Fixed blank tri-fold mockup — OPEN and FLAT (top-down), so composited content
-                // sits cleanly across the three panels; only the printed design is dynamic.
-                'base_prompt' => 'A clean professional studio mockup of an OPEN tri-fold brochure lying FLAT on a light '
-                    .'natural-wood table, photographed straight down from directly above (top-down flat-lay). It is a '
-                    .'single wide LANDSCAPE sheet divided into THREE equal vertical panels by two crisp vertical fold '
-                    .'lines, with subtle natural fold shadows along the creases. The paper is completely BLANK white — '
-                    .'no logo, no text, no graphics of any kind. The whole brochure is centred in frame with generous '
-                    .'even margins. Soft even lighting, no clutter, no watermark.',
-                'place_prompt' => 'Image 1 is a photo of a blank OPEN tri-fold brochure (one wide sheet split into three '
-                    .'equal vertical panels by two fold lines). Image 2 is the brand logo. If a third image is provided '
-                    .'it is the brand\'s website screenshot — match its colours, typography and imagery. Print a '
-                    .'professional, on-brand tri-fold marketing design neatly across the THREE panels for {company} — '
-                    .'{description}: the rightmost panel is the front cover carrying the logo (image 2, reproduced '
-                    .'EXACTLY) and a short brand headline; the other panels carry tasteful marketing copy and on-brand '
-                    .'imagery, cleanly organised panel-by-panel and kept within each panel (nothing crossing a fold '
-                    .'awkwardly). Keep the brochure\'s flat shape, the three-panel layout, the fold lines, its position, '
-                    .'the top-down camera angle, lighting and the wood surface EXACTLY as in image 1 — only add the '
+                // Fixed blank tri-fold mockup — STANDING at a three-quarter side angle with the
+                // panels gently folded (soft accordion), premium look; only the print is dynamic.
+                'base_prompt' => 'A premium studio product mockup of a BLANK standard tri-fold brochure STANDING upright '
+                    .'on a clean light surface, viewed from a slight THREE-QUARTER SIDE angle (NOT top-down and NOT '
+                    .'dead-on). It is a standard US Letter tri-fold: an 8.5 × 11 inch sheet folded into THREE panels, so '
+                    .'each panel is a TALL, NARROW PORTRAIT panel about 3.66 inches wide by 8.5 inches tall (clearly '
+                    .'taller than it is wide). The brochure is gently folded in a soft accordion / Z-fold so the panels '
+                    .'step back at shallow angles and the two vertical fold creases are clearly visible, with soft '
+                    .'natural shadows on the surface behind it. The paper is completely BLANK white — no logo, no text, '
+                    .'no graphics of any kind. Soft, even, realistic studio lighting, a clean light neutral background, '
+                    .'generous margins, no clutter, no watermark.',
+                'place_prompt' => 'Image 1 is a photo of a blank tri-fold brochure standing at a three-quarter side '
+                    .'angle, gently folded into three panels. Image 2 is the brand logo. If a third image is provided it '
+                    .'is the brand\'s website screenshot — match its colours, typography and imagery. Print a '
+                    .'professional, on-brand tri-fold marketing design across the THREE panels for {company} — '
+                    .'{description}, with each panel\'s artwork following that panel\'s own angle and perspective: the '
+                    .'front-facing panel carries the logo (image 2, reproduced EXACTLY) and a short brand headline; the '
+                    .'other panels carry tasteful marketing copy and on-brand imagery, cleanly organised panel-by-panel. '
+                    .'Keep the brochure\'s 3D folded shape, the three panels, their angles, the fold creases, its '
+                    .'position, the three-quarter camera view, lighting and shadows EXACTLY as in image 1 — only add the '
                     .'printed design. Output only the photo, realistic clean print, no watermark, no gibberish text.',
                 'prompt' => 'A realistic studio mockup of a printed TRI-FOLD brochure for {company} — {description} — '
                     .'resting on a clean surface at a slight three-quarter angle with soft realistic lighting, its '
