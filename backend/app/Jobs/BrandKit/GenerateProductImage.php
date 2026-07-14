@@ -82,9 +82,18 @@ class GenerateProductImage implements ShouldQueue
         }
         $big = $hasQr || (bool) $shot;
 
+        // Model tier: the faster LITE model handles the simple "logo/QR composited onto a fixed
+        // product base" mockups. Everything else — the website-styled pieces (brochure/flyer,
+        // logo + screenshot) and the text-heavy direct layouts (letterhead, review sign) — uses
+        // the fuller flash model. (Display ads run flash too, in GenerateAdImage.)
+        $useLite = $baseInput && ! ($this->spec['use_site_shot'] ?? false);
+        $model = $useLite
+            ? config('shop.internal_engine.lite_image_model')
+            : config('shop.internal_engine.image_model');
+
         // Keep every upload small (≤800px wide) so Gemini receives and processes them fast.
         $imgs = array_map(fn ($i) => $this->capForGemini($i), $imgs);
-        $img = $gemini->generateImage($prompt, $imgs, config('shop.internal_engine.image_model'));
+        $img = $gemini->generateImage($prompt, $imgs, $model);
 
         $path = "brandkits/{$this->key}/product-{$this->spec['key']}.webp";
         Storage::disk('public')->put($path, Img::webp($img['data'], $big ? 1200 : 1000));

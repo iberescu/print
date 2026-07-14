@@ -62,6 +62,7 @@ return [
         'api_key'          => env('GEMINI_API_KEY'),
         'image_model'      => env('GEMINI_IMAGE_MODEL', 'gemini-3-pro-image'),
         'image_model_fast' => env('GEMINI_IMAGE_MODEL_FAST', 'gemini-3.1-flash-image'),
+        'image_model_lite' => env('GEMINI_IMAGE_MODEL_LITE', 'gemini-3.1-flash-lite-image'),
         'text_model'       => env('GEMINI_TEXT_MODEL', 'gemini-3.5-flash'),
         'vision_model'     => env('GEMINI_VISION_MODEL', 'gemini-3.5-flash'),
         // support chat answers — high volume, simple task, cheaper flash tier
@@ -100,12 +101,16 @@ return [
     */
     'upsell_engine' => env('UPSELL_ENGINE', 'pqsg'),
 
-    // Internal engine image models. Everything runs on the fast flash tier
-    // (gemini-3.1-flash-image) — the pro tier's 10-20s render was too slow for
-    // the display ads and the logo upscale; flash keeps the whole capture snappy.
+    // Internal engine image models. Two tiers: the LITE model handles the simple
+    // logo-on-a-fixed-base mockups (fast, cheap — most of the roster), while the fuller
+    // flash model handles the complex artwork that also ingests the website screenshot
+    // (display ads, brochure, flyer). The pro tier's 10-20s render was too slow for bulk.
     'internal_engine' => [
+        // Complex artwork: ads + website-styled pieces (brochure/flyer) — logo + screenshot.
         'image_model'    => env('INTERNAL_ENGINE_IMAGE_MODEL', env('GEMINI_IMAGE_MODEL_FAST', 'gemini-3.1-flash-image')),
         'ad_image_model' => env('INTERNAL_ENGINE_AD_IMAGE_MODEL', env('GEMINI_IMAGE_MODEL_FAST', 'gemini-3.1-flash-image')),
+        // Simple product mockups: logo (or QR) composited onto a fixed product base — the lite tier.
+        'lite_image_model' => env('INTERNAL_ENGINE_LITE_IMAGE_MODEL', env('GEMINI_IMAGE_MODEL_LITE', 'gemini-3.1-flash-lite-image')),
         // Logo handling: always keep the original, downscale an over-large working
         // copy to a sane max side, and only upscale genuinely tiny logos — via
         // Replicate real-esrgan (a true super-resolution model, faithful, unlike a
