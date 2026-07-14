@@ -235,14 +235,20 @@ class QrController extends Controller
     /** White CIRCLE (hugging the logo + a 1% ring) + logo, injected into the SVG space. */
     private function stampLogoSvg(string $svg, string $logoPath, int $size): string
     {
-        [$lw, $lh] = @getimagesize($logoPath) ?: [1, 1];
+        $renderer = app(\App\Services\QrRenderer::class);
+        $trimmed = $renderer->trimmedLogo($logoPath); // strip padding so the circle hugs the mark
+        if ($trimmed === null) {
+            [$w, $h] = @getimagesize($logoPath) ?: [1, 1];
+            $trimmed = [(string) file_get_contents($logoPath), $w, $h];
+        }
+        [$png, $lw, $lh] = $trimmed;
         $box = $size * 0.23;
         $scale = min($box / max($lw, 1), $box / max($lh, 1));
         $dw = $lw * $scale;
         $dh = $lh * $scale;
         $c = $size / 2;
-        $r = sqrt($dw * $dw + $dh * $dh) / 2 + $size * 0.001; // logo diagonal + 0.1% ring
-        $b64 = base64_encode((string) file_get_contents($logoPath));
+        $r = sqrt($dw * $dw + $dh * $dh) / 2 + max($dw, $dh) * $renderer->ring(); // logo diagonal + thin margin
+        $b64 = base64_encode($png);
         $overlay = sprintf(
             '<circle cx="%s" cy="%s" r="%s" fill="#ffffff"/>'
             .'<image x="%s" y="%s" width="%s" height="%s" preserveAspectRatio="xMidYMid meet" href="data:image/png;base64,%s"/>',
