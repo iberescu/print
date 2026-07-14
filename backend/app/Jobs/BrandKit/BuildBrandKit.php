@@ -339,8 +339,14 @@ class BuildBrandKit implements ShouldQueue
         }
         // else: normal range — used exactly as supplied
 
-        // The tight, non-square display logo (max side 800, aspect kept) — used for the
-        // designer, the QR centre, and anywhere the real logo is shown.
+        // Trim empty padding so the display logo is TIGHT. AI-generated logos (recraft)
+        // rasterise to a big square with the mark floating in the centre, and uploaded
+        // logos can carry a whitespace frame — trimming gives logo-hd the real aspect and
+        // lets Gemini's squarePad fill the canvas with the mark instead of a tiny centre.
+        $bytes = Img::trim($bytes);
+
+        // The tight, non-square display logo (aspect kept) — used for the designer, the
+        // QR centre, and anywhere the real logo is shown.
         $path = "brandkits/{$this->key}/logo-hd.webp";
         $disk->put($path, $bytes);
         // A square-padded copy used ONLY for Gemini product/ad mockups, so a wide wordmark

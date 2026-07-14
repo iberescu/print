@@ -129,12 +129,25 @@ class QrRenderer
         return self::RING;
     }
 
-    /** Crop fully-transparent / near-white borders so the mark fills its bounding box. */
+    /**
+     * Crop empty borders so the mark fills its bounding box. Background is detected from
+     * the corners: transparent corners → trim transparent padding; else → trim solid-white
+     * padding (so a white mark on a transparent canvas isn't eaten). Matches Img::trim.
+     */
     private function trim(\GdImage $logo): \GdImage
     {
         imagepalettetotruecolor($logo);
         $w = imagesx($logo);
         $h = imagesy($logo);
+
+        $transBg = 0;
+        foreach ([[0, 0], [$w - 1, 0], [0, $h - 1], [$w - 1, $h - 1]] as [$cx, $cy]) {
+            if (((imagecolorat($logo, $cx, $cy) >> 24) & 0x7F) > 100) {
+                $transBg++;
+            }
+        }
+        $useAlpha = $transBg >= 2;
+
         $minx = $w;
         $miny = $h;
         $maxx = -1;
@@ -142,14 +155,13 @@ class QrRenderer
         for ($y = 0; $y < $h; $y++) {
             for ($x = 0; $x < $w; $x++) {
                 $rgba = imagecolorat($logo, $x, $y);
-                if ((($rgba >> 24) & 0x7F) > 100) {
-                    continue; // (near-)transparent
-                }
-                $r = ($rgba >> 16) & 0xFF;
-                $g = ($rgba >> 8) & 0xFF;
-                $b = $rgba & 0xFF;
-                if ($r > 245 && $g > 245 && $b > 245) {
-                    continue; // near-white padding
+                if ($useAlpha) {
+                    if ((($rgba >> 24) & 0x7F) > 100) {
+                        continue; // (near-)transparent padding
+                    }
+                } elseif ((($rgba >> 24) & 0x7F) <= 100
+                    && (($rgba >> 16) & 0xFF) > 245 && (($rgba >> 8) & 0xFF) > 245 && ($rgba & 0xFF) > 245) {
+                    continue; // opaque near-white padding
                 }
                 $minx = min($minx, $x);
                 $maxx = max($maxx, $x);
