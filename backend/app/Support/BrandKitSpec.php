@@ -210,6 +210,28 @@ class BrandKitSpec
     }
 
     /**
+     * QR-code business card for the designer/upload flow (logo + website): we build the
+     * QR (website, rounded, black, logo in the centre) with our own tool and Gemini
+     * places it, unmodified, on the CARD BACK. inputs=['qr'] → productPrompt adds the
+     * "fixed asset, don't modify" clause; the QR path is passed via spec['qr_asset'].
+     */
+    public static function qrBusinessCard(): array
+    {
+        return [
+            'key'        => 'qr-card',
+            'label'      => 'QR code business card',
+            'slug'       => 'qr-code-business-cards',
+            'decoration' => 'custom',
+            'inputs'     => ['qr'],
+            'prompt'     => 'A clean, print-ready studio mockup of professional business cards for {company} on a '
+                .'light natural-wood table, photographed straight down: show TWO cards — one face-up showing the '
+                .'FRONT (company name "{company}", {url} and a short call to action), and one showing its BACK with '
+                .'the provided QR code placed LARGE and CENTRED so it is the clear focus of the back. Tasteful, '
+                .'minimal, on-brand layout; realistic lighting; no clutter.',
+        ];
+    }
+
+    /**
      * Build the merch image prompt for a product spec. $ctx carries brand data
      * from the crawl summary (keywords/company/colors) for the custom scenes.
      *

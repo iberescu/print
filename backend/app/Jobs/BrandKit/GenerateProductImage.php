@@ -43,8 +43,15 @@ class GenerateProductImage implements ShouldQueue
             $imgs[] = $logo;
         }
         $hasQr = in_array('qr', $inputs, true);
-        if ($hasQr && ($qr = $this->qrInput($kit))) {
-            $imgs[] = $qr;
+        if ($hasQr) {
+            // A spec-provided QR (designer-flow QR business card) wins over the kit's
+            // capture QR (qr-maker flow).
+            $qr = isset($this->spec['qr_asset'])
+                ? $this->imageInput($this->spec['qr_asset'])
+                : $this->qrInput($kit);
+            if ($qr) {
+                $imgs[] = $qr;
+            }
         }
         // Website-styled pieces (tri-fold brochure, flyer) also get the homepage
         // screenshot so Gemini designs them in the brand's real look.

@@ -85,6 +85,13 @@ class BuildBrandKit implements ShouldQueue
             $kit->markStage('products', 'skipped');
         }
 
+        // 2b. QR-code business card (designer/upload flows with a logo + website): build
+        // the QR ourselves (website, rounded, black, logo in the centre) and let Gemini
+        // place it, unmodified, on the card back. Skipped for the QR-maker flow (qr_path).
+        if ($hasLogo && $hasUrl && ! $kit->qr_path) {
+            $this->buildQrBusinessCard($kit);
+        }
+
         // 3. Crawl + summary + ads.
         if ($hasUrl) {
             CrawlAndSummarize::dispatch($this->key); // fans out the ad jobs itself
@@ -121,6 +128,21 @@ class BuildBrandKit implements ShouldQueue
 
         if (! $hasLogo && ! $hasUrl) {
             $kit->update(['status' => 'failed']);
+        }
+    }
+
+    /** Build the QR (website + centre logo, rounded/black) and queue the QR business card. */
+    private function buildQrBusinessCard(BrandKit $kit): void
+    {
+        try {
+            $disk = Storage::disk('public');
+            $logoFile = $kit->logo_path && $disk->exists($kit->logo_path) ? $disk->path($kit->logo_path) : null;
+            $png = app(\App\Services\QrRenderer::class)->png((string) $kit->website, 'rounded', '000000', $logoFile, 1000);
+            $path = "brandkits/{$kit->key}/qr-card.png";
+            $disk->put($path, $png);
+            GenerateProductImage::dispatch($kit->key, BrandKitSpec::qrBusinessCard() + ['qr_asset' => $path]);
+        } catch (\Throwable $e) {
+            report($e);
         }
     }
 
