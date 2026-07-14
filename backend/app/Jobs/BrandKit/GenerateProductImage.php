@@ -93,7 +93,8 @@ class GenerateProductImage implements ShouldQueue
 
         // Keep every upload small (≤800px wide) so Gemini receives and processes them fast.
         $imgs = array_map(fn ($i) => $this->capForGemini($i), $imgs);
-        $img = $gemini->generateImage($prompt, $imgs, $model);
+        // Always output a SQUARE 1:1 mockup so the product is never cropped in the gallery cards.
+        $img = $gemini->generateImage($prompt, $imgs, $model, '1:1');
 
         $path = "brandkits/{$this->key}/product-{$this->spec['key']}.webp";
         Storage::disk('public')->put($path, Img::webp($img['data'], $big ? 1200 : 1000));

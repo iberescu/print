@@ -40,7 +40,7 @@ class GenerateProductBases extends Command
             }
             $this->info("generating base: {$p['key']} …");
             try {
-                $img = $gemini->generateImage(BrandKitSpec::basePrompt($p), [], $model);
+                $img = $gemini->generateImage(BrandKitSpec::basePrompt($p), [], $model, '1:1');
                 file_put_contents($file, Img::webp($img['data'], 1000));
                 $this->info('  ✓ '.$p['key'].' → '.$file);
                 $written++;

@@ -59,16 +59,23 @@ class GeminiClient
      * @param  array<int,array{mime:string,data:string}>  $inputImages base64 inline images
      * @return array{data:string,mime:string} raw bytes + mime
      */
-    public function generateImage(string $prompt, array $inputImages = [], ?string $model = null): array
+    public function generateImage(string $prompt, array $inputImages = [], ?string $model = null, ?string $aspectRatio = null): array
     {
         $parts = [['text' => $prompt]];
         foreach ($inputImages as $img) {
             $parts[] = ['inlineData' => ['mimeType' => $img['mime'], 'data' => $img['data']]];
         }
 
+        $generationConfig = ['responseModalities' => ['IMAGE']];
+        if ($aspectRatio) {
+            // Force the output aspect ratio (e.g. '1:1') so product mockups come out square
+            // and the product is never cropped by the frame.
+            $generationConfig['imageConfig'] = ['aspectRatio' => $aspectRatio];
+        }
+
         $resp = $this->call($model ?? config('shop.gemini.image_model'), [
             'contents'         => [['parts' => $parts]],
-            'generationConfig' => ['responseModalities' => ['IMAGE']],
+            'generationConfig' => $generationConfig,
         ]);
 
         foreach ($resp->json('candidates.0.content.parts', []) as $part) {

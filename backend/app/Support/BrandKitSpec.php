@@ -21,6 +21,11 @@ class BrandKitSpec
         .'natural-wood table, the camera pointing straight down from directly above, soft natural shadows, '
         .'crisp focus, the whole product centred in frame with generous even margins.';
 
+    /** Appended to every image prompt: force a square frame and never crop the product. */
+    private const SQUARE_FRAME = 'The final image MUST be a SQUARE 1:1 composition with the WHOLE product '
+        .'fully inside the frame and generous even margins on all sides — never crop the product or let any '
+        .'part of it touch or run off an edge.';
+
     /**
      * Merch products. decoration: print|laser|embroidery. slug maps to a real
      * shop product so the gallery card can show a working "Add to order" CTA.
@@ -340,7 +345,7 @@ class BrandKitSpec
     public static function basePrompt(array $p): ?string
     {
         if (isset($p['base_prompt'])) {
-            return (string) $p['base_prompt'];
+            return $p['base_prompt'].' '.self::SQUARE_FRAME;
         }
         // Auto-derive for simple scene-based merch (skip custom/showcase scenes).
         if (($p['decoration'] ?? '') === 'custom' || empty($p['scene'])) {
@@ -350,7 +355,7 @@ class BrandKitSpec
 
         return "A studio product shot of {$p['scene']}. The product is completely BLANK and unbranded — "
             .'no logo, no text, no graphics, no decoration of any kind, just the plain product. '
-            .$framing.' Show only the product. No watermark, no text.';
+            .$framing.' Show only the product. No watermark, no text. '.self::SQUARE_FRAME;
     }
 
     /**
@@ -402,7 +407,8 @@ class BrandKitSpec
             .'image 1 — the product must look like the same photo with the branding (and its colour) changed, nothing '
             ."else. {$recolor} IMPORTANT — never place the logo on a same-colour surface: if the logo and product colour "
             .'would clash or blend, make the product white (or charcoal if the logo is white/very light) so the logo '
-            .'stays clearly legible. Output only the finished product photo — no extra text, no watermark, no gibberish.';
+            .'stays clearly legible. Output only the finished product photo — no extra text, no watermark, no gibberish. '
+            .self::SQUARE_FRAME;
     }
 
     /**
@@ -427,7 +433,7 @@ class BrandKitSpec
             ['{company}', '{url}', '{description}', '{colors}'],
             [$company, $url, $description, $palette],
             (string) $p['place_prompt'],
-        );
+        ).' '.self::SQUARE_FRAME;
     }
 
     /**
@@ -499,7 +505,7 @@ class BrandKitSpec
                     .'(ignore any logo inside the screenshot).';
             }
 
-            return $prompt.' '.implode(' ', $clauses).' No watermark and no random gibberish text.';
+            return $prompt.' '.implode(' ', $clauses).' No watermark and no random gibberish text. '.self::SQUARE_FRAME;
         }
 
         $placement = $p['placement'] ?? 'centred';
@@ -529,7 +535,7 @@ class BrandKitSpec
         $framing = ($p['flat'] ?? false) ? self::FLATLAY : self::PHOTO;
 
         return "A studio product shot of {$p['scene']}. {$decoration}{$contrast} ".$framing
-            .' Show only the product — no extra text, no watermark.';
+            .' Show only the product — no extra text, no watermark. '.self::SQUARE_FRAME;
     }
 
     /**
