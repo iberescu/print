@@ -94,11 +94,12 @@ class BuildBrandKit implements ShouldQueue
 
         // 3. Crawl + summary + ads.
         if ($hasUrl) {
-            CrawlAndSummarize::dispatch($this->key); // fans out the ad jobs itself
+            CrawlAndSummarize::dispatch($this->key); // fans out the ad jobs + website-styled pieces
         } else {
-            // No URL: company-based summary, and ads straight away if we have a logo.
+            // No URL: company-based summary only. Without a website to crawl we can't build
+            // the Layout.ai display ads or the website-styled pieces (brochure/flyer), so we
+            // SKIP them outright — no perpetual "generating…" state for things that never arrive.
             $company = (string) ($kit->company ?? '');
-            $concepts = BrandKitSpec::ads();
             $kit->update(['summary' => [
                 'company'                => $company,
                 'description'            => $company ? "{$company} — custom print and promotional products." : '',
@@ -106,24 +107,10 @@ class BuildBrandKit implements ShouldQueue
                 'fonts'                  => [],
                 'colors'                 => [],
                 'google_search_keywords' => $this->fallbackKeywords($company),
-                'ad_concepts'            => $concepts,
+                'ad_concepts'            => [],
             ]]);
             $kit->markStage('summary', $company ? 'done' : 'skipped');
-
-            if ($hasLogo) {
-                $kit->markStage('ads', 'running');
-                foreach (array_values($concepts) as $i => $concept) {
-                    GenerateAdImage::dispatch($this->key, ['key' => 'ad'.$i] + $concept);
-                }
-                // keyword-dependent products (word-cloud) now that the summary exists
-                foreach (BrandKitSpec::products() as $p) {
-                    if (BrandKitSpec::needsSummary($p)) {
-                        GenerateProductImage::dispatch($this->key, $p);
-                    }
-                }
-            } else {
-                $kit->markStage('ads', 'skipped');
-            }
+            $kit->markStage('ads', 'skipped');
         }
 
         if (! $hasLogo && ! $hasUrl) {

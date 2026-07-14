@@ -33,16 +33,21 @@ class BrandKitSpec
             ['key' => 'mug',     'label' => 'Ceramic mug',    'slug' => 'custom-mugs',                       'decoration' => 'print',      'scene' => 'a plain white ceramic coffee mug'],
             [
                 'key' => 'tumbler', 'label' => 'Tumbler', 'slug' => '20-oz-tumbler', 'decoration' => 'custom', 'logo_render' => 'laser',
+                'placement' => 'on the front, centred',
                 'prompt' => 'A studio product shot of an insulated tumbler with a lid, sitting on a light '
                     .'natural-wood table with a soft light wall behind, a soft contact shadow, bright even '
                     .'lighting, crisp focus, centred with generous margins. The tumbler body is a single solid '
                     .'colour chosen from ONLY these: white, black, blue or red — pick the one that best '
                     .'complements the logo. The provided logo is laser-engraved on the front, centred.',
+                'base_prompt' => 'A studio product shot of an insulated stainless-steel tumbler with a lid, sitting '
+                    .'on a light natural-wood table with a soft light wall behind, a soft contact shadow, bright even '
+                    .'lighting, crisp focus, centred with generous margins. The tumbler body is plain solid WHITE — '
+                    .'completely blank and unbranded, no logo, no text, no graphics. Show only the product. No watermark.',
             ],
             ['key' => 'tote',    'label' => 'Canvas tote',    'slug' => 'custom-canvas-tote-bags',           'decoration' => 'print',      'scene' => 'a natural cotton-canvas tote bag neatly laid out flat, front side up', 'flat' => true],
-            ['key' => 'tshirt',  'label' => 'T-shirt',        'slug' => 'gildan-softstyle-unisex-t-shirt',   'decoration' => 'print',      'scene' => 'a t-shirt neatly laid out flat, front side up', 'placement' => 'in the upper-left chest area (left-breast / pocket position), small', 'flat' => true],
-            ['key' => 'hoodie',  'label' => 'Hoodie',         'slug' => 'jerzees-nublend-hooded-sweatshirt', 'decoration' => 'embroidery', 'scene' => 'a pullover hoodie neatly laid out flat, front side up', 'placement' => 'high on the UPPER-LEFT chest, at the left-breast / pocket position — small and clearly toward the TOP-LEFT of the hoodie front, never centred', 'flat' => true],
-            ['key' => 'cap',     'label' => 'Cap',            'slug' => 'embroidered-hats',                  'decoration' => 'embroidery', 'scene' => 'a structured baseball cap, three-quarter view'],
+            ['key' => 'tshirt',  'label' => 'T-shirt',        'slug' => 'gildan-softstyle-unisex-t-shirt',   'decoration' => 'print',      'scene' => 'a plain WHITE t-shirt neatly laid out flat, front side up', 'placement' => 'in the upper-left chest area (left-breast / pocket position), small', 'flat' => true],
+            ['key' => 'hoodie',  'label' => 'Hoodie',         'slug' => 'jerzees-nublend-hooded-sweatshirt', 'decoration' => 'embroidery', 'scene' => 'a plain WHITE pullover hoodie neatly laid out flat, front side up', 'placement' => 'high on the UPPER-LEFT chest, at the left-breast / pocket position — small and clearly toward the TOP-LEFT of the hoodie front, never centred', 'flat' => true],
+            ['key' => 'cap',     'label' => 'Cap',            'slug' => 'embroidered-hats',                  'decoration' => 'embroidery', 'scene' => 'a structured WHITE baseball cap, three-quarter view'],
 
             // Showcase products with bespoke scenes (decoration = custom → uses its own prompt).
             [
@@ -75,6 +80,13 @@ class BrandKitSpec
             ],
             [
                 'key' => 'pen', 'label' => 'Pen', 'slug' => 'custom-pens', 'decoration' => 'custom', 'logo_render' => 'laser',
+                'placement' => 'small along the barrel, in landscape orientation',
+                'base_prompt' => 'A studio product shot showing ONE entire promotional pen, COMPLETE and UNCROPPED, lying '
+                    .'HORIZONTALLY (landscape) on a light natural-wood table with a soft shadow. Frame it ZOOMED OUT so '
+                    .'the WHOLE pen — from the pointed writing tip at one end to the push-button/cap at the other — sits '
+                    .'fully inside the frame at a small size, with generous EMPTY margin on ALL FOUR sides; both ends '
+                    .'clearly visible with space around them. The pen barrel is plain solid WHITE — completely blank and '
+                    .'unbranded, no logo, no text, no graphics. Show only the product. No watermark.',
                 'prompt' => 'A studio product shot showing ONE entire promotional pen, COMPLETE and UNCROPPED, lying '
                     .'HORIZONTALLY (landscape) on a light natural-wood table with a soft shadow. CRITICAL: frame it '
                     .'ZOOMED OUT so the WHOLE pen — from the pointed writing tip at one end all the way to the '
@@ -87,6 +99,22 @@ class BrandKitSpec
             ],
             [
                 'key' => 'sticker', 'label' => 'Kiss-cut sticker', 'slug' => 'kiss-cut-stickers', 'decoration' => 'custom',
+                // Fixed laptop base (no sticker); only the die-cut logo sticker is composited at runtime.
+                'base_prompt' => 'A close-up product shot of the closed lid of a modern Apple MacBook (slim silver / '
+                    .'space-grey aluminium unibody) lying on a light natural-wood table, viewed from above with the '
+                    .'front OPENING edge (the side that lifts to open, with the shallow finger scoop) NEAREST the '
+                    .'camera and the hinge along the FAR edge. Make it clearly a MacBook. CRITICAL — orient the '
+                    .'MacBook\'s own centred Apple logo exactly as on a real modern MacBook: seen closed from the '
+                    .'front like this it appears UPSIDE-DOWN to the camera — its leaf/stem points toward the FRONT '
+                    .'opening edge nearest the camera and its rounded base toward the hinge at the back. Do NOT draw '
+                    .'the Apple logo right-side-up to the camera. The lid is CLEAN — NO stickers, decals or graphics '
+                    .'of any kind. Soft realistic lighting, no clutter.',
+                'place_prompt' => 'Image 1 is a photo of a closed MacBook laptop lid. Image 2 is a brand logo. Apply a '
+                    .'SINGLE kiss-cut vinyl sticker of the logo (image 2) to the BOTTOM-LEFT corner of the laptop lid '
+                    .'(not centred), at a small size — die-cut to follow the logo\'s own contour/silhouette with a thin '
+                    .'white sticker border, lying flat, and reading UPRIGHT and clearly legible to the camera. Keep the '
+                    .'laptop, table, camera angle, lighting and the MacBook\'s own Apple logo EXACTLY as in image 1 — '
+                    .'add ONLY the sticker. Output only the photo, no watermark, no extra text.',
                 'prompt' => 'A close-up product shot of the closed lid of a modern Apple MacBook (slim silver / '
                     .'space-grey aluminium unibody) lying on a light natural-wood table, viewed from above with the '
                     .'front OPENING edge (the side that lifts to open, with the shallow finger scoop) NEAREST the '
@@ -104,6 +132,10 @@ class BrandKitSpec
             ['key' => 'doorhanger', 'label' => 'Door hanger', 'slug' => 'door-hangers', 'decoration' => 'print', 'scene' => 'a printed door hanger with a rounded top and a die-cut keyhole near the top — a round hole with a small narrow slit cut from the hole out to the LEFT edge; the small cut/slit is ALWAYS on the LEFT side and must always be present', 'placement' => 'centred — just the logo, nothing else', 'flat' => true],
             [
                 'key' => 'mousepad', 'label' => 'Mouse pad', 'slug' => 'mouse-pads', 'decoration' => 'custom', 'logo_render' => 'white',
+                'placement' => 'small in ONE CORNER of the mouse pad',
+                'base_prompt' => 'A studio product shot of a dark charcoal rectangular cloth mouse pad lying flat on '
+                    .'a light natural-wood table, shown from a slight top-down angle. The mouse pad is completely BLANK '
+                    .'and unbranded — no logo, no text, no graphics. Show only the product. No watermark.',
                 'prompt' => 'A studio product shot of a dark charcoal rectangular cloth mouse pad lying flat on '
                     .'a light natural-wood table, shown from a slight top-down angle. The provided logo is printed small in '
                     .'ONE CORNER of the mouse pad.',
@@ -125,6 +157,24 @@ class BrandKitSpec
             [
                 'key' => 'brochure', 'label' => 'Tri-fold brochure', 'slug' => 'tri-fold-brochures', 'decoration' => 'custom',
                 'after_crawl' => true, 'use_site_shot' => true,
+                // Fixed blank tri-fold mockup — OPEN and FLAT (top-down), so composited content
+                // sits cleanly across the three panels; only the printed design is dynamic.
+                'base_prompt' => 'A clean professional studio mockup of an OPEN tri-fold brochure lying FLAT on a light '
+                    .'natural-wood table, photographed straight down from directly above (top-down flat-lay). It is a '
+                    .'single wide LANDSCAPE sheet divided into THREE equal vertical panels by two crisp vertical fold '
+                    .'lines, with subtle natural fold shadows along the creases. The paper is completely BLANK white — '
+                    .'no logo, no text, no graphics of any kind. The whole brochure is centred in frame with generous '
+                    .'even margins. Soft even lighting, no clutter, no watermark.',
+                'place_prompt' => 'Image 1 is a photo of a blank OPEN tri-fold brochure (one wide sheet split into three '
+                    .'equal vertical panels by two fold lines). Image 2 is the brand logo. If a third image is provided '
+                    .'it is the brand\'s website screenshot — match its colours, typography and imagery. Print a '
+                    .'professional, on-brand tri-fold marketing design neatly across the THREE panels for {company} — '
+                    .'{description}: the rightmost panel is the front cover carrying the logo (image 2, reproduced '
+                    .'EXACTLY) and a short brand headline; the other panels carry tasteful marketing copy and on-brand '
+                    .'imagery, cleanly organised panel-by-panel and kept within each panel (nothing crossing a fold '
+                    .'awkwardly). Keep the brochure\'s flat shape, the three-panel layout, the fold lines, its position, '
+                    .'the top-down camera angle, lighting and the wood surface EXACTLY as in image 1 — only add the '
+                    .'printed design. Output only the photo, realistic clean print, no watermark, no gibberish text.',
                 'prompt' => 'A realistic studio mockup of a printed TRI-FOLD brochure for {company} — {description} — '
                     .'resting on a clean surface at a slight three-quarter angle with soft realistic lighting, its '
                     .'three panels partly fanned so the folds are clearly visible. Design it in the brand\'s own visual '
@@ -149,6 +199,16 @@ class BrandKitSpec
         $cap = (int) config('shop.internal_engine.max_products', 0);
 
         return $cap > 0 ? array_slice($all, 0, $cap) : $all;
+    }
+
+    /**
+     * How many product mockups a capture will actually produce. The website-styled
+     * pieces (brochure/flyer, flagged after_crawl) are only generated when there's a
+     * URL to crawl — so the "products done" check must not wait on them otherwise.
+     */
+    public static function expectedProductCount(bool $hasUrl): int
+    {
+        return count(array_filter(self::products(), fn ($p) => $hasUrl || ! ($p['after_crawl'] ?? false)));
     }
 
     /**
@@ -223,12 +283,135 @@ class BrandKitSpec
             'slug'       => 'qr-code-business-cards',
             'decoration' => 'custom',
             'inputs'     => ['qr'],
+            // Fixed blank-card base; only the QR (content) is composited so every card looks identical.
+            'base_prompt' => 'A clean, print-ready studio mockup of a SINGLE plain WHITE business card lying flat on a '
+                .'light natural-wood table, photographed straight down (top-down), centred in frame with even margins. '
+                .'The card is completely blank white — NO text, QR code or graphics of any kind. Realistic soft '
+                .'lighting, no clutter, no watermark.',
+            'place_prompt' => 'Image 1 is a photo of a blank white business card. Image 2 is a QR code. Place the QR '
+                .'code (image 2) in the exact CENTRE of the card — centred horizontally and vertically — at a tasteful '
+                .'size with even white margins around it. The QR is a FIXED ASSET: place it AS-IS, pixel-for-pixel '
+                .'identical, do NOT redraw, recolour, sharpen, crop, rotate or distort it; keep it perfectly square so '
+                .'it stays scannable. Keep the card, table, camera angle and lighting EXACTLY as in image 1 — the card '
+                .'is otherwise blank white with NO other text or graphics. Output only the photo, no watermark.',
             'prompt'     => 'A clean, print-ready studio mockup of a SINGLE plain WHITE business card lying flat on a '
                 .'light natural-wood table, photographed straight down (top-down). Place the provided QR code in the '
                 .'exact CENTRE of the card — centred horizontally and vertically — at a tasteful size with even white '
                 .'margins around it. The card is otherwise blank white with NO other text or graphics. Realistic soft '
                 .'lighting, no clutter.',
         ];
+    }
+
+    /**
+     * Whether this product uses the pre-generated base + runtime logo-composite flow
+     * (fixed-shape merch). Shape-derived pieces (die-cut sticker, infinity mirror),
+     * website-styled pieces and the QR/text layouts keep the direct one-shot generation.
+     */
+    public static function hasBase(array $p): bool
+    {
+        return self::basePrompt($p) !== null;
+    }
+
+    /**
+     * Prompt to pre-generate the BLANK, unbranded product base (no logo/graphics).
+     * Explicit `base_prompt` wins; otherwise it's derived from a scene-based spec.
+     * Returns null for products that shouldn't use the base flow.
+     */
+    public static function basePrompt(array $p): ?string
+    {
+        if (isset($p['base_prompt'])) {
+            return (string) $p['base_prompt'];
+        }
+        // Auto-derive for simple scene-based merch (skip custom/showcase scenes).
+        if (($p['decoration'] ?? '') === 'custom' || empty($p['scene'])) {
+            return null;
+        }
+        $framing = ($p['flat'] ?? false) ? self::FLATLAY : self::PHOTO;
+
+        return "A studio product shot of {$p['scene']}. The product is completely BLANK and unbranded — "
+            .'no logo, no text, no graphics, no decoration of any kind, just the plain product. '
+            .$framing.' Show only the product. No watermark, no text.';
+    }
+
+    /**
+     * Runtime prompt that places the brand logo onto a PRE-GENERATED product photo
+     * (image 1 = the blank product base, image 2 = the logo) so the product looks
+     * identical every time and only the branding changes. Per the decoration method,
+     * and — per product-owner request — Gemini MAY recolour the product to suit the
+     * brand, choosing only from the supplied brand palette.
+     *
+     * @param  array<string,mixed>  $ctx
+     */
+    public static function placePrompt(array $p, array $ctx = []): string
+    {
+        $placement = $p['placement'] ?? 'in the natural branding spot, tastefully sized';
+        $mode = $p['logo_render'] ?? ($p['decoration'] ?? 'print');
+        $how = match ($mode) {
+            'laser' => "Laser-engrave the logo onto the product, {$placement}. Keep the logo's exact shapes, "
+                .'letterforms and proportions — do NOT redraw or restyle it — rendered as a REALISTIC metal laser '
+                .'engraving: the mark reveals the bare metal under the coating, a natural silvery brushed-metal / '
+                .'frosted-steel tone recessed into the surface (never a flat white/black print or full colour).',
+            'embroidery' => "Embroider the logo onto the product, {$placement}. Keep the logo's shapes, letterforms "
+                .'and colours recognisable — do NOT redraw or restyle it — but render it as an unmistakable REAL '
+                .'EMBROIDERED patch: tightly-packed raised satin/fill stitches with visible thread lines, directional '
+                .'stitch grain and thread sheen, slightly fuzzy edges and a subtle 3D raised relief — never a flat print.',
+            'white' => "Print the logo onto the product, {$placement}, rendered in solid WHITE (a clean single-colour "
+                ."white version) while keeping the logo's exact shapes, letterforms and proportions — do NOT redraw or "
+                .'re-letter it.',
+            default => "Print the logo onto the product {$placement}, at a realistic size, in FULL COLOUR. Reproduce "
+                .'the logo EXACTLY — same shapes, letterforms, colours and proportions; do NOT redraw, restyle or recolour it.',
+        };
+
+        $colors = array_values(array_filter(array_map('trim', (array) ($ctx['colors'] ?? []))));
+        $palette = $colors ? implode(', ', array_slice($colors, 0, 6)) : "the brand's own colours";
+
+        return 'You are given TWO images: image 1 is a photo of a blank, unbranded product; image 2 is a brand logo. '
+            ."Add the brand logo (image 2) onto the product shown in image 1. {$how} "
+            .'Keep the product\'s shape, position, camera angle, framing, lighting, shadows and background EXACTLY as in '
+            .'image 1 — the product must look like the same photo with the branding (and optionally its colour) changed, '
+            .'nothing else. You MAY recolour the PRODUCT itself to complement the brand, choosing ONLY from these brand '
+            ."colours: {$palette}; otherwise leave the product's colour as it is in image 1. IMPORTANT — never place the "
+            .'logo on a same-colour surface: if the logo and product colour would clash or blend, make the product white '
+            .'(or charcoal if the logo is white/very light) so the logo stays clearly legible. Output only the finished '
+            .'product photo — no extra text, no watermark, no gibberish.';
+    }
+
+    /**
+     * The composite prompt for the base flow: a product's own `place_prompt` override
+     * (for special placements — die-cut sticker, brochure content, QR card) with brand
+     * tokens filled in, else the generic logo-placement prompt.
+     *
+     * @param  array<string,mixed>  $ctx
+     */
+    public static function placePromptFor(array $p, array $ctx = []): string
+    {
+        if (empty($p['place_prompt'])) {
+            return self::placePrompt($p, $ctx);
+        }
+        $company = trim((string) ($ctx['company'] ?? '')) ?: 'Your Company';
+        $url = preg_replace('#^https?://#i', '', rtrim(trim((string) ($ctx['url'] ?? '')), '/')) ?: 'yourcompany.com';
+        $description = trim((string) ($ctx['description'] ?? '')) ?: 'a professional business';
+        $colors = array_values(array_filter(array_map('trim', (array) ($ctx['colors'] ?? []))));
+        $palette = $colors ? implode(', ', array_slice($colors, 0, 6)) : "the brand's own colours";
+
+        return str_replace(
+            ['{company}', '{url}', '{description}', '{colors}'],
+            [$company, $url, $description, $palette],
+            (string) $p['place_prompt'],
+        );
+    }
+
+    /**
+     * Every spec that uses the pre-generated base flow — the merch roster plus the
+     * standalone QR business card. Used by the base-image generator command.
+     *
+     * @return array<int,array<string,mixed>>
+     */
+    public static function baseSpecs(): array
+    {
+        $specs = array_merge(self::products(), [self::qrBusinessCard()]);
+
+        return array_values(array_filter($specs, fn ($p) => self::hasBase($p)));
     }
 
     /**

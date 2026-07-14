@@ -318,8 +318,11 @@ class PqsgController extends Controller
                 ] : null,
             ];
         })->all();
+        // Website-styled pieces (brochure/flyer) are only generated when there's a URL —
+        // don't wait on them when there isn't one, or the grid "generates" forever.
+        $expected = \App\Support\BrandKitSpec::expectedProductCount((bool) $kit->website);
         $done = ($stages['products'] ?? 'pending') === 'skipped'
-            || count($images) >= count(\App\Support\BrandKitSpec::products()) || $stale;
+            || count($images) >= $expected || $stale;
 
         return response()->json(['done' => $done, 'images' => $images]);
     }

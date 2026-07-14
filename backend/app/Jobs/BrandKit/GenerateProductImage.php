@@ -34,52 +34,58 @@ class GenerateProductImage implements ShouldQueue
             return;
         }
 
-        // Composite the images this product's scene calls for (logo and/or QR). The
-        // QR is passed to Gemini as a fixed asset like the logo — high-res (>500px)
-        // so the model places it as-is instead of trying to "improve"/redraw it.
+        $summary = $kit->summary ?? [];
+        $ctx = [
+            'keywords'    => $summary['keywords'] ?? [],
+            'company'     => $kit->company ?: ($summary['company'] ?? ''),
+            'url'         => $kit->website ?: ($summary['website'] ?? ''),
+            'description' => $summary['description'] ?? '',
+            'colors'      => $summary['colors'] ?? [],
+        ];
+
+        // Gather the content assets this product composites: logo and/or QR, plus the
+        // homepage screenshot for website-styled pieces. The QR is a fixed asset (>500px)
+        // so the model reproduces it as-is instead of "improving" it.
         $inputs = $this->spec['inputs'] ?? ['logo'];
-        $imgs = [];
+        $content = [];
         if (in_array('logo', $inputs, true) && ($logo = $this->logoGeminiInput($kit))) {
-            $imgs[] = $logo;
+            $content[] = $logo;
         }
         $hasQr = in_array('qr', $inputs, true);
         if ($hasQr) {
-            // A spec-provided QR (designer-flow QR business card) wins over the kit's
-            // capture QR (qr-maker flow).
-            $qr = isset($this->spec['qr_asset'])
-                ? $this->imageInput($this->spec['qr_asset'])
-                : $this->qrInput($kit);
+            // A spec-provided QR (designer-flow QR business card) wins over the kit's capture QR.
+            $qr = isset($this->spec['qr_asset']) ? $this->imageInput($this->spec['qr_asset']) : $this->qrInput($kit);
             if ($qr) {
-                $imgs[] = $qr;
+                $content[] = $qr;
             }
         }
-        // Website-styled pieces (tri-fold brochure, flyer) also get the homepage
-        // screenshot so Gemini designs them in the brand's real look.
         $shot = ($this->spec['use_site_shot'] ?? false) && $kit->site_shot_path
             ? $this->imageInput($kit->site_shot_path) : null;
         if ($shot) {
-            $imgs[] = $shot;
+            $content[] = $shot;
         }
-        if (! $imgs) {
+        if (! $content) {
             return; // nothing to place
         }
 
-        $summary = $kit->summary ?? [];
-        $img = $gemini->generateImage(
-            BrandKitSpec::productPrompt($this->spec, [
-                'keywords'    => $summary['keywords'] ?? [],
-                'company'     => $kit->company ?: ($summary['company'] ?? ''),
-                'url'         => $kit->website ?: ($summary['website'] ?? ''),
-                'description' => $summary['description'] ?? '',
-                'colors'      => $summary['colors'] ?? [],
-                'has_site'    => (bool) $shot,
-            ]),
-            $imgs,
-            config('shop.internal_engine.image_model'),
-        );
+        // Base + composite flow: place the content onto a PRE-GENERATED, pre-validated
+        // blank base so the product/scene looks identical on every capture — only the
+        // branding (and, when it suits the brand, the product colour) changes. Falls back
+        // to direct one-shot generation for shape-derived pieces without a base.
+        $baseInput = $this->baseInput();
+        if ($baseInput) {
+            $prompt = BrandKitSpec::placePromptFor($this->spec, $ctx);
+            $imgs = array_merge([$baseInput], $content); // image 1 = base, then logo/QR/screenshot
+        } else {
+            $prompt = BrandKitSpec::productPrompt($this->spec, $ctx + ['has_site' => (bool) $shot]);
+            $imgs = $content;
+        }
+        $big = $hasQr || (bool) $shot;
+
+        $img = $gemini->generateImage($prompt, $imgs, config('shop.internal_engine.image_model'));
 
         $path = "brandkits/{$this->key}/product-{$this->spec['key']}.webp";
-        Storage::disk('public')->put($path, Img::webp($img['data'], ($hasQr || $shot) ? 1200 : 1000));
+        Storage::disk('public')->put($path, Img::webp($img['data'], $big ? 1200 : 1000));
 
         $kit->appendItems('products', [[
             'key'          => $this->spec['key'],
@@ -87,5 +93,19 @@ class GenerateProductImage implements ShouldQueue
             'img'          => Storage::disk('public')->url($path),
             'product_slug' => $this->spec['slug'],
         ]]);
+    }
+
+    /** The pre-generated blank product base as a Gemini image input, if this product uses one. */
+    private function baseInput(): ?array
+    {
+        if (! BrandKitSpec::hasBase($this->spec)) {
+            return null;
+        }
+        $file = resource_path('product-bases/'.$this->spec['key'].'.webp');
+        if (! is_file($file)) {
+            return null;
+        }
+
+        return ['mime' => 'image/webp', 'data' => base64_encode((string) file_get_contents($file))];
     }
 }
