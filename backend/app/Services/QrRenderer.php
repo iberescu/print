@@ -80,8 +80,8 @@ class QrRenderer
         $scale = min($box / $lw, $box / $lh);
         $dw = (int) round($lw * $scale);
         $dh = (int) round($lh * $scale);
-        // white circle just big enough for the logo's diagonal + a 1% ring
-        $dia = (int) round(sqrt($dw * $dw + $dh * $dh) + 2 * ($size * 0.01));
+        // white circle just big enough for the logo's diagonal + a 0.5% ring
+        $dia = (int) round(sqrt($dw * $dw + $dh * $dh) + 2 * ($size * 0.005));
         $c = intdiv($size, 2);
         $white = imagecolorallocate($base, 255, 255, 255);
         imagealphablending($base, true);

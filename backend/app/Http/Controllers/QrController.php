@@ -241,7 +241,7 @@ class QrController extends Controller
         $dw = $lw * $scale;
         $dh = $lh * $scale;
         $c = $size / 2;
-        $r = sqrt($dw * $dw + $dh * $dh) / 2 + $size * 0.01; // logo diagonal + 1% ring
+        $r = sqrt($dw * $dw + $dh * $dh) / 2 + $size * 0.005; // logo diagonal + 0.5% ring
         $b64 = base64_encode((string) file_get_contents($logoPath));
         $overlay = sprintf(
             '<circle cx="%s" cy="%s" r="%s" fill="#ffffff"/>'
