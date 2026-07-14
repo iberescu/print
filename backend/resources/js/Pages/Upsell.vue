@@ -282,8 +282,8 @@ function next() {
                     </div>
                     <TransitionGroup name="pqsgcard" tag="div" class="grid grid-cols-2 gap-4 sm:gap-5 md:grid-cols-3 lg:grid-cols-4">
                         <div v-for="it in pqsgItems" :key="it.key" class="flex flex-col overflow-hidden rounded-2xl border border-paper-300 bg-white">
-                            <div class="aspect-square overflow-hidden bg-paper-200">
-                                <SmartImage :src="it.img" :alt="it.label || 'Your logo, mocked up'" />
+                            <div class="aspect-square overflow-hidden bg-white">
+                                <SmartImage :src="it.img" :alt="it.label || 'Your logo, mocked up'" fit="contain" />
                             </div>
                             <div class="flex flex-1 flex-col p-3">
                                 <p class="font-display text-sm font-semibold text-ink">{{ it.label || 'Your brand, mocked up' }}</p>

@@ -144,7 +144,7 @@ const editHref = (it) => {
                          class="group flex flex-col overflow-hidden rounded-2xl border border-paper-300 bg-white transition"
                          :class="p.slug ? 'hover:-translate-y-1 hover:shadow-lg' : ''">
                         <component :is="p.slug ? Link : 'div'" :href="p.slug ? `/product/${p.slug}` : undefined" class="block aspect-square overflow-hidden bg-white">
-                            <img v-if="p.img" :src="p.img" :alt="p.label || p.name" loading="lazy" class="h-full w-full object-cover transition duration-500" :class="p.slug ? 'group-hover:scale-105' : ''" />
+                            <img v-if="p.img" :src="p.img" :alt="p.label || p.name" loading="lazy" class="h-full w-full object-contain transition duration-500" :class="p.slug ? 'group-hover:scale-105' : ''" />
                         </component>
                         <div class="flex flex-1 flex-col p-3">
                             <p v-if="p.category" class="text-[11px] font-semibold uppercase tracking-widest text-brand-700/70">{{ p.category }}</p>

@@ -325,7 +325,7 @@ onBeforeUnmount(() => {
                         <div class="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
                             <div v-for="it in galleryItems" :key="it.key" class="overflow-hidden rounded-xl border border-paper-300 bg-white">
                                 <div class="aspect-square bg-white">
-                                    <img :src="it.img" :alt="it.label || 'Your logo on a product'" loading="lazy" class="h-full w-full object-cover" />
+                                    <img :src="it.img" :alt="it.label || 'Your logo on a product'" loading="lazy" class="h-full w-full object-contain" />
                                 </div>
                                 <p v-if="it.label" class="truncate px-2 py-1.5 text-center text-xs font-medium text-ink/70">{{ it.label }}</p>
                             </div>

@@ -4,6 +4,9 @@ import { ref, watch } from 'vue';
 const props = defineProps({
     src: { type: String, default: null },
     alt: { type: String, default: '' },
+    // 'cover' fills the box (good for uniform catalog grids); 'contain' shows the WHOLE
+    // image (for generated mockups whose framing/aspect varies — never crop those).
+    fit: { type: String, default: 'cover' },
 });
 
 const failed = ref(false);
@@ -17,7 +20,8 @@ watch(() => props.src, () => (failed.value = false));
             :src="src"
             :alt="alt"
             loading="lazy"
-            class="h-full w-full object-cover"
+            class="h-full w-full"
+            :class="fit === 'contain' ? 'object-contain' : 'object-cover'"
             @error="failed = true"
         />
         <div
