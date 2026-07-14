@@ -355,9 +355,12 @@ class BrandKitSpec
         $mode = $p['logo_render'] ?? ($p['decoration'] ?? 'print');
         $how = match ($mode) {
             'laser' => "Laser-engrave the logo onto the product, {$placement}. Keep the logo's exact shapes, "
-                .'letterforms and proportions — do NOT redraw or restyle it — rendered as a REALISTIC metal laser '
-                .'engraving: the mark reveals the bare metal under the coating, a natural silvery brushed-metal / '
-                .'frosted-steel tone recessed into the surface (never a flat white/black print or full colour).',
+                .'letterforms and proportions — do NOT redraw or restyle it — rendered as a REALISTIC laser engraving '
+                .'that has burned through the coloured coating to reveal the BRIGHT BARE METAL underneath: a clean, '
+                .'shiny SILVERY metallic tone (polished aluminium / brushed stainless steel) that clearly catches the '
+                .'light with a subtle metallic sheen and reads as real exposed metal, crisply etched and slightly '
+                .'recessed into the surface. It must look distinctly SILVER and metallic — never a dull grey, chalky '
+                .'white, flat print, outline or full colour.',
             'embroidery' => "Embroider the logo onto the product, {$placement}. Keep the logo's shapes, letterforms "
                 .'and colours recognisable — do NOT redraw or restyle it — but render it as an unmistakable REAL '
                 .'EMBROIDERED patch: tightly-packed raised satin/fill stitches with visible thread lines, directional '
