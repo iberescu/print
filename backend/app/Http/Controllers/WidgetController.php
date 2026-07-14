@@ -302,9 +302,43 @@ JS;
         if ($bytes === '') {
             return null;
         }
+        // Favicons/logos are frequently SVG — the brand-kit engine + Gemini can't use
+        // SVG, so rasterise to PNG here (mutool, same as the logo maker).
+        if ($this->isSvg($bytes)) {
+            $bytes = $this->rasterizeSvg($bytes);
+            if (! $bytes) {
+                return null;
+            }
+        }
         $path = 'widget-logos/'.Str::uuid().'.png';
         Storage::disk('public')->put($path, $bytes);
 
         return $path;
+    }
+
+    private function isSvg(string $bytes): bool
+    {
+        $head = ltrim(substr($bytes, 0, 400));
+
+        return str_contains($head, '<svg') || (str_starts_with($head, '<?xml') && str_contains(substr($bytes, 0, 800), '<svg'));
+    }
+
+    private function rasterizeSvg(string $svg): ?string
+    {
+        $disk = Storage::disk('public');
+        $tmpSvg = 'widget-logos/tmp-'.Str::uuid().'.svg';
+        $tmpPng = str_replace('.svg', '.png', $tmpSvg);
+        $disk->put($tmpSvg, $svg);
+
+        $proc = new \Symfony\Component\Process\Process([
+            'mutool', 'draw', '-o', $disk->path($tmpPng), '-w', '1024', '-h', '1024', '-c', 'rgba', $disk->path($tmpSvg),
+        ]);
+        $proc->run();
+
+        $png = ($proc->isSuccessful() && $disk->exists($tmpPng) && str_starts_with((string) $disk->get($tmpPng), "\x89PNG"))
+            ? $disk->get($tmpPng) : null;
+        $disk->delete([$tmpSvg, $tmpPng]);
+
+        return $png;
     }
 }
