@@ -76,19 +76,19 @@ const editHref = (it) => {
             </div>
 
             <div v-else class="mt-8 grid gap-8 lg:grid-cols-[1fr_360px]">
-                <div class="space-y-4">
-                    <div v-for="it in items" :key="it.id" class="flex gap-4 rounded-2xl border border-paper-300 bg-white p-4">
-                        <div class="h-24 w-32 shrink-0 overflow-hidden rounded-lg bg-paper-200">
+                <div class="min-w-0 space-y-4">
+                    <div v-for="it in items" :key="it.id" class="flex gap-3 rounded-2xl border border-paper-300 bg-white p-3 sm:gap-4 sm:p-4">
+                        <div class="h-20 w-24 shrink-0 overflow-hidden rounded-lg bg-paper-200 sm:h-24 sm:w-32">
                             <img v-if="it.design?.preview || it.image" :src="it.design?.preview || it.image" :alt="it.name" class="h-full w-full object-contain" />
                         </div>
-                        <div class="flex flex-1 flex-col">
-                            <div class="flex items-start justify-between gap-3">
-                                <div>
-                                    <p class="font-display text-lg font-semibold text-ink">{{ it.name }}</p>
-                                    <div class="mt-1 flex items-center gap-2 text-sm text-ink/50">
+                        <div class="flex min-w-0 flex-1 flex-col">
+                            <div class="flex items-start justify-between gap-2">
+                                <div class="min-w-0">
+                                    <p class="font-display text-base font-semibold text-ink sm:text-lg">{{ it.name }}</p>
+                                    <div class="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-ink/50">
                                         <template v-if="it.quantities && it.quantities.length > 1">
                                             <label :for="`qty-${it.id}`" class="text-ink/55">Qty</label>
-                                            <select :id="`qty-${it.id}`" :value="it.quantity_id" class="rounded-lg border border-paper-300 bg-white py-1 pl-2 pr-7 text-sm text-ink transition focus:border-brand-400 focus:outline-none" @change="setQty(it.id, $event.target.value)">
+                                            <select :id="`qty-${it.id}`" :value="it.quantity_id" class="min-w-0 max-w-full rounded-lg border border-paper-300 bg-white py-1 pl-2 pr-7 text-sm text-ink transition focus:border-brand-400 focus:outline-none" @change="setQty(it.id, $event.target.value)">
                                                 <option v-for="q in it.quantities" :key="q.id" :value="q.id">{{ q.quantity }} — {{ money(q.total + optionDelta(it)) }}</option>
                                             </select>
                                             <span class="whitespace-nowrap">{{ money(it.unit_price) }}/ea</span>
@@ -96,7 +96,7 @@ const editHref = (it) => {
                                         <span v-else>Qty {{ it.quantity }} · {{ money(it.unit_price) }}/ea</span>
                                     </div>
                                 </div>
-                                <p class="font-semibold text-ink">{{ money(it.line_total) }}</p>
+                                <p class="shrink-0 font-semibold text-ink">{{ money(it.line_total) }}</p>
                             </div>
                             <div class="mt-2 flex flex-wrap gap-1.5">
                                 <span v-for="(val, key) in it.options" :key="key" class="rounded-full bg-paper-200 px-2.5 py-0.5 text-xs text-ink/70">{{ key }}: {{ val }}</span>
