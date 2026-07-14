@@ -80,13 +80,16 @@ class BrandKitSpec
             ],
             [
                 'key' => 'pen', 'label' => 'Pen', 'slug' => 'custom-pens', 'decoration' => 'custom', 'logo_render' => 'laser',
-                'placement' => 'small along the barrel, in landscape orientation',
-                'base_prompt' => 'A studio product shot showing ONE entire promotional pen, COMPLETE and UNCROPPED, lying '
-                    .'HORIZONTALLY (landscape) on a light natural-wood table with a soft shadow. Frame it ZOOMED OUT so '
-                    .'the WHOLE pen — from the pointed writing tip at one end to the push-button/cap at the other — sits '
-                    .'fully inside the frame at a small size, with generous EMPTY margin on ALL FOUR sides; both ends '
-                    .'clearly visible with space around them. The pen barrel is plain solid WHITE — completely blank and '
-                    .'unbranded, no logo, no text, no graphics. Show only the product. No watermark.',
+                'placement' => 'laser-engraved small along the middle of the barrel, in landscape orientation',
+                'base_prompt' => 'A studio product shot showing ONE entire promotional ANODISED ALUMINIUM METAL pen, '
+                    .'COMPLETE and UNCROPPED, lying HORIZONTALLY (landscape) on a light natural-wood table with a soft '
+                    .'shadow. Frame it ZOOMED OUT so the WHOLE pen — from the polished CHROME cone writing tip at one end '
+                    .'to the CHROME push-button and pocket clip at the other — sits fully inside the frame at a small '
+                    .'size, with generous EMPTY margin on ALL FOUR sides; both ends clearly visible with space around '
+                    .'them. It is a metal pen with a smooth matte soft-touch COATED aluminium barrel in solid WHITE, with '
+                    .'polished silver/chrome accents: a chrome cone tip, a chrome clip, and two thin chrome rings/bands '
+                    .'around the middle of the barrel. The barrel is completely BLANK — no logo, no text, no engraving. '
+                    .'Realistic metal materials, subtle reflections and soft lighting. No watermark.',
                 'prompt' => 'A studio product shot showing ONE entire promotional pen, COMPLETE and UNCROPPED, lying '
                     .'HORIZONTALLY (landscape) on a light natural-wood table with a soft shadow. CRITICAL: frame it '
                     .'ZOOMED OUT so the WHOLE pen — from the pointed writing tip at one end all the way to the '
