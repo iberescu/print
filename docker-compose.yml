@@ -39,7 +39,7 @@ services:
       dockerfile: docker/php/Dockerfile
     container_name: rmp_worker
     working_dir: /var/www/html
-    command: sh -c 'for i in $$(seq 1 6); do php artisan queue:work redis --queue=brandkit --sleep=1 --tries=2 --timeout=300 --max-time=1800 & done; wait'
+    command: sh -c 'for i in $$(seq 1 8); do php artisan queue:work redis --queue=brandkit --sleep=1 --tries=2 --timeout=300 --max-time=1800 & done; wait'
     restart: unless-stopped
     volumes:
       - ./backend:/var/www/html

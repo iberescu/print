@@ -71,7 +71,7 @@ return [
         // Max concurrent Gemini API calls across all workers (Redis semaphore) —
         // stops the internal engine's parallel generations from rate-limiting each
         // other. 0 = unlimited. Never binds for normal 1-at-a-time traffic.
-        'max_concurrency'  => (int) env('GEMINI_MAX_CONCURRENCY', 5),
+        'max_concurrency'  => (int) env('GEMINI_MAX_CONCURRENCY', 8),
     ],
 
     // Replicate — recraft SVG model behind the AI logo maker
