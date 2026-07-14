@@ -27,7 +27,7 @@ class QrRenderer
         $ec = $logoFile ? ErrorCorrectionLevel::H() : ErrorCorrectionLevel::M(); // logo covers ~25% → H recovers 30%
         $png = $this->svgToPng($this->renderSvg($payload, $size, $style, strtolower($color), $ec), $size);
 
-        return ($logoFile && is_file($logoFile)) ? $this->stampLogoPng($png, $logoFile) : $png;
+        return ($logoFile && is_file($logoFile)) ? $this->stampLogo($png, $logoFile) : $png;
     }
 
     private function renderSvg(string $payload, int $size, string $style, string $color, ErrorCorrectionLevel $ec): string
@@ -62,8 +62,11 @@ class QrRenderer
         return $png;
     }
 
-    /** White pad + logo centred, aspect kept (GD composite). */
-    private function stampLogoPng(string $png, string $logoFile): string
+    /**
+     * Composite a centred logo onto a QR PNG behind a white CIRCLE that hugs the logo
+     * with a 1% ring. Shared by the QR tool + the brand-kit renderer (GD composite).
+     */
+    public function stampLogo(string $png, string $logoFile): string
     {
         $base = imagecreatefromstring($png);
         $logo = @imagecreatefromstring((string) file_get_contents($logoFile));
@@ -71,18 +74,19 @@ class QrRenderer
             return $png;
         }
         $size = imagesx($base);
-        $pad = (int) round($size * 0.26);
-        $box = (int) round($size * 0.23); // logo fills more of the pad — half the white ring around it
-        $white = imagecolorallocate($base, 255, 255, 255);
-        imagefilledrectangle($base, (int) (($size - $pad) / 2), (int) (($size - $pad) / 2), (int) (($size + $pad) / 2), (int) (($size + $pad) / 2), $white);
-
+        $box = (int) round($size * 0.23);
         $lw = imagesx($logo);
         $lh = imagesy($logo);
         $scale = min($box / $lw, $box / $lh);
         $dw = (int) round($lw * $scale);
         $dh = (int) round($lh * $scale);
+        // white circle just big enough for the logo's diagonal + a 1% ring
+        $dia = (int) round(sqrt($dw * $dw + $dh * $dh) + 2 * ($size * 0.01));
+        $c = intdiv($size, 2);
+        $white = imagecolorallocate($base, 255, 255, 255);
         imagealphablending($base, true);
-        imagecopyresampled($base, $logo, (int) (($size - $dw) / 2), (int) (($size - $dh) / 2), 0, 0, $dw, $dh, $lw, $lh);
+        imagefilledellipse($base, $c, $c, $dia, $dia, $white);
+        imagecopyresampled($base, $logo, (int) ($c - $dw / 2), (int) ($c - $dh / 2), 0, 0, $dw, $dh, $lw, $lh);
         imagedestroy($logo);
 
         ob_start();

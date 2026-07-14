@@ -232,51 +232,31 @@ class QrController extends Controller
         return $png;
     }
 
-    /** White pad + logo <image> injected into the SVG's own coordinate space. */
+    /** White CIRCLE (hugging the logo + a 1% ring) + logo, injected into the SVG space. */
     private function stampLogoSvg(string $svg, string $logoPath, int $size): string
     {
-        $pad = (int) round($size * 0.26);
-        $box = (int) round($size * 0.23); // logo fills more of the pad — half the white ring around it
+        [$lw, $lh] = @getimagesize($logoPath) ?: [1, 1];
+        $box = $size * 0.23;
+        $scale = min($box / max($lw, 1), $box / max($lh, 1));
+        $dw = $lw * $scale;
+        $dh = $lh * $scale;
+        $c = $size / 2;
+        $r = sqrt($dw * $dw + $dh * $dh) / 2 + $size * 0.01; // logo diagonal + 1% ring
         $b64 = base64_encode((string) file_get_contents($logoPath));
         $overlay = sprintf(
-            '<rect x="%d" y="%d" width="%d" height="%d" rx="%d" fill="#ffffff"/>'
-            .'<image x="%d" y="%d" width="%d" height="%d" preserveAspectRatio="xMidYMid meet" href="data:image/png;base64,%s"/>',
-            (int) (($size - $pad) / 2), (int) (($size - $pad) / 2), $pad, $pad, (int) round($size * 0.02),
-            (int) (($size - $box) / 2), (int) (($size - $box) / 2), $box, $box, $b64,
+            '<circle cx="%s" cy="%s" r="%s" fill="#ffffff"/>'
+            .'<image x="%s" y="%s" width="%s" height="%s" preserveAspectRatio="xMidYMid meet" href="data:image/png;base64,%s"/>',
+            round($c, 2), round($c, 2), round($r, 2),
+            round($c - $dw / 2, 2), round($c - $dh / 2, 2), round($dw, 2), round($dh, 2), $b64,
         );
 
         return str_replace('</svg>', $overlay.'</svg>', $svg);
     }
 
-    /** GD composite for PNGs: white pad, then the logo centred, aspect kept. */
+    /** GD composite for PNGs: white circle (logo + 1% ring), then the logo centred. */
     private function stampLogoPng(string $png, string $logoPath): string
     {
-        $base = imagecreatefromstring($png);
-        $logo = imagecreatefromstring((string) file_get_contents($logoPath));
-        if ($base === false || $logo === false) {
-            return $png;
-        }
-        $size = imagesx($base);
-        $pad = (int) round($size * 0.26);
-        $box = (int) round($size * 0.23); // logo fills more of the pad — half the white ring around it
-        $white = imagecolorallocate($base, 255, 255, 255);
-        imagefilledrectangle($base, (int) (($size - $pad) / 2), (int) (($size - $pad) / 2), (int) (($size + $pad) / 2), (int) (($size + $pad) / 2), $white);
-
-        $lw = imagesx($logo);
-        $lh = imagesy($logo);
-        $scale = min($box / $lw, $box / $lh);
-        $dw = (int) round($lw * $scale);
-        $dh = (int) round($lh * $scale);
-        imagealphablending($base, true);
-        imagecopyresampled($base, $logo, (int) (($size - $dw) / 2), (int) (($size - $dh) / 2), 0, 0, $dw, $dh, $lw, $lh);
-        imagedestroy($logo);
-
-        ob_start();
-        imagepng($base);
-        $out = (string) ob_get_clean();
-        imagedestroy($base);
-
-        return $out !== '' ? $out : $png;
+        return app(\App\Services\QrRenderer::class)->stampLogo($png, $logoPath);
     }
 
     /** Uploaded SVG logo → transparent PNG (mutool, PreviewStore pattern). */
