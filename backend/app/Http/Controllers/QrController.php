@@ -236,7 +236,7 @@ class QrController extends Controller
     private function stampLogoSvg(string $svg, string $logoPath, int $size): string
     {
         $pad = (int) round($size * 0.26);
-        $box = (int) round($size * 0.20);
+        $box = (int) round($size * 0.23); // logo fills more of the pad — half the white ring around it
         $b64 = base64_encode((string) file_get_contents($logoPath));
         $overlay = sprintf(
             '<rect x="%d" y="%d" width="%d" height="%d" rx="%d" fill="#ffffff"/>'
@@ -258,7 +258,7 @@ class QrController extends Controller
         }
         $size = imagesx($base);
         $pad = (int) round($size * 0.26);
-        $box = (int) round($size * 0.20);
+        $box = (int) round($size * 0.23); // logo fills more of the pad — half the white ring around it
         $white = imagecolorallocate($base, 255, 255, 255);
         imagefilledrectangle($base, (int) (($size - $pad) / 2), (int) (($size - $pad) / 2), (int) (($size + $pad) / 2), (int) (($size + $pad) / 2), $white);
 

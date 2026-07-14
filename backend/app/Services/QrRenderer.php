@@ -72,7 +72,7 @@ class QrRenderer
         }
         $size = imagesx($base);
         $pad = (int) round($size * 0.26);
-        $box = (int) round($size * 0.20);
+        $box = (int) round($size * 0.23); // logo fills more of the pad — half the white ring around it
         $white = imagecolorallocate($base, 255, 255, 255);
         imagefilledrectangle($base, (int) (($size - $pad) / 2), (int) (($size - $pad) / 2), (int) (($size + $pad) / 2), (int) (($size + $pad) / 2), $white);
 
