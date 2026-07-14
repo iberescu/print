@@ -33,7 +33,7 @@ class BrandKitSpec
             ['key' => 'mug',     'label' => 'Ceramic mug',    'slug' => 'custom-mugs',                       'decoration' => 'print',      'scene' => 'a plain white ceramic coffee mug'],
             [
                 'key' => 'tumbler', 'label' => 'Tumbler', 'slug' => '20-oz-tumbler', 'decoration' => 'custom', 'logo_render' => 'laser',
-                'placement' => 'on the front, centred',
+                'placement' => 'on the front, centred', 'stock_color' => true,
                 'prompt' => 'A studio product shot of an insulated tumbler with a lid, sitting on a light '
                     .'natural-wood table with a soft light wall behind, a soft contact shadow, bright even '
                     .'lighting, crisp focus, centred with generous margins. The tumbler body is a single solid '
@@ -45,7 +45,7 @@ class BrandKitSpec
                     .'completely blank and unbranded, no logo, no text, no graphics. Show only the product. No watermark.',
             ],
             ['key' => 'tote',    'label' => 'Canvas tote',    'slug' => 'custom-canvas-tote-bags',           'decoration' => 'print',      'scene' => 'a natural cotton-canvas tote bag neatly laid out flat, front side up', 'flat' => true],
-            ['key' => 'tshirt',  'label' => 'T-shirt',        'slug' => 'gildan-softstyle-unisex-t-shirt',   'decoration' => 'print',      'scene' => 'a plain WHITE t-shirt neatly laid out flat, front side up', 'placement' => 'in the upper-left chest area (left-breast / pocket position), small', 'flat' => true],
+            ['key' => 'tshirt',  'label' => 'T-shirt',        'slug' => 'gildan-softstyle-unisex-t-shirt',   'decoration' => 'print',      'scene' => 'a plain WHITE t-shirt neatly laid out flat, front side up', 'placement' => 'in the upper-left chest area (left-breast / pocket position), small', 'flat' => true, 'stock_color' => true],
             ['key' => 'hoodie',  'label' => 'Hoodie',         'slug' => 'jerzees-nublend-hooded-sweatshirt', 'decoration' => 'embroidery', 'scene' => 'a plain WHITE pullover hoodie neatly laid out flat, front side up', 'placement' => 'high on the UPPER-LEFT chest, at the left-breast / pocket position — small and clearly toward the TOP-LEFT of the hoodie front, never centred', 'flat' => true],
             ['key' => 'cap',     'label' => 'Cap',            'slug' => 'embroidered-hats',                  'decoration' => 'embroidery', 'scene' => 'a structured WHITE baseball cap, three-quarter view'],
 
@@ -93,7 +93,7 @@ class BrandKitSpec
             ],
             [
                 'key' => 'pen', 'label' => 'Pen', 'slug' => 'custom-pens', 'decoration' => 'custom', 'logo_render' => 'laser',
-                'placement' => 'laser-engraved small along the middle of the barrel, in landscape orientation',
+                'placement' => 'laser-engraved small along the middle of the barrel, in landscape orientation', 'stock_color' => true,
                 'base_prompt' => 'A studio product shot showing ONE entire promotional ANODISED ALUMINIUM METAL pen, '
                     .'COMPLETE and UNCROPPED, lying HORIZONTALLY (landscape) on a light natural-wood table with a soft '
                     .'shadow. Frame it ZOOMED OUT so the WHOLE pen — from the polished CHROME cone writing tip at one end '
@@ -369,10 +369,10 @@ class BrandKitSpec
         $how = match ($mode) {
             'laser' => "Laser-engrave the logo onto the product, {$placement}. Keep the logo's exact shapes, "
                 .'letterforms and proportions — do NOT redraw or restyle it — rendered as a REALISTIC laser engraving '
-                .'that reveals the metal under the coloured coating: a SOFT, MATTE, frosted SILVER-GREY etched-metal '
-                .'tone — subtly metallic but understated and muted, NOT shiny, mirror-bright or high-contrast — crisply '
-                .'etched and slightly recessed into the surface. Not a dull flat grey, chalky white, flat print, outline '
-                .'or full colour either; a natural, restrained frosted-metal engraving.',
+                .'that reveals the metal under the coloured coating: a clean brushed-SILVER metallic tone that reads '
+                .'clearly as bare polished metal with a soft sheen catching the light — noticeably bright and silvery '
+                .'(brighter than a dull grey), yet still a realistic brushed metal, not a harsh chrome mirror. Crisply '
+                .'etched and slightly recessed into the surface — never a chalky white, flat print, outline or full colour.',
             'embroidery' => "Embroider the logo onto the product, {$placement}. Keep the logo's shapes, letterforms "
                 .'and colours recognisable — do NOT redraw or restyle it — but render it as an unmistakable REAL '
                 .'EMBROIDERED patch: tightly-packed raised satin/fill stitches with visible thread lines, directional '
@@ -387,15 +387,22 @@ class BrandKitSpec
         $colors = array_values(array_filter(array_map('trim', (array) ($ctx['colors'] ?? []))));
         $palette = $colors ? implode(', ', array_slice($colors, 0, 6)) : "the brand's own colours";
 
+        // Products that only come in a few stock colours (pen, tumbler, t-shirt) get recoloured
+        // to the ONE standard colour closest to the brand — not an arbitrary brand hex.
+        $recolor = ! empty($p['stock_color'])
+            ? 'Give the PRODUCT a single solid STOCK colour: choose the ONE colour from exactly these seven — red, '
+                ."blue, white, black, green, orange, grey — that is CLOSEST to the brand's colours ({$palette}). Use only "
+                .'one of those seven colours (never an arbitrary shade), the nearest match to the brand.'
+            : "You MAY recolour the PRODUCT itself to complement the brand, choosing ONLY from these brand colours: {$palette}; "
+                ."otherwise leave the product's colour as it is in image 1.";
+
         return 'You are given TWO images: image 1 is a photo of a blank, unbranded product; image 2 is a brand logo. '
             ."Add the brand logo (image 2) onto the product shown in image 1. {$how} "
             .'Keep the product\'s shape, position, camera angle, framing, lighting, shadows and background EXACTLY as in '
-            .'image 1 — the product must look like the same photo with the branding (and optionally its colour) changed, '
-            .'nothing else. You MAY recolour the PRODUCT itself to complement the brand, choosing ONLY from these brand '
-            ."colours: {$palette}; otherwise leave the product's colour as it is in image 1. IMPORTANT — never place the "
-            .'logo on a same-colour surface: if the logo and product colour would clash or blend, make the product white '
-            .'(or charcoal if the logo is white/very light) so the logo stays clearly legible. Output only the finished '
-            .'product photo — no extra text, no watermark, no gibberish.';
+            .'image 1 — the product must look like the same photo with the branding (and its colour) changed, nothing '
+            ."else. {$recolor} IMPORTANT — never place the logo on a same-colour surface: if the logo and product colour "
+            .'would clash or blend, make the product white (or charcoal if the logo is white/very light) so the logo '
+            .'stays clearly legible. Output only the finished product photo — no extra text, no watermark, no gibberish.';
     }
 
     /**
