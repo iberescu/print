@@ -61,6 +61,19 @@ class BrandKitSpec
             ],
             [
                 'key' => 'infinity', 'label' => 'Infinity-mirror LED', 'slug' => 'led-infinity-mirror', 'decoration' => 'custom',
+                // A style TEMPLATE (resources/product-bases/infinity.webp) is sent to Gemini as image 1
+                // so it reproduces the real infinity-mirror EFFECT, not just from the text prompt.
+                'place_prompt' => 'Image 1 is a PHOTOGRAPHIC EXAMPLE of a finished infinity-mirror LED sign — use it '
+                    .'ONLY as a reference for the STYLE, materials and effect to reproduce: the infinity-mirror tunnel '
+                    .'of many CRISP, evenly-spaced concentric neon outlines receding into deep black infinite depth, the '
+                    .'glossy 3D edges/returns, the two-way mirror face, and the soft neon glow/halo on the wall behind. '
+                    .'Image 2 is the brand logo. Build a NEW infinity-mirror sign whose overall SHAPE is DIE-CUT to the '
+                    .'logo in image 2 — its outer contour hugs the LOGO\'s shape (NOT the shape, letters or wordmark of '
+                    .'image 1). If the logo has a distinct icon/symbol alongside text, use ONLY that icon/shape and OMIT '
+                    .'the wordmark; only a pure text wordmark uses the text. The concentric neon tunnel outlines follow '
+                    .'the logo\'s own outline, in the brand\'s colours (matching the logo). Floating, mounted on a clean '
+                    .'white wall in a bright room, premium acrylic and aluminium, ray-traced reflections, hyper-detailed, '
+                    .'photorealistic, 8K. Do NOT copy image 1\'s letters or outline. Output only the sign, no watermark, no text.',
                 'prompt' => 'Ultra-realistic 3D infinity-mirror sign die-cut to the shape of the provided '
                     .'logo. IMPORTANT: if the logo has a distinct icon, symbol or graphic mark alongside '
                     .'text, use ONLY that icon/shape and OMIT the text/wordmark entirely; only if the logo '

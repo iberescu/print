@@ -97,12 +97,14 @@ class GenerateProductImage implements ShouldQueue
         ]]);
     }
 
-    /** The pre-generated blank product base as a Gemini image input, if this product uses one. */
+    /**
+     * The base image sent to Gemini as image 1, if this product has one — either a
+     * pre-generated blank product base (composited with the logo) or a style TEMPLATE
+     * (e.g. the infinity mirror, where image 1 shows the effect to reproduce). Presence
+     * of the file drives the base flow; the accompanying place_prompt says how to use it.
+     */
     private function baseInput(): ?array
     {
-        if (! BrandKitSpec::hasBase($this->spec)) {
-            return null;
-        }
         $file = resource_path('product-bases/'.$this->spec['key'].'.webp');
         if (! is_file($file)) {
             return null;
