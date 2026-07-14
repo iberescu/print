@@ -39,6 +39,18 @@ trait ReadsImages
         return $this->imageInput($kit->logo_path) ?? $this->imageInput($kit->logo_url);
     }
 
+    /**
+     * The logo to send to Gemini for mockups — the square-padded copy, so a wide
+     * wordmark isn't aspect-warped onto a product. Falls back to the display logo
+     * for kits generated before the split.
+     */
+    protected function logoGeminiInput(BrandKit $kit): ?array
+    {
+        return $this->imageInput($kit->logo_gemini_path)
+            ?? $this->imageInput($kit->logo_path)
+            ?? $this->imageInput($kit->logo_url);
+    }
+
     /** The captured QR-code image as an inline image (QR builder flow), if any. */
     protected function qrInput(BrandKit $kit): ?array
     {

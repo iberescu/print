@@ -30,7 +30,7 @@ class GenerateAdImage implements ShouldQueue
     public function handle(GeminiClient $gemini): void
     {
         $kit = BrandKit::where('key', $this->key)->first();
-        $logo = $kit ? $this->logoInput($kit) : null;
+        $logo = $kit ? $this->logoGeminiInput($kit) : null;
         if (! $kit || ! $logo) {
             return;
         }

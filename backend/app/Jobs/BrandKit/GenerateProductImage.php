@@ -39,7 +39,7 @@ class GenerateProductImage implements ShouldQueue
         // so the model places it as-is instead of trying to "improve"/redraw it.
         $inputs = $this->spec['inputs'] ?? ['logo'];
         $imgs = [];
-        if (in_array('logo', $inputs, true) && ($logo = $this->logoInput($kit))) {
+        if (in_array('logo', $inputs, true) && ($logo = $this->logoGeminiInput($kit))) {
             $imgs[] = $logo;
         }
         $hasQr = in_array('qr', $inputs, true);

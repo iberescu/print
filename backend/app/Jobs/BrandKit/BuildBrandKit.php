@@ -339,11 +339,18 @@ class BuildBrandKit implements ShouldQueue
         }
         // else: normal range — used exactly as supplied
 
+        // The tight, non-square display logo (max side 800, aspect kept) — used for the
+        // designer, the QR centre, and anywhere the real logo is shown.
         $path = "brandkits/{$this->key}/logo-hd.webp";
-        $disk->put($path, Img::squarePad($bytes));
+        $disk->put($path, $bytes);
+        // A square-padded copy used ONLY for Gemini product/ad mockups, so a wide wordmark
+        // isn't aspect-warped onto a mug. Never shown to the user directly.
+        $geminiPath = "brandkits/{$this->key}/logo-gemini-use.webp";
+        $disk->put($geminiPath, Img::squarePad($bytes));
         $kit->update([
             'logo_path'          => $path,
             'logo_url'           => $disk->url($path),
+            'logo_gemini_path'   => $geminiPath,
             'logo_original_path' => $origPath,
         ]);
     }
