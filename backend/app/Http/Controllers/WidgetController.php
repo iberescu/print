@@ -316,6 +316,46 @@ JS;
         return $path;
     }
 
+    /**
+     * Inline <style> class rules as presentation attributes. mutool ignores CSS, so
+     * Illustrator-exported SVGs (fills defined as `.stN{fill:#…}`) otherwise rasterise
+     * to a black silhouette; this applies the real colours.
+     */
+    private function inlineSvgStyles(string $svg): string
+    {
+        if (! preg_match_all('/<style[^>]*>(.*?)<\/style>/is', $svg, $blocks)) {
+            return $svg;
+        }
+        $rules = [];
+        foreach ($blocks[1] as $css) {
+            if (preg_match_all('/\.([A-Za-z0-9_-]+)\s*\{([^}]*)\}/', $css, $m, PREG_SET_ORDER)) {
+                foreach ($m as $r) {
+                    $rules[$r[1]] = trim($r[2]);
+                }
+            }
+        }
+        if (! $rules) {
+            return $svg;
+        }
+
+        return preg_replace_callback('/\bclass="([^"]+)"/', function ($mm) use ($rules) {
+            $attrs = '';
+            foreach (preg_split('/\s+/', trim($mm[1])) as $cls) {
+                foreach (explode(';', $rules[$cls] ?? '') as $decl) {
+                    if (! str_contains($decl, ':')) {
+                        continue;
+                    }
+                    [$prop, $val] = array_map('trim', explode(':', $decl, 2));
+                    if ($prop !== '' && $val !== '') {
+                        $attrs .= ' '.$prop.'="'.$val.'"';
+                    }
+                }
+            }
+
+            return $mm[0].$attrs;
+        }, $svg);
+    }
+
     private function isSvg(string $bytes): bool
     {
         $head = ltrim(substr($bytes, 0, 400));
@@ -325,6 +365,7 @@ JS;
 
     private function rasterizeSvg(string $svg): ?string
     {
+        $svg = $this->inlineSvgStyles($svg);
         $disk = Storage::disk('public');
         $tmpSvg = 'widget-logos/tmp-'.Str::uuid().'.svg';
         $tmpPng = str_replace('.svg', '.png', $tmpSvg);
