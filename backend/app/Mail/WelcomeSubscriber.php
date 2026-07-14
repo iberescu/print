@@ -12,7 +12,8 @@ class WelcomeSubscriber extends Mailable
 {
     use Queueable, SerializesModels;
 
-    public function __construct(public string $code, public int $percent)
+    /** @param  array<int,array<string,mixed>>  $products  up to 4 "your logo on" mockups */
+    public function __construct(public string $code, public int $percent, public array $products = [])
     {
     }
 
@@ -24,8 +25,9 @@ class WelcomeSubscriber extends Mailable
     public function content(): Content
     {
         return new Content(view: 'emails.welcome', with: [
-            'code'    => $this->code,
-            'percent' => $this->percent,
+            'code'     => $this->code,
+            'percent'  => $this->percent,
+            'products' => array_slice($this->products, 0, 4),
         ]);
     }
 }

@@ -16,7 +16,12 @@ class LogoOnProducts
     /** @return array<int,array<string,mixed>> */
     public static function forCurrentSession(): array
     {
-        $key = session('pqsg.key');
+        return static::forKey(session('pqsg.key'));
+    }
+
+    /** Same, for an explicit capture key (used by the delayed welcome email). */
+    public static function forKey(?string $key): array
+    {
         if (! $key) {
             return [];
         }

@@ -39,6 +39,12 @@ class AuthController extends Controller
     /** Redirect after a successful auth: the gated ?next= path, else the usual intended/account. */
     private function afterAuth(Request $request)
     {
+        // Welcome email, once per person, ~5 min out so the "your logo on" products
+        // captured during the tool→login flow have time to generate.
+        if ($user = $request->user()) {
+            \App\Jobs\SendWelcome::schedule($user->email, session('pqsg.key'), 5);
+        }
+
         $next = $this->nextUrl($request);
         $request->session()->forget('auth.next');
 

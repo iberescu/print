@@ -2,12 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Mail\WelcomeSubscriber;
-use App\Models\Coupon;
-use App\Models\Subscriber;
+use App\Jobs\SendWelcome;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Mail;
 
 class NewsletterController extends Controller
 {
@@ -19,24 +15,9 @@ class NewsletterController extends Controller
             'source' => ['nullable', 'string', 'max:40'],
         ]);
 
-        $subscriber = Subscriber::firstOrNew(['email' => strtolower(trim($data['email']))]);
-        if (! $subscriber->exists) {
-            $subscriber->source = $data['source'] ?? 'footer';
-            $subscriber->save();
-        }
-
-        // Send the welcome (with WELCOME20) at most once per subscriber.
-        if (! $subscriber->welcomed_at) {
-            $coupon = Coupon::where('code', 'WELCOME20')->where('active', true)->first();
-            if ($coupon) {
-                try {
-                    Mail::to($subscriber->email)->send(new WelcomeSubscriber($coupon->code, (int) $coupon->percent_off));
-                    $subscriber->forceFill(['welcomed_at' => now()])->save();
-                } catch (\Throwable $e) {
-                    Log::error('welcome email failed', ['email' => $subscriber->email, 'error' => $e->getMessage()]);
-                }
-            }
-        }
+        // Newsletter signups get the coupon straight away; any "your logo on" products
+        // in the session are included if already generated.
+        SendWelcome::schedule($data['email'], session('pqsg.key'), 0, $data['source'] ?? 'footer');
 
         if ($request->wantsJson()) {
             return response()->json(['ok' => true]);
