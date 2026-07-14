@@ -1,6 +1,6 @@
 <script setup>
 import { Head, Link, useForm } from '@inertiajs/vue3';
-import { computed } from 'vue';
+import { computed, nextTick } from 'vue';
 import StoreLayout from '../Layouts/StoreLayout.vue';
 import { money } from '../lib/format';
 
@@ -34,7 +34,12 @@ const taxAmount = computed(() => Math.round(taxable.value * taxRate.value) / 100
 const orderTotal = computed(() => Math.max(0, taxable.value + shippingCost.value + taxAmount.value));
 const remainingForFree = computed(() => Math.max(0, Number(props.summary.threshold || 0) - Number(props.summary.subtotal || 0)));
 
-const submit = () => form.post('/checkout');
+const submit = () => form.post('/checkout', {
+    preserveScroll: true,
+    // On mobile the Pay button is far down the form — bring any validation failure into view
+    // right where the user tapped, instead of a silent jump to the top.
+    onError: () => nextTick(() => document.getElementById('checkout-errors')?.scrollIntoView({ behavior: 'smooth', block: 'center' })),
+});
 const field = 'mt-1 w-full rounded-lg border border-paper-300 px-3 py-2.5 text-ink focus:border-brand-600 focus:outline-none focus:ring-2 focus:ring-brand-600/15';
 </script>
 
@@ -119,9 +124,9 @@ const field = 'mt-1 w-full rounded-lg border border-paper-300 px-3 py-2.5 text-i
                     <!-- delivery speed (per product) -->
                     <div class="space-y-3 border-t border-paper-200 pt-5">
                         <h2 class="font-display text-lg font-semibold">Delivery speed <span class="text-sm font-normal text-ink/50">— choose per product</span></h2>
-                        <div v-for="it in items" :key="it.id" class="flex items-center justify-between gap-3">
-                            <span class="min-w-0 flex-1 truncate text-sm text-ink/80">{{ it.name }} <span class="text-ink/40">×{{ it.quantity }}</span></span>
-                            <select v-model="form.itemMethods[it.id]" data-ship class="w-[62%] shrink-0 rounded-lg border border-paper-300 px-2.5 py-2 text-sm focus:border-brand-600 focus:outline-none">
+                        <div v-for="it in items" :key="it.id" class="flex flex-col gap-1.5 sm:flex-row sm:items-center sm:justify-between sm:gap-3">
+                            <span class="text-sm text-ink/80 sm:min-w-0 sm:flex-1 sm:truncate">{{ it.name }} <span class="text-ink/40">×{{ it.quantity }}</span></span>
+                            <select v-model="form.itemMethods[it.id]" data-ship class="w-full shrink-0 rounded-lg border border-paper-300 px-2.5 py-2 text-sm focus:border-brand-600 focus:outline-none sm:w-[62%]">
                                 <option v-for="m in methods" :key="m.code" :value="m.code">
                                     {{ m.label }} · {{ m.free_eligible ? 'FREE' : money(m.unit_price) }} · by {{ m.eta.replace('Delivery as soon as ', '').replace('*', '') }}
                                 </option>
@@ -131,6 +136,12 @@ const field = 'mt-1 w-full rounded-lg border border-paper-300 px-3 py-2.5 text-i
                         <p class="pt-1 text-[11px] text-ink/40">*Estimated delivery timeframe, not a guaranteed date.</p>
                     </div>
 
+                    <div v-if="Object.keys(form.errors).length" id="checkout-errors" class="rounded-lg bg-red-50 px-4 py-3 text-sm text-red-700">
+                        <p class="font-medium">Please fix the following:</p>
+                        <ul class="mt-1 list-disc space-y-0.5 pl-5">
+                            <li v-for="(msg, key) in form.errors" :key="key">{{ msg }}</li>
+                        </ul>
+                    </div>
                     <button :disabled="form.processing" class="w-full rounded-full bg-brand-600 px-6 py-3.5 font-semibold text-white transition hover:bg-brand-700 disabled:opacity-60">
                         {{ form.processing ? 'Processing…' : 'Pay ' + money(orderTotal) }}
                     </button>

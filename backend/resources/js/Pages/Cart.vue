@@ -1,6 +1,6 @@
 <script setup>
-import { ref } from 'vue';
-import { Head, Link, router } from '@inertiajs/vue3';
+import { computed, ref } from 'vue';
+import { Head, Link, router, usePage } from '@inertiajs/vue3';
 import StoreLayout from '../Layouts/StoreLayout.vue';
 import FreeShippingBar from '../Components/FreeShippingBar.vue';
 import { money } from '../lib/format';
@@ -39,6 +39,10 @@ const editNote = ref(null);
 
 const promo = ref('');
 const applying = ref(false);
+// The coupon action flashes its error, but the shared banner sits at the very top of the page —
+// on mobile the promo box is far below, so mirror the message right here at the input.
+const page = usePage();
+const promoError = computed(() => page.props.flash?.error ?? null);
 const applyPromo = () => {
     if (!promo.value.trim() || applying.value) return;
     applying.value = true;
@@ -75,7 +79,7 @@ const editHref = (it) => {
                 <div class="space-y-4">
                     <div v-for="it in items" :key="it.id" class="flex gap-4 rounded-2xl border border-paper-300 bg-white p-4">
                         <div class="h-24 w-32 shrink-0 overflow-hidden rounded-lg bg-paper-200">
-                            <img v-if="it.design?.preview || it.image" :src="it.design?.preview || it.image" :alt="it.name" class="h-full w-full object-cover" />
+                            <img v-if="it.design?.preview || it.image" :src="it.design?.preview || it.image" :alt="it.name" class="h-full w-full object-contain" />
                         </div>
                         <div class="flex flex-1 flex-col">
                             <div class="flex items-start justify-between gap-3">
@@ -109,10 +113,13 @@ const editHref = (it) => {
                 </div>
 
                 <aside class="h-max rounded-2xl border border-paper-300 bg-white p-5 lg:sticky lg:top-24">
-                    <form v-if="!summary.coupon" class="mb-4 flex gap-2" @submit.prevent="applyPromo">
-                        <input v-model="promo" type="text" placeholder="Promo code" class="w-full rounded-lg border border-paper-300 px-3 py-2 text-sm uppercase placeholder:normal-case focus:border-brand-400 focus:outline-none" />
-                        <button :disabled="applying" class="shrink-0 rounded-lg border border-brand-600 px-4 py-2 text-sm font-semibold text-brand-700 transition hover:bg-brand-50 disabled:opacity-60">Apply</button>
-                    </form>
+                    <div v-if="!summary.coupon" class="mb-4">
+                        <form class="flex gap-2" @submit.prevent="applyPromo">
+                            <input v-model="promo" type="text" placeholder="Promo code" class="w-full rounded-lg border px-3 py-2 text-sm uppercase placeholder:normal-case focus:outline-none" :class="promoError ? 'border-red-400 focus:border-red-500' : 'border-paper-300 focus:border-brand-400'" />
+                            <button :disabled="applying" class="shrink-0 rounded-lg border border-brand-600 px-4 py-2 text-sm font-semibold text-brand-700 transition hover:bg-brand-50 disabled:opacity-60">Apply</button>
+                        </form>
+                        <p v-if="promoError" class="mt-1.5 text-sm text-red-600">{{ promoError }}</p>
+                    </div>
                     <div v-else class="mb-4 flex items-center justify-between rounded-lg bg-emerald-50 px-3 py-2 text-sm text-emerald-800">
                         <span>Code <strong>{{ summary.coupon }}</strong> applied</span>
                         <button class="text-emerald-700 underline" @click="removePromo">Remove</button>

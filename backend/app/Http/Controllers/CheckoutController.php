@@ -49,13 +49,16 @@ class CheckoutController extends Controller
             'itemMethods'    => ['nullable', 'array'],
             'itemMethods.*'  => ['string', 'max:40'],
             'billingSame'    => ['boolean'],
-            'billingName'    => [$billingRequired, 'string', 'max:120'],
+            // 'nullable' is REQUIRED here: when billingSame is true the client still sends these
+            // fields empty, and ConvertEmptyStringsToNull turns them into null — without 'nullable'
+            // the 'string' rule fails ("must be a string") on hidden fields, silently blocking checkout.
+            'billingName'    => ['nullable', $billingRequired, 'string', 'max:120'],
             'billingCompany' => ['nullable', 'string', 'max:120'],
-            'billingAddress' => [$billingRequired, 'string', 'max:200'],
-            'billingCity'    => [$billingRequired, 'string', 'max:80'],
-            'billingState'   => [$billingRequired, 'string', 'max:60'],
-            'billingPostal'  => [$billingRequired, 'string', 'max:20'],
-            'billingCountry' => [$billingRequired, 'string', 'max:60'],
+            'billingAddress' => ['nullable', $billingRequired, 'string', 'max:200'],
+            'billingCity'    => ['nullable', $billingRequired, 'string', 'max:80'],
+            'billingState'   => ['nullable', $billingRequired, 'string', 'max:60'],
+            'billingPostal'  => ['nullable', $billingRequired, 'string', 'max:20'],
+            'billingCountry' => ['nullable', $billingRequired, 'string', 'max:60'],
         ]);
 
         $shippingAddr = [
