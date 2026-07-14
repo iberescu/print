@@ -223,11 +223,11 @@ class BrandKitSpec
             'slug'       => 'qr-code-business-cards',
             'decoration' => 'custom',
             'inputs'     => ['qr'],
-            'prompt'     => 'A clean, print-ready studio mockup of professional business cards for {company} on a '
-                .'light natural-wood table, photographed straight down: show TWO cards — one face-up showing the '
-                .'FRONT (company name "{company}", {url} and a short call to action), and one showing its BACK with '
-                .'the provided QR code placed LARGE and CENTRED so it is the clear focus of the back. Tasteful, '
-                .'minimal, on-brand layout; realistic lighting; no clutter.',
+            'prompt'     => 'A clean, print-ready studio mockup of a SINGLE plain WHITE business card lying flat on a '
+                .'light natural-wood table, photographed straight down (top-down). Place the provided QR code in the '
+                .'exact CENTRE of the card — centred horizontally and vertically — at a tasteful size with even white '
+                .'margins around it. The card is otherwise blank white with NO other text or graphics. Realistic soft '
+                .'lighting, no clutter.',
         ];
     }
 
