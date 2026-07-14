@@ -58,6 +58,7 @@ class GenerateAdImage implements ShouldQueue
             $images = [$logo];
         }
 
+        $images = array_map(fn ($i) => $this->capForGemini($i), $images);
         $img = $gemini->generateImage($prompt, $images, config('shop.internal_engine.ad_image_model'));
 
         $path = "brandkits/{$this->key}/ad-{$this->ad['key']}.webp";

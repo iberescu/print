@@ -3,12 +3,34 @@
 namespace App\Jobs\BrandKit;
 
 use App\Models\BrandKit;
+use App\Support\Img;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
 
 /** Load a stored public-disk path or an absolute URL as a Gemini inline image. */
 trait ReadsImages
 {
+    /**
+     * Cap an inline image to a max WIDTH (default 800px) before sending it to Gemini —
+     * smaller uploads transfer and get processed noticeably faster. Logos/QRs stay well
+     * above the ~500px the model needs to reproduce them faithfully. Returns webp.
+     *
+     * @param  array{mime:string,data:string}|null  $input
+     * @return array{mime:string,data:string}|null
+     */
+    protected function capForGemini(?array $input, int $maxWidth = 800): ?array
+    {
+        if (! $input) {
+            return null;
+        }
+        $bytes = base64_decode($input['data'], true);
+        if ($bytes === false || $bytes === '') {
+            return $input;
+        }
+
+        return ['mime' => 'image/webp', 'data' => base64_encode(Img::webp($bytes, $maxWidth))];
+    }
+
     /** @return array{mime:string,data:string}|null */
     protected function imageInput(?string $pathOrUrl): ?array
     {

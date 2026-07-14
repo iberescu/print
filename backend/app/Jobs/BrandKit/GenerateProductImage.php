@@ -82,6 +82,8 @@ class GenerateProductImage implements ShouldQueue
         }
         $big = $hasQr || (bool) $shot;
 
+        // Keep every upload small (≤800px wide) so Gemini receives and processes them fast.
+        $imgs = array_map(fn ($i) => $this->capForGemini($i), $imgs);
         $img = $gemini->generateImage($prompt, $imgs, config('shop.internal_engine.image_model'));
 
         $path = "brandkits/{$this->key}/product-{$this->spec['key']}.webp";
