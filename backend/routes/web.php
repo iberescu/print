@@ -42,6 +42,14 @@ Route::post('/cart/coupon/remove', [CartController::class, 'removeCoupon'])->nam
 Route::post('/subscribe', [\App\Http\Controllers\NewsletterController::class, 'store'])
     ->middleware('throttle:8,1')->name('subscribe');
 
+// Embeddable "see your logo on products" widget (distribution: partner sites → our leads).
+// Backend call returns an id; frontend renders by id. See WidgetController.
+Route::post('/api/widget', [\App\Http\Controllers\WidgetController::class, 'create'])->middleware('throttle:30,1,widget-create');
+Route::get('/api/widget/{id}', [\App\Http\Controllers\WidgetController::class, 'products'])->middleware('throttle:240,1,widget-feed');
+Route::get('/widget.js', [\App\Http\Controllers\WidgetController::class, 'loader'])->name('widget.js');
+Route::get('/widget/{id}', [\App\Http\Controllers\WidgetController::class, 'frame'])->name('widget.frame');
+Route::get('/w/{id}', [\App\Http\Controllers\WidgetController::class, 'land'])->name('widget.land');
+
 // Forced upsell steps before the cart (multi-step upsell + card-holder cross-sell)
 Route::get('/upsell', [UpsellController::class, 'show'])->name('upsell.show');
 Route::post('/upsell/add/{product}', [UpsellController::class, 'add'])->name('upsell.add');

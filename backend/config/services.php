@@ -57,4 +57,10 @@ return [
         'label_cart'        => env('GOOGLE_ADS_LABEL_CART'),
     ],
 
+    // Optional IP→company intelligence for the embeddable widget's IP mode (IPinfo).
+    // Without a token we fall back to reverse DNS only.
+    'ipinfo' => [
+        'token' => env('IPINFO_TOKEN'),
+    ],
+
 ];
