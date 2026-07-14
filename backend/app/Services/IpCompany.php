@@ -20,22 +20,23 @@ class IpCompany
             return null;
         }
 
-        // 1. Reverse DNS — cheap, occasionally identifies a corporate host.
+        // 1. Local reverse DNS — cheap; a corporate PTR gives the domain directly.
         $host = @gethostbyaddr($ip);
-        if ($host && $host !== $ip) {
-            $d = $this->registrable($host);
-            if ($d && ! preg_match(self::GENERIC, $d)) {
-                return $d;
-            }
+        if ($host && $host !== $ip && ($d = $this->fromHost($host))) {
+            return $d;
         }
 
-        // 2. IPinfo company lookup (paid add-on) when configured.
+        // 2. IPinfo — a better reverse DNS (hostname) + company.domain on paid plans.
         if ($token = config('services.ipinfo.token')) {
             try {
                 $j = Http::timeout(4)->acceptJson()->get("https://ipinfo.io/{$ip}", ['token' => $token])->json();
-                $d = $j['company']['domain'] ?? ($j['domain'] ?? null);
-                if (is_string($d) && $d !== '' && ! preg_match(self::GENERIC, $d)) {
-                    return strtolower($d);
+
+                $company = $j['company']['domain'] ?? null; // paid "company" data, if enabled
+                if (is_string($company) && $company !== '' && ! preg_match(self::GENERIC, $company)) {
+                    return strtolower($company);
+                }
+                if (! empty($j['hostname']) && ($d = $this->fromHost($j['hostname']))) {
+                    return $d;
                 }
             } catch (\Throwable $e) {
                 // best-effort
@@ -45,11 +46,15 @@ class IpCompany
         return null;
     }
 
-    /** Last two labels of a hostname → the registrable domain (rough; fine for filtering). */
-    private function registrable(string $host): ?string
+    /** A hostname → its registrable company domain, unless it's ISP/cloud infra. */
+    private function fromHost(string $host): ?string
     {
         $parts = explode('.', strtolower(trim($host, '.')));
+        if (count($parts) < 2) {
+            return null;
+        }
+        $domain = implode('.', array_slice($parts, -2));
 
-        return count($parts) >= 2 ? implode('.', array_slice($parts, -2)) : null;
+        return preg_match(self::GENERIC, $domain) ? null : $domain;
     }
 }

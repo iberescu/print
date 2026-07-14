@@ -175,12 +175,17 @@ JS;
     }
 
     /**
-     * A company logo from its domain: the site's apple-touch-icon (clean, ~180px+),
-     * else Google's favicon service (up to 256px). Small marks get super-resolved by
-     * the brand-kit pipeline (enhanceLogo).
+     * A company logo from its domain, best quality first:
+     *   1. parse the homepage HTML for a real logo (JSON-LD logo, apple-touch-icon,
+     *      a "logo" <img>, og:image),
+     *   2. the well-known /apple-touch-icon.png,
+     *   3. Google's favicon service (small marks get super-resolved by enhanceLogo).
      */
     private function logoForDomain(string $domain): ?string
     {
+        if ($p = $this->logoFromHtml($domain)) {
+            return $p;
+        }
         foreach (["https://{$domain}/apple-touch-icon.png", "https://{$domain}/apple-touch-icon-precomposed.png"] as $u) {
             if ($p = $this->fetchImage($u)) {
                 return $p;
@@ -188,6 +193,93 @@ JS;
         }
 
         return $this->fetchImage("https://www.google.com/s2/favicons?domain={$domain}&sz=256");
+    }
+
+    /** Fetch the homepage and pull the best logo candidate out of the markup. */
+    private function logoFromHtml(string $domain): ?string
+    {
+        try {
+            $r = Http::timeout(8)->withHeaders([
+                'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124 Safari/537.36',
+                'Accept'     => 'text/html',
+            ])->get("https://{$domain}");
+            if (! $r->successful()) {
+                return null;
+            }
+            $html = $r->body();
+            $base = (string) ($r->effectiveUri() ?? "https://{$domain}");
+        } catch (\Throwable $e) {
+            return null;
+        }
+
+        $cands = [];
+        // Organization logo in JSON-LD (string or {url})
+        if (preg_match('/"logo"\s*:\s*"([^"]+)"/i', $html, $m)) {
+            $cands[] = $m[1];
+        }
+        if (preg_match('/"logo"\s*:\s*\{[^}]*?"url"\s*:\s*"([^"]+)"/i', $html, $m)) {
+            $cands[] = $m[1];
+        }
+        // apple-touch-icon <link> (both attribute orders)
+        array_push($cands, ...$this->linkHrefs($html, 'apple-touch-icon'));
+        // an <img> that looks like the logo
+        if (preg_match_all('/<img\b[^>]*>/i', $html, $imgs)) {
+            foreach ($imgs[0] as $tag) {
+                if (preg_match('/logo/i', $tag) && preg_match('/\bsrc=["\']([^"\']+)["\']/i', $tag, $s)) {
+                    $cands[] = $s[1];
+                }
+            }
+        }
+        // og:image (often a brand image), then plain icons
+        if (preg_match('/<meta[^>]+property=["\']og:image["\'][^>]+content=["\']([^"\']+)["\']/i', $html, $m)
+            || preg_match('/<meta[^>]+content=["\']([^"\']+)["\'][^>]+property=["\']og:image["\']/i', $html, $m)) {
+            $cands[] = $m[1];
+        }
+        array_push($cands, ...$this->linkHrefs($html, 'icon'));
+
+        foreach ($cands as $c) {
+            if (($abs = $this->absUrl($c, $base, $domain)) && ($p = $this->fetchImage($abs))) {
+                return $p;
+            }
+        }
+
+        return null;
+    }
+
+    /** All href values of <link rel="…{keyword}…"> (handles rel/href in either order). */
+    private function linkHrefs(string $html, string $keyword): array
+    {
+        $out = [];
+        if (preg_match_all('/<link\b[^>]*>/i', $html, $links)) {
+            foreach ($links[0] as $tag) {
+                if (preg_match('/\brel=["\'][^"\']*'.preg_quote($keyword, '/').'[^"\']*["\']/i', $tag)
+                    && preg_match('/\bhref=["\']([^"\']+)["\']/i', $tag, $h)) {
+                    $out[] = $h[1];
+                }
+            }
+        }
+
+        return $out;
+    }
+
+    /** Resolve a possibly-relative asset URL against the page. */
+    private function absUrl(string $u, string $base, string $domain): ?string
+    {
+        $u = trim(html_entity_decode($u));
+        if ($u === '' || str_starts_with($u, 'data:')) {
+            return null;
+        }
+        if (str_starts_with($u, '//')) {
+            return 'https:'.$u;
+        }
+        if (preg_match('#^https?://#i', $u)) {
+            return $u;
+        }
+        if (str_starts_with($u, '/')) {
+            return 'https://'.$domain.$u;
+        }
+
+        return rtrim(preg_replace('#/[^/]*$#', '/', $base) ?: "https://{$domain}/", '/').'/'.ltrim($u, '/');
     }
 
     private function fetchImage(string $url): ?string
