@@ -526,8 +526,9 @@ function next() {
                     </div>
                 </div>
 
-                <!-- generated GOOGLE SEARCH ads (keywords from the brand-profile API) -->
-                <div>
+                <!-- generated GOOGLE SEARCH ads (keywords from the brand-profile API);
+                     without a website there's no landing page for search ads either -->
+                <div v-if="!websiteOffer">
                     <div class="mb-3">
                         <div class="flex flex-wrap items-center gap-x-3 gap-y-1">
                             <h3 class="font-display text-xl font-bold text-navy sm:text-2xl">Your Google Search ads</h3>

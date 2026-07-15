@@ -38,12 +38,13 @@ test('no-URL capture gets the $10 website offer with a generated preview', async
     // verify the step marker advanced after each click, retrying once.
     const toStep = async (n) => {
         for (let attempt = 0; attempt < 2; attempt++) {
-            await clickContinue(page);
             try {
+                await clickContinue(page); // can itself time out when the click is swallowed (no POST fires)
                 await expect(page.getByText(new RegExp(`${n} of 4`, 'i'))).toBeVisible({ timeout: 8000 });
                 return;
             } catch { /* click swallowed — try once more */ }
         }
+        await clickContinue(page);
         await expect(page.getByText(new RegExp(`${n} of 4`, 'i'))).toBeVisible({ timeout: 8000 });
     };
     await toStep(2); // accessories
@@ -57,6 +58,9 @@ test('no-URL capture gets the $10 website offer with a generated preview', async
     await expect(page.getByText(/free website/i).first()).toBeVisible();
     await expect(page.getByText(/lifetime hosting/i).first()).toBeVisible();
     expect(await page.locator('svg[data-mac]').count()).toBe(1);
+    // the display-ads AND search-ads example sections need a site — both gone
+    await expect(page.getByText(/your google display ads/i)).toHaveCount(0);
+    await expect(page.getByText(/your google search ads/i)).toHaveCount(0);
 
     // the generated homepage streams into the MacBook screen (flash model, ~15s;
     // generous margin for queue depth)
@@ -69,7 +73,9 @@ test('no-URL capture gets the $10 website offer with a generated preview', async
     await page.getByRole('button', { name: /add my website/i }).click();
     await expect(page.getByText(/✓ added to your order — \$10/i)).toBeVisible();
 
-    await clickContinue(page);
+    try {
+        await clickContinue(page);
+    } catch { await clickContinue(page); } // same swallowed-click retry on the way out
     await page.waitForURL('**/cart');
     await expect(page.getByText(/free \.com domain/i).first()).toBeVisible();
     await expect(page.getByText('$10.00').first()).toBeVisible();
