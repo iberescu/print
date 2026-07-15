@@ -86,7 +86,7 @@ class GenerateProductImage implements ShouldQueue
         // product base" mockups. Everything else — the website-styled pieces (brochure/flyer,
         // logo + screenshot) and the text-heavy direct layouts (letterhead, review sign) — uses
         // the fuller flash model. (Display ads run flash too, in GenerateAdImage.) Shape-BUILDING
-        // pieces (infinity mirror, hexagon wall, coffee stencil) set full_model: they must
+        // pieces (hexagon wall, coffee stencil) set full_model: they must
         // reproduce the logo's silhouette, which the lite tier fumbles — flash for those.
         $useLite = $baseInput && ! ($this->spec['use_site_shot'] ?? false) && empty($this->spec['full_model']);
         $model = $useLite
@@ -112,7 +112,7 @@ class GenerateProductImage implements ShouldQueue
     /**
      * The base image sent to Gemini as image 1, if this product has one — either a
      * pre-generated blank product base (composited with the logo) or a style TEMPLATE
-     * (e.g. the infinity mirror, where image 1 shows the effect to reproduce). Presence
+     * (e.g. the hexagon LED wall, where image 1 shows the effect to reproduce). Presence
      * of the file drives the base flow; the accompanying place_prompt says how to use it.
      */
     private function baseInput(): ?array

@@ -65,40 +65,6 @@ class BrandKitSpec
                     .'page left blank and white — do NOT fill the body with paragraphs of text or gibberish words.',
             ],
             [
-                'key' => 'infinity', 'label' => 'Infinity-mirror LED', 'slug' => 'led-infinity-mirror', 'decoration' => 'custom', 'full_model' => true,
-                // A style TEMPLATE (resources/product-bases/infinity.webp) is sent to Gemini as image 1
-                // so it reproduces the real infinity-mirror EFFECT, not just from the text prompt.
-                'place_prompt' => 'Image 1 is the product mockup photo of an infinity-mirror LED sign mounted on a '
-                    .'wall. Image 2 is a brand logo. Do NOT modify the photo — keep the wall, its tone and texture, '
-                    .'the mounting, the hanging power cord, the camera angle, framing, lighting and the soft glow '
-                    .'halo EXACTLY as in image 1 — and change ONLY the sign itself: replace image 1\'s sign (its '
-                    .'letters and outline disappear entirely) with a sign whose outer contour is DIE-CUT to the '
-                    .'logo in image 2, built with the SAME materials and effect as image 1: glossy 3D edges/returns, '
-                    .'a two-way mirror face, and the infinity-mirror tunnel — the logo shape\'s OWN outline repeated '
-                    .'as many CRISP, evenly-spaced concentric neon outlines receding into deep black infinite depth. '
-                    .'The neon colour follows the BRAND\'s colours (matching the logo in image 2), not image 1\'s '
-                    .'colour. If the logo has a distinct icon/symbol alongside text, use ONLY that icon/shape and '
-                    .'OMIT the wordmark; only a pure text wordmark uses the text. Same size and position on the '
-                    .'wall as image 1\'s sign. Everything else in the photo stays untouched. Photorealistic; output '
-                    .'only the photo, no watermark, no extra text.',
-                'prompt' => 'Ultra-realistic 3D infinity-mirror sign die-cut to the shape of the provided '
-                    .'logo. IMPORTANT: if the logo has a distinct icon, symbol or graphic mark alongside '
-                    .'text, use ONLY that icon/shape and OMIT the text/wordmark entirely; only if the logo '
-                    .'is purely a text wordmark with no icon, use the text. It is a channel-letter style '
-                    .'sign whose outer contour hugs that shape — NOT a rectangle, square or framed box. '
-                    .'Glossy black 3D sides follow the outline; a two-way mirror face reveals an '
-                    .'infinity-mirror tunnel INSIDE the shape: the shape\'s OWN OUTLINE repeated as many '
-                    .'CRISP, sharp, evenly-spaced concentric neon outlines that shrink and recede straight '
-                    .'back into deep black infinite depth — a clean tunnel built from the shape itself, NOT '
-                    .'random wavy or diffuse lines. Bright, well-defined neon LED tube lighting in the '
-                    .'brand\'s own colours (matching the logo) on the faces, with a vivid glowing rim-light '
-                    .'along the raised 3D edges/returns and a soft neon halo on the clean white wall behind. '
-                    .'Floating, mounted on a clean white wall in a bright room, premium acrylic and aluminium, '
-                    .'ray-traced reflections, clean bright lighting, hyper-detailed, luxury modern product '
-                    .'photography, '
-                    .'photorealistic, 8K.',
-            ],
-            [
                 // image-only showcase card (slug maps to no real product, like the review stand).
                 // A style TEMPLATE (resources/product-bases/hexled.webp) is sent as image 1; the
                 // template flow auto-selects the LITE image model.
@@ -398,7 +364,7 @@ class BrandKitSpec
 
     /**
      * Whether this product uses the pre-generated base + runtime logo-composite flow
-     * (fixed-shape merch). Shape-derived pieces (die-cut sticker, infinity mirror),
+     * (fixed-shape merch). Shape-derived pieces (die-cut sticker, hexagon LED wall),
      * website-styled pieces and the QR/text layouts keep the direct one-shot generation.
      */
     public static function hasBase(array $p): bool
