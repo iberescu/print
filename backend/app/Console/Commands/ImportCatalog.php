@@ -294,7 +294,20 @@ class ImportCatalog extends Command
                 if (! is_numeric($f['position'] ?? null)) {
                     continue;
                 }
-                $foldLines[] = ['label' => 'Fold', 'orientation' => ($f['orientation'] ?? 'vertical') === 'horizontal' ? 'horizontal' : 'vertical', 'position' => round((float) $f['position'], 2)];
+                $vertical = ($f['orientation'] ?? 'vertical') !== 'horizontal';
+                $pos = (float) $f['position'];
+                // Crawl artifact: some metric surfaces carry fold positions in
+                // inches ("6.05" on a 307 mm sheet). A fold hugging the edge
+                // (<5% of its axis) that lands plausibly when read as inches
+                // IS inches — convert it so downstream fractions are sane.
+                $axis = $vertical ? $w : $h;
+                if (in_array($unit, ['mm', 'cm'], true) && $axis > 0 && $pos / $axis < 0.05) {
+                    $conv = $pos * ($unit === 'mm' ? 25.4 : 2.54);
+                    if ($conv / $axis >= 0.05 && $conv / $axis <= 0.98) {
+                        $pos = $conv;
+                    }
+                }
+                $foldLines[] = ['label' => 'Fold', 'orientation' => $vertical ? 'vertical' : 'horizontal', 'position' => round($pos, 2)];
             }
         } elseif ($folded) {
             $vertical = ($s['foldOrientation'] ?? 'vertical') !== 'horizontal';

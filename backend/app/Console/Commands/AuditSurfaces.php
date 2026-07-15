@@ -100,6 +100,10 @@ class AuditSurfaces extends Command
             $pos = (float) ($f['position'] ?? -1);
             if ($pos <= 0 || $pos >= $limit) {
                 $this->add('ERROR', $where, "fold at {$pos}{$s->unit} outside the {$limit}{$s->unit} surface");
+            } elseif ($pos < 0.05 * $limit || $pos > 0.95 * $limit) {
+                // a fold 5% from the edge is almost always a unit mix-up
+                // (inch positions on a metric surface), not a real crease
+                $this->add('WARN', $where, "fold at {$pos}{$s->unit} hugs the edge of the {$limit}{$s->unit} surface — unit mix-up?");
             }
         }
         foreach ($s->no_print_areas ?? [] as $z) {

@@ -69,6 +69,11 @@ class PrintSpec
      * Replace a spec's bleed/safety with another surface's values (unit-converted) —
      * the die-cut template's measured margins beat a size value's print-standard
      * defaults. Fold/no-print positions ride on the bleed offset, so shift them too.
+     *
+     * A spec that carries no fold/no-print data of its own (the parsed-size-label
+     * path hardcodes both empty) inherits the guide surface's fold lines and
+     * no-print zones, projected onto the trim by axis fraction — the same
+     * non-uniform scaling the die-cut path gets in the editor.
      */
     public static function withGuidesFrom(array $spec, Surface $guides): array
     {
@@ -93,7 +98,92 @@ class PrintSpec
             return $f;
         }, $spec['fold']);
 
+        if (! $spec['fold'] && ! empty($guides->fold_lines)) {
+            $spec['fold'] = self::projectedFolds($guides, $spec);
+        }
+        if (! $spec['noPrint'] && ! empty($guides->no_print_areas)) {
+            $spec['noPrint'] = self::projectedNoPrint($guides, $spec);
+        }
+
         return $spec;
+    }
+
+    /**
+     * True when the guide surface and the resolved trim disagree in orientation —
+     * the same sheet described rotated 90° (s-11x8.5in-fold under an 8.5"×11"
+     * selection). Square donors/trims never rotate.
+     */
+    private static function rotated(Surface $s, array $spec): bool
+    {
+        $sw = (float) $s->width;
+        $sh = (float) $s->height;
+
+        return $sw !== $sh && $spec['trimW'] !== $spec['trimH']
+            && ($sw > $sh) !== ($spec['trimW'] > $spec['trimH']);
+    }
+
+    /**
+     * Fold lines from a guide surface, projected onto the spec's trim box by
+     * axis fraction. On a rotated donor a vertical fold becomes horizontal —
+     * a fold across the sheet's long edge stays across the long edge.
+     */
+    private static function projectedFolds(Surface $s, array $spec): array
+    {
+        $rot = self::rotated($s, $spec);
+        $w = max((float) $s->width, 0.001);
+        $h = max((float) $s->height, 0.001);
+
+        $out = [];
+        foreach ($s->fold_lines as $f) {
+            $vertical = (($f['orientation'] ?? 'vertical') !== 'horizontal');
+            $frac = (float) ($f['position'] ?? 0) / ($vertical ? $w : $h);
+            if ($frac <= 0 || $frac >= 1) {
+                continue; // out-of-surface data — surfaces:audit flags these
+            }
+            if ($rot) {
+                $vertical = ! $vertical;
+            }
+            $out[] = [
+                'orientation' => $vertical ? 'vertical' : 'horizontal',
+                'pos'         => $spec['bleed'] + (int) round($frac * ($vertical ? $spec['trimW'] : $spec['trimH'])),
+                'label'       => $f['label'] ?? 'Fold',
+            ];
+        }
+
+        return $out;
+    }
+
+    /**
+     * No-print zones projected the same way. Rotation swaps the axes without
+     * mirroring — today's real zones (pole sleeves, hems) are defined from the
+     * same edge in both descriptions, and the flip direction isn't recoverable
+     * from the data anyway.
+     */
+    private static function projectedNoPrint(Surface $s, array $spec): array
+    {
+        $rot = self::rotated($s, $spec);
+        $w = max((float) $s->width, 0.001);
+        $h = max((float) $s->height, 0.001);
+
+        $out = [];
+        foreach ($s->no_print_areas as $z) {
+            $f = [
+                'x' => (float) ($z['x'] ?? 0) / $w, 'y' => (float) ($z['y'] ?? 0) / $h,
+                'w' => (float) ($z['w'] ?? 0) / $w, 'h' => (float) ($z['h'] ?? 0) / $h,
+            ];
+            if ($rot) {
+                $f = ['x' => $f['y'], 'y' => $f['x'], 'w' => $f['h'], 'h' => $f['w']];
+            }
+            $out[] = [
+                'x'     => $spec['bleed'] + (int) round($f['x'] * $spec['trimW']),
+                'y'     => $spec['bleed'] + (int) round($f['y'] * $spec['trimH']),
+                'w'     => (int) round($f['w'] * $spec['trimW']),
+                'h'     => (int) round($f['h'] * $spec['trimH']),
+                'label' => $z['label'] ?? 'No print',
+            ];
+        }
+
+        return $out;
     }
 
     /**
