@@ -645,6 +645,34 @@ async function downscaleLogo(dataUrl, max = 1024) {
     return c.toDataURL('image/png');
 }
 
+// Background offload: swap a placed image's multi-megabyte data-URL for a
+// server URL. Placement stays instant (the data-URL renders immediately);
+// once the upload lands, the canvas object silently points at the URL — so
+// the Review POST (design JSON + brand.logo) carries no image bytes and the
+// journey to Review stays fast even on a phone uplink. On any failure the
+// data-URL simply stays (the old behaviour).
+async function offloadToUrl(img) {
+    try {
+        const src = img.getSrc?.() || '';
+        if (!src.startsWith('data:image/') || src.startsWith('data:image/svg')) return;
+        const blob = await (await fetch(src)).blob();
+        const token = decodeURIComponent((document.cookie.match(/XSRF-TOKEN=([^;]+)/) || [])[1] || '');
+        const form = new FormData();
+        form.append('file', blob, 'canvas.png');
+        const r = await fetch('/design/asset', {
+            method: 'POST',
+            body: form,
+            credentials: 'same-origin',
+            headers: { 'X-XSRF-TOKEN': token, Accept: 'application/json' },
+        });
+        if (!r.ok) return;
+        const { url } = await r.json();
+        if (!url || !canvas.getObjects().includes(img)) return; // removed/replaced meanwhile
+        await img.setSrc(url, { crossOrigin: 'anonymous' });
+        canvas.requestRenderAll();
+    } catch (e) { /* keep the data-URL */ }
+}
+
 // Swap `target` for the image at `url`, fitted inside the old logo's box.
 async function swapLogoWith(url, target) {
     try {
@@ -659,6 +687,7 @@ async function swapLogoWith(url, target) {
         if (idx > -1 && typeof canvas.moveObjectTo === 'function') canvas.moveObjectTo(img, idx);
         canvas.setActiveObject(img);
         canvas.requestRenderAll();
+        offloadToUrl(img); // background — data-URL renders now, URL replaces it when uploaded
     } catch (err) { /* unloadable image — keep the old logo */ }
 }
 
@@ -781,6 +810,7 @@ async function onFile(e) {
         img.scaleToWidth(150); img.set({ left: bleed + 560, top: bleed + 52, rmpRole: 'logo', hoverCursor: 'pointer' });
     }
     canvas.add(img); canvas.setActiveObject(img); canvas.requestRenderAll();
+    offloadToUrl(img); // background — keeps the design JSON free of image bytes
     e.target.value = '';
 }
 
@@ -832,6 +862,14 @@ function logoDataURL(o) {
     const el = o._originalElement || o._element;
     const src = (o.getSrc?.() || el?.src || '');
     if (src.startsWith('data:')) return src; // the uploaded/original file, full-res
+    // Same-origin URL (an offloaded upload, a logo-maker PNG, a template asset):
+    // hand the server the URL — it fetches the same pixels itself. Re-rasterising
+    // here used to push megabytes of PNG back into the review POST, defeating the
+    // background offload and blowing the brand.logo cap on big uploads.
+    try {
+        const u = new URL(src, location.href);
+        if (u.origin === location.origin) return u.href;
+    } catch (e) { /* not a URL — fall through */ }
     const natW = el?.naturalWidth || el?.width || 0;
     const dispW = (o.width || 0) * Math.abs(o.scaleX || 1);
     const mult = (natW && dispW) ? Math.min(8, Math.max(1, natW / dispW)) : 1;

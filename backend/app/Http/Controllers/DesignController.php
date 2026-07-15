@@ -159,6 +159,23 @@ class DesignController extends Controller
         return redirect()->route('design.review', $product);
     }
 
+    /**
+     * Background upload of an image the buyer placed on the canvas. The editor
+     * swaps the object's multi-megabyte data-URL for this URL as soon as the
+     * upload lands, so the Review POST (design JSON + brand.logo) carries no
+     * image bytes and stays fast on slow uplinks. Pure storage — deliberately
+     * NO capture/upsell side effects (that all keys off Review, in the queue).
+     */
+    public function asset(Request $request)
+    {
+        $request->validate([
+            'file' => ['required', 'file', 'mimes:png,jpg,jpeg,webp,gif', 'max:15360'],
+        ]);
+        $path = $request->file('file')->store('uploads/canvas/'.now()->format('Ym'), 'public');
+
+        return response()->json(['url' => url(Storage::disk('public')->url($path))]);
+    }
+
     /** Debounced autosave from the editor — same storage as Review, so the
      *  design shows in "My designs" without ever reaching the Review step. */
     public function autosave(Product $product, Request $request)

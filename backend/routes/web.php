@@ -24,6 +24,7 @@ Route::get('/product/{product}', [StorefrontController::class, 'product'])->name
 
 // Online designer (req 8/9/18)
 Route::get('/design/{product}/templates', [DesignController::class, 'templates'])->name('design.templates');
+Route::post('/design/asset', [DesignController::class, 'asset'])->middleware('throttle:40,1,design-asset')->name('design.asset');
 Route::post('/design/{product}/review', [DesignController::class, 'review'])->name('design.review.stash');
 Route::post('/design/{product}/autosave', [DesignController::class, 'autosave'])->middleware('throttle:30,1,design-autosave')->name('design.autosave');
 Route::get('/design/{product}/review', [DesignController::class, 'showReview'])->name('design.review');

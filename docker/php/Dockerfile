@@ -14,6 +14,16 @@ RUN apk add --no-cache \
     && docker-php-ext-enable redis \
     && apk del .build-deps
 
+# Review posts a design JSON that may still carry image data-URLs (the editor
+# offloads placed images to /design/asset in the background, but a buyer can hit
+# Review before an offload finishes) — PHP's default 8M post cap silently drops
+# such bodies. nginx already allows 64M.
+RUN { \
+        echo 'post_max_size = 48M'; \
+        echo 'upload_max_filesize = 24M'; \
+        echo 'memory_limit = 512M'; \
+    } > /usr/local/etc/php/conf.d/zz-runmyprint.ini
+
 # Composer from official image
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
