@@ -85,8 +85,10 @@ class GenerateProductImage implements ShouldQueue
         // Model tier: the faster LITE model handles the simple "logo/QR composited onto a fixed
         // product base" mockups. Everything else — the website-styled pieces (brochure/flyer,
         // logo + screenshot) and the text-heavy direct layouts (letterhead, review sign) — uses
-        // the fuller flash model. (Display ads run flash too, in GenerateAdImage.)
-        $useLite = $baseInput && ! ($this->spec['use_site_shot'] ?? false);
+        // the fuller flash model. (Display ads run flash too, in GenerateAdImage.) Shape-BUILDING
+        // pieces (infinity mirror, hexagon wall, coffee stencil) set full_model: they must
+        // reproduce the logo's silhouette, which the lite tier fumbles — flash for those.
+        $useLite = $baseInput && ! ($this->spec['use_site_shot'] ?? false) && empty($this->spec['full_model']);
         $model = $useLite
             ? config('shop.internal_engine.lite_image_model')
             : config('shop.internal_engine.image_model');

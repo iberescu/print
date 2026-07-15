@@ -65,7 +65,7 @@ class BrandKitSpec
                     .'page left blank and white — do NOT fill the body with paragraphs of text or gibberish words.',
             ],
             [
-                'key' => 'infinity', 'label' => 'Infinity-mirror LED', 'slug' => 'led-infinity-mirror', 'decoration' => 'custom',
+                'key' => 'infinity', 'label' => 'Infinity-mirror LED', 'slug' => 'led-infinity-mirror', 'decoration' => 'custom', 'full_model' => true,
                 // A style TEMPLATE (resources/product-bases/infinity.webp) is sent to Gemini as image 1
                 // so it reproduces the real infinity-mirror EFFECT, not just from the text prompt.
                 'place_prompt' => 'Image 1 is a PHOTOGRAPHIC EXAMPLE of a finished infinity-mirror LED sign — use it '
@@ -95,6 +95,67 @@ class BrandKitSpec
                     .'ray-traced reflections, clean bright lighting, hyper-detailed, luxury modern product '
                     .'photography, '
                     .'photorealistic, 8K.',
+            ],
+            [
+                // image-only showcase card (slug maps to no real product, like the review stand).
+                // A style TEMPLATE (resources/product-bases/hexled.webp) is sent as image 1; the
+                // template flow auto-selects the LITE image model.
+                'key' => 'hexled', 'label' => 'Hexagon LED wall', 'slug' => 'hexagon-led-wall', 'decoration' => 'custom', 'full_model' => true,
+                'place_prompt' => 'Image 1 is a PHOTOGRAPHIC EXAMPLE of a modular hexagon LED panel wall — use it '
+                    .'ONLY as a reference for the STYLE, materials, lighting and mood: many small identical HEXAGONAL '
+                    .'light tiles snapped together edge-to-edge into one honeycomb mosaic, every tile glowing evenly, '
+                    .'a soft coloured halo cast on the wall behind, mounted above a tidy desk. Image 2 is the brand '
+                    .'logo. Build a NEW hexagon-tile installation whose overall mosaic silhouette is DIE-CUT to the '
+                    .'SHAPE of the logo in image 2: the small hexagon tiles fill the INSIDE of that shape and the '
+                    .'stepped outer contour of the honeycomb hugs the logo\'s outline as closely as the tile grid '
+                    .'allows, so the wall piece IS the logo built from hexagons. IMPORTANT: use ONLY the logo\'s '
+                    .'icon/symbol/graphic mark and STRIP AWAY any text or wordmark entirely; only if the logo is '
+                    .'purely a text wordmark with no icon, build the mosaic from its lettering silhouette. The tiles '
+                    .'glow in the brand\'s own colours taken from the logo (one colour or a tasteful blend across '
+                    .'tiles). Do NOT reproduce the mosaic shape shown in image 1 — its silhouette is only an example; '
+                    .'the NEW mosaic\'s shape must come from image 2. Mounted on a clean light wall above a light-wood '
+                    .'desk, soft ambient room light, photorealistic, 8K. Output only the scene — no watermark, no text.',
+                'prompt' => 'A photorealistic interior product shot of a modular hexagon LED panel wall installation: '
+                    .'many small identical hexagonal light tiles snapped together edge-to-edge into one honeycomb '
+                    .'mosaic whose overall silhouette is DIE-CUT to the shape of the provided logo — the tiles fill '
+                    .'the inside of the logo\'s shape and the stepped honeycomb contour hugs its outline, so the wall '
+                    .'piece IS the logo built from glowing hexagons. IMPORTANT: use ONLY the logo\'s icon/symbol mark '
+                    .'and STRIP AWAY any text or wordmark; only a pure text wordmark may use its lettering silhouette. '
+                    .'The tiles glow in the brand\'s own colours with a soft halo on the clean light wall behind, '
+                    .'mounted above a light-wood desk, soft ambient room light, photorealistic, 8K.',
+            ],
+            [
+                // image-only showcase card. Fixed NEUTRAL base (blank stencil card + untouched
+                // crema — regenerate with shop:product-bases) so the model has no example logo
+                // shape to copy; only the customer's logo is cut/dusted in at runtime → LITE model.
+                'key' => 'coffee', 'label' => 'Coffee stencil', 'slug' => 'coffee-stencil', 'decoration' => 'custom', 'full_model' => true,
+                'base_prompt' => 'A photorealistic top-down café product photo on a dark speckled stone counter, '
+                    .'warm natural lighting: on the left, a dark matte metal barista stencil card (a flat rectangular '
+                    .'card with a rectangular grip cut-out near its bottom edge) lying flat — the card face is solid '
+                    .'and BLANK with NO logo cut-out, NO engraving and NO powder on or around it; on the right, a '
+                    .'cappuccino in a ceramic cup on a matching saucer, its golden-brown crema smooth and completely '
+                    .'UNTOUCHED — no dusting, no latte art, no marks of any kind. Nothing else on the counter. '
+                    .'Photorealistic, crisp focus, no watermark, no text.',
+                'place_prompt' => 'Image 1 is a photo of a blank barista stencil card lying next to a cappuccino '
+                    .'with a smooth untouched crema. Image 2 is a brand logo. Make TWO changes and nothing else: '
+                    .'(1) DIE-CUT the silhouette of the logo in image 2 out of the stencil card\'s face — a clean '
+                    .'cut-out in the middle of the card showing the counter through it, with a light dusting of '
+                    .'cocoa powder over and around the cut-out as if the stencil was just used; (2) dust the SAME '
+                    .'logo silhouette in cocoa powder onto the centre of the coffee\'s crema, crisp-edged and '
+                    .'clearly recognisable, exactly as if sifted through that stencil. Both marks must reproduce '
+                    .'the logo in image 2 EXACTLY — same silhouette, shapes and proportions, never redrawn, '
+                    .'simplified or replaced with a generic shape. IMPORTANT: use ONLY the logo\'s icon/symbol/'
+                    .'graphic mark and OMIT any text or wordmark entirely; only if the logo is purely a text '
+                    .'wordmark, use its lettering. If the logo has several separate shapes, cut and dust them all '
+                    .'in the same arrangement. Keep the counter, card position, cup, saucer, crema colour, camera '
+                    .'angle and lighting EXACTLY as in image 1. Output only the photo — no watermark, no extra text.',
+                'prompt' => 'A photorealistic café product scene: a dark metal barista stencil card whose cut-out is '
+                    .'DIE-CUT to the shape of the provided logo, lying on a speckled stone counter dusted with cocoa '
+                    .'powder, beside a cappuccino in a ceramic cup on a saucer — the golden crema carries the SAME '
+                    .'logo dusted in cocoa through the stencil, crisp and clearly recognisable. IMPORTANT: use ONLY '
+                    .'the logo\'s icon/symbol mark and OMIT any text or wordmark; only a pure text wordmark uses its '
+                    .'lettering. The dusted mark matches the logo\'s silhouette exactly — never redrawn or simplified. '
+                    .'Warm café lighting, photorealistic, top-down three-quarter view.',
             ],
             [
                 'key' => 'pen', 'label' => 'Pen', 'slug' => 'custom-pens', 'decoration' => 'custom', 'logo_render' => 'laser',
