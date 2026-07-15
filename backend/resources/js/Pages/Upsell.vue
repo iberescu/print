@@ -428,51 +428,55 @@ function next() {
                 </div>
 
                 <!-- no website to run ads against → the "$10 website" offer takes the
-                     place of the Google Display ads examples (hidden without a site) -->
-                <div v-if="websiteOffer" class="relative grid items-center gap-6 overflow-hidden rounded-3xl bg-gradient-to-br from-navy via-navy to-navy-950 p-6 text-white shadow-2xl shadow-navy/20 sm:p-8 lg:grid-cols-[1.15fr_1fr] lg:gap-10 lg:p-10">
-                    <!-- the generated homepage design, on a MacBook -->
-                    <div class="relative">
-                        <div class="pointer-events-none absolute -inset-8 rounded-full bg-brand-blue/20 blur-3xl"></div>
-                        <MacBook :src="websiteImg" :alt="`${websiteOffer.company || 'Your brand'} — website design preview`" class="relative drop-shadow-2xl" />
-                        <p class="mt-3 text-center text-xs text-white/50">
-                            {{ websiteImg ? 'Designed just now from your logo and brand colours' : 'Designing your homepage from your logo — a few seconds…' }}
-                        </p>
-                    </div>
-                    <!-- offer copy -->
-                    <div class="relative">
-                        <span class="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3.5 py-1.5 text-xs font-semibold uppercase tracking-widest text-[#9cc6ff]">
-                            One more thing — your website
-                        </span>
-                        <h2 class="mt-5 font-display text-2xl font-bold leading-tight sm:text-3xl">
-                            Get a <span class="text-lime-accent">free website</span> — including a free .com domain &amp; lifetime hosting
-                        </h2>
-                        <p class="mt-3 max-w-md text-white/70">
-                            {{ websiteOffer.company ? `We already designed ${websiteOffer.company}'s homepage` : 'We already designed your homepage' }} from your logo and brand colours. Add it to this order for a one-time $10 — that's it, ever.
-                        </p>
-                        <ul class="mt-5 space-y-2.5 text-sm text-white/85">
-                            <li v-for="g in ['Professionally designed from your logo & brand colours', 'Free .com domain included', 'Lifetime hosting — no monthly fees, ever', 'You approve the design before it goes live']" :key="g" class="flex items-center gap-2.5">
-                                <svg class="h-4.5 w-4.5 shrink-0" viewBox="0 0 16 16" aria-hidden="true">
-                                    <circle cx="8" cy="8" r="7" fill="none" stroke="#398aff" stroke-width="1.5" />
-                                    <path d="m5 8.2 2 2L11 6" fill="none" stroke="#9cc6ff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
-                                </svg>
-                                {{ g }}
-                            </li>
-                        </ul>
-                        <div class="mt-6 flex items-end gap-3">
-                            <span class="font-display text-4xl font-extrabold leading-none text-lime-accent">$10</span>
-                            <span class="mb-1 rounded-full bg-lime-accent/15 px-2.5 py-1 text-xs font-semibold text-lime-accent ring-1 ring-lime-accent/30">one-time · no subscription</span>
+                     place of the Google Display ads examples (hidden without a site).
+                     White card in the page's own language, framed by the same gradient
+                     hairline as the ad-studio block. -->
+                <div v-if="websiteOffer" class="rounded-3xl bg-gradient-to-br from-brand-blue/50 via-paper-300 to-lime-accent/40 p-[1.5px]">
+                    <div class="relative grid items-center gap-6 overflow-hidden rounded-3xl bg-white p-6 sm:p-8 lg:grid-cols-[1.15fr_1fr] lg:gap-10 lg:p-10">
+                        <!-- the generated homepage design, on a MacBook -->
+                        <div class="relative">
+                            <div class="pointer-events-none absolute -inset-6 rounded-full bg-brand-blue/10 blur-3xl"></div>
+                            <MacBook :src="websiteImg" :alt="`${websiteOffer.company || 'Your brand'} — website design preview`" class="relative drop-shadow-xl" />
+                            <p class="mt-3 text-center text-xs text-ink/50">
+                                {{ websiteImg ? 'Designed just now from your logo and brand colours' : 'Designing your homepage from your logo — a few seconds…' }}
+                            </p>
                         </div>
-                        <p class="mt-2 flex items-center gap-1.5 text-sm font-medium text-[#9cc6ff]">
-                            <svg class="h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                            Only available with this order — it won't be offered again at checkout.
-                        </p>
-                        <button type="button" :disabled="busy === 'starter-website' || added['starter-website']"
-                                class="mt-4 rounded-full px-7 py-3 font-semibold transition disabled:opacity-80"
-                                :class="added['starter-website'] ? 'bg-white/15 text-lime-accent' : 'bg-brand-blue text-white shadow-lg shadow-brand-blue/30 hover:bg-[#2f78e0]'"
-                                @click="addItem({ slug: 'starter-website' })">
-                            {{ added['starter-website'] ? '✓ Added to your order — $10' : 'Add my website — $10' }}
-                        </button>
-                        <p class="mt-4 text-xs text-white/45">One-time offer for new Runmyprint customers. The $10 is charged with your order; we build the site from the design you see, register the free .com domain (subject to availability) and host it for the life of the product. Nothing goes live until you approve it.</p>
+                        <!-- offer copy -->
+                        <div class="relative">
+                            <span class="inline-flex items-center gap-2 rounded-full bg-brand-50 px-3.5 py-1.5 text-xs font-semibold uppercase tracking-widest text-brand-700">
+                                One more thing — your website
+                            </span>
+                            <h2 class="mt-5 font-display text-2xl font-bold leading-tight text-navy sm:text-3xl">
+                                Get a <span class="text-brand-600">free website</span> — including a free .com domain &amp; lifetime hosting
+                            </h2>
+                            <p class="mt-3 max-w-md text-ink/60">
+                                {{ websiteOffer.company ? `We already designed ${websiteOffer.company}'s homepage` : 'We already designed your homepage' }} from your logo and brand colours. Add it to this order for a one-time $10 — that's it, ever.
+                            </p>
+                            <ul class="mt-5 space-y-2.5 text-sm text-ink/75">
+                                <li v-for="g in ['Professionally designed from your logo & brand colours', 'Free .com domain included', 'Lifetime hosting — no monthly fees, ever', 'You approve the design before it goes live']" :key="g" class="flex items-center gap-2.5">
+                                    <svg class="h-4.5 w-4.5 shrink-0" viewBox="0 0 16 16" aria-hidden="true">
+                                        <circle cx="8" cy="8" r="7" fill="none" stroke="#398aff" stroke-width="1.5" />
+                                        <path d="m5 8.2 2 2L11 6" fill="none" stroke="#2563c9" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+                                    </svg>
+                                    {{ g }}
+                                </li>
+                            </ul>
+                            <div class="mt-6 flex items-end gap-3">
+                                <span class="font-display text-4xl font-extrabold leading-none text-navy">$10</span>
+                                <span class="mb-1 rounded-full bg-lime-accent px-2.5 py-1 text-xs font-bold uppercase tracking-wide text-navy">one-time · no subscription</span>
+                            </div>
+                            <p class="mt-2 flex items-center gap-1.5 text-sm font-medium text-brand-700">
+                                <svg class="h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                Only available with this order — it won't be offered again at checkout.
+                            </p>
+                            <button type="button" :disabled="busy === 'starter-website' || added['starter-website']"
+                                    class="mt-4 rounded-full px-7 py-3 font-semibold transition disabled:opacity-80"
+                                    :class="added['starter-website'] ? 'bg-brand-50 text-brand-700' : 'bg-brand-600 text-white shadow-lg shadow-brand-600/25 hover:bg-brand-700'"
+                                    @click="addItem({ slug: 'starter-website' })">
+                                {{ added['starter-website'] ? '✓ Added to your order — $10' : 'Add my website — $10' }}
+                            </button>
+                            <p class="mt-4 text-xs text-ink/45">One-time offer for new Runmyprint customers. The $10 is charged with your order; we build the site from the design you see, register the free .com domain (subject to availability) and host it for the life of the product. Nothing goes live until you approve it.</p>
+                        </div>
                     </div>
                 </div>
 
