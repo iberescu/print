@@ -28,12 +28,13 @@ test('full funnel: design → upsell → cart → checkout → paid', async ({ p
     await page.getByRole('link', { name: /proceed to checkout/i }).click();
     await page.waitForURL('**/checkout');
 
-    const f = page.locator('form').first().locator('input');
-    await f.nth(0).fill('e2e@runmyprint.com');
-    await f.nth(1).fill('E2E Tester');
-    await f.nth(2).fill('1 Test Street');
-    await f.nth(3).fill('Austin');
-    await f.nth(4).fill('78701');
+    // label-wrapped fields; email/name prefill from the account, country from the form default
+    await page.getByLabel(/^email/i).fill('e2e@runmyprint.com');
+    await page.getByLabel(/full name/i).fill('E2E Tester');
+    await page.getByLabel(/^address/i).fill('1 Test Street');
+    await page.getByLabel(/^city/i).fill('Austin');
+    await page.getByLabel(/^state/i).selectOption({ index: 1 }); // first real state (index 0 = "Select…")
+    await page.getByLabel(/postal code/i).fill('78701');
 
     await page.getByRole('button', { name: /pay/i }).click();
     await page.waitForURL('**/checkout/success**');

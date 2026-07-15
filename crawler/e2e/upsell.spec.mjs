@@ -17,7 +17,7 @@ test('cart is gated until the upsell steps are completed', async ({ page }) => {
     await expect(page).toHaveURL(/\/upsell/);
     // placeholder designs now register an image_url capture (the review preview),
     // so the gallery + ads steps join finalize + accessories
-    await expect(page.getByText(/step 1 of 4/i)).toBeVisible();
+    await expect(page.getByText(/1 of 4/i)).toBeVisible();
 });
 
 test('business-card upsell offers a non-personalised card holder', async ({ page }) => {
@@ -57,17 +57,18 @@ test('designer brand adds the third-party upsell step', async ({ page }) => {
     await reviewAndAdd(page);
     await page.waitForURL('**/upsell');
 
-    await expect(page.getByText(/step 1 of 4/i)).toBeVisible();          // final step first
+    await expect(page.getByText(/1 of 4/i)).toBeVisible();          // final step first
     await clickContinue(page);                                            // then accessories
     await clickContinue(page);
     await expect(page.getByRole('heading', { name: /your logo on more products/i })).toBeVisible();
-    await expect(page.locator('#pqsg-widget')).toHaveCount(1);            // the gallery widget step
+    // internal engine renders native cards: a "generating" placeholder first,
+    // then the "Fresh from your design" grid streams in (no #pqsg-widget any more)
+    await expect(page.getByText(/generating ideas with your logo|fresh from your design/i).first()).toBeVisible();
 
-    // Layout.ai ad-credit step reuses the widget for the facebook-ad creative
+    // Layout.ai ad-credit step ($250 of Google Display ads for $29)
     await clickContinue(page);
-    await expect(page.getByText(/runmyprint × layout\.ai/i)).toBeVisible();
+    await expect(page.getByText(/layout\.ai/i).first()).toBeVisible();
     await expect(page.getByText(/\$250/).first()).toBeVisible();
-    await expect(page.locator('#pqsg-widget')).toHaveCount(1);
 
     await completeUpsell(page);
     await page.waitForURL('**/cart');

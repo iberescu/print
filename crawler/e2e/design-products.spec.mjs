@@ -50,7 +50,13 @@ for (const [slug, expected] of PRODUCTS) {
 // Item 4: choosing a size on a flyer must change the canvas format + label.
 test('flyer with 8.5" x 11" selected shows the letter format', async ({ page }, testInfo) => {
     await page.goto('/product/flyers');
-    await page.getByRole('button', { name: /^8\.5" x 11"/ }).first().click();
+    // Size has 11 values → renders as a vistaprint-style <select>, not buttons
+    const size = page.locator('div.mt-6:has(> div > h3:text-is("Size")) select');
+    const letter = await size.locator('option').evaluateAll(
+        (os) => os.find((o) => o.textContent.trim().startsWith('8.5" x 11"'))?.value,
+    );
+    expect(letter, 'flyers offer an 8.5" x 11" size').toBeTruthy();
+    await size.selectOption(letter);
     await page.getByRole('button', { name: /design online/i }).first().click();
     await page.waitForURL('**/design/**');
     await page.waitForSelector('.canvas-container canvas');
@@ -66,17 +72,21 @@ test('flyer with 8.5" x 11" selected shows the letter format', async ({ page }, 
 });
 
 // Surface manager: fold lines and no-print zones render in the designer.
+// The fold data lives on the guide surface (s-11x8.5in-fold etc.) and projects
+// onto the size-label canvas via PrintSpec::withGuidesFrom — labels are "Fold".
 test('a folded product shows a fold line in the designer', async ({ page }) => {
     await page.goto('/design/presentation-folders');
     await page.waitForSelector('.canvas-container canvas');
-    await expect(page.getByText(/fold line/i)).toBeVisible();
+    await expect(page.getByText('Fold', { exact: true }).first()).toBeVisible();
     expect(await page.locator('line[stroke="#9333ea"]').count()).toBeGreaterThan(0);
 });
 
-test('a banner surface shows a no-print zone in the designer', async ({ page }) => {
-    await page.goto('/design/retractable-banners');
+// retractable-banners' surface no longer carries no-print data after the surface
+// standardization — feather flags own the real zones now (pole sleeve + hem).
+test('a no-print zone renders in the designer (feather-flag pole sleeve)', async ({ page }) => {
+    await page.goto('/design/feather-flags');
     await page.waitForSelector('.canvas-container canvas');
-    await expect(page.getByText(/no-print area/i)).toBeVisible();
+    await expect(page.getByText(/pole sleeve/i)).toBeVisible();
     expect(await page.locator('rect[fill="rgba(15,23,42,0.42)"]').count()).toBeGreaterThan(0);
 });
 
@@ -85,7 +95,9 @@ test('a die-cut product shows the sewn/die-cut edge in the designer', async ({ p
     await page.goto('/design/feather-flags');
     await page.waitForSelector('.canvas-container canvas');
     await expect(page.getByText(/die-cut/i).first()).toBeVisible();
-    expect(await page.locator('svg svg path').count()).toBeGreaterThan(0);
+    // px-scaled die edge renders as a stroked path in the main guide svg
+    // (the old nested-svg fallback only remains for exotic un-scalable paths)
+    expect(await page.locator('path[stroke="#e11d48"]').count()).toBeGreaterThan(0);
     await expect(page.getByText(/pole sleeve/i)).toBeVisible();
 });
 

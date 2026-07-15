@@ -28,7 +28,14 @@ export async function reviewAndAdd(page) {
 export async function completeUpsell(page) {
     for (let i = 0; i < 6; i++) {
         if (new URL(page.url()).pathname === '/cart') return;
-        if (!(await page.getByRole('button', { name: /continue/i }).count())) break;
+        // The upsell URL flips BEFORE Inertia mounts the step component — counting
+        // buttons on the not-yet-hydrated page used to break the loop early. Wait
+        // for the CTA; only a real CTA-less page (shouldn't exist) ends the walk.
+        try {
+            await page.getByRole('button', { name: /continue/i }).last().waitFor({ state: 'visible', timeout: 15000 });
+        } catch {
+            break;
+        }
         await clickContinue(page);
     }
 }

@@ -30,7 +30,7 @@ test('review lands on the final step: quantity + material, surface options locke
     await addBusinessCard(page);
 
     await expect(page.getByRole('heading', { name: /final step/i })).toBeVisible();
-    await expect(page.getByText(/step 1 of/i)).toBeVisible();
+    await expect(page.getByText(/1 of \d/i)).toBeVisible();
     await expect(page.getByRole('heading', { name: /^quantity$/i })).toBeVisible();
 
     // surface-bound options are shown as locked, not editable

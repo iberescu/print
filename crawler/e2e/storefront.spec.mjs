@@ -3,8 +3,8 @@ import { test, expect } from '@playwright/test';
 test('home page loads with brand, nav and products', async ({ page }) => {
     await page.goto('/');
     await expect(page).toHaveTitle(/RunMyPrint/);
-    // free-shipping promise in the utility bar (req 7)
-    await expect(page.getByText(/free shipping on orders over/i).first()).toBeVisible();
+    // utility-bar promise (the free-shipping line moved to the product page / cart)
+    await expect(page.getByText(/best price/i).first()).toBeVisible();
     // category nav + at least one product link
     await expect(page.getByRole('link', { name: 'Business Cards' }).first()).toBeVisible();
     await expect(page.locator('a[href^="/product/"]').first()).toBeVisible();
@@ -23,15 +23,24 @@ test('product page: CTAs, free-shipping note and live price by quantity', async 
     await expect(page.getByRole('button', { name: /upload your design/i })).toBeVisible();
     await expect(page.getByText(/free shipping/i).first()).toBeVisible();
 
-    // changing the quantity tier recomputes the headline price
+    // changing the quantity tier recomputes the headline price. 5+ tiers render
+    // as a vistaprint-style <select>, ≤4 as tile buttons — handle both.
     const price = page.locator('span.text-4xl').first();
-    const qty = page.locator('.grid.grid-cols-2 > button');
-    const count = await qty.count();
-    expect(count).toBeGreaterThan(1);
-
-    await qty.first().click();
-    const lo = (await price.textContent())?.trim();
-    await qty.nth(count - 1).click();
-    const hi = (await price.textContent())?.trim();
-    expect(lo).not.toBe(hi); // different tiers ⇒ different totals
+    const qtySelect = page.locator('h3:has-text("Quantity") + div select');
+    if (await qtySelect.count()) {
+        const values = await qtySelect.locator('option').evaluateAll((os) => os.map((o) => o.value));
+        expect(values.length).toBeGreaterThan(1);
+        await qtySelect.selectOption(values[0]);
+        const lo = (await price.textContent())?.trim();
+        await qtySelect.selectOption(values[values.length - 1]);
+        await expect(price).not.toHaveText(lo); // different tiers ⇒ different totals
+    } else {
+        const tiles = page.locator('h3:has-text("Quantity") + div button');
+        const count = await tiles.count();
+        expect(count).toBeGreaterThan(1);
+        await tiles.first().click();
+        const lo = (await price.textContent())?.trim();
+        await tiles.nth(count - 1).click();
+        await expect(price).not.toHaveText(lo);
+    }
 });
