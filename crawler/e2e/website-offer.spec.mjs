@@ -50,6 +50,10 @@ test('no-URL capture gets the $10 website offer with a generated preview', async
     await toStep(3); // "your logo on more products"
     await toStep(4); // ads step (the website offer for no-URL)
 
+    // the Layout.ai ad-credit pitch stays for everyone…
+    await expect(page.getByText(/layout\.ai/i).first()).toBeVisible();
+    await expect(page.getByText(/\$250/).first()).toBeVisible();
+    // …and the website offer takes the place of the (site-less) ad examples
     await expect(page.getByText(/free website/i).first()).toBeVisible();
     await expect(page.getByText(/lifetime hosting/i).first()).toBeVisible();
     expect(await page.locator('svg[data-mac]').count()).toBe(1);

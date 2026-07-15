@@ -32,47 +32,43 @@ function armStepLoader() {
     if (stepLoadTimer) clearTimeout(stepLoadTimer);
     stepLoadTimer = setTimeout(() => (stepLoading.value = false), 1000);
 }
-const loaderText = computed(() => {
-    if (props.step === 'ads' && props.payload.websiteOffer) return 'Designing your website…';
-    return {
-        finalize: 'Preparing your final step…',
-        brand: 'Placing your brand on matching products…',
-        pqsg: 'Generating ideas with your logo…',
-        ads: 'Preparing your ad offer…',
-    }[props.step] ?? 'Finding products that match your order…';
-});
+const loaderText = computed(() => ({
+    finalize: 'Preparing your final step…',
+    brand: 'Placing your brand on matching products…',
+    pqsg: 'Generating ideas with your logo…',
+    ads: 'Preparing your ad offer…',
+}[props.step] ?? 'Finding products that match your order…'));
 
-// No-website captures see the "$10 website" offer where URL captures see the
-// Layout.ai ad credit — same step, different pitch.
+// No-website captures additionally get the "$10 website" offer on the ads step —
+// it replaces the Google Display ads examples section (which needs a site to
+// exist); the Layout.ai ad-credit pitch above it stays for everyone.
 const websiteOffer = computed(() => (props.step === 'ads' ? props.payload.websiteOffer || null : null));
 
-const heading = computed(() => {
-    if (websiteOffer.value) return 'Get a free website — for an extra $10';
-    return {
-        brand: 'Put your brand on more',
-        pqsg: 'Your logo on more products',
-        ads: '$250 in Google ads — for $29',
-        finalize: 'Final step — make it exactly right',
-    }[props.step] ?? 'Complete your order';
-});
-const sub = computed(() => {
-    if (websiteOffer.value) {
-        return 'We noticed your brand doesn’t have a website yet — so we designed one. Free, including a free .com domain and lifetime hosting, for a one-time extra $10.';
-    }
-    return {
-        brand: 'Add your logo, name and details to matching products — laid out automatically.',
-        pqsg: 'Fresh ideas generated from your design — they appear below as they finish.',
-        ads: 'Pay $29, get $250 of Google Display ads through our Layout.ai partnership. You approve the campaign before anything runs — get thousands of highly targeted visitors, or your money back.',
-        finalize: 'Your design is approved and locked in. Fine-tune the quantity and material — the price updates as you go.',
-    }[props.step] ?? 'Customers who buy business cards often add these. Not personalised — ships ready to use.';
-});
-const title = computed(() => {
-    if (websiteOffer.value) return 'Your website, ready to launch';
-    return {
-        finalize: 'Your final step',
-        ads: 'Runmyprint × Layout.ai',
-    }[props.step] ?? 'Recommended for you';
-});
+const heading = computed(() => ({
+    brand: 'Put your brand on more',
+    pqsg: 'Your logo on more products',
+    ads: '$250 in Google ads — for $29',
+    finalize: 'Final step — make it exactly right',
+}[props.step] ?? 'Complete your order'));
+const sub = computed(() => ({
+    brand: 'Add your logo, name and details to matching products — laid out automatically.',
+    pqsg: 'Fresh ideas generated from your design — they appear below as they finish.',
+    ads: 'Pay $29, get $250 of Google Display ads through our Layout.ai partnership. You approve the campaign before anything runs — get thousands of highly targeted visitors, or your money back.',
+    finalize: 'Your design is approved and locked in. Fine-tune the quantity and material — the price updates as you go.',
+}[props.step] ?? 'Customers who buy business cards often add these. Not personalised — ships ready to use.'));
+const title = computed(() => ({
+    finalize: 'Your final step',
+    ads: 'Runmyprint × Layout.ai',
+}[props.step] ?? 'Recommended for you'));
+
+// The "6 ready-to-run ad designs (below)" bullet points at the examples section,
+// which the website offer replaces when there's no site to advertise.
+const adGuarantees = computed(() => [
+    'Thousands of highly targeted visitors — or your money back',
+    'You approve the campaign before anything runs',
+    'Unused credit refunded',
+    ...(websiteOffer.value ? [] : ['6 ready-to-run ad designs (below)']),
+]);
 
 // Layout.ai "how it works" — shown under the generated concepts on the ads step
 const adSteps = [
@@ -96,16 +92,13 @@ const searchBoxes = ref(DEFAULT_SEARCH_BOXES);
 const searchIsReal = ref(false);
 
 // fun step names for the progress line — nicer than "Step 2 of 4"
-const stepName = computed(() => {
-    if (props.step === 'ads' && props.payload.websiteOffer) return 'Your new website';
-    return {
-        finalize: 'The finishing touch',
-        related: 'An impressive accessories selection',
-        pqsg: "Your logo's world tour",
-        ads: 'The ad studio',
-        brand: 'Your brand on more good stuff',
-    }[props.step] ?? 'A little something extra';
-});
+const stepName = computed(() => ({
+    finalize: 'The finishing touch',
+    related: 'An impressive accessories selection',
+    pqsg: "Your logo's world tour",
+    ads: 'The ad studio',
+    brand: 'Your brand on more good stuff',
+}[props.step] ?? 'A little something extra'));
 
 // ---- pqSmartGenerator gallery steps ----------------------------------------
 // Two steps share the engine capture (registered back at Review) and both
@@ -124,10 +117,10 @@ let pqsgInitFor = null;
 // (Inertia reuses the page instance), so onMounted alone never fires past the
 // first step. Init on mount AND on the step changing.
 function initPqsg() {
-    if (props.step === 'ads' && !props.payload.websiteOffer) initBrandProfile();
+    if (props.step === 'ads') initBrandProfile();
     if (props.step === 'ads' && props.payload.websiteOffer) initWebsitePoll();
     if (pqsgInitFor === props.step || !props.payload?.key) return;
-    if (props.step === 'pqsg' || (props.step === 'ads' && !props.payload.websiteOffer)) initFeed(props.step);
+    if (props.step === 'pqsg' || props.step === 'ads') initFeed(props.step);
 }
 
 // ---- "$10 website" offer: poll for the generated homepage design -------------
@@ -367,10 +360,76 @@ function next() {
                 </template>
             </div>
 
-            <!-- "$10 website" offer: shown on the ads step for captures WITHOUT a website —
-                 their generated homepage design inside a MacBook, plus the $10 add-on. -->
-            <div v-else-if="step === 'ads' && websiteOffer" class="mt-7">
-                <div class="relative grid items-center gap-6 overflow-hidden rounded-3xl bg-gradient-to-br from-navy via-navy to-navy-950 p-6 text-white shadow-2xl shadow-navy/20 sm:p-8 lg:grid-cols-[1.15fr_1fr] lg:gap-10 lg:p-10">
+            <!-- Layout.ai ad-credit offer: promo visual + the buyer's own generated ad -->
+            <div v-else-if="step === 'ads'" class="mt-7 space-y-6">
+                <div class="relative grid overflow-hidden rounded-3xl bg-gradient-to-br from-navy via-navy to-navy-950 text-white shadow-2xl shadow-navy/20 lg:grid-cols-[1.1fr_1fr]">
+                    <!-- generated promo visual -->
+                    <div class="relative min-h-64 lg:min-h-[380px]">
+                        <img v-if="payload.promoImage" :src="payload.promoImage" alt="$250 of Google Display ads for $29" class="absolute inset-0 h-full w-full object-cover" />
+                        <div v-else class="absolute inset-0 bg-gradient-to-br from-brand-blue/50 to-navy"></div>
+                        <div class="absolute inset-0 hidden bg-gradient-to-r from-transparent via-transparent to-navy lg:block"></div>
+                        <div class="absolute inset-0 bg-gradient-to-t from-navy via-transparent to-transparent lg:hidden"></div>
+                    </div>
+                    <!-- offer copy -->
+                    <div class="relative p-8 sm:p-10 lg:-ml-10">
+                        <svg class="pointer-events-none absolute right-4 top-4 h-20 w-20 text-brand-blue opacity-20" viewBox="0 0 96 96" fill="none" aria-hidden="true">
+                            <circle cx="48" cy="48" r="29" stroke="currentColor" stroke-width="1.5" />
+                            <circle cx="48" cy="48" r="41" stroke="currentColor" stroke-dasharray="3 5" />
+                            <path d="M48 12v12M48 84V72M12 48h12M84 48H72" stroke="currentColor" stroke-width="1.5" />
+                        </svg>
+                        <a href="https://layout.ai" target="_blank" rel="noopener" class="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3.5 py-1.5 text-xs font-semibold uppercase tracking-widest text-[#9cc6ff] transition hover:bg-white/15">
+                            Runmyprint × Layout.ai ↗
+                        </a>
+                        <h2 class="mt-5 font-display text-2xl font-bold leading-tight sm:text-3xl">
+                            Pay $29, get <span class="text-lime-accent">$250</span> in Google Display ads
+                        </h2>
+                        <p class="mt-3 max-w-md text-white/70">Your first campaign, already designed. It runs on Google's network, managed by our partner <a href="https://layout.ai" target="_blank" rel="noopener" class="underline decoration-white/40 underline-offset-2 hover:text-white">Layout.ai</a> — and nothing goes live until you approve it.</p>
+                        <ul class="mt-5 space-y-2.5 text-sm text-white/85">
+                            <li v-for="g in adGuarantees" :key="g" class="flex items-center gap-2.5">
+                                <svg class="h-4.5 w-4.5 shrink-0" viewBox="0 0 16 16" aria-hidden="true">
+                                    <circle cx="8" cy="8" r="7" fill="none" stroke="#398aff" stroke-width="1.5" />
+                                    <path d="m5 8.2 2 2L11 6" fill="none" stroke="#9cc6ff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+                                </svg>
+                                {{ g }}
+                            </li>
+                        </ul>
+                        <!-- price anchor: make the 8.6× value obvious at a glance -->
+                        <div class="mt-6 flex items-end gap-3">
+                            <span class="font-display text-2xl font-semibold text-white/35 line-through decoration-2">$250</span>
+                            <span class="font-display text-4xl font-extrabold leading-none text-lime-accent">$29</span>
+                            <span class="mb-1 rounded-full bg-lime-accent/15 px-2.5 py-1 text-xs font-semibold text-lime-accent ring-1 ring-lime-accent/30">8.6× value · save $221</span>
+                        </div>
+                        <!-- real, honest urgency: the offer is scoped to this order -->
+                        <p class="mt-2 flex items-center gap-1.5 text-sm font-medium text-[#9cc6ff]">
+                            <svg class="h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                            Only available with this order — it won't be offered again at checkout.
+                        </p>
+                        <button type="button" :disabled="busy === 'ad-credit-250' || added['ad-credit-250']"
+                                class="mt-4 rounded-full px-7 py-3 font-semibold transition disabled:opacity-80"
+                                :class="added['ad-credit-250'] ? 'bg-white/15 text-lime-accent' : 'bg-brand-blue text-white shadow-lg shadow-brand-blue/30 hover:bg-[#2f78e0]'"
+                                @click="addItem({ slug: 'ad-credit-250' })">
+                            {{ added['ad-credit-250'] ? '✓ Added to your order — $29' : 'Add to my order — $29' }}
+                        </button>
+                        <!-- social proof -->
+                        <p class="mt-3 flex items-center gap-2 text-sm text-white/75">
+                            <span class="text-base tracking-tight text-lime-accent">★★★★★</span>
+                            Trusted by <span class="font-semibold text-white">23,000+</span> small businesses
+                        </p>
+                        <!-- money-back guarantee: unmissable -->
+                        <div class="mt-5 flex items-center gap-3 rounded-xl border border-lime-accent/40 bg-lime-accent/10 px-4 py-3">
+                            <svg class="h-7 w-7 shrink-0 text-lime-accent" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true">
+                                <path d="M12 3l7 3v5c0 4.4-3 8-7 10-4-2-7-5.6-7-10V6z" stroke-linejoin="round" />
+                                <path d="m8.5 12 2.2 2.2L15.5 9.5" stroke-linecap="round" stroke-linejoin="round" />
+                            </svg>
+                            <p class="text-sm font-semibold text-white">Money-back guarantee: get <span class="text-lime-accent">thousands of highly targeted visitors</span> or your $29 is refunded in full.</p>
+                        </div>
+                        <p class="mt-4 text-xs text-white/45">One-time offer for new Runmyprint customers. The $29 is charged with your order; your campaign is fulfilled by our partner Layout.ai and nothing runs until you approve it. If it doesn't deliver, we refund the $29 — no questions asked.</p>
+                    </div>
+                </div>
+
+                <!-- no website to run ads against → the "$10 website" offer takes the
+                     place of the Google Display ads examples (hidden without a site) -->
+                <div v-if="websiteOffer" class="relative grid items-center gap-6 overflow-hidden rounded-3xl bg-gradient-to-br from-navy via-navy to-navy-950 p-6 text-white shadow-2xl shadow-navy/20 sm:p-8 lg:grid-cols-[1.15fr_1fr] lg:gap-10 lg:p-10">
                     <!-- the generated homepage design, on a MacBook -->
                     <div class="relative">
                         <div class="pointer-events-none absolute -inset-8 rounded-full bg-brand-blue/20 blur-3xl"></div>
@@ -416,77 +475,11 @@ function next() {
                         <p class="mt-4 text-xs text-white/45">One-time offer for new Runmyprint customers. The $10 is charged with your order; we build the site from the design you see, register the free .com domain (subject to availability) and host it for the life of the product. Nothing goes live until you approve it.</p>
                     </div>
                 </div>
-            </div>
 
-            <!-- Layout.ai ad-credit offer: promo visual + the buyer's own generated ad -->
-            <div v-else-if="step === 'ads'" class="mt-7 space-y-6">
-                <div class="relative grid overflow-hidden rounded-3xl bg-gradient-to-br from-navy via-navy to-navy-950 text-white shadow-2xl shadow-navy/20 lg:grid-cols-[1.1fr_1fr]">
-                    <!-- generated promo visual -->
-                    <div class="relative min-h-64 lg:min-h-[380px]">
-                        <img v-if="payload.promoImage" :src="payload.promoImage" alt="$250 of Google Display ads for $29" class="absolute inset-0 h-full w-full object-cover" />
-                        <div v-else class="absolute inset-0 bg-gradient-to-br from-brand-blue/50 to-navy"></div>
-                        <div class="absolute inset-0 hidden bg-gradient-to-r from-transparent via-transparent to-navy lg:block"></div>
-                        <div class="absolute inset-0 bg-gradient-to-t from-navy via-transparent to-transparent lg:hidden"></div>
-                    </div>
-                    <!-- offer copy -->
-                    <div class="relative p-8 sm:p-10 lg:-ml-10">
-                        <svg class="pointer-events-none absolute right-4 top-4 h-20 w-20 text-brand-blue opacity-20" viewBox="0 0 96 96" fill="none" aria-hidden="true">
-                            <circle cx="48" cy="48" r="29" stroke="currentColor" stroke-width="1.5" />
-                            <circle cx="48" cy="48" r="41" stroke="currentColor" stroke-dasharray="3 5" />
-                            <path d="M48 12v12M48 84V72M12 48h12M84 48H72" stroke="currentColor" stroke-width="1.5" />
-                        </svg>
-                        <a href="https://layout.ai" target="_blank" rel="noopener" class="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3.5 py-1.5 text-xs font-semibold uppercase tracking-widest text-[#9cc6ff] transition hover:bg-white/15">
-                            Runmyprint × Layout.ai ↗
-                        </a>
-                        <h2 class="mt-5 font-display text-2xl font-bold leading-tight sm:text-3xl">
-                            Pay $29, get <span class="text-lime-accent">$250</span> in Google Display ads
-                        </h2>
-                        <p class="mt-3 max-w-md text-white/70">Your first campaign, already designed. It runs on Google's network, managed by our partner <a href="https://layout.ai" target="_blank" rel="noopener" class="underline decoration-white/40 underline-offset-2 hover:text-white">Layout.ai</a> — and nothing goes live until you approve it.</p>
-                        <ul class="mt-5 space-y-2.5 text-sm text-white/85">
-                            <li v-for="g in ['Thousands of highly targeted visitors — or your money back', 'You approve the campaign before anything runs', 'Unused credit refunded', '6 ready-to-run ad designs (below)']" :key="g" class="flex items-center gap-2.5">
-                                <svg class="h-4.5 w-4.5 shrink-0" viewBox="0 0 16 16" aria-hidden="true">
-                                    <circle cx="8" cy="8" r="7" fill="none" stroke="#398aff" stroke-width="1.5" />
-                                    <path d="m5 8.2 2 2L11 6" fill="none" stroke="#9cc6ff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
-                                </svg>
-                                {{ g }}
-                            </li>
-                        </ul>
-                        <!-- price anchor: make the 8.6× value obvious at a glance -->
-                        <div class="mt-6 flex items-end gap-3">
-                            <span class="font-display text-2xl font-semibold text-white/35 line-through decoration-2">$250</span>
-                            <span class="font-display text-4xl font-extrabold leading-none text-lime-accent">$29</span>
-                            <span class="mb-1 rounded-full bg-lime-accent/15 px-2.5 py-1 text-xs font-semibold text-lime-accent ring-1 ring-lime-accent/30">8.6× value · save $221</span>
-                        </div>
-                        <!-- real, honest urgency: the offer is scoped to this order -->
-                        <p class="mt-2 flex items-center gap-1.5 text-sm font-medium text-[#9cc6ff]">
-                            <svg class="h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                            Only available with this order — it won't be offered again at checkout.
-                        </p>
-                        <button type="button" :disabled="busy === 'ad-credit-250' || added['ad-credit-250']"
-                                class="mt-4 rounded-full px-7 py-3 font-semibold transition disabled:opacity-80"
-                                :class="added['ad-credit-250'] ? 'bg-white/15 text-lime-accent' : 'bg-brand-blue text-white shadow-lg shadow-brand-blue/30 hover:bg-[#2f78e0]'"
-                                @click="addItem({ slug: 'ad-credit-250' })">
-                            {{ added['ad-credit-250'] ? '✓ Added to your order — $29' : 'Add to my order — $29' }}
-                        </button>
-                        <!-- social proof -->
-                        <p class="mt-3 flex items-center gap-2 text-sm text-white/75">
-                            <span class="text-base tracking-tight text-lime-accent">★★★★★</span>
-                            Trusted by <span class="font-semibold text-white">23,000+</span> small businesses
-                        </p>
-                        <!-- money-back guarantee: unmissable -->
-                        <div class="mt-5 flex items-center gap-3 rounded-xl border border-lime-accent/40 bg-lime-accent/10 px-4 py-3">
-                            <svg class="h-7 w-7 shrink-0 text-lime-accent" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true">
-                                <path d="M12 3l7 3v5c0 4.4-3 8-7 10-4-2-7-5.6-7-10V6z" stroke-linejoin="round" />
-                                <path d="m8.5 12 2.2 2.2L15.5 9.5" stroke-linecap="round" stroke-linejoin="round" />
-                            </svg>
-                            <p class="text-sm font-semibold text-white">Money-back guarantee: get <span class="text-lime-accent">thousands of highly targeted visitors</span> or your $29 is refunded in full.</p>
-                        </div>
-                        <p class="mt-4 text-xs text-white/45">One-time offer for new Runmyprint customers. The $29 is charged with your order; your campaign is fulfilled by our partner Layout.ai and nothing runs until you approve it. If it doesn't deliver, we refund the $29 — no questions asked.</p>
-                    </div>
-                </div>
-
-                <!-- generated GOOGLE DISPLAY ads (facebook_ads_nano canvases) -->
-                <div v-show="!pqsgEmpty">
+                <!-- generated GOOGLE DISPLAY ads (facebook_ads_nano canvases); without a
+                     website there's nothing to run them against — the website offer above
+                     replaces this section outright (never rendered, not merely hidden) -->
+                <div v-if="!websiteOffer" v-show="!pqsgEmpty">
                     <div class="mb-3">
                         <div class="flex flex-wrap items-center gap-x-3 gap-y-1">
                             <h3 class="font-display text-xl font-bold text-navy sm:text-2xl">Your Google Display ads</h3>
