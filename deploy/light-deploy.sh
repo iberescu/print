@@ -46,5 +46,10 @@ docker compose exec -T app php artisan config:clear < /dev/null
 docker compose exec -T app php artisan route:clear < /dev/null
 docker compose exec -T app php artisan view:clear < /dev/null
 docker compose -f docker-compose.yml -f docker-compose.prod.yml restart web
+# The queue worker holds pre-deploy code until its --max-time cycle — a NEW job
+# class dispatched right after a deploy would fail until then. Cycle it now.
+# (Remember: this script executes its PRE-pull version — the first deploy that
+# ships a script change must run the new step manually.)
+docker compose -f docker-compose.yml -f docker-compose.prod.yml restart worker
 
 echo "DEPLOY_DONE — now purge the Cloudflare cache."

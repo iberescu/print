@@ -100,10 +100,13 @@ class BuildBrandKit implements ShouldQueue
             // the Layout.ai display ads or the website-styled pieces (brochure/flyer), so we
             // SKIP them outright — no perpetual "generating…" state for things that never arrive.
             $company = (string) ($kit->company ?? '');
+            $industry = trim((string) ($kit->industry ?? ''));
             $kit->update(['summary' => [
                 'company'                => $company,
-                'description'            => $company ? "{$company} — custom print and promotional products." : '',
-                'keywords'               => array_values(array_filter([$company])),
+                'description'            => $company
+                    ? ($industry !== '' ? "{$company} — {$industry}." : "{$company} — custom print and promotional products.")
+                    : '',
+                'keywords'               => array_values(array_filter([$company, $industry])),
                 'fonts'                  => [],
                 'colors'                 => [],
                 'google_search_keywords' => $this->fallbackKeywords($company),

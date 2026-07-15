@@ -30,6 +30,8 @@ class BrandKitCapture
             'qr_path'     => $this->diskPath($data['qrUrl'] ?? null),
             'website'     => $data['website'] ?? null,
             'company'     => $data['company'] ?? null,
+            'industry'    => $data['industry'] ?? null,
+            'slogan'      => $data['slogan'] ?? null,
             'source_file' => $this->diskPath($data['sourceFile'] ?? null) ?? ($data['sourceFile'] ?? null),
             'stages'      => [],
         ]);

@@ -75,6 +75,15 @@ class LogoController extends Controller
             'variant'  => ['nullable', 'integer', 'min:0'],
         ]);
 
+        // Remember the brief: when the buyer captures a finished logo, the brand
+        // kit inherits company/industry/slogan so downstream generation (the $10
+        // website preview, the no-URL summary) knows what the business actually is.
+        session(['logo.brief' => [
+            'company'  => $data['company'],
+            'industry' => $data['industry'],
+            'slogan'   => trim((string) ($data['tagline'] ?? '')),
+        ]]);
+
         // Async: hand back a prediction id immediately — a 15–60 s long-poll dies
         // on mobile Safari (fetch cap + backgrounding), status polling doesn't.
         return response()->json(['id' => $replicate->createSvgPrediction($this->prompt($data))]);
@@ -187,9 +196,15 @@ class LogoController extends Controller
         // the rasterised PNG of the chosen SVG logo. capture() sets the session key.
         if (config('shop.upsell_engine') === 'internal') {
             $pngPath = $this->raster($data['path']);
+            $brief = (array) session('logo.brief', []);
             $key = app(\App\Services\BrandKitCapture::class)->capture([
-                'source'  => 'logo-maker',
-                'logoUrl' => url(Storage::disk('public')->url($pngPath)),
+                'source'   => 'logo-maker',
+                'logoUrl'  => url(Storage::disk('public')->url($pngPath)),
+                // the logo brief travels with the kit — the website preview and the
+                // no-URL summary use the real industry/slogan instead of guessing
+                'company'  => $brief['company'] ?? null,
+                'industry' => $brief['industry'] ?? null,
+                'slogan'   => $brief['slogan'] ?? null,
             ]);
 
             return response()->json(['key' => $key]);

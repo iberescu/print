@@ -47,6 +47,20 @@ class GenerateWebsitePreview implements ShouldQueue
             ? "The brand is called \"{$company}\" — the header wordmark and the hero headline use that exact name, spelled correctly."
             : 'No company name is known — brand the site with the logo alone and use short generic headline copy (no invented company name).';
 
+        // The AI-logo-maker brief, when the capture came from there: the real
+        // industry themes the whole page; the slogan becomes the hero headline.
+        $industry = trim((string) $kit->industry);
+        if ($industry !== '') {
+            $named .= " The business is a {$industry} — theme the hero imagery, the three feature/service"
+                .' cards (their icons, titles and copy) and all marketing copy specifically for that kind of'
+                .' business, not generic corporate filler.';
+        }
+        $slogan = trim((string) $kit->slogan);
+        if ($slogan !== '') {
+            $named .= " The brand's slogan is \"{$slogan}\" — use it VERBATIM (spelled exactly) as the hero"
+                .' headline or directly beneath it.';
+        }
+
         $prompt = 'A pixel-perfect FLAT SCREENSHOT of a modern, professional small-business website '
             .'homepage, desktop layout, filling the entire frame edge-to-edge (no browser window, no '
             .'chrome, no device, no drop shadow — just the web page itself). Design it FROM the provided '
