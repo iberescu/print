@@ -33,7 +33,7 @@ class UpsellController extends Controller
         $payload = match ($step) {
             'brand'    => $this->brandPayload(),
             'pqsg'     => $this->pqsgPayload(),
-            'ads'      => $this->pqsgPayload() + ['promoImage' => $this->img('promos/layout-ai-offer-v4')],
+            'ads'      => $this->pqsgPayload() + ['promoImage' => $this->img('promos/layout-ai-offer-v4')] + $this->websiteOffer(),
             'finalize' => $this->finalizePayload(),
             default    => $this->relatedPayload(),
         };
@@ -201,6 +201,29 @@ class UpsellController extends Controller
     }
 
     /** Third-party gallery step: the widget polls with the capture registered at Review. */
+    /**
+     * The ads step doubles as the "$10 website" offer for captures WITHOUT a
+     * website: no URL → nothing for Layout.ai to run ads against, so we sell
+     * them the missing website instead (free site + .com domain + lifetime
+     * hosting for an extra $10, previewed in a MacBook frame). URL captures
+     * keep the Layout.ai ad-credit pitch.
+     */
+    private function websiteOffer(): array
+    {
+        $key = session('pqsg.key');
+        $kit = $key ? \App\Models\BrandKit::where('key', $key)->first() : null;
+        if (! $kit || $kit->website || ! ($kit->logo_path || $kit->logo_url)) {
+            return ['websiteOffer' => null];
+        }
+
+        return ['websiteOffer' => [
+            'company' => trim((string) ($kit->company ?: ($kit->summary['company'] ?? ''))),
+            'img'     => $kit->website_preview_path
+                ? \Illuminate\Support\Facades\Storage::disk('public')->url($kit->website_preview_path)
+                : null,
+        ]];
+    }
+
     private function pqsgPayload(): array
     {
         $key = session('pqsg.key');

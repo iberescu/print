@@ -288,6 +288,16 @@ class PqsgController extends Controller
         $stale = $kit->updated_at && $kit->updated_at->lt(now()->subMinutes(6));
         $stages = $kit->stages ?? [];
 
+        // The "$10 website" upsell polls for its generated homepage design.
+        if ($set === 'website') {
+            return response()->json([
+                'done' => (bool) $kit->website_preview_path || $stale,
+                'img'  => $kit->website_preview_path
+                    ? \Illuminate\Support\Facades\Storage::disk('public')->url($kit->website_preview_path)
+                    : null,
+            ]);
+        }
+
         if ($set === 'ads') {
             $images = collect($kit->ads ?? [])->values()->map(fn ($a, $i) => [
                 'key' => $a['key'] ?? 'ad-'.$i, 'img' => $a['img'], 'label' => 'Ad concept '.($i + 1), 'product' => null,

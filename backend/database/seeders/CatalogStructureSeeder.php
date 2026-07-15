@@ -163,6 +163,7 @@ class CatalogStructureSeeder extends Seeder
         // prod catalog:import path never runs — so a fresh import drops it and the
         // ads step's "Add to my order" 404s. Recreate it here (idempotent).
         $this->ensureAdCredit();
+        $this->ensureWebsiteOffer();
 
         // "More Products" is now empty — retire it from the storefront.
         Category::where('slug', 'other')->update(['is_active' => false]);
@@ -209,6 +210,36 @@ class CatalogStructureSeeder extends Seeder
         $product->quantities()->updateOrCreate(
             ['quantity' => 1],
             ['unit_price' => 29.00, 'total_price' => 29.00, 'is_default' => true, 'sort_order' => 0]
+        );
+    }
+
+    /** The $10 website offer sold on the upsell ads step to buyers WITHOUT a website. */
+    private function ensureWebsiteOffer(): void
+    {
+        $services = Category::firstOrCreate(
+            ['slug' => 'services'],
+            ['name' => 'Services', 'sort_order' => 8, 'is_active' => true, 'tagline' => 'Beyond print — services that launch your brand.']
+        );
+
+        $product = Product::updateOrCreate(
+            ['slug' => 'starter-website'],
+            [
+                'category_id'     => $services->id,
+                'subcategory_id'  => null,
+                'name'            => 'Website — Free .com Domain + Lifetime Hosting',
+                'tagline'         => 'A professional one-page website designed from your brand.',
+                'description'     => 'A free professional website designed from your logo and brand colours — including a free .com domain and lifetime hosting — for a one-time $10. We build it, you approve it before it goes live, and there are no monthly fees.',
+                'from_price'      => 10.00,
+                'supports_design' => false,
+                'supports_upload' => false,
+                'is_active'       => true,
+                'sort_order'      => 1,
+            ]
+        );
+
+        $product->quantities()->updateOrCreate(
+            ['quantity' => 1],
+            ['unit_price' => 10.00, 'total_price' => 10.00, 'is_default' => true, 'sort_order' => 0]
         );
     }
 }

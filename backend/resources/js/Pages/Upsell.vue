@@ -6,6 +6,7 @@ import BrandMockup from '../Components/BrandMockup.vue';
 import FinalStep from '../Components/FinalStep.vue';
 import SmartImage from '../Components/SmartImage.vue';
 import FreeShippingBar from '../Components/FreeShippingBar.vue';
+import MacBook from '../Components/MacBook.vue';
 import { money } from '../lib/format';
 
 const props = defineProps({
@@ -31,29 +32,47 @@ function armStepLoader() {
     if (stepLoadTimer) clearTimeout(stepLoadTimer);
     stepLoadTimer = setTimeout(() => (stepLoading.value = false), 1000);
 }
-const loaderText = computed(() => ({
-    finalize: 'Preparing your final step…',
-    brand: 'Placing your brand on matching products…',
-    pqsg: 'Generating ideas with your logo…',
-    ads: 'Preparing your ad offer…',
-}[props.step] ?? 'Finding products that match your order…'));
+const loaderText = computed(() => {
+    if (props.step === 'ads' && props.payload.websiteOffer) return 'Designing your website…';
+    return {
+        finalize: 'Preparing your final step…',
+        brand: 'Placing your brand on matching products…',
+        pqsg: 'Generating ideas with your logo…',
+        ads: 'Preparing your ad offer…',
+    }[props.step] ?? 'Finding products that match your order…';
+});
 
-const heading = computed(() => ({
-    brand: 'Put your brand on more',
-    pqsg: 'Your logo on more products',
-    ads: '$250 in Google ads — for $29',
-    finalize: 'Final step — make it exactly right',
-}[props.step] ?? 'Complete your order'));
-const sub = computed(() => ({
-    brand: 'Add your logo, name and details to matching products — laid out automatically.',
-    pqsg: 'Fresh ideas generated from your design — they appear below as they finish.',
-    ads: 'Pay $29, get $250 of Google Display ads through our Layout.ai partnership. You approve the campaign before anything runs — get thousands of highly targeted visitors, or your money back.',
-    finalize: 'Your design is approved and locked in. Fine-tune the quantity and material — the price updates as you go.',
-}[props.step] ?? 'Customers who buy business cards often add these. Not personalised — ships ready to use.'));
-const title = computed(() => ({
-    finalize: 'Your final step',
-    ads: 'Runmyprint × Layout.ai',
-}[props.step] ?? 'Recommended for you'));
+// No-website captures see the "$10 website" offer where URL captures see the
+// Layout.ai ad credit — same step, different pitch.
+const websiteOffer = computed(() => (props.step === 'ads' ? props.payload.websiteOffer || null : null));
+
+const heading = computed(() => {
+    if (websiteOffer.value) return 'Get a free website — for an extra $10';
+    return {
+        brand: 'Put your brand on more',
+        pqsg: 'Your logo on more products',
+        ads: '$250 in Google ads — for $29',
+        finalize: 'Final step — make it exactly right',
+    }[props.step] ?? 'Complete your order';
+});
+const sub = computed(() => {
+    if (websiteOffer.value) {
+        return 'We noticed your brand doesn’t have a website yet — so we designed one. Free, including a free .com domain and lifetime hosting, for a one-time extra $10.';
+    }
+    return {
+        brand: 'Add your logo, name and details to matching products — laid out automatically.',
+        pqsg: 'Fresh ideas generated from your design — they appear below as they finish.',
+        ads: 'Pay $29, get $250 of Google Display ads through our Layout.ai partnership. You approve the campaign before anything runs — get thousands of highly targeted visitors, or your money back.',
+        finalize: 'Your design is approved and locked in. Fine-tune the quantity and material — the price updates as you go.',
+    }[props.step] ?? 'Customers who buy business cards often add these. Not personalised — ships ready to use.';
+});
+const title = computed(() => {
+    if (websiteOffer.value) return 'Your website, ready to launch';
+    return {
+        finalize: 'Your final step',
+        ads: 'Runmyprint × Layout.ai',
+    }[props.step] ?? 'Recommended for you';
+});
 
 // Layout.ai "how it works" — shown under the generated concepts on the ads step
 const adSteps = [
@@ -77,13 +96,16 @@ const searchBoxes = ref(DEFAULT_SEARCH_BOXES);
 const searchIsReal = ref(false);
 
 // fun step names for the progress line — nicer than "Step 2 of 4"
-const stepName = computed(() => ({
-    finalize: 'The finishing touch',
-    related: 'An impressive accessories selection',
-    pqsg: "Your logo's world tour",
-    ads: 'The ad studio',
-    brand: 'Your brand on more good stuff',
-}[props.step] ?? 'A little something extra'));
+const stepName = computed(() => {
+    if (props.step === 'ads' && props.payload.websiteOffer) return 'Your new website';
+    return {
+        finalize: 'The finishing touch',
+        related: 'An impressive accessories selection',
+        pqsg: "Your logo's world tour",
+        ads: 'The ad studio',
+        brand: 'Your brand on more good stuff',
+    }[props.step] ?? 'A little something extra';
+});
 
 // ---- pqSmartGenerator gallery steps ----------------------------------------
 // Two steps share the engine capture (registered back at Review) and both
@@ -102,9 +124,32 @@ let pqsgInitFor = null;
 // (Inertia reuses the page instance), so onMounted alone never fires past the
 // first step. Init on mount AND on the step changing.
 function initPqsg() {
-    if (props.step === 'ads') initBrandProfile();
+    if (props.step === 'ads' && !props.payload.websiteOffer) initBrandProfile();
+    if (props.step === 'ads' && props.payload.websiteOffer) initWebsitePoll();
     if (pqsgInitFor === props.step || !props.payload?.key) return;
-    if (props.step === 'pqsg' || props.step === 'ads') initFeed(props.step);
+    if (props.step === 'pqsg' || (props.step === 'ads' && !props.payload.websiteOffer)) initFeed(props.step);
+}
+
+// ---- "$10 website" offer: poll for the generated homepage design -------------
+const websiteImg = ref(null);
+let websiteTimer = null;
+let websiteInit = false;
+
+function initWebsitePoll() {
+    websiteImg.value = props.payload.websiteOffer?.img || null;
+    if (websiteInit || websiteImg.value || !props.payload?.key) return;
+    websiteInit = true;
+    const deadline = Date.now() + 3 * 60 * 1000;
+    const poll = async () => {
+        try {
+            const r = await fetch(`/pqsg/feed/${props.payload.key}?set=website`, { headers: { Accept: 'application/json' } });
+            const data = await r.json();
+            if (data.img) { websiteImg.value = data.img; return; }
+            if (data.done) return; // settled without a design — the copy still stands on its own
+        } catch (e) { /* best-effort */ }
+        if (Date.now() < deadline) websiteTimer = setTimeout(poll, 2000);
+    };
+    poll();
 }
 
 // ---- Layout.ai search-ads: real keywords from the async brand-profile API -----
@@ -192,6 +237,7 @@ onBeforeUnmount(() => {
     if (pqsgTimer) clearTimeout(pqsgTimer);
     if (brandTimer) clearTimeout(brandTimer);
     if (stepLoadTimer) clearTimeout(stepLoadTimer);
+    if (websiteTimer) clearTimeout(websiteTimer);
 });
 // ----------------------------------------------------------------------------
 
@@ -319,6 +365,57 @@ function next() {
                         </div>
                     </TransitionGroup>
                 </template>
+            </div>
+
+            <!-- "$10 website" offer: shown on the ads step for captures WITHOUT a website —
+                 their generated homepage design inside a MacBook, plus the $10 add-on. -->
+            <div v-else-if="step === 'ads' && websiteOffer" class="mt-7">
+                <div class="relative grid items-center gap-6 overflow-hidden rounded-3xl bg-gradient-to-br from-navy via-navy to-navy-950 p-6 text-white shadow-2xl shadow-navy/20 sm:p-8 lg:grid-cols-[1.15fr_1fr] lg:gap-10 lg:p-10">
+                    <!-- the generated homepage design, on a MacBook -->
+                    <div class="relative">
+                        <div class="pointer-events-none absolute -inset-8 rounded-full bg-brand-blue/20 blur-3xl"></div>
+                        <MacBook :src="websiteImg" :alt="`${websiteOffer.company || 'Your brand'} — website design preview`" class="relative drop-shadow-2xl" />
+                        <p class="mt-3 text-center text-xs text-white/50">
+                            {{ websiteImg ? 'Designed just now from your logo and brand colours' : 'Designing your homepage from your logo — a few seconds…' }}
+                        </p>
+                    </div>
+                    <!-- offer copy -->
+                    <div class="relative">
+                        <span class="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3.5 py-1.5 text-xs font-semibold uppercase tracking-widest text-[#9cc6ff]">
+                            One more thing — your website
+                        </span>
+                        <h2 class="mt-5 font-display text-2xl font-bold leading-tight sm:text-3xl">
+                            Get a <span class="text-lime-accent">free website</span> — including a free .com domain &amp; lifetime hosting
+                        </h2>
+                        <p class="mt-3 max-w-md text-white/70">
+                            {{ websiteOffer.company ? `We already designed ${websiteOffer.company}'s homepage` : 'We already designed your homepage' }} from your logo and brand colours. Add it to this order for a one-time $10 — that's it, ever.
+                        </p>
+                        <ul class="mt-5 space-y-2.5 text-sm text-white/85">
+                            <li v-for="g in ['Professionally designed from your logo & brand colours', 'Free .com domain included', 'Lifetime hosting — no monthly fees, ever', 'You approve the design before it goes live']" :key="g" class="flex items-center gap-2.5">
+                                <svg class="h-4.5 w-4.5 shrink-0" viewBox="0 0 16 16" aria-hidden="true">
+                                    <circle cx="8" cy="8" r="7" fill="none" stroke="#398aff" stroke-width="1.5" />
+                                    <path d="m5 8.2 2 2L11 6" fill="none" stroke="#9cc6ff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+                                </svg>
+                                {{ g }}
+                            </li>
+                        </ul>
+                        <div class="mt-6 flex items-end gap-3">
+                            <span class="font-display text-4xl font-extrabold leading-none text-lime-accent">$10</span>
+                            <span class="mb-1 rounded-full bg-lime-accent/15 px-2.5 py-1 text-xs font-semibold text-lime-accent ring-1 ring-lime-accent/30">one-time · no subscription</span>
+                        </div>
+                        <p class="mt-2 flex items-center gap-1.5 text-sm font-medium text-[#9cc6ff]">
+                            <svg class="h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                            Only available with this order — it won't be offered again at checkout.
+                        </p>
+                        <button type="button" :disabled="busy === 'starter-website' || added['starter-website']"
+                                class="mt-4 rounded-full px-7 py-3 font-semibold transition disabled:opacity-80"
+                                :class="added['starter-website'] ? 'bg-white/15 text-lime-accent' : 'bg-brand-blue text-white shadow-lg shadow-brand-blue/30 hover:bg-[#2f78e0]'"
+                                @click="addItem({ slug: 'starter-website' })">
+                            {{ added['starter-website'] ? '✓ Added to your order — $10' : 'Add my website — $10' }}
+                        </button>
+                        <p class="mt-4 text-xs text-white/45">One-time offer for new Runmyprint customers. The $10 is charged with your order; we build the site from the design you see, register the free .com domain (subject to availability) and host it for the life of the product. Nothing goes live until you approve it.</p>
+                    </div>
+                </div>
             </div>
 
             <!-- Layout.ai ad-credit offer: promo visual + the buyer's own generated ad -->

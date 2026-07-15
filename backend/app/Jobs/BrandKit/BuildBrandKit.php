@@ -111,6 +111,12 @@ class BuildBrandKit implements ShouldQueue
             ]]);
             $kit->markStage('summary', $company ? 'done' : 'skipped');
             $kit->markStage('ads', 'skipped');
+
+            // Instead of the ads the buyer gets the "$10 website" offer — generate
+            // the homepage design it shows (logo-derived colours, MacBook frame).
+            if ($hasLogo) {
+                GenerateWebsitePreview::dispatch($this->key);
+            }
         }
 
         if (! $hasLogo && ! $hasUrl) {
