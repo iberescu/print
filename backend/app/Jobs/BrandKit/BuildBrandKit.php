@@ -95,7 +95,6 @@ class BuildBrandKit implements ShouldQueue
         // 3. Crawl + summary + ads.
         if ($hasUrl) {
             CrawlAndSummarize::dispatch($this->key); // fans out the ad jobs + website-styled pieces
-            FetchCompetitors::dispatch($this->key);  // SpyFu market data for the ads-step simulation
         } else {
             // No URL: company-based summary only. Without a website to crawl we can't build
             // the Layout.ai display ads or the website-styled pieces (brochure/flyer), so we

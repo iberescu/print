@@ -7,7 +7,7 @@ import FinalStep from '../Components/FinalStep.vue';
 import SmartImage from '../Components/SmartImage.vue';
 import FreeShippingBar from '../Components/FreeShippingBar.vue';
 import MacBook from '../Components/MacBook.vue';
-import MarketChart from '../Components/MarketChart.vue';
+import KeywordChart from '../Components/KeywordChart.vue';
 import { money } from '../lib/format';
 
 const props = defineProps({
@@ -146,17 +146,29 @@ function initWebsitePoll() {
     poll();
 }
 
-// ---- market simulation: SpyFu competitors from the brand-profile API ---------
-const competitors = ref([]);
-const marketYou = computed(() => {
-    const seed = String(searchBoxes.value?.[0]?.url || payloadCompany() || 'you');
+// ---- keyword traffic report: stats from the brand-profile API ----------------
+const keywordStats = ref([]);
+const marketVisitors = computed(() => {
+    const seed = String(searchBoxes.value?.[0]?.url || 'you');
     let h = 2166136261;
     for (const c of seed) { h ^= c.charCodeAt(0); h = (h * 16777619) >>> 0; }
-    return { label: 'You', visitors: 950 + (h % 170), keywords: 90 + (h % 60) };
+    return 950 + (h % 170); // ≈1,000/mo on the $29 starter campaign, stable per brand
 });
-function payloadCompany() { return props.payload?.company || ''; }
+// Split the projected visitors across the keywords, dampened-proportionally to
+// market volume so every keyword keeps a visible share.
+const kwReport = computed(() => {
+    const rows = keywordStats.value.slice(0, 6).filter((r) => r.keyword && r.monthlySearches > 0);
+    if (!rows.length) return [];
+    const w = rows.map((r) => Math.pow(r.monthlySearches, 0.7));
+    const sum = w.reduce((a, b) => a + b, 0);
+    return rows.map((r, i) => ({
+        keyword: r.keyword,
+        volume: r.monthlySearches,
+        estimated: r.source !== 'metrics',
+        yours: Math.max(15, Math.round(marketVisitors.value * (w[i] / sum))),
+    }));
+});
 const fmtNum = (n) => (n >= 1000 ? `${(n / 1000).toFixed(n >= 10000 ? 0 : 1)}k` : `${Math.round(n)}`);
-const compClicks = (c) => Math.round((c.seoClicks || 0) + (c.ppcClicks || 0)) || null;
 
 // ---- Layout.ai search-ads: real keywords from the async brand-profile API -----
 let brandTimer = null;
@@ -193,11 +205,11 @@ function initBrandProfile() {
         try {
             const r = await fetch(`/pqsg/brand-profile/${props.payload.key}${props.payload.uuid ? `?uuid=${props.payload.uuid}` : ''}`, { headers: { Accept: 'application/json' } });
             const data = await r.json();
-            if (Array.isArray(data.competitors) && data.competitors.length) competitors.value = data.competitors;
+            if (Array.isArray(data.keywordStats) && data.keywordStats.length) keywordStats.value = data.keywordStats;
             const boxes = boxesFromBrand(data);
             if (boxes) { searchBoxes.value = boxes; searchIsReal.value = true; }
             // competitors (SpyFu) can land after the summary — keep polling for both
-            done = !!boxes && competitors.value.length > 0;
+            done = !!boxes && keywordStats.value.length > 0;
         } catch (e) { /* keep the example */ }
         if (!done && Date.now() < deadline) brandTimer = setTimeout(poll, 4000);
     };
@@ -592,45 +604,45 @@ function next() {
                     </div>
                 </div>
 
-                <!-- market simulation: live SpyFu competitor data + our crawl keywords,
-                     projecting the buyer's position on the $29 starter campaign.
-                     Only renders when the capture had a URL and competitor data arrived. -->
-                <div v-if="!websiteOffer && competitors.length" data-market>
+                <!-- keyword traffic report: the crawl's real search keywords with market
+                     volume and the buyer's projected share of the $29 campaign. Renders
+                     for URL captures once the background stats fetch lands. -->
+                <div v-if="!websiteOffer && kwReport.length" data-market>
                     <div class="mb-3">
                         <div class="flex flex-wrap items-center gap-x-3 gap-y-1">
-                            <h3 class="font-display text-xl font-bold text-navy sm:text-2xl">Your market — live</h3>
+                            <h3 class="font-display text-xl font-bold text-navy sm:text-2xl">Your keywords — the traffic that's out there</h3>
                             <span class="rounded-full bg-brand-50 px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-wide text-brand-700">Simulation</span>
                         </div>
-                        <p class="mt-1.5 max-w-2xl text-sm text-ink/60"><strong class="font-semibold text-ink/75">These businesses are buying the clicks in your market right now</strong> — live competitor data for your website. The highlighted dot is where the $29 starter campaign is projected to put you.</p>
+                        <p class="mt-1.5 max-w-2xl text-sm text-ink/60"><strong class="font-semibold text-ink/75">These are the searches we'll target for your business</strong> — the market's monthly search traffic per keyword, and the share the $29 starter campaign is projected to bring you (≈{{ fmtNum(marketVisitors) }} visitors/month in total).</p>
                     </div>
                     <div class="rounded-2xl bg-gradient-to-br from-brand-blue/50 via-paper-300 to-lime-accent/40 p-[1.5px]">
                         <div class="overflow-hidden rounded-2xl bg-white p-5 sm:p-6">
-                            <div class="grid gap-6 lg:grid-cols-[1fr_1.15fr] lg:items-center">
+                            <div class="grid gap-6 lg:grid-cols-[1fr_1.2fr] lg:items-center">
                                 <div class="overflow-x-auto">
                                     <table class="w-full text-sm">
                                         <thead>
                                             <tr class="border-b border-paper-300 text-left text-[11px] font-semibold uppercase tracking-wider text-ink/45">
-                                                <th class="py-2 pr-3">Competitor</th>
-                                                <th class="py-2 pr-3 text-right">Est. clicks/mo</th>
-                                                <th class="py-2 text-right">Keywords</th>
+                                                <th class="py-2 pr-3">Keyword</th>
+                                                <th class="py-2 pr-3 text-right">Searches/mo</th>
+                                                <th class="py-2 text-right">Yours ($29)</th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <tr v-for="c in competitors.slice(0, 6)" :key="c.domain" class="border-b border-paper-200 last:border-0">
-                                                <td class="py-2.5 pr-3 font-medium text-ink">{{ c.domain }}</td>
-                                                <td class="py-2.5 pr-3 text-right text-ink/70">{{ compClicks(c) ? fmtNum(compClicks(c)) : 'est.' }}</td>
-                                                <td class="py-2.5 text-right text-ink/70">{{ c.keywords ? fmtNum(c.keywords) : 'est.' }}</td>
+                                            <tr v-for="r in kwReport" :key="r.keyword" class="border-b border-paper-200 last:border-0">
+                                                <td class="py-2.5 pr-3 font-medium text-ink">{{ r.keyword }}</td>
+                                                <td class="py-2.5 pr-3 text-right text-ink/70">{{ fmtNum(r.volume) }}<span v-if="r.estimated" class="text-ink/40"> est.</span></td>
+                                                <td class="py-2.5 text-right font-semibold text-brand-700">+{{ fmtNum(r.yours) }}</td>
                                             </tr>
                                             <tr class="bg-brand-50/60">
-                                                <td class="py-2.5 pr-3 font-semibold text-brand-700">You — $29 campaign</td>
-                                                <td class="py-2.5 pr-3 text-right font-semibold text-brand-700">≈{{ fmtNum(marketYou.visitors) }}</td>
-                                                <td class="py-2.5 text-right font-semibold text-brand-700">≈{{ marketYou.keywords }}</td>
+                                                <td class="py-2.5 pr-3 font-semibold text-brand-700">Total — $29 campaign</td>
+                                                <td class="py-2.5 pr-3"></td>
+                                                <td class="py-2.5 text-right font-semibold text-brand-700">≈{{ fmtNum(kwReport.reduce((a, r) => a + r.yours, 0)) }}/mo</td>
                                             </tr>
                                         </tbody>
                                     </table>
-                                    <p class="mt-3 text-xs text-ink/45">Live competitor data via SpyFu for your market. Your projection combines your site's keywords with market averages under the $250 Layout.ai campaign — a simulation, not a guarantee.</p>
+                                    <p class="mt-3 text-xs text-ink/45">Keyword volumes from live Google data{{ kwReport.some((r) => r.estimated) ? ' (estimated from result counts where marked)' : '' }}. Your share is a projection under the $250 Layout.ai campaign — a simulation, not a guarantee.</p>
                                 </div>
-                                <MarketChart :competitors="competitors" :you="marketYou" />
+                                <KeywordChart :rows="kwReport" />
                             </div>
                         </div>
                     </div>

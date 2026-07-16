@@ -19,7 +19,7 @@ class BrandKit extends Model
         'extract'  => 'array',
         'summary'  => 'array',
         'products' => 'array',
-        'competitors' => 'array',
+        'keyword_stats' => 'array',
         'ads'      => 'array',
         'stages'   => 'array',
     ];

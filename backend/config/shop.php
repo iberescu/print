@@ -133,11 +133,11 @@ return [
         'browser_token' => env('CLOUDFLARE_BROWSER_TOKEN'),
     ],
 
-    // SpyFu competitors API (ads-step market simulation). Requires the API
-    // add-on on the SpyFu plan; the pair comes from Account -> API (ID = GUID).
-    'spyfu' => [
-        'api_id'     => env('SPYFU_API_ID'),
-        'secret_key' => env('SPYFU_SECRET_KEY'),
+    // Google Programmable Search (ads-step keyword report): API key from a GCP
+    // project + a "search the entire web" engine id from programmablesearchengine.google.com.
+    'google_cse' => [
+        'key' => env('GOOGLE_CSE_KEY'),
+        'cx'  => env('GOOGLE_CSE_CX'),
     ],
 
     'pqsg' => [
