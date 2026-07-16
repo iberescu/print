@@ -41,7 +41,23 @@ class InboundEmailController extends Controller
         if ($body === '' && ! empty($p['html'])) {
             $body = trim(preg_replace('/\s+/', ' ', strip_tags((string) $p['html'])));
         }
+        // Resend's email.received event is metadata-only — the body lives behind
+        // the received-emails API (GET /emails/receiving/{email_id}).
+        if ($body === '' && ! empty($p['email_id']) && ($key = config('services.resend.key'))) {
+            try {
+                $full = \Illuminate\Support\Facades\Http::withToken($key)->timeout(10)
+                    ->get('https://api.resend.com/emails/receiving/'.$p['email_id'])->json();
+                $body = trim((string) ($full['text'] ?? ''));
+                if ($body === '' && ! empty($full['html'])) {
+                    $body = trim(preg_replace('/\s+/', ' ', strip_tags((string) $full['html'])));
+                }
+            } catch (\Throwable $e) {
+                \Illuminate\Support\Facades\Log::warning('inbound-email: body fetch failed: '.$e->getMessage());
+            }
+        }
         if ($email === '' || $body === '') {
+            \Illuminate\Support\Facades\Log::info("inbound-email: dropped (from={$email}, subject={$subject}, empty body)");
+
             return response()->json(['ok' => false, 'reason' => 'no sender or body'], 200);
         }
         // Never loop on our own outbound / bounces.
