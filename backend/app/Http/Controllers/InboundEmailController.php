@@ -30,6 +30,16 @@ class InboundEmailController extends Controller
         }
 
         $p = (array) $request->input('data', $request->all()); // Resend nests under data
+
+        // Webhooks are ACCOUNT-wide: every receiving domain on the Resend account
+        // fires here. Only handle mail addressed to our own domain — otherwise a
+        // sibling project's customers would get RunMyPrint tickets and AI answers.
+        $ourDomain = strtolower(strrchr((string) config('shop.support_email', 'contact@runmyprint.com'), '@'));
+        $rcpts = array_merge((array) ($p['to'] ?? []), (array) ($p['cc'] ?? []), (array) ($p['received_for'] ?? []));
+        $rcpts = array_filter(array_map(fn ($r) => strtolower(is_array($r) ? ($r['email'] ?? '') : (string) $r), $rcpts));
+        if ($rcpts && ! array_filter($rcpts, fn ($r) => str_contains($r, $ourDomain))) {
+            return response()->json(['ok' => false, 'reason' => 'not our domain'], 200);
+        }
         $fromRaw = (string) ($p['from'] ?? '');
         if (is_array($p['from'] ?? null)) {
             $fromRaw = (string) ($p['from']['email'] ?? ($p['from'][0]['email'] ?? json_encode($p['from'])));
