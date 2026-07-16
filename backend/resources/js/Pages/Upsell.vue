@@ -165,9 +165,14 @@ const kwReport = computed(() => {
         keyword: r.keyword,
         volume: r.monthlySearches,
         estimated: r.source !== 'metrics',
-        yours: Math.max(15, Math.round(marketVisitors.value * (w[i] / sum))),
+        // a paid campaign can only capture a plausible slice of a keyword's real
+        // searches — cap at ~30% so niche terms never show impossible shares
+        yours: Math.min(Math.round(r.monthlySearches * 0.3), Math.max(15, Math.round(marketVisitors.value * (w[i] / sum)))),
     }));
 });
+// whatever search can't supply comes from Google Display ads across the GDN —
+// that's genuinely how the campaign reaches its volume on niche keywords
+const displayShare = computed(() => Math.max(0, marketVisitors.value - kwReport.value.reduce((a, r) => a + r.yours, 0)));
 const fmtNum = (n) => (n >= 1000 ? `${(n / 1000).toFixed(n >= 10000 ? 0 : 1)}k` : `${Math.round(n)}`);
 
 // ---- Layout.ai search-ads: real keywords from the async brand-profile API -----
@@ -633,10 +638,15 @@ function next() {
                                                 <td class="py-2.5 pr-3 text-right text-ink/70">{{ fmtNum(r.volume) }}<span v-if="r.estimated" class="text-ink/40"> est.</span></td>
                                                 <td class="py-2.5 text-right font-semibold text-brand-700">+{{ fmtNum(r.yours) }}</td>
                                             </tr>
+                                            <tr v-if="displayShare > 0" class="border-b border-paper-200">
+                                                <td class="py-2.5 pr-3 font-medium text-ink">Google Display ads <span class="text-ink/45">(millions of sites)</span></td>
+                                                <td class="py-2.5 pr-3 text-right text-ink/40">—</td>
+                                                <td class="py-2.5 text-right font-semibold text-brand-700">+{{ fmtNum(displayShare) }}</td>
+                                            </tr>
                                             <tr class="bg-brand-50/60">
                                                 <td class="py-2.5 pr-3 font-semibold text-brand-700">Total — $29 campaign</td>
                                                 <td class="py-2.5 pr-3"></td>
-                                                <td class="py-2.5 text-right font-semibold text-brand-700">≈{{ fmtNum(kwReport.reduce((a, r) => a + r.yours, 0)) }}/mo</td>
+                                                <td class="py-2.5 text-right font-semibold text-brand-700">≈{{ fmtNum(marketVisitors) }}/mo</td>
                                             </tr>
                                         </tbody>
                                     </table>
