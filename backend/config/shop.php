@@ -134,6 +134,11 @@ return [
     ],
 
 
+    // Support email channel: replies go out from this address; the inbound
+    // webhook (/hooks/inbound-email?token=...) requires the shared token.
+    'support_email'         => env('SUPPORT_EMAIL', 'contact@runmyprint.com'),
+    'support_inbound_token' => env('SUPPORT_INBOUND_TOKEN'),
+
     'pqsg' => [
         'enabled'     => (bool) env('PQSG_ENABLED', true),
         'api_base'    => rtrim(env('PQSG_API_BASE', 'https://printbrothers-kickoff-clone.cloudlab-internal.com/api/pqsmartgenerator'), '/'),

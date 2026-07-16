@@ -130,6 +130,8 @@ Route::match(['get', 'post'], '/affiliate/widget/track', [\App\Http\Controllers\
 Route::get('/affiliate/go', [\App\Http\Controllers\AffiliateController::class, 'widgetGo'])->middleware('throttle:60,1,affiliate-go')->name('affiliate.go');
 
 // Support chat (bubble widget: AI-first, humans answer flagged tickets in admin)
+// Inbound support email (contact@ → provider webhook → the support inbox); token-guarded.
+Route::post('/hooks/inbound-email', \App\Http\Controllers\InboundEmailController::class)->middleware('throttle:120,1,inbound-email')->name('hooks.inbound-email');
 Route::get('/support/messages', [\App\Http\Controllers\SupportController::class, 'messages'])->name('support.messages');
 Route::post('/support', [\App\Http\Controllers\SupportController::class, 'send'])->middleware('throttle:20,1,support')->name('support.send');
 
@@ -156,6 +158,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::get('/support', [\App\Http\Controllers\Admin\SupportController::class, 'index'])->name('support.index');
     Route::get('/support/{ticket}', [\App\Http\Controllers\Admin\SupportController::class, 'show'])->name('support.show');
     Route::post('/support/{ticket}/reply', [\App\Http\Controllers\Admin\SupportController::class, 'reply'])->name('support.reply');
+    Route::post('/support/{ticket}/retry-ai', [\App\Http\Controllers\Admin\SupportController::class, 'retryAi'])->name('support.retry');
 
     Route::get('/products', [AdminProducts::class, 'index'])->name('products.index');
     Route::post('/products', [AdminProducts::class, 'store'])->name('products.store');

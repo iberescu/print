@@ -23,7 +23,7 @@ return Application::configure(basePath: dirname(__DIR__))
             : route('login'));
         // Behind Cloudflare — trust the proxy for correct scheme (X-Forwarded-Proto) + client IP.
         $middleware->trustProxies(at: '*', headers: Request::HEADER_X_FORWARDED_FOR | Request::HEADER_X_FORWARDED_HOST | Request::HEADER_X_FORWARDED_PORT | Request::HEADER_X_FORWARDED_PROTO);
-        $middleware->validateCsrfTokens(except: ['stripe/webhook', 'affiliate/widget/track', 'api/widget']); // partner-origin beacons carry no token
+        $middleware->validateCsrfTokens(except: ['stripe/webhook', 'affiliate/widget/track', 'api/widget', 'hooks/inbound-email']); // partner-origin beacons carry no token
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->shouldRenderJsonWhen(

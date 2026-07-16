@@ -42,8 +42,13 @@ const tabHref = (key) => (key ? `/admin/support?status=${key}` : '/admin/support
                 <tbody class="divide-y divide-paper-200">
                     <tr v-for="t in tickets.data" :key="t.id" class="transition hover:bg-paper-200/60" :class="t.status === 'needs_human' ? 'bg-red-50/60' : ''">
                         <td class="px-5 py-3"><Link :href="`/admin/support/${t.id}`" class="font-medium text-brand-700 hover:underline">#{{ t.id }}</Link></td>
-                        <td class="px-5 py-3 text-ink/80">{{ t.customer }}</td>
-                        <td class="max-w-md px-5 py-3 text-ink/60"><span class="line-clamp-1">{{ t.excerpt }}</span><span class="text-xs text-ink/40">{{ t.count }} messages</span></td>
+                        <td class="px-5 py-3 text-ink/80">
+                            <span class="mr-1" :title="t.channel === 'email' ? 'Email' : 'Chat'">{{ t.channel === 'email' ? '✉️' : '💬' }}</span>{{ t.customer }}
+                        </td>
+                        <td class="max-w-md px-5 py-3 text-ink/60">
+                            <span v-if="t.subject" class="line-clamp-1 font-medium text-ink/80">{{ t.subject }}</span>
+                            <span class="line-clamp-1">{{ t.excerpt }}</span><span class="text-xs text-ink/40">{{ t.count }} messages</span>
+                        </td>
                         <td class="px-5 py-3"><span class="rounded-full px-2.5 py-0.5 text-xs font-semibold" :class="(statusMeta[t.status] || statusMeta.open).class">{{ (statusMeta[t.status] || statusMeta.open).label }}</span></td>
                         <td class="hidden px-5 py-3 text-xs text-ink/50 sm:table-cell">{{ t.updated }}</td>
                     </tr>

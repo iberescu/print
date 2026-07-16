@@ -25,7 +25,9 @@ class SupportController extends Controller
             ->paginate(25)->withQueryString()
             ->through(fn (SupportTicket $t) => [
                 'id'       => $t->id,
-                'customer' => $t->user?->email ?? 'Guest',
+                'customer' => $t->email ?? $t->user?->email ?? 'Guest',
+                'channel'  => $t->channel ?? 'chat',
+                'subject'  => $t->subject,
                 'excerpt'  => Str::limit(trim((string) $t->messages->first()?->body), 90),
                 'count'    => $t->messages_count,
                 'status'   => $t->status,
@@ -51,7 +53,9 @@ class SupportController extends Controller
         return Inertia::render('Admin/Support/Show', [
             'ticket' => [
                 'id'       => $ticket->id,
-                'customer' => $ticket->user?->email ?? 'Guest',
+                'customer' => $ticket->email ?? $ticket->user?->email ?? 'Guest',
+                'channel'  => $ticket->channel ?? 'chat',
+                'subject'  => $ticket->subject,
                 'status'   => $ticket->status,
                 'created'  => $ticket->created_at->format('M j, Y H:i'),
                 'messages' => $ticket->messages->map(fn ($m) => [
@@ -71,16 +75,33 @@ class SupportController extends Controller
         $ticket->messages()->create(['sender' => 'admin', 'body' => $data['body']]);
         $ticket->update(['status' => 'answered']);
 
-        // Signed-in customers get the reply by email too; guest tickets are
-        // session-bound and only visible in the chat bubble.
-        if ($ticket->user?->email) {
+        // Email tickets always reply by mail (threaded via the subject ref);
+        // chat tickets email signed-in customers too. Guest chat tickets are
+        // session-bound and only visible in the bubble.
+        $to = $ticket->email ?: $ticket->user?->email;
+        if ($to) {
             try {
-                \Illuminate\Support\Facades\Mail::to($ticket->user->email)->send(new \App\Mail\SupportReplied($data['body']));
+                $ref = sprintf('[RMP-T%d-%s]', $ticket->id, substr((string) $ticket->token, 0, 6));
+                \Illuminate\Support\Facades\Mail::to($to)->send(new \App\Mail\SupportReplied($data['body'], $ticket->subject, $ref, $ticket->channel ?? 'chat'));
             } catch (\Throwable $e) {
                 \Illuminate\Support\Facades\Log::error('support reply mail failed', ['ticket' => $ticket->id, 'error' => $e->getMessage()]);
             }
         }
 
         return redirect()->route('admin.support.show', $ticket)->with('success', 'Reply sent.');
+    }
+
+    /** "Try AI again" — re-run Gemini on the thread (even after an escalation).
+     *  Synchronous so the admin sees the outcome on the reload. */
+    public function retryAi(SupportTicket $ticket)
+    {
+        $answered = \App\Jobs\AnswerSupportTicket::dispatchSync($ticket->id, force: true);
+
+        return redirect()->route('admin.support.show', $ticket)->with(
+            'success',
+            $answered
+                ? ($ticket->fresh()->channel === 'email' ? 'AI answered — reply emailed to the customer.' : 'AI answered in the chat.')
+                : 'AI still can\'t answer this one confidently — write a reply below.',
+        );
     }
 }

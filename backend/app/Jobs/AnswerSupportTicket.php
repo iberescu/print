@@ -24,21 +24,27 @@ class AnswerSupportTicket
     private const ESCALATION = "Thanks for reaching out! I've passed your question to our support team — "
         .'a real person will reply right here in this chat shortly.';
 
-    public function __construct(public readonly int $ticketId)
+    /** $force = admin-triggered "try AI again": re-answers even after an
+     *  escalation, and punts QUIETLY (no duplicate hand-off ack / email). */
+    public function __construct(public readonly int $ticketId, public readonly bool $force = false)
     {
     }
 
-    public function handle(GeminiClient $gemini): void
+    /** @return bool whether the AI posted an answer */
+    public function handle(GeminiClient $gemini): bool
     {
         $ticket = SupportTicket::with('messages')->find($this->ticketId);
-        if (! $ticket || $ticket->messages->last()?->sender !== 'customer') {
-            return; // already handled
+        if (! $ticket || ! $ticket->messages->contains('sender', 'customer')) {
+            return false;
+        }
+        if (! $this->force && $ticket->messages->last()?->sender !== 'customer') {
+            return false; // already handled
         }
         // Once a ticket is escalated, the AI stays out of the conversation.
-        if ($ticket->status === 'needs_human') {
+        if (! $this->force && $ticket->status === 'needs_human') {
             $ticket->touch();
 
-            return;
+            return false;
         }
 
         try {
@@ -51,12 +57,45 @@ class AnswerSupportTicket
             $reply = '';
         }
 
+        $isEmail = $ticket->channel === 'email' && $ticket->email;
+
         if ($canAnswer && $reply !== '') {
             $ticket->messages()->create(['sender' => 'ai', 'body' => $reply]);
             $ticket->update(['status' => 'ai']);
-        } else {
-            $ticket->messages()->create(['sender' => 'ai', 'body' => self::ESCALATION]);
+            if ($isEmail) {
+                $this->emailOut($ticket, $reply);
+            }
+
+            return true;
+        }
+
+        if ($this->force) {
+            // Retry that punted again: leave the thread as-is, keep it with a human.
             $ticket->update(['status' => 'needs_human']);
+        } else {
+            $escalation = $isEmail
+                ? "Thanks for reaching out! I've passed your message to our support team — a real person will get back to you at this address shortly."
+                : self::ESCALATION;
+            $ticket->messages()->create(['sender' => 'ai', 'body' => $escalation]);
+            $ticket->update(['status' => 'needs_human']);
+            if ($isEmail) {
+                $this->emailOut($ticket, $escalation);
+            }
+        }
+
+        return false;
+    }
+
+    /** Email-channel tickets get the reply (or the human-handoff ack) by mail,
+     *  with the thread ref in the subject so a "Re:" lands back on this ticket. */
+    private function emailOut(SupportTicket $ticket, string $body): void
+    {
+        try {
+            $ref = sprintf('[RMP-T%d-%s]', $ticket->id, substr((string) $ticket->token, 0, 6));
+            \Illuminate\Support\Facades\Mail::to($ticket->email)
+                ->send(new \App\Mail\SupportReplied($body, $ticket->subject, $ref, 'email'));
+        } catch (Throwable $e) {
+            Log::error("support: reply mail failed for ticket {$ticket->id}: {$e->getMessage()}");
         }
     }
 

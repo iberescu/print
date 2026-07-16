@@ -1,5 +1,6 @@
 <script setup>
-import { Head, Link, useForm } from '@inertiajs/vue3';
+import { ref } from 'vue';
+import { Head, Link, router, useForm } from '@inertiajs/vue3';
 import AdminLayout from '../../../Layouts/AdminLayout.vue';
 
 const props = defineProps({ ticket: { type: Object, required: true } });
@@ -9,6 +10,16 @@ const submit = () => form.post(`/admin/support/${props.ticket.id}/reply`, {
     preserveScroll: true,
     onSuccess: () => form.reset(),
 });
+
+// Synchronous Gemini re-run — takes a few seconds, keep the button honest.
+const retrying = ref(false);
+const retryAi = () => {
+    retrying.value = true;
+    router.post(`/admin/support/${props.ticket.id}/retry-ai`, {}, {
+        preserveScroll: true,
+        onFinish: () => { retrying.value = false; },
+    });
+};
 
 const senderMeta = {
     customer: { label: 'Customer', box: 'border-paper-300 bg-white', tag: 'text-ink/45' },
@@ -26,8 +37,16 @@ const senderMeta = {
                   :class="ticket.status === 'needs_human' ? 'bg-red-100 text-red-700' : ticket.status === 'answered' ? 'bg-brand-50 text-brand-700' : 'bg-emerald-100 text-emerald-700'">
                 {{ ticket.status === 'needs_human' ? 'Needs human' : ticket.status === 'answered' ? 'Answered' : 'AI answered' }}
             </span>
+            <span class="rounded-full bg-paper-200 px-2.5 py-0.5 text-xs font-semibold text-ink/60">
+                {{ ticket.channel === 'email' ? '✉️ Email' : '💬 Chat' }}
+            </span>
             <span class="text-sm text-ink/55">{{ ticket.customer }} · opened {{ ticket.created }}</span>
+            <button type="button" :disabled="retrying" class="ml-auto rounded-full px-4 py-1.5 text-xs font-semibold text-brand-700 ring-1 ring-brand-300 transition hover:bg-brand-50 disabled:opacity-50"
+                    @click="retryAi">
+                {{ retrying ? 'Asking AI…' : '↻ Try AI again' }}
+            </button>
         </div>
+        <p v-if="ticket.subject" class="-mt-2 mb-4 text-base font-semibold text-ink/85">{{ ticket.subject }}</p>
 
         <div class="max-w-3xl space-y-3">
             <div v-for="m in ticket.messages" :key="m.id" class="rounded-2xl border p-4" :class="(senderMeta[m.sender] || senderMeta.customer).box">
@@ -41,7 +60,9 @@ const senderMeta = {
                 <label class="text-xs font-semibold uppercase tracking-wide text-ink/50">Reply as RunMyPrint team</label>
                 <textarea v-model="form.body" rows="4" required
                           class="mt-2 w-full rounded-xl border border-paper-300 bg-paper-200/40 p-3 text-sm focus:border-brand-400 focus:outline-none"
-                          placeholder="Write your answer — the customer sees it instantly in their chat."></textarea>
+                          :placeholder="ticket.channel === 'email'
+                              ? `Write your answer — it's emailed to ${ticket.customer} (replies thread back here).`
+                              : 'Write your answer — the customer sees it instantly in their chat.'"></textarea>
                 <p v-if="form.errors.body" class="mt-1 text-xs text-red-600">{{ form.errors.body }}</p>
                 <div class="mt-3 flex justify-end">
                     <button type="submit" :disabled="form.processing" class="rounded-full bg-brand-600 px-6 py-2.5 text-sm font-semibold text-white transition hover:bg-brand-700 disabled:opacity-50">
