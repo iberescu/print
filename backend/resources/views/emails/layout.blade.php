@@ -12,7 +12,7 @@
                 <tr>
                     <td style="background:#ffffff;border-radius:14px 14px 0 0;border:1px solid #e6e1d4;border-bottom:3px solid #1c2b45;padding:16px 28px;">
                         <a href="{{ url('/') }}" style="text-decoration:none;">
-                            <img src="{{ url('/storage/brand/logo.png') }}" alt="RunMyPrint" width="126" height="47" style="display:block;width:126px;height:47px;border:0;">
+                            <img src="{{ url('/storage/brand/logo-email.png') }}" alt="RunMyPrint" width="126" height="71" style="display:block;width:126px;height:71px;border:0;">
                         </a>
                     </td>
                 </tr>
