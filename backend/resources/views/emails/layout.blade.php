@@ -10,8 +10,10 @@
         <tr><td align="center">
             <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;">
                 <tr>
-                    <td style="background:#1c2b45;border-radius:14px 14px 0 0;padding:20px 28px;">
-                        <span style="color:#ffffff;font-size:20px;font-weight:800;letter-spacing:-0.3px;">runmyprint</span>
+                    <td style="background:#ffffff;border-radius:14px 14px 0 0;border:1px solid #e6e1d4;border-bottom:3px solid #1c2b45;padding:16px 28px;">
+                        <a href="{{ url('/') }}" style="text-decoration:none;">
+                            <img src="{{ url('/storage/brand/logo.png') }}" alt="RunMyPrint" width="126" height="47" style="display:block;width:126px;height:47px;border:0;">
+                        </a>
                     </td>
                 </tr>
                 <tr>

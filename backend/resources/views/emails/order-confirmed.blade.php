@@ -7,9 +7,10 @@
     <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border:1px solid #e6e1d4;border-radius:10px;">
         @foreach (($order->items ?? []) as $item)
             @php($thumb = $item['design']['preview'] ?? $item['image'] ?? null)
+            @php($thumb = $thumb && str_starts_with($thumb, '/') ? url($thumb) : $thumb) {{-- mail clients need absolute URLs --}}
             <tr>
                 <td style="padding:10px 14px;border-bottom:1px solid #f0ece0;font-size:14px;">
-                    @if ($thumb)<img src="{{ $thumb }}" alt="" width="40" height="40" style="width:40px;height:40px;border-radius:6px;object-fit:cover;vertical-align:middle;margin-right:10px;border:1px solid #f0ece0;">@endif{{ $item['name'] ?? 'Item' }} <span style="color:#8a8577;">× {{ $item['quantity'] ?? 1 }}</span>
+                    @if ($thumb)<img src="{{ $thumb }}" alt="" width="56" height="56" style="width:56px;height:56px;border-radius:8px;object-fit:cover;vertical-align:middle;margin-right:12px;border:1px solid #f0ece0;">@endif{{ $item['name'] ?? 'Item' }} <span style="color:#8a8577;">× {{ $item['quantity'] ?? 1 }}</span>
                 </td>
                 <td align="right" style="padding:10px 14px;border-bottom:1px solid #f0ece0;font-size:14px;font-weight:600;">
                     ${{ number_format((float) ($item['line_total'] ?? 0), 2) }}
