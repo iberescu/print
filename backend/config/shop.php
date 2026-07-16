@@ -133,6 +133,13 @@ return [
         'browser_token' => env('CLOUDFLARE_BROWSER_TOKEN'),
     ],
 
+    // SpyFu competitors API (ads-step market simulation). Requires the API
+    // add-on on the SpyFu plan; the pair comes from Account -> API (ID = GUID).
+    'spyfu' => [
+        'api_id'     => env('SPYFU_API_ID'),
+        'secret_key' => env('SPYFU_SECRET_KEY'),
+    ],
+
     'pqsg' => [
         'enabled'     => (bool) env('PQSG_ENABLED', true),
         'api_base'    => rtrim(env('PQSG_API_BASE', 'https://printbrothers-kickoff-clone.cloudlab-internal.com/api/pqsmartgenerator'), '/'),

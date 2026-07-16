@@ -247,6 +247,7 @@ class PqsgController extends Controller
                 'company'     => $s['company'] ?? $kit?->company,
                 'description' => $s['description'] ?? null,
                 'keywords'    => array_values(array_filter((array) ($s['google_search_keywords'] ?? []))),
+                'competitors' => array_values((array) ($kit?->competitors ?? [])),
                 'logo'        => $kit?->logo_url,
             ]);
         }
