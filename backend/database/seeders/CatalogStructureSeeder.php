@@ -213,7 +213,9 @@ class CatalogStructureSeeder extends Seeder
         );
     }
 
-    /** The $10 website offer sold on the upsell ads step to buyers WITHOUT a website. */
+    /** The free-website bundle line: included at $0 with the $29 ads package for
+     *  buyers WITHOUT a website (the $0 order line keeps the build obligation
+     *  visible to fulfilment). */
     private function ensureWebsiteOffer(): void
     {
         $services = Category::firstOrCreate(
@@ -226,10 +228,10 @@ class CatalogStructureSeeder extends Seeder
             [
                 'category_id'     => $services->id,
                 'subcategory_id'  => null,
-                'name'            => 'Website — Free .com Domain + Lifetime Hosting',
-                'tagline'         => 'A professional one-page website designed from your brand.',
-                'description'     => 'A free professional website designed from your logo and brand colours — including a free .com domain and lifetime hosting — for a one-time $10. We build it, you approve it before it goes live, and there are no monthly fees.',
-                'from_price'      => 10.00,
+                'name'            => 'Free Website — .com Domain + Lifetime Hosting',
+                'tagline'         => 'Included free with the $250 Google ads package.',
+                'description'     => 'A professional one-page website designed from your logo and brand colours — including a free .com domain and lifetime hosting. Included FREE with the $250 Google ads package ($29). You approve the design before it goes live; no monthly fees.',
+                'from_price'      => 0.00,
                 'supports_design' => false,
                 'supports_upload' => false,
                 'is_active'       => true,
@@ -239,7 +241,7 @@ class CatalogStructureSeeder extends Seeder
 
         $product->quantities()->updateOrCreate(
             ['quantity' => 1],
-            ['unit_price' => 10.00, 'total_price' => 10.00, 'is_default' => true, 'sort_order' => 0]
+            ['unit_price' => 0.00, 'total_price' => 0.00, 'is_default' => true, 'sort_order' => 0]
         );
     }
 }

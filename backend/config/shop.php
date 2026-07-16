@@ -133,12 +133,6 @@ return [
         'browser_token' => env('CLOUDFLARE_BROWSER_TOKEN'),
     ],
 
-    // Google Programmable Search (ads-step keyword report): API key from a GCP
-    // project + a "search the entire web" engine id from programmablesearchengine.google.com.
-    'google_cse' => [
-        'key' => env('GOOGLE_CSE_KEY'),
-        'cx'  => env('GOOGLE_CSE_CX'),
-    ],
 
     'pqsg' => [
         'enabled'     => (bool) env('PQSG_ENABLED', true),

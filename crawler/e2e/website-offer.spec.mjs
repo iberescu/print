@@ -69,14 +69,16 @@ test('no-URL capture gets the $10 website offer with a generated preview', async
     await page.waitForTimeout(1200); // let the screen image paint
     await page.screenshot({ path: `${outDir}/offer.png`, fullPage: true });
 
-    // --- the $10 add-on lands in the cart -------------------------------------
-    await page.getByRole('button', { name: /add my website/i }).click();
-    await expect(page.getByText(/✓ added to your order — \$10/i)).toBeVisible();
+    // --- the bundle lands in the cart: $29 ads package + the FREE website line
+    await page.getByRole('button', { name: /add the \$29 ads package/i }).click();
+    await expect(page.getByText(/✓ added — ads package \+ free website/i)).toBeVisible({ timeout: 20000 });
 
     try {
         await clickContinue(page);
     } catch { await clickContinue(page); } // same swallowed-click retry on the way out
     await page.waitForURL('**/cart');
-    await expect(page.getByText(/free \.com domain/i).first()).toBeVisible();
-    await expect(page.getByText('$10.00').first()).toBeVisible();
+    await expect(page.getByText(/free website/i).first()).toBeVisible();
+    await expect(page.getByText(/ad credit/i).first()).toBeVisible();
+    await expect(page.getByText('$29.00').first()).toBeVisible();
+    await expect(page.getByText('$0.00').first()).toBeVisible();
 });

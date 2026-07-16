@@ -290,6 +290,27 @@ function addItem(p) {
             onFinish: () => (busy.value = null),
         });
 }
+// No-URL captures: the $29 ads package INCLUDES the free website — add both
+// lines together (the $0 website line keeps the build obligation on the order).
+function addAdsBundle() {
+    if (busy.value || (added.value['ad-credit-250'] && added.value['starter-website'])) return;
+    busy.value = 'ad-credit-250';
+    router.post('/upsell/add/ad-credit-250', { quantityId: null }, {
+        preserveScroll: true,
+        preserveState: true,
+        onSuccess: () => {
+            added.value = { ...added.value, 'ad-credit-250': true };
+            router.post('/upsell/add/starter-website', { quantityId: null }, {
+                preserveScroll: true,
+                preserveState: true,
+                onSuccess: () => { added.value = { ...added.value, 'starter-website': true }; },
+                onFinish: () => (busy.value = null),
+            });
+        },
+        onError: () => (busy.value = null),
+    });
+}
+
 function next() {
     router.post('/upsell/next');
 }
@@ -442,8 +463,8 @@ function next() {
                         <button type="button" :disabled="busy === 'ad-credit-250' || added['ad-credit-250']"
                                 class="mt-4 rounded-full px-7 py-3 font-semibold transition disabled:opacity-80"
                                 :class="added['ad-credit-250'] ? 'bg-white/15 text-lime-accent' : 'bg-brand-blue text-white shadow-lg shadow-brand-blue/30 hover:bg-[#2f78e0]'"
-                                @click="addItem({ slug: 'ad-credit-250' })">
-                            {{ added['ad-credit-250'] ? '✓ Added to your order — $29' : 'Add to my order — $29' }}
+                                @click="websiteOffer ? addAdsBundle() : addItem({ slug: 'ad-credit-250' })">
+                            {{ added['ad-credit-250'] ? '✓ Added to your order — $29' : (websiteOffer ? 'Add to my order — $29 (free website included)' : 'Add to my order — $29') }}
                         </button>
                         <!-- social proof -->
                         <p class="mt-3 flex items-center gap-2 text-sm text-white/75">
@@ -485,7 +506,7 @@ function next() {
                                 Get a <span class="text-brand-600">free website</span> — including a free .com domain &amp; lifetime hosting
                             </h2>
                             <p class="mt-3 max-w-md text-ink/60">
-                                {{ websiteOffer.company ? `We already designed ${websiteOffer.company}'s homepage` : 'We already designed your homepage' }} from your logo and brand colours. Add it to this order for a one-time $10 — that's it, ever.
+                                {{ websiteOffer.company ? `We already designed ${websiteOffer.company}'s homepage` : 'We already designed your homepage' }} from your logo and brand colours. It's included FREE with the $29 ads package above — website, .com domain and hosting, no extra cost.
                             </p>
                             <ul class="mt-5 space-y-2.5 text-sm text-ink/75">
                                 <li v-for="g in ['Professionally designed from your logo & brand colours', 'Free .com domain included', 'Lifetime hosting — no monthly fees, ever', 'You approve the design before it goes live']" :key="g" class="flex items-center gap-2.5">
@@ -497,20 +518,20 @@ function next() {
                                 </li>
                             </ul>
                             <div class="mt-6 flex items-end gap-3">
-                                <span class="font-display text-4xl font-extrabold leading-none text-navy">$10</span>
-                                <span class="mb-1 rounded-full bg-lime-accent px-2.5 py-1 text-xs font-bold uppercase tracking-wide text-navy">one-time · no subscription</span>
+                                <span class="font-display text-4xl font-extrabold leading-none text-navy">FREE</span>
+                                <span class="mb-1 rounded-full bg-lime-accent px-2.5 py-1 text-xs font-bold uppercase tracking-wide text-navy">with the $29 ads package</span>
                             </div>
                             <p class="mt-2 flex items-center gap-1.5 text-sm font-medium text-brand-700">
                                 <svg class="h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                 Only available with this order — it won't be offered again at checkout.
                             </p>
-                            <button type="button" :disabled="busy === 'starter-website' || added['starter-website']"
+                            <button type="button" :disabled="!!busy || added['starter-website']"
                                     class="mt-4 rounded-full px-7 py-3 font-semibold transition disabled:opacity-80"
                                     :class="added['starter-website'] ? 'bg-brand-50 text-brand-700' : 'bg-brand-600 text-white shadow-lg shadow-brand-600/25 hover:bg-brand-700'"
-                                    @click="addItem({ slug: 'starter-website' })">
-                                {{ added['starter-website'] ? '✓ Added to your order — $10' : 'Add my website — $10' }}
+                                    @click="addAdsBundle()">
+                                {{ added['starter-website'] ? '✓ Added — ads package + free website' : 'Add the $29 ads package — website included' }}
                             </button>
-                            <p class="mt-4 text-xs text-ink/45">One-time offer for new Runmyprint customers. The $10 is charged with your order; we build the site from the design you see, register the free .com domain (subject to availability) and host it for the life of the product. Nothing goes live until you approve it.</p>
+                            <p class="mt-4 text-xs text-ink/45">One-time offer for new Runmyprint customers. The website is included free with the $29 ads package: we build the site from the design you see, register the free .com domain (subject to availability) and host it at no monthly cost. Nothing goes live until you approve it.</p>
                         </div>
                     </div>
                 </div>
@@ -650,7 +671,7 @@ function next() {
                                             </tr>
                                         </tbody>
                                     </table>
-                                    <p class="mt-3 text-xs text-ink/45">All figures are ESTIMATED US search traffic from live Google data{{ kwReport.some((r) => r.estimated) ? ' (derived from result counts where marked "est.")' : '' }}. Your share is a projection under the $250 Layout.ai campaign — a simulation, not a guarantee.</p>
+                                    <p class="mt-3 text-xs text-ink/45">All figures are ESTIMATED US search traffic. Your share is a projection under the $250 Layout.ai campaign — a simulation, not a guarantee.</p>
                                 </div>
                                 <KeywordChart :rows="kwReport" />
                             </div>
