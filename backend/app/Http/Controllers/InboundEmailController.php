@@ -62,6 +62,8 @@ class InboundEmailController extends Controller
         }
         // Never loop on our own outbound / bounces.
         if (Str::contains($email, ['@runmyprint.com', 'mailer-daemon', 'noreply', 'no-reply'])) {
+            $this->forwardCopy($email, $subject, $body); // still worth seeing (bounces etc.)
+
             return response()->json(['ok' => false, 'reason' => 'self or bounce'], 200);
         }
 
@@ -88,9 +90,34 @@ class InboundEmailController extends Controller
         $ticket->messages()->create(['sender' => 'customer', 'body' => Str::limit($body, 8000, '…')]);
         $ticket->touch();
 
+        $this->forwardCopy($email, $subject, $body, $ticket);
+
         AnswerSupportTicket::dispatchAfterResponse($ticket->id);
 
         return response()->json(['ok' => true, 'ticket' => $ticket->id]);
+    }
+
+    /** Ops copy of every inbound mail → shop.support_forward_to (reply-to = the
+     *  customer, so replying from that inbox reaches them directly). Failures
+     *  never block the ticket flow. */
+    private function forwardCopy(string $email, string $subject, string $body, ?SupportTicket $ticket = null): void
+    {
+        $to = (string) config('shop.support_forward_to');
+        if ($to === '') {
+            return;
+        }
+        try {
+            $text = "From: {$email}\nSubject: ".($subject !== '' ? $subject : '(no subject)')
+                .($ticket ? "\nTicket: ".url('/admin/support/'.$ticket->id) : '')
+                ."\n----------------------------------------\n\n".$body;
+            \Illuminate\Support\Facades\Mail::raw($text, function ($m) use ($to, $subject, $email) {
+                $m->to($to)
+                    ->subject('[contact@] '.($subject !== '' ? $subject : '(no subject)'))
+                    ->replyTo($email);
+            });
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::warning('inbound-email: forward failed: '.$e->getMessage());
+        }
     }
 
     /** Drop quoted reply tails ("On …, X wrote:" and "> " blocks) so threads stay readable. */

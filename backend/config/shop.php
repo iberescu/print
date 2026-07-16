@@ -138,6 +138,8 @@ return [
     // webhook (/hooks/inbound-email?token=...) requires the shared token.
     'support_email'         => env('SUPPORT_EMAIL', 'contact@runmyprint.com'),
     'support_inbound_token' => env('SUPPORT_INBOUND_TOKEN'),
+    // Every inbound email is also forwarded here (ops copy; empty = off).
+    'support_forward_to'    => env('SUPPORT_FORWARD_TO'),
 
     'pqsg' => [
         'enabled'     => (bool) env('PQSG_ENABLED', true),
