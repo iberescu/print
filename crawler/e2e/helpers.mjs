@@ -5,7 +5,15 @@ export async function clickContinue(page) {
     // Centre the CTA first: late-loading product images shift the layout and can
     // push the button under the sticky header, which then swallows the click.
     const btn = page.getByRole('button', { name: /continue/i }).last(); // bottom main CTA
-    await btn.evaluate((el) => el.scrollIntoView({ block: 'center' }));
+    try {
+        await btn.evaluate((el) => el.scrollIntoView({ block: 'center' }), { timeout: 8000 });
+    } catch (e) {
+        // The previous click's redirect can land mid-wait: the upsell page (and its
+        // CTA) is torn down while we hold a stale locator. Reaching the cart IS the
+        // success condition — bail out quietly.
+        if (new URL(page.url()).pathname === '/cart') return;
+        throw e;
+    }
     await page.waitForTimeout(250);
     await Promise.all([
         page.waitForResponse((r) => /\/upsell\/next\b/.test(r.url()) || /\/cart\b/.test(r.url())),

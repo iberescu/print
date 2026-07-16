@@ -311,8 +311,13 @@ function addAdsBundle() {
     });
 }
 
+// Advancing greys every Continue out (with a small spinner) until the server
+// answers — pressing twice mid-flight double-advanced the wizard.
+const advancing = ref(false);
 function next() {
-    router.post('/upsell/next');
+    if (advancing.value) return;
+    advancing.value = true;
+    router.post('/upsell/next', {}, { onFinish: () => (advancing.value = false) });
 }
 </script>
 
@@ -348,7 +353,10 @@ function next() {
             <template v-else>
             <FreeShippingBar class="mt-5" :subtotal="summary.subtotal" :threshold="summary.threshold" :remaining="summary.remaining" :qualifies="summary.qualifies" />
             <div class="mt-3 flex justify-end">
-                <button class="inline-flex items-center gap-1.5 rounded-full border border-brand-600 px-5 py-2 text-sm font-semibold text-brand-700 transition hover:bg-brand-50" @click="next">{{ isLast ? 'Continue to cart →' : 'Continue →' }}</button>
+                <button :disabled="advancing" class="inline-flex items-center gap-2 rounded-full border border-brand-600 px-5 py-2 text-sm font-semibold text-brand-700 transition hover:bg-brand-50 disabled:cursor-not-allowed disabled:border-paper-300 disabled:bg-paper-200 disabled:text-ink/40" @click="next">
+                    <span v-if="advancing" class="h-3.5 w-3.5 animate-spin rounded-full border-2 border-ink/25 border-t-transparent"></span>
+                    {{ isLast ? 'Continue to cart →' : 'Continue →' }}
+                </button>
             </div>
 
             <h1 class="mt-7 font-display text-3xl font-semibold tracking-tight sm:text-4xl">{{ heading }}</h1>
@@ -730,13 +738,33 @@ function next() {
 
             <!-- continue (the final step carries its own CTA in the summary card) -->
             <div v-if="step !== 'finalize'" class="mt-10 flex flex-col-reverse items-center justify-between gap-4 border-t border-paper-300 pt-6 sm:flex-row">
-                <button class="text-sm font-medium text-ink/55 transition hover:text-ink" @click="next">
+                <button :disabled="advancing" class="text-sm font-medium text-ink/55 transition hover:text-ink disabled:cursor-not-allowed disabled:opacity-40" @click="next">
                     {{ isLast ? 'No thanks, go to cart' : 'No thanks' }}
                 </button>
-                <button class="w-full rounded-full bg-brand-600 px-8 py-3.5 font-semibold text-white shadow-lg shadow-brand-600/20 transition hover:bg-brand-700 sm:w-auto" @click="next">
+                <button :disabled="advancing" class="inline-flex w-full items-center justify-center gap-2 rounded-full bg-brand-600 px-8 py-3.5 font-semibold text-white shadow-lg shadow-brand-600/20 transition hover:bg-brand-700 disabled:cursor-not-allowed disabled:opacity-50 disabled:shadow-none disabled:saturate-0 sm:w-auto" @click="next">
+                    <span v-if="advancing" class="h-4 w-4 animate-spin rounded-full border-2 border-white/60 border-t-transparent"></span>
                     {{ isLast ? 'Continue to cart →' : 'Continue →' }}
                 </button>
             </div>
+
+            <!-- floating continue bar — the same always-at-hand affordance the
+                 final step has, for every other step (spacer keeps it off the CTAs) -->
+            <template v-if="step !== 'finalize'">
+                <div class="h-20"></div>
+                <div class="fixed inset-x-0 bottom-0 z-40 border-t border-paper-300 bg-white/95 backdrop-blur">
+                    <div class="mx-auto flex max-w-6xl items-center justify-between gap-3 px-4 py-3 sm:px-6">
+                        <div v-if="summary.subtotal != null">
+                            <p class="font-display text-lg font-bold leading-tight text-ink">{{ money(summary.subtotal) }}</p>
+                            <p class="text-[11px] leading-tight text-ink/50">your order so far</p>
+                        </div>
+                        <div v-else></div>
+                        <button :disabled="advancing" class="inline-flex items-center gap-2 rounded-full bg-brand-600 px-6 py-2.5 text-sm font-semibold text-white shadow transition hover:bg-brand-700 disabled:cursor-not-allowed disabled:opacity-50 disabled:saturate-0" @click="next">
+                            <span v-if="advancing" class="h-3.5 w-3.5 animate-spin rounded-full border-2 border-white/60 border-t-transparent"></span>
+                            {{ isLast ? 'Continue to cart →' : 'Continue →' }}
+                        </button>
+                    </div>
+                </div>
+            </template>
             </template>
         </div>
     </StoreLayout>

@@ -53,8 +53,13 @@ function pick(g, v) {
     chosen.value = { ...chosen.value, [g.id]: v.id };
     save();
 }
+// Grey the continue CTAs (with a small spinner) while the step advance is in
+// flight — double-presses used to double-advance the wizard.
+const advancing = ref(false);
 function toCart() {
-    router.post('/upsell/next');
+    if (advancing.value) return;
+    advancing.value = true;
+    router.post('/upsell/next', {}, { onFinish: () => (advancing.value = false) });
 }
 
 // ---- instant pricing (mirrors Pricing::quote server-side) ------------------
@@ -179,7 +184,10 @@ const attrLine = (v) => (v.attributes || [])
                 <p class="font-display text-lg font-bold leading-tight text-ink" :class="busy ? 'animate-pulse opacity-50' : ''">{{ money(total) }}</p>
                 <p class="text-[11px] leading-tight text-ink/50">{{ money(totalPerUnit) }} each</p>
             </div>
-            <button class="rounded-full bg-brand-600 px-6 py-2.5 text-sm font-semibold text-white shadow transition hover:bg-brand-700" @click="toCart">Continue →</button>
+            <button :disabled="advancing" class="inline-flex items-center gap-2 rounded-full bg-brand-600 px-6 py-2.5 text-sm font-semibold text-white shadow transition hover:bg-brand-700 disabled:cursor-not-allowed disabled:opacity-50 disabled:saturate-0" @click="toCart">
+                <span v-if="advancing" class="h-3.5 w-3.5 animate-spin rounded-full border-2 border-white/60 border-t-transparent"></span>
+                Continue →
+            </button>
         </div>
 
         <!-- ============ sticky order summary ============ -->
@@ -225,9 +233,11 @@ const attrLine = (v) => (v.attributes || [])
                 <p v-else-if="summary.remaining > 0" class="mt-2 text-xs text-ink/55">{{ money(summary.remaining) }} away from free shipping</p>
 
                 <button
-                    class="mt-4 w-full rounded-full bg-brand-600 px-6 py-3.5 font-semibold text-white shadow-lg shadow-brand-600/20 transition hover:bg-brand-700"
+                    :disabled="advancing"
+                    class="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-full bg-brand-600 px-6 py-3.5 font-semibold text-white shadow-lg shadow-brand-600/20 transition hover:bg-brand-700 disabled:cursor-not-allowed disabled:opacity-50 disabled:shadow-none disabled:saturate-0"
                     @click="toCart"
                 >
+                    <span v-if="advancing" class="h-4 w-4 animate-spin rounded-full border-2 border-white/60 border-t-transparent"></span>
                     Looks perfect — continue →
                 </button>
                 <p class="mt-3 text-center text-[11px] text-ink/45">100% satisfaction guarantee — love it or we reprint it</p>
