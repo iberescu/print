@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Storage;
  * (this is the inverse of ImportTemplates and keeps template state in git):
  *   {base}/index.json            — [{id,product,orientation,category,name,style,font,score}]
  *   {base}/json/{ref}.json       — fabric JSON
- *   {base}/previews/{ref}.png    — rendered gallery preview
+ *   {base}/previews/{ref}.webp   — rendered gallery preview (stored format)
  *   {base}/heroes/{file}         — shared AI background images the JSON references
  */
 class ExportTemplates extends Command
@@ -42,7 +42,11 @@ class ExportTemplates extends Command
                     );
 
                     if ($t->preview_path && $disk->exists($t->preview_path)) {
-                        file_put_contents("{$base}/previews/{$t->ref}.png", $disk->get($t->preview_path));
+                        // keep the stored format — the previews are webp, and import
+                        // prefers webp; a .png name wrapping webp bytes just left
+                        // stray duplicates next to the tracked bundle files
+                        $ext = strtolower(pathinfo($t->preview_path, PATHINFO_EXTENSION) ?: 'webp');
+                        file_put_contents("{$base}/previews/{$t->ref}.{$ext}", $disk->get($t->preview_path));
                     } else {
                         $missingPreview++;
                     }
