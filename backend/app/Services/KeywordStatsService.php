@@ -2,12 +2,13 @@
 
 namespace App\Services;
 
+use App\Services\GeminiClient;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
 /**
  * Monthly-traffic stats for the capture's Google search keywords — feeds the
- * ads-step keyword report. Two sources, best first:
+ * ads-step keyword report. Three sources, best first:
  *
  *  1. Google Ads Keyword Planner historical metrics (REAL avg monthly searches).
  *     Requires the developer token to have Basic access — with today's explorer
@@ -16,6 +17,8 @@ use Illuminate\Support\Facades\Log;
  *  2. Google Programmable Search JSON API: real "results on Google" counts per
  *     keyword (GOOGLE_CSE_KEY + GOOGLE_CSE_CX), from which a monthly-searches
  *     ESTIMATE is derived (marked estimated downstream).
+ *  3. Gemini's prior on US search volumes — no credentials needed, keeps the
+ *     report alive until one of the better sources is configured.
  *
  * Rows: {keyword, monthlySearches, source: metrics|estimate, results?}. Empty
  * array when neither source is available — the section simply doesn't render.
@@ -35,8 +38,12 @@ class KeywordStatsService
         if ($rows) {
             return $rows;
         }
+        $rows = $this->fromCse($keywords);
+        if ($rows) {
+            return $rows;
+        }
 
-        return $this->fromCse($keywords);
+        return $this->fromGemini($keywords);
     }
 
     /** Real volumes via the Ads API (needs Basic developer-token access). */
@@ -120,6 +127,39 @@ class KeywordStatsService
         }
 
         return $rows;
+    }
+
+    /**
+     * Last-resort estimator: Gemini's prior on US monthly search volumes. Needs
+     * no extra credentials, keeps the section alive until Planner/CSE creds
+     * exist; every figure is labelled an estimate in the UI.
+     */
+    private function fromGemini(array $keywords): array
+    {
+        try {
+            $list = implode('", "', array_map(fn ($k) => str_replace('"', '', $k), $keywords));
+            $r = app(GeminiClient::class)->generateJson(
+                'Estimate the average MONTHLY Google search volume in the UNITED STATES for each of these '
+                .'keywords, the way an SEO tool would report them. Be realistic: niche long-tail terms are '
+                .'often 50-500/mo, mainstream commercial terms 1k-50k/mo. Respond ONLY JSON: '
+                .'{"volumes": [{"keyword": "...", "monthly": 1234}, ...]} — one entry per keyword, same order. '
+                ."Keywords: \"{$list}\"",
+            );
+            $rows = [];
+            foreach ((array) ($r['volumes'] ?? []) as $row) {
+                $kw = trim((string) ($row['keyword'] ?? ''));
+                $v = (int) ($row['monthly'] ?? 0);
+                if ($kw !== '' && $v > 0) {
+                    $rows[] = ['keyword' => $kw, 'monthlySearches' => max(60, min(60000, $v)), 'source' => 'estimate'];
+                }
+            }
+
+            return $rows;
+        } catch (\Throwable $e) {
+            Log::info('keyword-stats gemini: '.$e->getMessage());
+
+            return [];
+        }
     }
 
     private function estimateVolume(string $kw, int $results): int
