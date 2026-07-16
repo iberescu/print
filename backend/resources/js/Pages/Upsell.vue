@@ -613,7 +613,7 @@ function next() {
                             <h3 class="font-display text-xl font-bold text-navy sm:text-2xl">Your keywords — the traffic that's out there</h3>
                             <span class="rounded-full bg-brand-50 px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-wide text-brand-700">Simulation</span>
                         </div>
-                        <p class="mt-1.5 max-w-2xl text-sm text-ink/60"><strong class="font-semibold text-ink/75">These are the searches we'll target for your business</strong> — the market's monthly search traffic per keyword, and the share the $29 starter campaign is projected to bring you (≈{{ fmtNum(marketVisitors) }} visitors/month in total).</p>
+                        <p class="mt-1.5 max-w-2xl text-sm text-ink/60"><strong class="font-semibold text-ink/75">These are the searches we'll target for your business</strong> — estimated US monthly search traffic per keyword, and the share the $29 starter campaign is projected to bring you (≈{{ fmtNum(marketVisitors) }} visitors/month in total).</p>
                     </div>
                     <div class="rounded-2xl bg-gradient-to-br from-brand-blue/50 via-paper-300 to-lime-accent/40 p-[1.5px]">
                         <div class="overflow-hidden rounded-2xl bg-white p-5 sm:p-6">
@@ -623,7 +623,7 @@ function next() {
                                         <thead>
                                             <tr class="border-b border-paper-300 text-left text-[11px] font-semibold uppercase tracking-wider text-ink/45">
                                                 <th class="py-2 pr-3">Keyword</th>
-                                                <th class="py-2 pr-3 text-right">Searches/mo</th>
+                                                <th class="py-2 pr-3 text-right">Est. US searches/mo</th>
                                                 <th class="py-2 text-right">Yours ($29)</th>
                                             </tr>
                                         </thead>
@@ -640,7 +640,7 @@ function next() {
                                             </tr>
                                         </tbody>
                                     </table>
-                                    <p class="mt-3 text-xs text-ink/45">Keyword volumes from live Google data{{ kwReport.some((r) => r.estimated) ? ' (estimated from result counts where marked)' : '' }}. Your share is a projection under the $250 Layout.ai campaign — a simulation, not a guarantee.</p>
+                                    <p class="mt-3 text-xs text-ink/45">All figures are ESTIMATED US search traffic from live Google data{{ kwReport.some((r) => r.estimated) ? ' (derived from result counts where marked "est.")' : '' }}. Your share is a projection under the $250 Layout.ai campaign — a simulation, not a guarantee.</p>
                                 </div>
                                 <KeywordChart :rows="kwReport" />
                             </div>

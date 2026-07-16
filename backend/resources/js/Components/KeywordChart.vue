@@ -24,7 +24,7 @@ const fmt = (n) => (n >= 1000 ? `${(n / 1000).toFixed(n >= 10000 ? 0 : 1)}k` : `
     <svg :viewBox="`0 0 ${W} ${height()}`" class="h-auto w-full select-none" role="img" aria-label="Keyword traffic chart" data-keyword-chart>
         <!-- legend -->
         <rect :x="X0" y="12" width="12" height="12" rx="3" fill="#16233b" opacity="0.8" />
-        <text :x="X0 + 18" y="22" font-size="12" fill="#5c6372">market searches / month</text>
+        <text :x="X0 + 18" y="22" font-size="12" fill="#5c6372">est. US searches / month</text>
         <rect :x="X0 + 190" y="12" width="12" height="12" rx="3" fill="#2563c9" />
         <text :x="X0 + 208" y="22" font-size="12" fill="#5c6372">your visitors on the $29 campaign</text>
 
