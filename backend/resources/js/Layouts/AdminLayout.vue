@@ -50,6 +50,10 @@ const logout = () => router.post('/admin/logout');
                     <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="6" cy="12" r="2.5"/><circle cx="18" cy="6" r="2.5"/><circle cx="18" cy="18" r="2.5"/><path d="M8.2 10.8 15.8 7.2M8.2 13.2l7.6 3.6" stroke-linecap="round"/></svg>
                     Affiliates
                 </Link>
+                <Link href="/admin/experiments" class="flex items-center gap-3 rounded-lg px-3 py-2.5 font-medium transition" :class="isActive('/admin/experiments') ? 'bg-white/15 text-white' : 'text-paper/70 hover:bg-white/10 hover:text-white'">
+                    <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M9 3h6M10 3v5.5L4.8 18a2 2 0 0 0 1.8 3h10.8a2 2 0 0 0 1.8-3L14 8.5V3" stroke-linecap="round" stroke-linejoin="round"/><path d="M7.5 14h9" stroke-linecap="round"/></svg>
+                    Experiments
+                </Link>
             </nav>
             <div class="border-t border-white/10 p-3">
                 <a href="/" target="_blank" class="mb-1 flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-paper/60 transition hover:bg-white/10 hover:text-white">
@@ -86,6 +90,7 @@ const logout = () => router.post('/admin/logout');
                 <Link href="/admin/surfaces" class="whitespace-nowrap rounded-md px-3 py-1.5 font-medium" :class="isActive('/admin/surfaces') ? 'bg-brand-50 text-brand-700' : 'text-ink/60'">Surfaces</Link>
                 <Link href="/admin/affiliates" class="whitespace-nowrap rounded-md px-3 py-1.5 font-medium" :class="isActive('/admin/affiliates') ? 'bg-brand-50 text-brand-700' : 'text-ink/60'">Affiliates</Link>
                 <Link href="/admin/support" class="whitespace-nowrap rounded-md px-3 py-1.5 font-medium" :class="isActive('/admin/support') ? 'bg-brand-50 text-brand-700' : 'text-ink/60'">Support</Link>
+                <Link href="/admin/experiments" class="whitespace-nowrap rounded-md px-3 py-1.5 font-medium" :class="isActive('/admin/experiments') ? 'bg-brand-50 text-brand-700' : 'text-ink/60'">Experiments</Link>
             </nav>
 
             <div v-if="flash" class="border-b border-emerald-200 bg-emerald-50 px-5 py-2.5 text-sm font-medium text-emerald-800 sm:px-8">✓ {{ flash }}</div>

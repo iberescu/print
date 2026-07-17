@@ -29,6 +29,12 @@ class CartController extends Controller
             'summary'       => $this->summary(),
             'recommended'   => $this->recommended(),
             'brandProducts' => \App\Support\LogoOnProducts::forCurrentSession(),
+            // free500 A/B arm: the cart shows the $100-threshold credit status
+            'adsOffer'      => \App\Support\AdsOffer::current() === \App\Support\AdsOffer::FREE500 ? [
+                'variant'   => 'free500',
+                'credit'    => \App\Support\AdsOffer::CREDIT,
+                'qualifyAt' => \App\Support\AdsOffer::QUALIFY_AT,
+            ] : null,
         ]);
     }
 

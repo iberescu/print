@@ -10,6 +10,7 @@ defineProps({
     summary: { type: Object, default: () => ({}) },
     recommended: { type: Array, default: () => [] },
     brandProducts: { type: Array, default: () => [] },
+    adsOffer: { type: Object, default: null },
 });
 
 const remove = (id) => router.post(`/cart/remove/${id}`, {}, { preserveScroll: true });
@@ -69,6 +70,19 @@ const editHref = (it) => {
             <h1 class="font-display text-3xl font-semibold tracking-tight">Your cart</h1>
 
             <FreeShippingBar v-if="items.length" class="mt-6" :subtotal="summary.subtotal" :threshold="summary.threshold" :remaining="summary.remaining" :qualifies="summary.qualifies" />
+
+            <!-- free500 experiment arm: the $100-threshold ads credit, mirrored in the cart -->
+            <div v-if="items.length && adsOffer" class="mt-3 flex items-center gap-3 rounded-2xl border px-4 py-3 text-sm"
+                 :class="Number(summary.subtotal || 0) >= adsOffer.qualifyAt ? 'border-lime-accent/60 bg-lime-accent/15' : 'border-paper-300 bg-white'">
+                <svg class="h-5 w-5 shrink-0" :class="Number(summary.subtotal || 0) >= adsOffer.qualifyAt ? 'text-navy' : 'text-brand-600'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M20 12v7H4v-7M2 7h20v5H2zM12 7v12M12 7s-1-4-4-4-3 4 0 4h4zM12 7s1-4 4-4 3 4 0 4h-4z" stroke-linejoin="round"/></svg>
+                <p v-if="Number(summary.subtotal || 0) >= adsOffer.qualifyAt" class="font-semibold text-navy">
+                    ✓ FREE ${{ adsOffer.credit }} Google Ads credit unlocked — it's added to your order at checkout.
+                </p>
+                <p v-else class="text-ink/70">
+                    <span class="font-semibold text-ink">${{ (adsOffer.qualifyAt - Number(summary.subtotal || 0)).toFixed(2) }} more</span>
+                    unlocks a <span class="font-semibold text-ink">FREE ${{ adsOffer.credit }} Google Ads credit</span> with this order.
+                </p>
+            </div>
 
             <div v-if="!items.length" class="mt-10 rounded-2xl border border-paper-300 bg-white p-12 text-center">
                 <p class="text-ink/60">Your cart is empty.</p>

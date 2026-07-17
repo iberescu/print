@@ -40,21 +40,31 @@ const loaderText = computed(() => ({
     ads: 'Preparing your ad offer…',
 }[props.step] ?? 'Finding products that match your order…'));
 
-// No-website captures additionally get the "$10 website" offer on the ads step —
+// No-website captures additionally get the free-website offer on the ads step —
 // it replaces the Google Display ads examples section (which needs a site to
-// exist); the Layout.ai ad-credit pitch above it stays for everyone.
+// exist); the ads offer above it stays for everyone.
 const websiteOffer = computed(() => (props.step === 'ads' ? props.payload.websiteOffer || null : null));
+
+// A/B on the ads offer: 'paid29' ($29 → $250 display ads) vs 'free500'
+// (a $500 Google Ads credit, free with orders ≥ $100 — no CTA, auto-added
+// at checkout when the order qualifies).
+const isFree500 = computed(() => props.step === 'ads' && props.payload.adsVariant === 'free500');
+const qualifyAt = computed(() => Number(props.payload.adsQualifyAt || 100));
+const qualifies500 = computed(() => Number(props.summary.subtotal || 0) >= qualifyAt.value);
+const missing500 = computed(() => Math.max(0, qualifyAt.value - Number(props.summary.subtotal || 0)));
 
 const heading = computed(() => ({
     brand: 'Put your brand on more',
     pqsg: 'Your logo on more products',
-    ads: '$250 in Google ads — for $29',
+    ads: isFree500.value ? 'FREE — $500 in Google Ads credit' : '$250 in Google ads — for $29',
     finalize: 'Final step — make it exactly right',
 }[props.step] ?? 'Complete your order'));
 const sub = computed(() => ({
     brand: 'Add your logo, name and details to matching products — laid out automatically.',
     pqsg: 'Fresh ideas generated from your design — they appear below as they finish.',
-    ads: 'Pay $29, get $250 of Google Display ads through our Layout.ai partnership. You approve the campaign before anything runs — get thousands of highly targeted visitors, or your money back.',
+    ads: isFree500.value
+        ? 'Every order over $100 comes with a free $500 Google Ads promotional credit — set up through our Layout.ai partnership and added to your order automatically at checkout. You approve the campaign before anything runs.'
+        : 'Pay $29, get $250 of Google Display ads through our Layout.ai partnership. You approve the campaign before anything runs — get thousands of highly targeted visitors, or your money back.',
     finalize: 'Your design is approved and locked in. Fine-tune the quantity and material — the price updates as you go.',
 }[props.step] ?? 'Customers who buy business cards often add these. Not personalised — ships ready to use.'));
 const title = computed(() => ({
@@ -64,12 +74,19 @@ const title = computed(() => ({
 
 // The "6 ready-to-run ad designs (below)" bullet points at the examples section,
 // which the website offer replaces when there's no site to advertise.
-const adGuarantees = computed(() => [
-    'Thousands of highly targeted visitors — or your money back',
-    'You approve the campaign before anything runs',
-    'Unused credit refunded',
-    ...(websiteOffer.value ? [] : ['6 ready-to-run ad designs (below)']),
-]);
+const adGuarantees = computed(() => (isFree500.value
+    ? [
+        'Yours FREE with any order over $100 — added automatically at checkout',
+        '$500 promotional credit for new Google Ads accounts',
+        'Campaign designed from your brand with Layout.ai',
+        'You approve everything before a single ad runs',
+    ]
+    : [
+        'Thousands of highly targeted visitors — or your money back',
+        'You approve the campaign before anything runs',
+        'Unused credit refunded',
+        ...(websiteOffer.value ? [] : ['6 ready-to-run ad designs (below)']),
+    ]));
 
 // Layout.ai "how it works" — shown under the generated concepts on the ads step
 const adSteps = [
@@ -311,6 +328,19 @@ function addAdsBundle() {
     });
 }
 
+// Variant B (free500): the website isn't bundled with a $29 purchase — it rides
+// the $100+ order on its own $0 line (honoured at checkout when the order qualifies).
+function addWebsiteOnly() {
+    if (busy.value || added.value['starter-website']) return;
+    busy.value = 'starter-website';
+    router.post('/upsell/add/starter-website', { quantityId: null }, {
+        preserveScroll: true,
+        preserveState: true,
+        onSuccess: () => { added.value = { ...added.value, 'starter-website': true }; },
+        onFinish: () => (busy.value = null),
+    });
+}
+
 // Advancing greys every Continue out (with a small spinner) until the server
 // answers — pressing twice mid-flight double-advanced the wizard.
 const advancing = ref(false);
@@ -429,7 +459,7 @@ function next() {
                 <div class="relative grid overflow-hidden rounded-3xl bg-gradient-to-br from-navy via-navy to-navy-950 text-white shadow-2xl shadow-navy/20 lg:grid-cols-[1.1fr_1fr]">
                     <!-- generated promo visual -->
                     <div class="relative min-h-64 lg:min-h-[380px]">
-                        <img v-if="payload.promoImage" :src="payload.promoImage" alt="$250 of Google Display ads for $29" class="absolute inset-0 h-full w-full object-cover" />
+                        <img v-if="payload.promoImage" :src="payload.promoImage" alt="Google ads campaign performance" class="absolute inset-0 h-full w-full object-cover" />
                         <div v-else class="absolute inset-0 bg-gradient-to-br from-brand-blue/50 to-navy"></div>
                         <div class="absolute inset-0 hidden bg-gradient-to-r from-transparent via-transparent to-navy lg:block"></div>
                         <div class="absolute inset-0 bg-gradient-to-t from-navy via-transparent to-transparent lg:hidden"></div>
@@ -445,7 +475,8 @@ function next() {
                             Runmyprint × Layout.ai ↗
                         </a>
                         <h2 class="mt-5 font-display text-2xl font-bold leading-tight sm:text-3xl">
-                            Pay $29, get <span class="text-lime-accent">$250</span> in Google Display ads
+                            <template v-if="isFree500">FREE: <span class="text-lime-accent">$500</span> Google Ads credit with orders over $100</template>
+                            <template v-else>Pay $29, get <span class="text-lime-accent">$250</span> in Google Display ads</template>
                         </h2>
                         <p class="mt-3 max-w-md text-white/70">Your first campaign, already designed. It runs on Google's network, managed by our partner <a href="https://layout.ai" target="_blank" rel="noopener" class="underline decoration-white/40 underline-offset-2 hover:text-white">Layout.ai</a> — and nothing goes live until you approve it.</p>
                         <ul class="mt-5 space-y-2.5 text-sm text-white/85">
@@ -457,8 +488,13 @@ function next() {
                                 {{ g }}
                             </li>
                         </ul>
-                        <!-- price anchor: make the 8.6× value obvious at a glance -->
-                        <div class="mt-6 flex items-end gap-3">
+                        <!-- price anchor: make the value obvious at a glance -->
+                        <div v-if="isFree500" class="mt-6 flex items-end gap-3">
+                            <span class="font-display text-2xl font-semibold text-white/35 line-through decoration-2">$500</span>
+                            <span class="font-display text-4xl font-extrabold leading-none text-lime-accent">FREE</span>
+                            <span class="mb-1 rounded-full bg-lime-accent/15 px-2.5 py-1 text-xs font-semibold text-lime-accent ring-1 ring-lime-accent/30">with orders over $100</span>
+                        </div>
+                        <div v-else class="mt-6 flex items-end gap-3">
                             <span class="font-display text-2xl font-semibold text-white/35 line-through decoration-2">$250</span>
                             <span class="font-display text-4xl font-extrabold leading-none text-lime-accent">$29</span>
                             <span class="mb-1 rounded-full bg-lime-accent/15 px-2.5 py-1 text-xs font-semibold text-lime-accent ring-1 ring-lime-accent/30">8.6× value · save $221</span>
@@ -468,7 +504,18 @@ function next() {
                             <svg class="h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                             Only available with this order — it won't be offered again at checkout.
                         </p>
-                        <button type="button" :disabled="busy === 'ad-credit-250' || added['ad-credit-250']"
+                        <!-- free500: nothing to buy — show live qualification instead of a CTA -->
+                        <div v-if="isFree500" class="mt-4 rounded-xl px-4 py-3"
+                             :class="qualifies500 ? 'bg-lime-accent/15 ring-1 ring-lime-accent/40' : 'bg-white/10 ring-1 ring-white/15'">
+                            <p v-if="qualifies500" class="text-sm font-semibold text-lime-accent">✓ Your order qualifies — the $500 credit is added automatically at checkout.</p>
+                            <template v-else>
+                                <p class="text-sm font-semibold text-white">You're at {{ money(summary.subtotal || 0) }} — add {{ money(missing500) }} more to unlock the free $500 credit.</p>
+                                <div class="mt-2 h-1.5 overflow-hidden rounded-full bg-white/15">
+                                    <div class="h-full rounded-full bg-lime-accent transition-all" :style="{ width: `${Math.min(100, (Number(summary.subtotal || 0) / qualifyAt) * 100)}%` }"></div>
+                                </div>
+                            </template>
+                        </div>
+                        <button v-else type="button" :disabled="busy === 'ad-credit-250' || added['ad-credit-250']"
                                 class="mt-4 rounded-full px-7 py-3 font-semibold transition disabled:opacity-80"
                                 :class="added['ad-credit-250'] ? 'bg-white/15 text-lime-accent' : 'bg-brand-blue text-white shadow-lg shadow-brand-blue/30 hover:bg-[#2f78e0]'"
                                 @click="websiteOffer ? addAdsBundle() : addItem({ slug: 'ad-credit-250' })">
@@ -485,9 +532,11 @@ function next() {
                                 <path d="M12 3l7 3v5c0 4.4-3 8-7 10-4-2-7-5.6-7-10V6z" stroke-linejoin="round" />
                                 <path d="m8.5 12 2.2 2.2L15.5 9.5" stroke-linecap="round" stroke-linejoin="round" />
                             </svg>
-                            <p class="text-sm font-semibold text-white">Money-back guarantee: get <span class="text-lime-accent">thousands of highly targeted visitors</span> or your $29 is refunded in full.</p>
+                            <p v-if="isFree500" class="text-sm font-semibold text-white">Zero risk: the credit is <span class="text-lime-accent">completely free</span> — you pay nothing for it, ever, and nothing runs until you approve it.</p>
+                            <p v-else class="text-sm font-semibold text-white">Money-back guarantee: get <span class="text-lime-accent">thousands of highly targeted visitors</span> or your $29 is refunded in full.</p>
                         </div>
-                        <p class="mt-4 text-xs text-white/45">One-time offer for new Runmyprint customers. The $29 is charged with your order; your campaign is fulfilled by our partner Layout.ai and nothing runs until you approve it. If it doesn't deliver, we refund the $29 — no questions asked.</p>
+                        <p v-if="isFree500" class="mt-4 text-xs text-white/45">One-time offer for new Runmyprint customers. $500 Google Ads promotional credit for new Google Ads accounts, subject to Google's promotional terms; granted with orders of $100 or more and set up with our partner Layout.ai. Nothing runs until you approve the campaign.</p>
+                        <p v-else class="mt-4 text-xs text-white/45">One-time offer for new Runmyprint customers. The $29 is charged with your order; your campaign is fulfilled by our partner Layout.ai and nothing runs until you approve it. If it doesn't deliver, we refund the $29 — no questions asked.</p>
                     </div>
                 </div>
 
@@ -511,13 +560,14 @@ function next() {
                                 One more thing — your website
                             </span>
                             <h2 class="mt-5 font-display text-2xl font-bold leading-tight text-navy sm:text-3xl">
-                                Get a <span class="text-brand-600">free website</span> — including a free .com domain &amp; lifetime hosting
+                                Get a <span class="text-brand-600">free website</span> — with lifetime hosting
                             </h2>
                             <p class="mt-3 max-w-md text-ink/60">
-                                {{ websiteOffer.company ? `We already designed ${websiteOffer.company}'s homepage` : 'We already designed your homepage' }} from your logo and brand colours. It's included FREE with the $29 ads package above — website, .com domain and hosting, no extra cost.
+                                {{ websiteOffer.company ? `We already designed ${websiteOffer.company}'s homepage` : 'We already designed your homepage' }} from your logo and brand colours.
+                                {{ isFree500 ? "It's included FREE with your order over $100 — website and hosting, no extra cost." : "It's included FREE with the $29 ads package above — website and hosting, no extra cost." }}
                             </p>
                             <ul class="mt-5 space-y-2.5 text-sm text-ink/75">
-                                <li v-for="g in ['Professionally designed from your logo & brand colours', 'Free .com domain included', 'Lifetime hosting — no monthly fees, ever', 'You approve the design before it goes live']" :key="g" class="flex items-center gap-2.5">
+                                <li v-for="g in ['Professionally designed from your logo & brand colours', 'Lifetime hosting — no monthly fees, ever', 'Connect your own domain (domain name not included)', 'You approve the design before it goes live']" :key="g" class="flex items-center gap-2.5">
                                     <svg class="h-4.5 w-4.5 shrink-0" viewBox="0 0 16 16" aria-hidden="true">
                                         <circle cx="8" cy="8" r="7" fill="none" stroke="#398aff" stroke-width="1.5" />
                                         <path d="m5 8.2 2 2L11 6" fill="none" stroke="#2563c9" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
@@ -527,7 +577,7 @@ function next() {
                             </ul>
                             <div class="mt-6 flex items-end gap-3">
                                 <span class="font-display text-4xl font-extrabold leading-none text-navy">FREE</span>
-                                <span class="mb-1 rounded-full bg-lime-accent px-2.5 py-1 text-xs font-bold uppercase tracking-wide text-navy">with the $29 ads package</span>
+                                <span class="mb-1 rounded-full bg-lime-accent px-2.5 py-1 text-xs font-bold uppercase tracking-wide text-navy">{{ isFree500 ? 'with your $100+ order' : 'with the $29 ads package' }}</span>
                             </div>
                             <p class="mt-2 flex items-center gap-1.5 text-sm font-medium text-brand-700">
                                 <svg class="h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -536,10 +586,12 @@ function next() {
                             <button type="button" :disabled="!!busy || added['starter-website']"
                                     class="mt-4 rounded-full px-7 py-3 font-semibold transition disabled:opacity-80"
                                     :class="added['starter-website'] ? 'bg-brand-50 text-brand-700' : 'bg-brand-600 text-white shadow-lg shadow-brand-600/25 hover:bg-brand-700'"
-                                    @click="addAdsBundle()">
-                                {{ added['starter-website'] ? '✓ Added — ads package + free website' : 'Add the $29 ads package — website included' }}
+                                    @click="isFree500 ? addWebsiteOnly() : addAdsBundle()">
+                                <template v-if="isFree500">{{ added['starter-website'] ? '✓ Added — your free website' : 'Include my free website — $0.00' }}</template>
+                                <template v-else>{{ added['starter-website'] ? '✓ Added — ads package + free website' : 'Add the $29 ads package — website included' }}</template>
                             </button>
-                            <p class="mt-4 text-xs text-ink/45">One-time offer for new Runmyprint customers. The website is included free with the $29 ads package: we build the site from the design you see, register the free .com domain (subject to availability) and host it at no monthly cost. Nothing goes live until you approve it.</p>
+                            <p v-if="isFree500" class="mt-4 text-xs text-ink/45">One-time offer for new Runmyprint customers. The website is included free with orders of $100 or more (the $0 line is removed if your order ends below $100): we build the site from the design you see and host it at no monthly cost. Domain name not included — connect one you own, or register one at any registrar (from ~$10/yr). Nothing goes live until you approve it.</p>
+                            <p v-else class="mt-4 text-xs text-ink/45">One-time offer for new Runmyprint customers. The website is included free with the $29 ads package: we build the site from the design you see and host it at no monthly cost. Domain name not included — connect one you own, or register one at any registrar (from ~$10/yr). Nothing goes live until you approve it.</p>
                         </div>
                     </div>
                 </div>
@@ -647,7 +699,7 @@ function next() {
                             <h3 class="font-display text-xl font-bold text-navy sm:text-2xl">Your keywords — the traffic that's out there</h3>
                             <span class="rounded-full bg-brand-50 px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-wide text-brand-700">Simulation</span>
                         </div>
-                        <p class="mt-1.5 max-w-2xl text-sm text-ink/60"><strong class="font-semibold text-ink/75">These are the searches we'll target for your business</strong> — estimated US monthly search traffic per keyword, and the share the $29 starter campaign is projected to bring you (≈{{ fmtNum(marketVisitors) }} visitors/month in total).</p>
+                        <p class="mt-1.5 max-w-2xl text-sm text-ink/60"><strong class="font-semibold text-ink/75">These are the searches we'll target for your business</strong> — estimated US monthly search traffic per keyword, and the share {{ isFree500 ? 'your free $500 credit campaign' : 'the $29 starter campaign' }} is projected to bring you (≈{{ fmtNum(marketVisitors) }} visitors/month in total).</p>
                     </div>
                     <div class="rounded-2xl bg-gradient-to-br from-brand-blue/50 via-paper-300 to-lime-accent/40 p-[1.5px]">
                         <div class="overflow-hidden rounded-2xl bg-white p-5 sm:p-6">
@@ -658,7 +710,7 @@ function next() {
                                             <tr class="border-b border-paper-300 text-left text-[11px] font-semibold uppercase tracking-wider text-ink/45">
                                                 <th class="py-2 pr-3">Keyword</th>
                                                 <th class="py-2 pr-3 text-right">Est. US searches/mo</th>
-                                                <th class="py-2 text-right">Yours ($29)</th>
+                                                <th class="py-2 text-right">Yours ({{ isFree500 ? 'credit' : '$29' }})</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -673,13 +725,13 @@ function next() {
                                                 <td class="py-2.5 text-right font-semibold text-brand-700">+{{ fmtNum(displayShare) }}</td>
                                             </tr>
                                             <tr class="bg-brand-50/60">
-                                                <td class="py-2.5 pr-3 font-semibold text-brand-700">Total — $29 campaign</td>
+                                                <td class="py-2.5 pr-3 font-semibold text-brand-700">Total — {{ isFree500 ? 'your credit campaign' : '$29 campaign' }}</td>
                                                 <td class="py-2.5 pr-3"></td>
                                                 <td class="py-2.5 text-right font-semibold text-brand-700">≈{{ fmtNum(marketVisitors) }}/mo</td>
                                             </tr>
                                         </tbody>
                                     </table>
-                                    <p class="mt-3 text-xs text-ink/45">All figures are ESTIMATED US search traffic. Your share is a projection under the $250 Layout.ai campaign — a simulation, not a guarantee.</p>
+                                    <p class="mt-3 text-xs text-ink/45">All figures are ESTIMATED US search traffic. Your share is a projection under the {{ isFree500 ? '$500-credit' : '$250' }} Layout.ai campaign — a simulation, not a guarantee.</p>
                                 </div>
                                 <KeywordChart :rows="kwReport" />
                             </div>

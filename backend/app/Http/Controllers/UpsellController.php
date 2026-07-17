@@ -23,6 +23,8 @@ class UpsellController extends Controller
 
     public function show()
     {
+        \App\Support\AdsOffer::applyForce(); // ?ab_ads=… pins the A/B from any step
+
         $step = $this->cart->upsellCurrent();
         if ($step === null || $this->cart->count() === 0) {
             $this->cart->clearUpsell();
@@ -33,7 +35,7 @@ class UpsellController extends Controller
         $payload = match ($step) {
             'brand'    => $this->brandPayload(),
             'pqsg'     => $this->pqsgPayload(),
-            'ads'      => $this->pqsgPayload() + ['promoImage' => $this->img('promos/layout-ai-offer-v4')] + $this->websiteOffer(),
+            'ads'      => $this->adsPayload(),
             'finalize' => $this->finalizePayload(),
             default    => $this->relatedPayload(),
         };
@@ -159,6 +161,11 @@ class UpsellController extends Controller
             'upsell'           => (bool) $mockup, // a "your logo on" mockup product — editable after the order
         ]);
 
+        // A/B engagement: the paid29 CTA (and the bundled website line) taken.
+        if (in_array($product->slug, ['ad-credit-250', 'starter-website'], true)) {
+            \App\Support\AdsOffer::log('offer_added', ['meta' => ['slug' => $product->slug]]);
+        }
+
         return redirect()->route('upsell.show')->with('success', "“{$product->name}” added.");
     }
 
@@ -222,6 +229,24 @@ class UpsellController extends Controller
                 ? \Illuminate\Support\Facades\Storage::disk('public')->url($kit->website_preview_path)
                 : null,
         ]];
+    }
+
+    /** Ads step payload: the pqsg feed + the A/B'd offer (assigned here, sticky,
+     *  segmented by whether the capture had a website URL). */
+    private function adsPayload(): array
+    {
+        $key = session('pqsg.key');
+        $kit = $key ? \App\Models\BrandKit::where('key', $key)->first() : null;
+        $hasUrl = $kit ? (bool) $kit->website : null; // null = no brand kit at all
+
+        return $this->pqsgPayload()
+            + ['promoImage' => $this->img('promos/layout-ai-offer-v4')]
+            + $this->websiteOffer()
+            + [
+                'adsVariant'   => \App\Support\AdsOffer::assign($hasUrl),
+                'adsCredit'    => \App\Support\AdsOffer::CREDIT,
+                'adsQualifyAt' => \App\Support\AdsOffer::QUALIFY_AT,
+            ];
     }
 
     private function pqsgPayload(): array

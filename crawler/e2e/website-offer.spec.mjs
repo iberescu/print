@@ -31,6 +31,7 @@ test('no-URL capture gets the $10 website offer with a generated preview', async
 
     await reviewAndAdd(page);
     await page.waitForURL('**/upsell');
+    await page.goto('/upsell?ab_ads=paid29'); // pin the A/B — this spec asserts the $29-bundle flow
     await expect(page.getByText(/1 of 4/i)).toBeVisible();
 
     // --- walk: finalize → accessories → gallery → ads ------------------------

@@ -29,6 +29,30 @@ class Order extends Model
     {
         if ($this->status !== 'paid') {
             $this->update(['status' => 'paid']);
+
+            // Ads-offer A/B: one conversion event per paid order. Webhooks have no
+            // session, so everything comes from the columns stamped at checkout.
+            if ($this->ab_ads_variant) {
+                try {
+                    $offerSlug = $this->ab_ads_variant === \App\Support\AdsOffer::FREE500
+                        ? \App\Support\AdsOffer::CREDIT_SLUG
+                        : 'ad-credit-250';
+                    \App\Models\AbEvent::create([
+                        'test'     => \App\Support\AdsOffer::TEST,
+                        'variant'  => $this->ab_ads_variant,
+                        'has_url'  => $this->ab_ads_has_url,
+                        'event'    => 'order_paid',
+                        'order_id' => $this->id,
+                        'amount'   => (float) $this->total,
+                        'meta'     => [
+                            'subtotal'   => (float) $this->subtotal,
+                            'took_offer' => collect($this->items)->contains(fn ($i) => ($i['slug'] ?? '') === $offerSlug),
+                        ],
+                    ]);
+                } catch (\Throwable $e) {
+                    \Illuminate\Support\Facades\Log::warning('ab order_paid log failed: '.$e->getMessage());
+                }
+            }
         }
         if (! $this->confirmation_sent_at) {
             $this->update(['confirmation_sent_at' => now()]);

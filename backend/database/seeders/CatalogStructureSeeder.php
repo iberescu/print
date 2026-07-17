@@ -228,9 +228,9 @@ class CatalogStructureSeeder extends Seeder
             [
                 'category_id'     => $services->id,
                 'subcategory_id'  => null,
-                'name'            => 'Free Website — .com Domain + Lifetime Hosting',
-                'tagline'         => 'Included free with the $250 Google ads package.',
-                'description'     => 'A professional one-page website designed from your logo and brand colours — including a free .com domain and lifetime hosting. Included FREE with the $250 Google ads package ($29). You approve the design before it goes live; no monthly fees.',
+                'name'            => 'Free Website — Lifetime Hosting',
+                'tagline'         => 'Included free with your qualifying ads offer. Domain name not included.',
+                'description'     => 'A professional one-page website designed from your logo and brand colours, with lifetime hosting — no monthly fees. Domain name NOT included: connect a domain you already own, or register one at any registrar (from ~$10/yr). Included FREE with your qualifying ads offer; you approve the design before it goes live.',
                 'from_price'      => 0.00,
                 'supports_design' => false,
                 'supports_upload' => false,

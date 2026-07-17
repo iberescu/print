@@ -56,6 +56,7 @@ test('designer brand adds the third-party upsell step', async ({ page }) => {
     });
     await reviewAndAdd(page);
     await page.waitForURL('**/upsell');
+    await page.goto('/upsell?ab_ads=paid29'); // pin the ads-offer A/B — this test asserts the $29/$250 pitch
 
     await expect(page.getByText(/1 of 4/i)).toBeVisible();          // final step first
     await clickContinue(page);                                            // then accessories

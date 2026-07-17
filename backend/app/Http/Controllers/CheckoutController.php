@@ -94,13 +94,30 @@ class CheckoutController extends Controller
         }
 
         $tax = $this->cart->tax($data['state']);
+
+        // Ads-offer A/B (variant B): the $500 credit rides qualifying orders as a
+        // $0 line (fulfilment obligation); below the threshold the free-website
+        // line (earned WITH the credit) is dropped too. Forced (preview/e2e)
+        // sessions aren't stamped, so they never pollute the report.
+        $items = $this->cart->items();
+        $adsVariant = \App\Support\AdsOffer::current();
+        if ($adsVariant === \App\Support\AdsOffer::FREE500) {
+            if ((float) $this->cart->subtotal() >= \App\Support\AdsOffer::QUALIFY_AT) {
+                $items[] = \App\Support\AdsOffer::creditLine();
+            } else {
+                $items = array_values(array_filter($items, fn ($i) => ($i['slug'] ?? '') !== 'starter-website'));
+            }
+        }
+
         $order = Order::create([
             'number'      => 'RMP-'.strtoupper(Str::random(8)),
             'email'       => $data['email'],
             'name'        => $data['name'],
             'address'     => $shippingAddr,
             'billing'     => $billingAddr,
-            'items'       => $this->cart->items(),
+            'items'       => $items,
+            'ab_ads_variant' => \App\Support\AdsOffer::forced() ? null : $adsVariant,
+            'ab_ads_has_url' => \App\Support\AdsOffer::forced() ? null : session('ab.ads_has_url'),
             'subtotal'    => $this->cart->subtotal(),
             'coupon_code' => $coupon?->code,
             'discount'        => $this->cart->discount(),

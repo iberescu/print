@@ -155,6 +155,8 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
 
     Route::get('/customers', [AdminCustomers::class, 'index'])->name('customers.index');
 
+    Route::get('/experiments', [\App\Http\Controllers\Admin\ExperimentsController::class, 'index'])->name('experiments.index');
+
     Route::get('/support', [\App\Http\Controllers\Admin\SupportController::class, 'index'])->name('support.index');
     Route::get('/support/{ticket}', [\App\Http\Controllers\Admin\SupportController::class, 'show'])->name('support.show');
     Route::post('/support/{ticket}/reply', [\App\Http\Controllers\Admin\SupportController::class, 'reply'])->name('support.reply');
