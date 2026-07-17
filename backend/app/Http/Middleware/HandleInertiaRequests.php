@@ -45,6 +45,7 @@ class HandleInertiaRequests extends Middleware
             'brandStore' => fn () => app()->bound('brandStore') ? [
                 'company'  => app('brandStore')->company,
                 'logo'     => app('brandStore')->logoUrl(),
+                'hero'     => app('brandStore')->heroUrl(),
                 'colors'   => app('brandStore')->colors,
                 'mainShop' => config('app.url'),
             ] : null,

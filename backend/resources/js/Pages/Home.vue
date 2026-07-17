@@ -116,11 +116,36 @@ const tools = [
 <template>
     <Head title="Custom Printing for Business" />
     <StoreLayout>
-        <!-- brand store: THEIR products lead; the main shop keeps its hero -->
-        <LogoProductsSection v-if="brandStore" :products="logoProducts"
-                             :eyebrow="`${brandStore.company} merchandise`"
-                             :title="`Your ${brandStore.company} products — ready to order`"
-                             sub="Already personalised with your company's logo. Pick one and order in a few clicks." />
+        <!-- brand store: generated hero (their products, their brand) + THEIR
+             products lead; the main shop keeps its own hero slider -->
+        <template v-if="brandStore">
+            <section v-if="brandStore.hero" class="relative overflow-hidden bg-navy">
+                <img :src="brandStore.hero" :alt="`${brandStore.company} branded merchandise`"
+                     class="h-[300px] w-full object-cover sm:h-[380px] lg:h-[440px]" />
+                <div class="absolute inset-0 bg-gradient-to-r from-black/55 via-black/20 to-transparent"></div>
+                <div class="absolute inset-0">
+                    <div class="mx-auto flex h-full max-w-7xl items-center px-6 sm:px-8">
+                        <div class="max-w-md text-white">
+                            <img v-if="brandStore.logo" :src="brandStore.logo" :alt="brandStore.company"
+                                 class="mb-4 max-h-14 w-auto max-w-[200px] rounded-lg bg-white/90 object-contain p-2" />
+                            <h1 class="font-display text-3xl font-bold leading-tight drop-shadow sm:text-4xl">
+                                {{ brandStore.company }} merchandise
+                            </h1>
+                            <p class="mt-2 text-white/85 drop-shadow">Your brand, already on every product — pick and order in minutes.</p>
+                            <a href="#brand-products" class="mt-5 inline-block rounded-full bg-white px-7 py-3 font-semibold text-ink shadow-lg transition hover:bg-white/90">
+                                Shop your products ↓
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <div id="brand-products">
+                <LogoProductsSection :products="logoProducts"
+                                     :eyebrow="`${brandStore.company} merchandise`"
+                                     :title="`Your ${brandStore.company} products — ready to order`"
+                                     sub="Already personalised with your company's logo. Pick one and order in a few clicks." />
+            </div>
+        </template>
         <HeroSlider v-else :slides="slides" />
 
         <!-- shop by product: one tile per popular product type -->

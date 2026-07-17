@@ -26,6 +26,24 @@ class BrandStore extends Model
         return $scheme.'://'.$this->subdomain.'.'.$base.($port ? ':'.$port : '').$path;
     }
 
+    /** The generated 16:9 store hero (products-on-a-table in their brand), if ready. */
+    public function heroUrl(): ?string
+    {
+        $key = $this->brandKit?->key;
+        if (! $key) {
+            return null;
+        }
+        $path = \App\Jobs\BrandKit\GenerateStoreHero::path($key);
+
+        return \Illuminate\Support\Facades\Cache::remember(
+            "brandstore.hero.{$this->id}",
+            300,
+            fn () => \Illuminate\Support\Facades\Storage::disk('public')->exists($path)
+                ? \Illuminate\Support\Facades\Storage::disk('public')->url($path)
+                : null,
+        );
+    }
+
     /** The tight display logo (logo-hd) of the owning kit, absolute URL. */
     public function logoUrl(): ?string
     {
