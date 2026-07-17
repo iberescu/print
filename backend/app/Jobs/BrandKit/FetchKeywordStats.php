@@ -33,6 +33,11 @@ class FetchKeywordStats implements ShouldQueue
         if (! $kit || $kit->keyword_stats) {
             return;
         }
+        // Belt & braces with the dispatch-side gate: the Gemini traffic call only
+        // ever runs on keywords that came from a COMPLETED website crawl.
+        if (trim((string) $kit->crawl_text) === '' || ($kit->stages['summary'] ?? null) !== 'done') {
+            return;
+        }
         $keywords = array_values(array_filter((array) ($kit->summary['google_search_keywords'] ?? [])));
         if (! $keywords) {
             return;

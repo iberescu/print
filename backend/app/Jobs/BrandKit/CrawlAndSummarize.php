@@ -81,8 +81,13 @@ class CrawlAndSummarize implements ShouldQueue
         ]);
         $kit->markStage('summary', 'done');
 
-        // keyword traffic stats for the ads-step report (needs the keywords above)
-        FetchKeywordStats::dispatch($this->key);
+        // Keyword traffic stats for the ads-step report — ONLY when the (Cloudflare-
+        // rendered) crawl actually returned content: without a real crawl the summary
+        // keywords are generic fallbacks, and estimating traffic for those would put
+        // made-up numbers in front of the buyer.
+        if (trim($text) !== '') {
+            FetchKeywordStats::dispatch($this->key);
+        }
 
         // crawl done → private brand store (if the mockups already finished first),
         // plus its hero banner (needs the site screenshot + logo just gathered)
