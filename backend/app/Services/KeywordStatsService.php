@@ -39,6 +39,9 @@ class KeywordStatsService
                     $rows[] = ['keyword' => $kw, 'monthlySearches' => max(60, min(60000, $v)), 'source' => 'estimate'];
                 }
             }
+            if (! $rows) {
+                Log::warning('keyword-stats: 0 usable rows; raw: '.substr(json_encode($r), 0, 300));
+            }
 
             return $rows;
         } catch (\Throwable $e) {

@@ -19,7 +19,7 @@ class FetchKeywordStats implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    public int $tries = 2;
+    public int $tries = 3;
     public int $timeout = 90;
 
     public function __construct(public string $key)
@@ -41,6 +41,15 @@ class FetchKeywordStats implements ShouldQueue
         $rows = $stats->forKeywords($keywords);
         if ($rows) {
             $kit->update(['keyword_stats' => $rows]);
+
+            return;
+        }
+
+        // A transient Gemini flake returns zero usable rows — retry instead of
+        // silently leaving this capture without its traffic report.
+        \Illuminate\Support\Facades\Log::warning("keyword-stats: empty result for kit {$kit->id} (attempt {$this->attempts()})");
+        if ($this->attempts() < $this->tries) {
+            $this->release(30);
         }
     }
 }
