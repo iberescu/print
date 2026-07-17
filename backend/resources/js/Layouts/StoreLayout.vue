@@ -87,7 +87,14 @@ const brandCss = computed(() => {
                         <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round" /></svg>
                     </button>
                 </div>
-                <Link href="/" class="shrink-0"><AppLogo featured /></Link>
+                <!-- brand store: the CUSTOMER's logo heads the shop, boxed so any
+                     logo (wide/tall/dark/transparent) sits cleanly on the header -->
+                <Link v-if="brandStore?.logo" href="/" class="shrink-0" :aria-label="brandStore.company">
+                    <span class="flex h-14 w-40 items-center justify-center overflow-hidden rounded-xl border border-paper-300 bg-white px-3 py-1.5 shadow-sm sm:h-16 sm:w-48">
+                        <img :src="brandStore.logo" :alt="brandStore.company" class="max-h-full max-w-full object-contain" />
+                    </span>
+                </Link>
+                <Link v-else href="/" class="shrink-0"><AppLogo featured /></Link>
                 <div class="hidden flex-1 items-center border border-ink/20 bg-white px-4 py-2.5 md:flex">
                     <svg class="h-5 w-5 text-ink/40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="11" cy="11" r="7" /><path d="m21 21-4.3-4.3" stroke-linecap="round" /></svg>
                     <input v-model="searchQ" type="text" placeholder="What are you looking for?" class="w-full bg-transparent px-3 text-sm placeholder:text-ink/40 focus:outline-none" @keydown.enter="goSearch" />
@@ -135,7 +142,12 @@ const brandCss = computed(() => {
                 <div class="absolute inset-0 bg-ink/50" @click="mobileMenuOpen = false"></div>
                 <div class="absolute left-0 top-0 flex h-full w-80 max-w-[85%] flex-col bg-paper shadow-2xl">
                     <div class="flex items-center justify-between border-b border-paper-300 px-5 py-4">
-                        <Link href="/" @click="mobileMenuOpen = false"><AppLogo /></Link>
+                        <Link v-if="brandStore?.logo" href="/" @click="mobileMenuOpen = false" :aria-label="brandStore.company">
+                            <span class="flex h-11 w-32 items-center justify-center overflow-hidden rounded-lg border border-paper-300 bg-white px-2.5 py-1">
+                                <img :src="brandStore.logo" :alt="brandStore.company" class="max-h-full max-w-full object-contain" />
+                            </span>
+                        </Link>
+                        <Link v-else href="/" @click="mobileMenuOpen = false"><AppLogo /></Link>
                         <button class="grid h-9 w-9 place-items-center text-ink/60 hover:text-ink" aria-label="Close menu" @click="mobileMenuOpen = false">
                             <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m6 6 12 12M18 6 6 18" stroke-linecap="round" /></svg>
                         </button>
