@@ -97,6 +97,7 @@ Route::post('/stripe/webhook', [CheckoutController::class, 'webhook'])->name('st
 // Marketing feeds (req 20)
 Route::get('/feed/google.xml', [FeedController::class, 'google'])->name('feed.google');
 Route::get('/feed/rtbhouse.xml', [FeedController::class, 'rtbhouse'])->name('feed.rtbhouse');
+Route::get('/feed/rtbhouse-stores.csv', [FeedController::class, 'rtbhouseStores'])->name('feed.rtbhouse.stores');
 
 // pqSmartGenerator upsell engine (async capture + widget status)
 Route::post('/pqsg/upload', [\App\Http\Controllers\PqsgController::class, 'upload'])->name('pqsg.upload');

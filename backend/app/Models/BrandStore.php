@@ -15,6 +15,11 @@ class BrandStore extends Model
         return $this->belongsTo(BrandKit::class);
     }
 
+    public function alias()
+    {
+        return $this->hasOne(BrandStoreAlias::class);
+    }
+
     /** The store's own origin, e.g. https://acme-plumbing.runmyprint.com */
     public function url(string $path = '/'): string
     {

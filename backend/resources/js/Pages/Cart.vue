@@ -4,6 +4,9 @@ import { Head, Link, router, usePage } from '@inertiajs/vue3';
 import StoreLayout from '../Layouts/StoreLayout.vue';
 import FreeShippingBar from '../Components/FreeShippingBar.vue';
 import { money } from '../lib/format';
+import { rtbBasketAdd } from '../lib/rtb';
+
+const rtbAlias = computed(() => usePage().props.rtbAlias ?? null);
 
 defineProps({
     items: { type: Array, default: () => [] },
@@ -22,6 +25,7 @@ const adding = ref(null);
 const addToCart = (slug) => {
     if (adding.value) return;
     adding.value = slug;
+    rtbBasketAdd(rtbAlias.value, slug); // remarketing: pre-provisioned alias offer id
     router.post(`/upsell/add/${slug}`, {}, { preserveScroll: true, onFinish: () => (adding.value = null) });
 };
 

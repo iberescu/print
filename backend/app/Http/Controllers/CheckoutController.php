@@ -205,6 +205,37 @@ class CheckoutController extends Controller
         return $id;
     }
 
+    /** RTB House conversion payload: the order's personalized-set lines mapped
+     *  to the session capture's ALIAS offer ids (pre-provisioned in the feed).
+     *  Null when the tag is off / there's no aliased store / nothing matches. */
+    private function rtbConversion(Order $order): ?array
+    {
+        if (! config('shop.rtbhouse.tag')) {
+            return null;
+        }
+        $alias = app()->bound('brandStore')
+            ? app('brandStore')->alias?->alias
+            : (function () {
+                $key = session('pqsg.key');
+                $kit = $key ? \App\Models\BrandKit::where('key', $key)->first() : null;
+
+                return $kit ? \App\Models\BrandStore::with('alias')->where('brand_kit_id', $kit->id)->first()?->alias?->alias : null;
+            })();
+        if (! $alias) {
+            return null;
+        }
+
+        $feedSlugs = collect(\App\Support\BrandKitSpec::products())->pluck('slug')->filter()->unique();
+        $offerIds = collect($order->items)->pluck('slug')->filter()
+            ->intersect($feedSlugs)->map(fn ($s) => "{$alias}-{$s}")->values()->all();
+
+        return $offerIds ? [
+            'offerIds' => $offerIds,
+            'value'    => (float) $order->total,
+            'orderId'  => $order->number,
+        ] : null;
+    }
+
     /** Brand-store hosts: browsing is open, ORDERING needs the employee session
      *  (magic link @their-domain). Null on the main shop / when signed in. */
     private function brandStoreGate()
@@ -241,6 +272,7 @@ class CheckoutController extends Controller
 
         return Inertia::render('CheckoutSuccess', [
             'order' => ['number' => $order->number, 'email' => $order->email, 'total' => (float) $order->total, 'status' => $order->status],
+            'rtb'   => $this->rtbConversion($order),
         ]);
     }
 

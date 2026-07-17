@@ -1,6 +1,9 @@
 <script setup>
-import { ref } from 'vue';
-import { Link, router } from '@inertiajs/vue3';
+import { computed, ref } from 'vue';
+import { Link, router, usePage } from '@inertiajs/vue3';
+import { rtbBasketAdd } from '../lib/rtb';
+
+const rtbAlias = computed(() => usePage().props.rtbAlias ?? null);
 
 defineProps({
     products: { type: Array, default: () => [] },
@@ -13,6 +16,7 @@ const adding = ref(null);
 const addToCart = (slug) => {
     if (adding.value) return;
     adding.value = slug;
+    rtbBasketAdd(rtbAlias.value, slug); // remarketing: pre-provisioned alias offer id
     // same path the home section always used — lands the line in the cart
     router.post(`/upsell/add/${slug}`, {}, {
         preserveScroll: true,

@@ -4,14 +4,22 @@ import { Head, Link } from '@inertiajs/vue3';
 import StoreLayout from '../Layouts/StoreLayout.vue';
 import { money } from '../lib/format';
 import { adsConversion } from '../lib/gads';
+import { rtbConversion } from '../lib/rtb';
 
-const props = defineProps({ order: { type: Object, default: () => ({}) } });
+const props = defineProps({
+    order: { type: Object, default: () => ({}) },
+    rtb: { type: Object, default: null },
+});
 
 // Purchase conversion — Google dedupes repeats by transaction_id, so a
-// refreshed thank-you page can't double count.
+// refreshed thank-you page can't double count. RTB House likewise dedupes
+// by conversionId (the order number).
 onMounted(() => {
     if (props.order?.number) {
         adsConversion('purchase', { value: Number(props.order.total || 0), transaction_id: props.order.number });
+    }
+    if (props.rtb) {
+        rtbConversion(props.rtb.offerIds, props.rtb.value, props.rtb.orderId);
     }
 });
 </script>

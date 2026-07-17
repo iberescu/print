@@ -5,6 +5,8 @@ import StoreLayout from '../Layouts/StoreLayout.vue';
 import SmartImage from '../Components/SmartImage.vue';
 import { money } from '../lib/format';
 import { adsEvent } from '../lib/gads';
+import { rtbOffer } from '../lib/rtb';
+import { usePage } from '@inertiajs/vue3';
 
 const props = defineProps({
     product: { type: Object, required: true },
@@ -35,6 +37,8 @@ onMounted(() => {
         value: Number(props.product.fromPrice || 0),
         items: [{ id: String(props.product.id), google_business_vertical: 'retail' }],
     });
+    // RTB House offer view (brand-store context: alias feed id)
+    rtbOffer(usePage().props.rtbAlias ?? null, props.product.slug);
     const meta = document.querySelector('meta[name="description"]');
     if (meta) { prevDesc = meta.getAttribute('content'); meta.setAttribute('content', metaDescription.value); }
     const p = props.product;

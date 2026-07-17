@@ -1,6 +1,7 @@
 <script setup>
-import { computed } from 'vue';
+import { computed, onMounted } from 'vue';
 import { Head, Link, usePage } from '@inertiajs/vue3';
+import { rtbHome } from '../lib/rtb';
 import StoreLayout from '../Layouts/StoreLayout.vue';
 import ProductCard from '../Components/ProductCard.vue';
 import SmartImage from '../Components/SmartImage.vue';
@@ -10,6 +11,7 @@ import LogoProductsSection from '../Components/LogoProductsSection.vue';
 // Private brand store host: their branded mockups LEAD the page (no generic
 // hero); the normal catalogue follows as the second section.
 const brandStore = computed(() => usePage().props.brandStore ?? null);
+onMounted(() => { if (brandStore.value) rtbHome(); }); // RTB House remarketing: store visit
 
 const props = defineProps({
     categories: { type: Array, default: () => [] },

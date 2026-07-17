@@ -144,6 +144,9 @@ return [
     // Private Brand Stores live on {subdomain}.<this>; empty = APP_URL host (www-stripped).
     'brand_store_base'      => env('BRAND_STORE_BASE'),
 
+    // RTB House remarketing (brand stores): the creativecdn tag hash. Empty = off.
+    'rtbhouse'              => ['tag' => env('RTBHOUSE_TAG')],
+
     'pqsg' => [
         'enabled'     => (bool) env('PQSG_ENABLED', true),
         'api_base'    => rtrim(env('PQSG_API_BASE', 'https://printbrothers-kickoff-clone.cloudlab-internal.com/api/pqsmartgenerator'), '/'),

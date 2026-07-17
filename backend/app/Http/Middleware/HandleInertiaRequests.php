@@ -49,6 +49,10 @@ class HandleInertiaRequests extends Middleware
                 'colors'   => app('brandStore')->colors,
                 'mainShop' => config('app.url'),
             ] : null,
+            // RTB House offer-id prefix for this context: the store's alias on
+            // store hosts, the session capture's store alias on the main shop
+            // (so "added on the main page" events hit pre-provisioned feed ids).
+            'rtbAlias' => fn () => $this->rtbAlias(),
             'cart' => fn () => [
                 'count'    => app(Cart::class)->count(),
                 'subtotal' => app(Cart::class)->subtotal(),
@@ -58,5 +62,24 @@ class HandleInertiaRequests extends Middleware
                 'error'   => fn () => $request->session()->get('error'),
             ],
         ];
+    }
+
+    /** The RTB House alias for this request's brand context (null = no events). */
+    private function rtbAlias(): ?string
+    {
+        if (! config('shop.rtbhouse.tag')) {
+            return null;
+        }
+        if (app()->bound('brandStore')) {
+            return app('brandStore')->alias?->alias;
+        }
+        $key = session('pqsg.key');
+        if (! $key) {
+            return null;
+        }
+        $kit = \App\Models\BrandKit::where('key', $key)->first();
+        $store = $kit ? \App\Models\BrandStore::with('alias')->where('brand_kit_id', $kit->id)->first() : null;
+
+        return $store?->alias?->alias;
     }
 }

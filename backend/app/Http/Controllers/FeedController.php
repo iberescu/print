@@ -36,6 +36,13 @@ class FeedController extends Controller
             200, ['Content-Type' => 'application/xml; charset=UTF-8']);
     }
 
+    /** RTB House BRAND-STORE feed: the pre-provisioned alias pool (see RtbStoreFeed). */
+    public function rtbhouseStores(): Response
+    {
+        return response((new \App\Support\RtbStoreFeed)->csv(),
+            200, ['Content-Type' => 'text/csv; charset=UTF-8']);
+    }
+
     private function products()
     {
         // services (ad credit etc.) are not shippable goods — keep them out of shopping feeds

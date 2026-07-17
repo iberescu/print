@@ -25,6 +25,11 @@
         window.__gads = {!! json_encode($gads) !!};
     </script>
     @endif
+    @if (config('shop.rtbhouse.tag'))
+    {{-- RTB House: brand-store remarketing (events pushed via resources/js/lib/rtb.js) --}}
+    <script>window.rtbhEvents = window.rtbhEvents || [];</script>
+    <script async src="https://tags.creativecdn.com/{{ config('shop.rtbhouse.tag') }}.js"></script>
+    @endif
 </head>
 <body class="font-sans antialiased">
     @inertia

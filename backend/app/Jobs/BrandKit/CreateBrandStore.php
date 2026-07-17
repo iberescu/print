@@ -82,6 +82,18 @@ class CreateBrandStore implements ShouldQueue
             'status'       => 'ready',
         ]);
 
+        // Claim a free RTB House alias: its feed rows flip to this store's mockups
+        // on the next daily read; ad clicks on the alias 301 here in the meantime.
+        \DB::transaction(function () use ($store) {
+            $alias = \App\Models\BrandStoreAlias::whereNull('brand_store_id')
+                ->orderBy('id')->lockForUpdate()->first();
+            if ($alias) {
+                $alias->update(['brand_store_id' => $store->id]);
+            } else {
+                Log::warning("brandstore: RTB alias pool exhausted (store {$store->id})");
+            }
+        });
+
         Log::info("brandstore: created {$store->subdomain} for kit {$kit->id} ({$domain})");
     }
 
@@ -124,7 +136,9 @@ class CreateBrandStore implements ShouldQueue
         $base = substr($base, 0, 50);
 
         $sub = $base;
-        for ($i = 2; BrandStore::where('subdomain', $sub)->exists() || in_array($sub, self::RESERVED_SUBDOMAINS, true); $i++) {
+        for ($i = 2; BrandStore::where('subdomain', $sub)->exists()
+            || \App\Models\BrandStoreAlias::where('alias', $sub)->exists()
+            || in_array($sub, self::RESERVED_SUBDOMAINS, true); $i++) {
             $sub = "{$base}-{$i}";
         }
 

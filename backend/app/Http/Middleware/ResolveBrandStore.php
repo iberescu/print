@@ -28,6 +28,18 @@ class ResolveBrandStore
         }
 
         $store = BrandStore::with('brandKit')->where('subdomain', $sub)->first();
+
+        // RTB House alias hosts: ad clicks land on the pre-provisioned random
+        // subdomain — 301 to the real store it was mapped to (path + query kept).
+        // An unclaimed alias has nothing behind it yet → the main shop.
+        if (! $store && ($alias = \App\Models\BrandStoreAlias::with('store')->where('alias', $sub)->first())) {
+            if ($alias->store) {
+                return redirect()->away($alias->store->url($request->getRequestUri()), 301);
+            }
+
+            return redirect()->away(config('app.url'));
+        }
+
         abort_unless($store, 404);
 
         app()->instance('brandStore', $store);
