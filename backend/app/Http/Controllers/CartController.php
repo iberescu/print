@@ -35,6 +35,8 @@ class CartController extends Controller
                 'credit'    => \App\Support\AdsOffer::CREDIT,
                 'qualifyAt' => \App\Support\AdsOffer::QUALIFY_AT,
             ] : null,
+            // this session's private brand store (built async while they shopped)
+            'brandStore'    => $this->brandStoreOffer(),
         ]);
     }
 
@@ -149,6 +151,24 @@ class CartController extends Controller
         $this->cart->removeCoupon();
 
         return back();
+    }
+
+    /** The private brand store built for this session's capture, if it's ready. */
+    private function brandStoreOffer(): ?array
+    {
+        $key = session('pqsg.key');
+        $kit = $key ? \App\Models\BrandKit::where('key', $key)->first() : null;
+        $store = $kit ? \App\Models\BrandStore::where('brand_kit_id', $kit->id)->first() : null;
+        if (! $store) {
+            return null;
+        }
+
+        return [
+            'company' => $store->company,
+            'domain'  => $store->email_domain,
+            // the owner grant rides the URL — the iframe (and the link) sign the buyer in
+            'url'     => $store->url('/?bs_preview='.$store->token),
+        ];
     }
 
     /** Cart lines enriched with each product's quantity tiers (for the in-cart qty switch). */

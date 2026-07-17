@@ -84,6 +84,9 @@ class CrawlAndSummarize implements ShouldQueue
         // keyword traffic stats for the ads-step report (needs the keywords above)
         FetchKeywordStats::dispatch($this->key);
 
+        // crawl done → private brand store (if the mockups already finished first)
+        CreateBrandStore::consider($this->key);
+
         // now that the brand summary exists, generate display ads from its tailored
         // concepts (need the logo). Each ad job also reads the summary for context.
         if ($this->logoInput($kit)) {

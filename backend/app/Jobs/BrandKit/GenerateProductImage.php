@@ -107,6 +107,9 @@ class GenerateProductImage implements ShouldQueue
             'img'          => Storage::disk('public')->url($path),
             'product_slug' => $this->spec['slug'],
         ]]);
+
+        // last mockup in (with the crawl already summarised) → private brand store
+        CreateBrandStore::consider($this->key);
     }
 
     /**

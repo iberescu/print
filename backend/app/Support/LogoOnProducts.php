@@ -16,6 +16,12 @@ class LogoOnProducts
     /** @return array<int,array<string,mixed>> */
     public static function forCurrentSession(): array
     {
+        // On a private brand store subdomain the "current" brand is the STORE's
+        // kit, not the visitor's session — every employee sees the company set.
+        if (app()->bound('brandStore')) {
+            return static::forKey(app('brandStore')->brandKit?->key);
+        }
+
         return static::forKey(session('pqsg.key'));
     }
 

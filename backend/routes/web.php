@@ -132,6 +132,12 @@ Route::get('/affiliate/go', [\App\Http\Controllers\AffiliateController::class, '
 // Support chat (bubble widget: AI-first, humans answer flagged tickets in admin)
 // Inbound support email (contact@ → provider webhook → the support inbox); token-guarded.
 Route::post('/hooks/inbound-email', \App\Http\Controllers\InboundEmailController::class)->middleware('throttle:120,1,inbound-email')->name('hooks.inbound-email');
+// Private Brand Store access (only meaningful on {sub}.<base> hosts — the
+// controller bounces to / on the main shop).
+Route::get('/store-login', [\App\Http\Controllers\BrandStoreAuthController::class, 'show'])->name('brandstore.login');
+Route::post('/store-login', [\App\Http\Controllers\BrandStoreAuthController::class, 'send'])->middleware('throttle:10,1,store-login')->name('brandstore.send');
+Route::get('/store-auth/{token}', [\App\Http\Controllers\BrandStoreAuthController::class, 'auth'])->name('brandstore.auth');
+
 Route::get('/support/messages', [\App\Http\Controllers\SupportController::class, 'messages'])->name('support.messages');
 Route::post('/support', [\App\Http\Controllers\SupportController::class, 'send'])->middleware('throttle:20,1,support')->name('support.send');
 

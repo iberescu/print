@@ -40,6 +40,14 @@ class HandleInertiaRequests extends Middleware
                 'freeShippingThreshold' => (float) config('shop.free_shipping_threshold'),
                 'company'               => config('shop.company'),
             ],
+            // Private brand store context (subdomain hosts only): drives the lock
+            // banner and the customer-brand color overrides in StoreLayout.
+            'brandStore' => fn () => app()->bound('brandStore') ? [
+                'company'  => app('brandStore')->company,
+                'logo'     => app('brandStore')->logoUrl(),
+                'colors'   => app('brandStore')->colors,
+                'mainShop' => config('app.url'),
+            ] : null,
             'cart' => fn () => [
                 'count'    => app(Cart::class)->count(),
                 'subtotal' => app(Cart::class)->subtotal(),

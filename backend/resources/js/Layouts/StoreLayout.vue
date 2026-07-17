@@ -19,10 +19,41 @@ const company = computed(() => page.props.shop?.company ?? {});
 const year = new Date().getFullYear();
 const mobileMenuOpen = ref(false);
 const logout = () => router.post('/logout');
+
+// Private Brand Store context (subdomain hosts): lock banner + the customer's
+// brand colors repaint the shop's palette (same structure, their colors).
+const brandStore = computed(() => page.props.brandStore ?? null);
+const brandCss = computed(() => {
+    const c = brandStore.value?.colors;
+    if (!c?.primary) return '';
+    const p = c.primary;
+    const a = c.accent || c.primary;
+    return `
+.bg-brand-600,.bg-brand-700,.bg-navy,.bg-brand-blue{background-color:${p} !important}
+.hover\\:bg-brand-700:hover,.hover\\:bg-brand-600:hover{background-color:color-mix(in srgb, ${p} 82%, black) !important}
+.bg-brand-50{background-color:color-mix(in srgb, ${p} 8%, white) !important}
+.text-brand-600,.text-brand-700{color:${p} !important}
+.border-brand-600,.ring-brand-300{border-color:${p} !important;--tw-ring-color:color-mix(in srgb, ${p} 45%, white) !important}
+.bg-lime-accent{background-color:${a} !important}
+.text-lime-accent{color:${a} !important}
+.focus\\:border-brand-400:focus{border-color:${p} !important}`;
+});
 </script>
 
 <template>
     <div class="flex min-h-screen flex-col bg-paper">
+        <component :is="'style'" v-if="brandCss">{{ brandCss }}</component>
+
+        <!-- private brand store: the lock banner tops every page -->
+        <div v-if="brandStore" class="no-round border-b border-black/20 bg-ink text-white">
+            <div class="mx-auto flex max-w-7xl flex-wrap items-center justify-center gap-x-3 gap-y-1 px-4 py-2 text-center text-[13px] sm:px-8">
+                <span class="font-semibold">🔒 Private Brand Store for {{ brandStore.company }}</span>
+                <span class="hidden text-white/60 sm:inline">·</span>
+                <span class="text-white/75">Only authorized {{ brandStore.company }} employees can order.</span>
+                <a :href="brandStore.mainShop" class="font-medium text-white underline underline-offset-2 hover:text-white/80">Visit the main shop</a>
+            </div>
+        </div>
+
         <!-- utility bar -->
         <div class="no-round bg-navy text-paper">
             <div class="mx-auto flex max-w-7xl items-center justify-between px-4 py-2.5 text-[13px] sm:px-8">

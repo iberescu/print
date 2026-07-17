@@ -11,6 +11,7 @@ defineProps({
     recommended: { type: Array, default: () => [] },
     brandProducts: { type: Array, default: () => [] },
     adsOffer: { type: Object, default: null },
+    brandStore: { type: Object, default: null },
 });
 
 const remove = (id) => router.post(`/cart/remove/${id}`, {}, { preserveScroll: true });
@@ -148,6 +149,29 @@ const editHref = (it) => {
                     <Link href="/" class="mt-3 block text-center text-sm text-ink/55 transition hover:text-ink">Continue shopping</Link>
                 </aside>
             </div>
+
+            <!-- their private brand store, built async while they shopped -->
+            <section v-if="items.length && brandStore" class="mt-12">
+                <div class="overflow-hidden rounded-3xl border border-paper-300 bg-white shadow-sm">
+                    <div class="flex flex-wrap items-center justify-between gap-3 bg-ink px-5 py-3.5 text-white sm:px-6">
+                        <p class="flex items-center gap-2 text-sm font-semibold">
+                            🔒 We built a private Brand Store for {{ brandStore.company }}
+                        </p>
+                        <a :href="brandStore.url" target="_blank" rel="noopener"
+                           class="rounded-full bg-white px-4 py-1.5 text-xs font-semibold text-ink transition hover:bg-white/85">
+                            Open your store ↗
+                        </a>
+                    </div>
+                    <div class="px-5 py-4 sm:px-6">
+                        <p class="text-sm text-ink/65">
+                            Your whole team can order from it — products already personalised with the {{ brandStore.company }} brand.
+                            Anyone with an <span class="font-semibold text-ink">@{{ brandStore.domain }}</span> email can sign in with a login link; nobody else gets access.
+                        </p>
+                        <iframe :src="brandStore.url" :title="`${brandStore.company} Brand Store preview`" loading="lazy"
+                                class="mt-4 h-72 w-full rounded-2xl border border-paper-300 bg-paper-200/40"></iframe>
+                    </div>
+                </div>
+            </section>
 
             <!-- the customer's own brand: "your logo on" mockups (cached, shown as-is — no regeneration) -->
             <section v-if="brandProducts.length" class="mt-16">

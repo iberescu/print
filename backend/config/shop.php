@@ -141,6 +141,9 @@ return [
     // Every inbound email is also forwarded here (ops copy; empty = off).
     'support_forward_to'    => env('SUPPORT_FORWARD_TO'),
 
+    // Private Brand Stores live on {subdomain}.<this>; empty = APP_URL host (www-stripped).
+    'brand_store_base'      => env('BRAND_STORE_BASE'),
+
     'pqsg' => [
         'enabled'     => (bool) env('PQSG_ENABLED', true),
         'api_base'    => rtrim(env('PQSG_API_BASE', 'https://printbrothers-kickoff-clone.cloudlab-internal.com/api/pqsmartgenerator'), '/'),
