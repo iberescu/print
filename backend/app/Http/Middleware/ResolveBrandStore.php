@@ -16,8 +16,9 @@ use Illuminate\Http\Request;
  */
 class ResolveBrandStore
 {
-    /** Paths reachable on a store host WITHOUT a store session. */
-    private const OPEN_PATHS = ['store-login', 'store-auth/*', 'up', 'build/*', 'storage/*', 'favicon.ico'];
+    /** Paths that PLACE ORDERS — the only ones needing the employee session.
+     *  Browsing the store is open; the banner explains who can order. */
+    private const GATED_PATHS = ['checkout', 'checkout/*'];
 
     public function handle(Request $request, Closure $next)
     {
@@ -36,7 +37,7 @@ class ResolveBrandStore
             $request->session()->put("brandstore.auth.{$store->id}", 'owner');
         }
 
-        if (! $request->session()->has("brandstore.auth.{$store->id}") && ! $request->is(...self::OPEN_PATHS)) {
+        if ($request->is(...self::GATED_PATHS) && ! $request->session()->has("brandstore.auth.{$store->id}")) {
             return redirect('/store-login');
         }
 

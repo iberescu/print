@@ -18,6 +18,9 @@ class CheckoutController extends Controller
 
     public function show()
     {
+        if ($gate = $this->brandStoreGate()) {
+            return $gate;
+        }
         if (! $this->cart->count()) {
             return redirect()->route('cart');
         }
@@ -31,6 +34,9 @@ class CheckoutController extends Controller
 
     public function place(Request $request)
     {
+        if ($gate = $this->brandStoreGate()) {
+            return $gate;
+        }
         if (! $this->cart->count()) {
             return redirect()->route('cart');
         }
@@ -197,6 +203,17 @@ class CheckoutController extends Controller
         }
 
         return $id;
+    }
+
+    /** Brand-store hosts: browsing is open, ORDERING needs the employee session
+     *  (magic link @their-domain). Null on the main shop / when signed in. */
+    private function brandStoreGate()
+    {
+        if (app()->bound('brandStore') && ! session()->has('brandstore.auth.'.app('brandStore')->id)) {
+            return redirect('/store-login');
+        }
+
+        return null;
     }
 
     public function success(Request $request)

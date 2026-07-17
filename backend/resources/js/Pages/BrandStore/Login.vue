@@ -23,8 +23,8 @@ const submit = () => form.post('/store-login');
                 <p class="text-center text-xs font-semibold uppercase tracking-widest text-ink/45">🔒 Private Brand Store</p>
                 <h1 class="mt-2 text-center font-display text-2xl font-bold text-ink">{{ company }}</h1>
                 <p class="mt-3 text-center text-sm text-ink/60">
-                    Only authorized {{ company }} employees can order here. Enter your
-                    <span class="font-semibold text-ink">@{{ domain }}</span> work email and we'll send you a sign-in link.
+                    Ordering is reserved for authorized {{ company }} employees. Enter your
+                    <span class="font-semibold text-ink">@{{ domain }}</span> work email and we'll send you a sign-in link to check out.
                 </p>
 
                 <div v-if="sent" class="mt-6 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-medium text-emerald-800">
