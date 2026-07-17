@@ -90,8 +90,8 @@ const brandCss = computed(() => {
                 <!-- brand store: the CUSTOMER's logo heads the shop, boxed so any
                      logo (wide/tall/dark/transparent) sits cleanly on the header -->
                 <Link v-if="brandStore?.logo" href="/" class="shrink-0" :aria-label="brandStore.company">
-                    <span class="flex h-14 w-40 items-center justify-center overflow-hidden rounded-xl border border-paper-300 bg-white px-3 py-1.5 shadow-sm sm:h-16 sm:w-48">
-                        <img :src="brandStore.logo" :alt="brandStore.company" class="max-h-full max-w-full object-contain" />
+                    <span class="inline-flex h-14 max-w-[240px] items-center overflow-hidden rounded-xl border border-paper-300 bg-white px-3 py-1.5 shadow-sm sm:h-16">
+                        <img :src="brandStore.logo" :alt="brandStore.company" class="h-full w-auto max-w-full object-contain" />
                     </span>
                 </Link>
                 <Link v-else href="/" class="shrink-0"><AppLogo featured /></Link>
@@ -143,8 +143,8 @@ const brandCss = computed(() => {
                 <div class="absolute left-0 top-0 flex h-full w-80 max-w-[85%] flex-col bg-paper shadow-2xl">
                     <div class="flex items-center justify-between border-b border-paper-300 px-5 py-4">
                         <Link v-if="brandStore?.logo" href="/" @click="mobileMenuOpen = false" :aria-label="brandStore.company">
-                            <span class="flex h-11 w-32 items-center justify-center overflow-hidden rounded-lg border border-paper-300 bg-white px-2.5 py-1">
-                                <img :src="brandStore.logo" :alt="brandStore.company" class="max-h-full max-w-full object-contain" />
+                            <span class="inline-flex h-11 max-w-[170px] items-center overflow-hidden rounded-lg border border-paper-300 bg-white px-2.5 py-1">
+                                <img :src="brandStore.logo" :alt="brandStore.company" class="h-full w-auto max-w-full object-contain" />
                             </span>
                         </Link>
                         <Link v-else href="/" @click="mobileMenuOpen = false"><AppLogo /></Link>
