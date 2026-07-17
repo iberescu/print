@@ -747,12 +747,14 @@ function next() {
                 </button>
             </div>
 
-            <!-- floating continue bar — the same always-at-hand affordance the
-                 final step has, for every other step (spacer keeps it off the CTAs) -->
+            <!-- mobile: floating continue bar — the same always-at-hand affordance
+                 the final step has, for every other step (spacer keeps it off the
+                 CTAs; desktop keeps its inline buttons only) -->
             <template v-if="step !== 'finalize'">
-                <div class="h-20"></div>
-                <div class="fixed inset-x-0 bottom-0 z-40 border-t border-paper-300 bg-white/95 backdrop-blur">
-                    <div class="mx-auto flex max-w-6xl items-center justify-between gap-3 px-4 py-3 sm:px-6">
+                <div class="h-20 lg:hidden"></div>
+                <div class="fixed inset-x-0 bottom-0 z-40 border-t border-paper-300 bg-white/95 backdrop-blur lg:hidden">
+                    <!-- pr clears the support chat bubble (fixed bottom-right) -->
+                    <div class="mx-auto flex max-w-6xl items-center justify-between gap-3 py-3 pl-4 pr-20 sm:pl-6">
                         <div v-if="summary.subtotal != null">
                             <p class="font-display text-lg font-bold leading-tight text-ink">{{ money(summary.subtotal) }}</p>
                             <p class="text-[11px] leading-tight text-ink/50">your order so far</p>

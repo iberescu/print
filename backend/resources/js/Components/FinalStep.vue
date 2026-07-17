@@ -179,7 +179,8 @@ const attrLine = (v) => (v.attributes || [])
 
         <!-- mobile: total + continue always at hand (before the aside so the
              summary CTA stays the LAST visible continue button on desktop) -->
-        <div class="fixed inset-x-0 bottom-0 z-40 flex items-center justify-between gap-3 border-t border-paper-300 bg-white/95 px-4 py-3 backdrop-blur lg:hidden">
+        <!-- pr clears the support chat bubble (fixed bottom-right) -->
+        <div class="fixed inset-x-0 bottom-0 z-40 flex items-center justify-between gap-3 border-t border-paper-300 bg-white/95 py-3 pl-4 pr-20 backdrop-blur lg:hidden">
             <div>
                 <p class="font-display text-lg font-bold leading-tight text-ink" :class="busy ? 'animate-pulse opacity-50' : ''">{{ money(total) }}</p>
                 <p class="text-[11px] leading-tight text-ink/50">{{ money(totalPerUnit) }} each</p>
