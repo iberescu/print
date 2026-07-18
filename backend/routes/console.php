@@ -9,3 +9,4 @@ Artisan::command('inspire', function () {
 
 // Runs inside the `scheduler` compose service (php artisan schedule:work).
 \Illuminate\Support\Facades\Schedule::command('carts:remind')->hourly();
+\Illuminate\Support\Facades\Schedule::command('brandstores:notify')->hourly();

@@ -124,6 +124,7 @@ class CheckoutController extends Controller
             'items'       => $items,
             'ab_ads_variant' => \App\Support\AdsOffer::forced() ? null : $adsVariant,
             'ab_ads_has_url' => \App\Support\AdsOffer::forced() ? null : session('ab.ads_has_url'),
+            'brand_kit_key'  => session('pqsg.key'), // links the order to its capture (brand-store portal emails)
             'subtotal'    => $this->cart->subtotal(),
             'coupon_code' => $coupon?->code,
             'discount'        => $this->cart->discount(),
