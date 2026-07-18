@@ -96,7 +96,9 @@ class BrandKitSpec
             [
                 // image-only showcase card. Fixed NEUTRAL base (blank stencil card + untouched
                 // crema — regenerate with shop:product-bases) so the model has no example logo
-                // shape to copy; only the customer's logo is cut/dusted in at runtime → LITE model.
+                // shape to copy; the customer's logo is cut/dusted in at runtime. full_model:
+                // carving a see-through cut-out from an arbitrary logo needs the FULL 3.1-flash
+                // tier — Lite left remnants inside the cutouts.
                 'key' => 'coffee', 'label' => 'Coffee stencil', 'slug' => 'coffee-stencil', 'decoration' => 'custom', 'full_model' => true,
                 'base_prompt' => 'A photorealistic café product photo shot from a high three-quarter angle on a '
                     .'warm brown speckled stone counter, warm natural lighting: on the left, a dark matte metal '
