@@ -1,8 +1,28 @@
 <script setup>
+import { onBeforeUnmount, onMounted, ref, useSlots } from 'vue';
+
 defineProps({
     src: { type: String, default: null },
     alt: { type: String, default: 'Website preview' },
 });
+
+// #screen slot: live content (an iframe) rendered on the display. It lays out
+// on a fixed 1280×799 desktop canvas and is scaled to the measured screen box
+// (plain HTML overlay — foreignObject + transform escapes the SVG on mobile
+// WebKit). Screen box in viewBox units: x204 y44 w792 h494 of 1200×720.
+const slots = useSlots();
+const wrap = ref(null);
+const screenScale = ref(0.2);
+let ro = null;
+onMounted(() => {
+    if (!slots.screen || !wrap.value) return;
+    ro = new ResizeObserver(() => {
+        const w = wrap.value?.clientWidth || 0;
+        if (w) screenScale.value = (w * (792 / 1200)) / 1280;
+    });
+    ro.observe(wrap.value);
+});
+onBeforeUnmount(() => ro?.disconnect());
 </script>
 
 <!-- A MacBook drawn in pure SVG; the `src` image becomes the screen. While the
@@ -10,6 +30,7 @@ defineProps({
      Alternatively the #screen slot renders LIVE content (e.g. an iframe) on the
      display via foreignObject — size it 792×494 (or scale into that box). -->
 <template>
+    <div ref="wrap" class="relative">
     <svg viewBox="0 0 1200 720" role="img" :aria-label="alt" data-mac class="h-auto w-full select-none">
         <defs>
             <linearGradient id="mb-alu" x1="0" y1="0" x2="0" y2="1">
@@ -40,13 +61,8 @@ defineProps({
 
         <!-- screen -->
         <rect x="204" y="44" width="792" height="494" rx="8" fill="url(#mb-screen-off)" />
-        <foreignObject v-if="$slots.screen" x="204" y="44" width="792" height="494" clip-path="url(#mb-clip)">
-            <div xmlns="http://www.w3.org/1999/xhtml" style="width:792px;height:494px;overflow:hidden;border-radius:8px;background:#fff;">
-                <slot name="screen" />
-            </div>
-        </foreignObject>
         <image
-            v-else-if="src"
+            v-if="src && !$slots.screen"
             :href="src"
             x="204" y="44" width="792" height="494"
             preserveAspectRatio="xMidYMid slice"
@@ -77,4 +93,15 @@ defineProps({
         <!-- bottom edge -->
         <rect x="90" y="618" width="1020" height="4" rx="2" fill="#5f636b" opacity="0.55" />
     </svg>
+
+    <!-- live screen content: absolutely positioned over the display
+         (percentages of the 1200×720 viewBox: x204 y44 w792 h494) -->
+    <div v-if="$slots.screen"
+         class="absolute overflow-hidden rounded-[4px] bg-white sm:rounded-md"
+         style="left:17%;top:6.111%;width:66%;height:68.611%;">
+        <div :style="{ width: '1280px', height: '799px', transform: `scale(${screenScale})`, transformOrigin: 'top left' }">
+            <slot name="screen" />
+        </div>
+    </div>
+    </div>
 </template>

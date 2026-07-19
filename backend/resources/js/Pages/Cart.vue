@@ -177,7 +177,7 @@ const editHref = (it) => {
                         <MacBook class="mx-auto mt-5 max-w-3xl" :alt="`${brandStore.company} Brand Store preview`">
                             <template #screen>
                                 <iframe :src="brandStore.url" :title="`${brandStore.company} Brand Store`" loading="lazy"
-                                        style="width:1280px;height:799px;border:0;transform:scale(0.61875);transform-origin:top left;"></iframe>
+                                        style="width:1280px;height:799px;border:0;"></iframe>
                             </template>
                         </MacBook>
                     </div>
