@@ -77,7 +77,6 @@ const title = computed(() => ({
 const adGuarantees = computed(() => (isFree500.value
     ? [
         'Yours FREE with any order over $100 — added automatically at checkout',
-        '$500 promotional credit for new Google Ads accounts',
         'Campaign designed from your brand with Layout.ai',
         'You approve everything before a single ad runs',
     ]
@@ -535,7 +534,7 @@ function next() {
                             <p v-if="isFree500" class="text-sm font-semibold text-white">Zero risk: the credit is <span class="text-lime-accent">completely free</span> — you pay nothing for it, ever, and nothing runs until you approve it.</p>
                             <p v-else class="text-sm font-semibold text-white">Money-back guarantee: get <span class="text-lime-accent">thousands of highly targeted visitors</span> or your $29 is refunded in full.</p>
                         </div>
-                        <p v-if="isFree500" class="mt-4 text-xs text-white/45">One-time offer for new Runmyprint customers. $500 Google Ads promotional credit for new Google Ads accounts, subject to Google's promotional terms; granted with orders of $100 or more and set up with our partner Layout.ai. Nothing runs until you approve the campaign.</p>
+                        <p v-if="isFree500" class="mt-4 text-xs text-white/45">One-time offer for new Runmyprint customers. The $500 Google Ads credit is granted with orders of $100 or more and set up with our partner Layout.ai. Nothing runs until you approve the campaign.</p>
                         <p v-else class="mt-4 text-xs text-white/45">One-time offer for new Runmyprint customers. The $29 is charged with your order; your campaign is fulfilled by our partner Layout.ai and nothing runs until you approve it. If it doesn't deliver, we refund the $29 — no questions asked.</p>
                     </div>
                 </div>
