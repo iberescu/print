@@ -6,7 +6,9 @@ defineProps({
 </script>
 
 <!-- A MacBook drawn in pure SVG; the `src` image becomes the screen. While the
-     design is still generating (src null) the screen shows a soft pulse. -->
+     design is still generating (src null) the screen shows a soft pulse.
+     Alternatively the #screen slot renders LIVE content (e.g. an iframe) on the
+     display via foreignObject — size it 792×494 (or scale into that box). -->
 <template>
     <svg viewBox="0 0 1200 720" role="img" :aria-label="alt" data-mac class="h-auto w-full select-none">
         <defs>
@@ -38,8 +40,13 @@ defineProps({
 
         <!-- screen -->
         <rect x="204" y="44" width="792" height="494" rx="8" fill="url(#mb-screen-off)" />
+        <foreignObject v-if="$slots.screen" x="204" y="44" width="792" height="494" clip-path="url(#mb-clip)">
+            <div xmlns="http://www.w3.org/1999/xhtml" style="width:792px;height:494px;overflow:hidden;border-radius:8px;background:#fff;">
+                <slot name="screen" />
+            </div>
+        </foreignObject>
         <image
-            v-if="src"
+            v-else-if="src"
             :href="src"
             x="204" y="44" width="792" height="494"
             preserveAspectRatio="xMidYMid slice"

@@ -3,6 +3,7 @@ import { computed, ref } from 'vue';
 import { Head, Link, router, usePage } from '@inertiajs/vue3';
 import StoreLayout from '../Layouts/StoreLayout.vue';
 import FreeShippingBar from '../Components/FreeShippingBar.vue';
+import MacBook from '../Components/MacBook.vue';
 import { money } from '../lib/format';
 import { rtbBasketAdd } from '../lib/rtb';
 
@@ -171,8 +172,14 @@ const editHref = (it) => {
                             Your whole team can order from it — products already personalised with the {{ brandStore.company }} brand.
                             Anyone with an <span class="font-semibold text-ink">@{{ brandStore.domain }}</span> email can sign in with a login link; nobody else gets access.
                         </p>
-                        <iframe :src="brandStore.url" :title="`${brandStore.company} Brand Store preview`" loading="lazy"
-                                class="mt-4 h-72 w-full rounded-2xl border border-paper-300 bg-paper-200/40"></iframe>
+                        <!-- live store on a MacBook: the iframe lays out at a real desktop
+                             viewport (1280px) and is scaled onto the 792×494 screen -->
+                        <MacBook class="mx-auto mt-5 max-w-3xl" :alt="`${brandStore.company} Brand Store preview`">
+                            <template #screen>
+                                <iframe :src="brandStore.url" :title="`${brandStore.company} Brand Store`" loading="lazy"
+                                        style="width:1280px;height:799px;border:0;transform:scale(0.61875);transform-origin:top left;"></iframe>
+                            </template>
+                        </MacBook>
                     </div>
                 </div>
             </section>
