@@ -1,14 +1,17 @@
 <script setup>
 import { Head, Link, useForm } from '@inertiajs/vue3';
-import { computed, nextTick } from 'vue';
+import { computed, nextTick, onMounted } from 'vue';
 import StoreLayout from '../Layouts/StoreLayout.vue';
 import { money } from '../lib/format';
+import { rtbStartOrder } from '../lib/rtb';
 
 const props = defineProps({
     items: { type: Array, default: () => [] },
     summary: { type: Object, default: () => ({}) },
     customer: { type: Object, default: () => ({}) },
 });
+
+onMounted(() => rtbStartOrder()); // RTB House (store hosts only — no-op on the main shop)
 
 const methods = computed(() => props.summary.methods || []);
 const defaultCode = props.summary.methods?.[0]?.code ?? 'economy';

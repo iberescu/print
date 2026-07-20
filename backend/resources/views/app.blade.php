@@ -25,10 +25,15 @@
         window.__gads = {!! json_encode($gads) !!};
     </script>
     @endif
-    @if (config('shop.rtbhouse.tag'))
-    {{-- RTB House: brand-store remarketing (events pushed via resources/js/lib/rtb.js) --}}
-    <script>window.rtbhEvents = window.rtbhEvents || [];</script>
-    <script async src="https://tags.creativecdn.com/{{ config('shop.rtbhouse.tag') }}.js"></script>
+    @if (config('shop.rtbhouse.tag') && app()->bound('brandStore'))
+    {{-- RTB House remarketing — BRAND STORE hosts only (never the main shop).
+         Main-shop basketadds reach this tag via the cart's store iframe relay. --}}
+    <script>
+      (function (w,d,dn,t){w[dn]=w[dn]||[];w[dn].push({eventType:'init',value:t,dc:'ash'});
+      var f=d.getElementsByTagName('script')[0],c=d.createElement('script');
+      c.async=true;c.src='https://tags.creativecdn.com/'+t+'.js';
+      f.parentNode.insertBefore(c,f);})(window,document,'rtbhEvents','{{ config('shop.rtbhouse.tag') }}');
+    </script>
     @endif
 </head>
 <body class="font-sans antialiased">

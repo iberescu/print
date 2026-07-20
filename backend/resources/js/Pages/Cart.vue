@@ -5,9 +5,21 @@ import StoreLayout from '../Layouts/StoreLayout.vue';
 import FreeShippingBar from '../Components/FreeShippingBar.vue';
 import MacBook from '../Components/MacBook.vue';
 import { money } from '../lib/format';
-import { rtbBasketAdd } from '../lib/rtb';
+import { rtbBasketAdd, rtbFlushToFrame } from '../lib/rtb';
 
 const rtbAlias = computed(() => usePage().props.rtbAlias ?? null);
+
+// The RTB tag lives ONLY on the brand-store host — the store iframe below is
+// its window on this page. Queued main-shop basketadds flush into it once it
+// loads, and live adds flush immediately after queueing.
+const storeFrame = ref(null);
+const storeFrameReady = ref(false);
+const flushRtb = () => {
+    const url = storeFrame.value?.getAttribute('src');
+    if (!url) return;
+    storeFrameReady.value = true;
+    rtbFlushToFrame(storeFrame.value, new URL(url).origin);
+};
 
 defineProps({
     items: { type: Array, default: () => [] },
@@ -26,7 +38,8 @@ const adding = ref(null);
 const addToCart = (slug) => {
     if (adding.value) return;
     adding.value = slug;
-    rtbBasketAdd(rtbAlias.value, slug); // remarketing: pre-provisioned alias offer id
+    rtbBasketAdd(rtbAlias.value, slug); // queued on the main shop (no tag here)…
+    if (storeFrameReady.value) flushRtb(); // …and relayed into the store iframe live
     router.post(`/upsell/add/${slug}`, {}, { preserveScroll: true, onFinish: () => (adding.value = null) });
 };
 
@@ -176,8 +189,8 @@ const editHref = (it) => {
                              viewport (1280px) and is scaled onto the 792×494 screen -->
                         <MacBook class="mx-auto mt-5 max-w-3xl" :alt="`${brandStore.company} Brand Store preview`">
                             <template #screen>
-                                <iframe :src="brandStore.url" :title="`${brandStore.company} Brand Store`" loading="lazy"
-                                        style="width:1280px;height:799px;border:0;"></iframe>
+                                <iframe ref="storeFrame" :src="brandStore.url" :title="`${brandStore.company} Brand Store`" loading="lazy"
+                                        style="width:1280px;height:799px;border:0;" @load="flushRtb"></iframe>
                             </template>
                         </MacBook>
                     </div>

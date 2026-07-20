@@ -53,6 +53,8 @@ class HandleInertiaRequests extends Middleware
             // store hosts, the session capture's store alias on the main shop
             // (so "added on the main page" events hit pre-provisioned feed ids).
             'rtbAlias' => fn () => $this->rtbAlias(),
+            // sha256 of the known identity — rides with every RTB event as `uid`
+            'rtbUid'   => fn () => $this->rtbUid($request),
             'cart' => fn () => [
                 'count'    => app(Cart::class)->count(),
                 'subtotal' => app(Cart::class)->subtotal(),
@@ -62,6 +64,23 @@ class HandleInertiaRequests extends Middleware
                 'error'   => fn () => $request->session()->get('error'),
             ],
         ];
+    }
+
+    /** Stable pseudonymous id for RTB uid events: the store-session email (an
+     *  employee ordering) or the signed-in account email, hashed. */
+    private function rtbUid(Request $request): ?string
+    {
+        if (! config('shop.rtbhouse.tag')) {
+            return null;
+        }
+        $email = null;
+        if (app()->bound('brandStore')) {
+            $grant = session('brandstore.auth.'.app('brandStore')->id);
+            $email = is_string($grant) && str_contains($grant, '@') ? $grant : null;
+        }
+        $email = $email ?: $request->user()?->email;
+
+        return $email ? hash('sha256', strtolower(trim($email))) : null;
     }
 
     /** The RTB House alias for this request's brand context (null = no events). */

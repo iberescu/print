@@ -1,6 +1,7 @@
 <script setup>
 import { Link, router, usePage } from '@inertiajs/vue3';
-import { computed, ref } from 'vue';
+import { computed, onBeforeUnmount, onMounted, ref, watchEffect } from 'vue';
+import { RTB_MESSAGE } from '../lib/rtb';
 import AppLogo from '../Components/AppLogo.vue';
 import SupportWidget from '../Components/SupportWidget.vue';
 import NewsletterSignup from '../Components/NewsletterSignup.vue';
@@ -23,6 +24,21 @@ const logout = () => router.post('/logout');
 // Private Brand Store context (subdomain hosts): lock banner + the customer's
 // brand colors repaint the shop's palette (same structure, their colors).
 const brandStore = computed(() => page.props.brandStore ?? null);
+
+// RTB House: uid rides with every event (rtb.js reads window.__rtbUid); on
+// store hosts, accept basketadd relays postMessage'd from the main shop's
+// cart iframe (the tag only exists here).
+watchEffect(() => { window.__rtbUid = page.props.rtbUid || null; });
+const onRtbMessage = (e) => {
+    const mainOrigin = brandStore.value?.mainShop ? new URL(brandStore.value.mainShop).origin : null;
+    if (!mainOrigin || e.origin !== mainOrigin || e.data?.type !== RTB_MESSAGE) return;
+    const allowed = ['basketadd', 'uid'];
+    (e.data.events || []).forEach((ev) => {
+        if (allowed.includes(ev?.eventType)) window.rtbhEvents?.push(ev);
+    });
+};
+onMounted(() => { if (brandStore.value) window.addEventListener('message', onRtbMessage); });
+onBeforeUnmount(() => window.removeEventListener('message', onRtbMessage));
 const brandCss = computed(() => {
     const c = brandStore.value?.colors;
     if (!c?.primary) return '';
