@@ -41,7 +41,8 @@ class RtbStoreFeed
                     'in_stock',
                     $mockup['img'] ?? Img::url($p->image_path),
                     $alias->alias,
-                    $alias->alias,
+                    // one category per website: the store's (company) name once mapped
+                    $store ? $store->company : $alias->alias,
                 ];
             }
         }
