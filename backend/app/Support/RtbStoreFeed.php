@@ -15,13 +15,14 @@ use App\Models\Product;
  */
 class RtbStoreFeed
 {
+    /** TSV, CRLF, columns mirroring the proven viteprint RTB feed:
+     *  id  title  price  condition  link  availability  image_link  product_type  category */
     public function csv(): string
     {
         $products = $this->feedProducts();
         $aliases = BrandStoreAlias::with('store.brandKit')->orderBy('id')->get();
 
-        $out = fopen('php://temp', 'r+');
-        fputcsv($out, ['id', 'title', 'description', 'link', 'image_link', 'price', 'currency', 'availability']);
+        $rows = [['id', 'title', 'price', 'condition', 'link', 'availability', 'image_link', 'product_type', 'category']];
 
         foreach ($aliases as $alias) {
             $store = $alias->store;
@@ -31,22 +32,24 @@ class RtbStoreFeed
 
             foreach ($products as $p) {
                 $mockup = $mockups->get($p->slug);
-                fputcsv($out, [
+                $rows[] = [
                     "{$alias->alias}-{$p->slug}",
-                    $store ? "{$store->company} — {$p->name}" : $p->name,
-                    $p->tagline ?: "Custom {$p->name} with your company logo.",
+                    $store ? "{$store->company} {$p->name}" : $p->name,
+                    number_format((float) $p->from_price, 2, '.', '').' USD',
+                    'new',
                     $this->url($alias->alias, "/product/{$p->slug}"),
+                    'in_stock',
                     $mockup['img'] ?? Img::url($p->image_path),
-                    number_format((float) $p->from_price, 2, '.', ''),
-                    'USD',
-                    'in stock',
-                ]);
+                    $alias->alias,
+                    $alias->alias,
+                ];
             }
         }
 
-        rewind($out);
-
-        return (string) stream_get_contents($out);
+        return implode("\r\n", array_map(
+            fn ($r) => implode("\t", array_map(fn ($v) => preg_replace('/[\t\r\n]+/', ' ', (string) $v), $r)),
+            $rows,
+        ))."\r\n";
     }
 
     /** The personalized set: every brand-kit mockup spec that maps to a live product. */

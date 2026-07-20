@@ -36,11 +36,12 @@ class FeedController extends Controller
             200, ['Content-Type' => 'application/xml; charset=UTF-8']);
     }
 
-    /** RTB House BRAND-STORE feed: the pre-provisioned alias pool (see RtbStoreFeed). */
+    /** RTB House BRAND-STORE feed: the pre-provisioned alias pool (see RtbStoreFeed).
+     *  TSV (viteprint-proven structure); served under both .tsv and .csv paths. */
     public function rtbhouseStores(): Response
     {
         return response((new \App\Support\RtbStoreFeed)->csv(),
-            200, ['Content-Type' => 'text/csv; charset=UTF-8']);
+            200, ['Content-Type' => 'text/tab-separated-values; charset=UTF-8']);
     }
 
     private function products()
