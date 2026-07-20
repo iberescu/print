@@ -16,33 +16,31 @@ use App\Models\Product;
 class RtbStoreFeed
 {
     /** TSV, CRLF, columns mirroring the proven viteprint RTB feed:
-     *  id  title  price  condition  link  availability  image_link  product_type  category */
+     *  id  title  price  condition  link  availability  image_link  product_type  category
+     *
+     *  The feed is STATIC by design: alias shops keep their original names,
+     *  categories and default product images forever — a claimed alias never
+     *  rewrites its rows. The store mapping lives entirely OUTSIDE the feed,
+     *  as the alias host's 301 redirect to the real brand store. */
     public function csv(): string
     {
         $products = $this->feedProducts();
-        $aliases = BrandStoreAlias::with('store.brandKit')->orderBy('id')->get();
+        $aliases = BrandStoreAlias::orderBy('id')->get();
 
         $rows = [['id', 'title', 'price', 'condition', 'link', 'availability', 'image_link', 'product_type', 'category']];
 
         foreach ($aliases as $alias) {
-            $store = $alias->store;
-            $mockups = $store?->brandKit
-                ? collect((array) $store->brandKit->products)->filter(fn ($p) => ! empty($p['img']))->keyBy('product_slug')
-                : collect();
-
             foreach ($products as $p) {
-                $mockup = $mockups->get($p->slug);
                 $rows[] = [
                     "{$alias->alias}-{$p->slug}",
-                    $store ? "{$store->company} {$p->name}" : $p->name,
+                    $p->name,
                     number_format((float) $p->from_price, 2, '.', '').' USD',
                     'new',
                     $this->url($alias->alias, "/product/{$p->slug}"),
                     'in_stock',
-                    $mockup['img'] ?? Img::url($p->image_path),
+                    Img::url($p->image_path),
                     $alias->alias,
-                    // one category per website: the store's (company) name once mapped
-                    $store ? $store->company : $alias->alias,
+                    $alias->alias, // one category per (placeholder) website — never changes
                 ];
             }
         }
