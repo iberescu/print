@@ -18,18 +18,22 @@ class RtbStoreFeed
     /** TSV, CRLF, columns mirroring the proven viteprint RTB feed:
      *  id  title  price  condition  link  availability  image_link  product_type  category
      *
-     *  The feed is STATIC by design: alias shops keep their original names,
-     *  categories and default product images forever — a claimed alias never
-     *  rewrites its rows. The store mapping lives entirely OUTSIDE the feed,
-     *  as the alias host's 301 redirect to the real brand store. */
+     *  The feed is STATIC except image_link: names/categories/links never change
+     *  on claim — but a mapped alias serves the customer's logo MOCKUP images,
+     *  so remarketing creatives show their branded products. Everything else
+     *  about the mapping lives in the alias host's 301 to the real store. */
     public function csv(): string
     {
         $products = $this->feedProducts();
-        $aliases = BrandStoreAlias::orderBy('id')->get();
+        $aliases = BrandStoreAlias::with('store.brandKit')->orderBy('id')->get();
 
         $rows = [['id', 'title', 'price', 'condition', 'link', 'availability', 'image_link', 'product_type', 'category']];
 
         foreach ($aliases as $alias) {
+            $mockups = $alias->store?->brandKit
+                ? collect((array) $alias->store->brandKit->products)->filter(fn ($p) => ! empty($p['img']))->keyBy('product_slug')
+                : collect();
+
             foreach ($products as $p) {
                 $rows[] = [
                     "{$alias->alias}-{$p->slug}",
@@ -38,7 +42,7 @@ class RtbStoreFeed
                     'new',
                     $this->url($alias->alias, "/product/{$p->slug}"),
                     'in_stock',
-                    Img::url($p->image_path),
+                    $mockups->get($p->slug)['img'] ?? Img::url($p->image_path),
                     $alias->alias,
                     $alias->alias, // one category per (placeholder) website — never changes
                 ];
