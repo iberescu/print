@@ -245,7 +245,16 @@ class ImportCatalog extends Command
         ksort($out);
         $rows = array_values($out);
 
-        $perUnit = count($rows) >= 2 && $rows[0]['value'] > $rows[count($rows) - 1]['value'];
+        // Majority vote over adjacent pairs, ignoring junk values ≤ $1 — a single
+        // "$1.00" trailing tier used to flip first-vs-last and quantity-multiply a
+        // whole product's TOTALS (letterhead at $749.75 for 25 sheets).
+        $vals = array_values(array_filter(array_column($rows, 'value'), fn ($v) => $v > 1.0));
+        $falls = 0;
+        $rises = 0;
+        for ($i = 1; $i < count($vals); $i++) {
+            $vals[$i] < $vals[$i - 1] ? $falls++ : $rises++;
+        }
+        $perUnit = count($vals) >= 2 && $falls > $rises;
 
         return array_map(function ($r) use ($perUnit) {
             $total = $perUnit ? $r['value'] * $r['quantity'] : $r['value'];
