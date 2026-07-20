@@ -34,7 +34,9 @@ class HandleInertiaRequests extends Middleware
                 600,
                 // toArray() — caching an Eloquent Collection in Redis deserializes to a
                 // broken __PHP_Incomplete_Class on cache hits, blanking the nav.
-                fn () => Category::where('is_active', true)->orderBy('sort_order')->get(['name', 'slug'])->toArray()
+                // Services (ad credit, website, ads-step add-ons) is upsell-only — not in the menu.
+                fn () => Category::where('is_active', true)->where('slug', '!=', 'services')
+                    ->orderBy('sort_order')->get(['name', 'slug'])->toArray()
             ),
             'shop' => [
                 'freeShippingThreshold' => (float) config('shop.free_shipping_threshold'),
